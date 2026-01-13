@@ -1,0 +1,20 @@
+{
+  "name": "baoyu-skills",
+  "description": "Skills shared by Baoyu for improving daily work efficiency",
+  "owner": {
+    "name": "Jim Liu (宝玉)",
+    "email": "junminliu@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "baoyu-skills",
+      "description": "Skills shared by Baoyu for improving daily work efficiency",
+      "version": "0.1.0",
+      "source": "./",
+      "author": {
+        "name": "Jim Liu (宝玉)",
+        "email": "junminliu@gmail.com"
+      }
+    }
+  ]
+}
