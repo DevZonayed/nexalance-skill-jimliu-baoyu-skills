@@ -105,6 +105,28 @@
 
 可用风格：`editorial`（默认）、`corporate`、`technical`、`playful`、`minimal`、`storytelling`、`warm`、`retro-flat`
 
+### post-to-wechat
+
+发布内容到微信公众号，支持两种模式：
+
+**图文模式** - 多图配短标题和正文：
+
+```bash
+/post-to-wechat 图文 --markdown article.md --images ./photos/
+/post-to-wechat 图文 --markdown article.md --image img1.png --image img2.png --image img3.png
+/post-to-wechat 图文 --title "标题" --content "内容" --image img1.png --submit
+```
+
+**文章模式** - 完整 markdown/HTML 富文本格式：
+
+```bash
+/post-to-wechat 文章 --markdown article.md
+/post-to-wechat 文章 --markdown article.md --theme grace
+/post-to-wechat 文章 --html article.html
+```
+
+前置要求：已安装 Google Chrome，首次运行需扫码登录（登录状态会保存）
+
 ## 免责声明
 
 ### gemini-web

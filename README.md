@@ -105,6 +105,28 @@ Generate professional slide deck images from content. Creates comprehensive outl
 
 Available styles: `editorial` (default), `corporate`, `technical`, `playful`, `minimal`, `storytelling`, `warm`, `retro-flat`
 
+### post-to-wechat
+
+Post content to WeChat Official Account (微信公众号). Two modes available:
+
+**Image-Text (图文)** - Multiple images with short title/content:
+
+```bash
+/post-to-wechat 图文 --markdown article.md --images ./photos/
+/post-to-wechat 图文 --markdown article.md --image img1.png --image img2.png --image img3.png
+/post-to-wechat 图文 --title "标题" --content "内容" --image img1.png --submit
+```
+
+**Article (文章)** - Full markdown/HTML with rich formatting:
+
+```bash
+/post-to-wechat 文章 --markdown article.md
+/post-to-wechat 文章 --markdown article.md --theme grace
+/post-to-wechat 文章 --html article.html
+```
+
+Prerequisites: Google Chrome installed. First run requires QR code login (session preserved).
+
 ## Disclaimer
 
 ### gemini-web
