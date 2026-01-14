@@ -86,7 +86,7 @@ Available styles: `elegant` (default), `tech`, `warm`, `bold`, `minimal`, `playf
 
 ### slide-deck
 
-Generate professional slide deck outlines from content with comprehensive style instructions.
+Generate professional slide deck images from content. Creates comprehensive outlines with style instructions, then generates individual slide images.
 
 ```bash
 # From markdown file
@@ -96,11 +96,14 @@ Generate professional slide deck outlines from content with comprehensive style 
 /slide-deck path/to/article.md --style corporate
 /slide-deck path/to/article.md --audience executives
 
+# Outline only (no image generation)
+/slide-deck path/to/article.md --outline-only
+
 # With language
 /slide-deck path/to/article.md --lang zh
 ```
 
-Available styles: `editorial` (default), `corporate`, `technical`, `playful`, `minimal`, `storytelling`
+Available styles: `editorial` (default), `corporate`, `technical`, `playful`, `minimal`, `storytelling`, `warm`, `retro-flat`
 
 ## Disclaimer
 

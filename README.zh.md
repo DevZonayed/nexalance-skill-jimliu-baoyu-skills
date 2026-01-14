@@ -86,7 +86,7 @@
 
 ### slide-deck
 
-从内容生成专业的幻灯片大纲，包含完整的样式说明。
+从内容生成专业的幻灯片图片。先创建包含样式说明的完整大纲，然后逐页生成幻灯片图片。
 
 ```bash
 # 从 markdown 文件生成
@@ -96,11 +96,14 @@
 /slide-deck path/to/article.md --style corporate
 /slide-deck path/to/article.md --audience executives
 
+# 仅生成大纲（不生成图片）
+/slide-deck path/to/article.md --outline-only
+
 # 指定语言
 /slide-deck path/to/article.md --lang zh
 ```
 
-可用风格：`editorial`（默认）、`corporate`、`technical`、`playful`、`minimal`、`storytelling`
+可用风格：`editorial`（默认）、`corporate`、`technical`、`playful`、`minimal`、`storytelling`、`warm`、`retro-flat`
 
 ## 免责声明
 

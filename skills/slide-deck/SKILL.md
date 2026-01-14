@@ -82,6 +82,18 @@ Narrative-driven, cinematic, immersive
 - **Colors**: Rich charcoal (#2D2D2D), warm white (#FAF9F6), gold (#D4AF37)
 - **Best for**: Case studies, journey narratives, brand stories
 
+### 7. `warm`
+Cozy, healing, hand-drawn illustration style
+- **Aesthetic**: Soft hand-drawn illustrations, cozy and healing atmosphere, gentle curves, watercolor textures
+- **Colors**: Cream gradient background (#FFF8E7 → #FFE4C4), warm brown text (#5D4037), soft coral accents (#FF8A80)
+- **Best for**: Personal growth, wellness, emotional content, lifestyle topics
+
+### 8. `retro-flat`
+Flat vector illustration with retro palette
+- **Aesthetic**: Flat vector with clear black outlines (monoline), geometric simplification, toy-model cuteness, NO gradients
+- **Colors**: Retro muted palette - dusty pink (#E8B4B8), sage green (#A8C686), mustard yellow (#E8B84A), off-white background (#F5F0E6)
+- **Best for**: Tutorials, explainers, product introductions, educational content
+
 ## Audience Presets
 
 | Audience | Approach |
@@ -138,6 +150,8 @@ path/to/
 | Simple, zen, focus, essential, one idea | `minimal` |
 | Fun, creative, workshop, educational | `playful` |
 | Research, analysis, thought leadership | `editorial` |
+| Wellness, healing, cozy, self-care, lifestyle, comfort | `warm` |
+| Tutorial, explainer, how-to, beginner, product, guide | `retro-flat` |
 
 4. Extract key information:
    - Core narrative and key messages
@@ -350,6 +364,29 @@ Secondary Font: Lora (body)
 Primary Text Color: Warm white #FAF9F6
 Primary Accent Color: Warm gold #D4AF37
 Visual Elements: Full-bleed photos, dramatic typography, chapter markers, emotional imagery
+```
+
+### warm
+```
+Design Aesthetic: Cozy healing hand-drawn illustration style, soft sketch lines, warm and comforting atmosphere
+Background Color: Cream gradient #FFF8E7 → #FFE4C4
+Primary Font: Rounded hand-drawn style lettering
+Secondary Font: Soft serif hand lettering
+Primary Text Color: Warm brown #5D4037
+Primary Accent Color: Soft coral #FF8A80, Peachy pink #FFAB91
+Visual Elements: Soft watercolor textures, gentle curves, cozy illustrations, warm lighting, hearts and stars, plant motifs, cute characters
+```
+
+### retro-flat
+```
+Design Aesthetic: Flat vector illustration with clear uniform-width black outlines, geometric simplification, toy-model cuteness
+Background Color: Off-white #F5F0E6, soft cream
+Primary Font: Bold geometric sans-serif with black outline
+Secondary Font: Clean sans-serif
+Primary Text Color: Black #000000 (clean outlines)
+Primary Accent Color: Retro muted palette - Dusty pink #E8B4B8, Sage green #A8C686, Mustard yellow #E8B84A, Muted blue #7BA7BC
+Visual Elements: Clear black monoline outlines (uniform width), flat color fills with NO gradients, geometric simplified shapes, toy-like proportions, minimal shadows, vintage badge style, halftone dots optional
+Style Rules: MUST use clear black outlines on all elements, NO 3D effects, NO gradients, simple flat color blocks only
 ```
 
 ## Notes
