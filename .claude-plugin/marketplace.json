@@ -18,7 +18,9 @@
         "./skills/gemini-web",
         "./skills/xhs-images",
         "./skills/post-to-x",
-        "./skills/article-illustrator"
+        "./skills/article-illustrator",
+        "./skills/cover-image",
+        "./skills/slide-deck"
       ]
     }
   ]

@@ -1,5 +1,7 @@
 # baoyu-skills
 
+English | [中文](./README.zh.md)
+
 Skills shared by Baoyu for improving daily work efficiency with Claude Code.
 
 ## Prerequisites
@@ -63,6 +65,42 @@ Xiaohongshu (RedNote) infographic series generator. Breaks down content into 1-1
 # Direct content input
 /xhs-images 今日星座运势
 ```
+
+### cover-image
+
+Generate hand-drawn style cover images for articles with multiple style options.
+
+```bash
+# From markdown file (auto-select style)
+/cover-image path/to/article.md
+
+# Specify a style
+/cover-image path/to/article.md --style tech
+/cover-image path/to/article.md --style warm
+
+# Without title text
+/cover-image path/to/article.md --no-title
+```
+
+Available styles: `elegant` (default), `tech`, `warm`, `bold`, `minimal`, `playful`, `nature`, `retro`
+
+### slide-deck
+
+Generate professional slide deck outlines from content with comprehensive style instructions.
+
+```bash
+# From markdown file
+/slide-deck path/to/article.md
+
+# With style and audience
+/slide-deck path/to/article.md --style corporate
+/slide-deck path/to/article.md --audience executives
+
+# With language
+/slide-deck path/to/article.md --lang zh
+```
+
+Available styles: `editorial` (default), `corporate`, `technical`, `playful`, `minimal`, `storytelling`
 
 ## Disclaimer
 

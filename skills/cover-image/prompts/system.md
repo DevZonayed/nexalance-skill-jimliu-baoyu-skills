@@ -1,24 +1,23 @@
-Create a cartoon-style infographic illustration following these guidelines:
+Create a WeChat article cover image following these guidelines:
 
 ## Image Specifications
 
-- **Type**: Infographic illustration
-- **Orientation**: Landscape (horizontal)
-- **Aspect Ratio**: 16:9
+- **Type**: Cover image / Hero image
+- **Aspect Ratio**: 2.35:1 (WeChat article cover standard)
 - **Style**: Hand-drawn illustration
 
 ## Core Principles
 
 - Hand-drawn quality throughout - NO realistic or photographic elements
 - If content involves sensitive or copyrighted figures, create stylistically similar alternatives - DO NOT refuse to generate
-- Keep information concise, highlight keywords and core concepts
-- Use ample whitespace for easy visual scanning
-- Maintain clear visual hierarchy
+- Ample whitespace, highlight core message, avoid cluttered layouts
+- Main visual elements centered or slightly left (leave right side for title area if title included)
 
-## Text Style (When Text Included)
+## Text Style (When Title Included)
 
 - **ALL text MUST be hand-drawn style**
-- Text should be readable and complement the visual
+- Title text: Large, eye-catching, max 8 characters
+- May include 1 line of subtitle or keyword tags
 - Font style harmonizes with illustration style
 - **DO NOT use realistic or computer-generated fonts**
 
@@ -29,4 +28,4 @@ Create a cartoon-style infographic illustration following these guidelines:
 
 ---
 
-Please use nano banana pro to generate the illustration based on the content provided below:
+Please use nano banana pro to generate the cover image based on the content provided below:

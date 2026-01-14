@@ -1,54 +1,134 @@
 ---
 name: article-illustrator
-description: Smart article illustration skill. Analyzes article content and generates illustrations at positions requiring visual aids. Illustrations can supplement information, visualize concepts, or guide reader imagination. Use when user asks to "add illustrations to article", "generate images for article", or "illustrate article".
+description: Smart article illustration skill. Analyzes article content and generates illustrations at positions requiring visual aids with multiple style options. Use when user asks to "add illustrations to article", "generate images for article", or "illustrate article".
 ---
 
 # Smart Article Illustration Skill
 
-Analyze article structure and content, identify positions requiring visual aids, and generate flexible-style illustrations.
+Analyze article structure and content, identify positions requiring visual aids, and generate illustrations with flexible style options.
 
 ## Usage
 
 ```bash
-# Option 1: Specify article path
-/article-illustrator vibe-coding-guide/final.md
+# Auto-select style based on content
+/article-illustrator path/to/article.md
 
-# Option 2: Specify article URL (auto-download to local)
-/article-illustrator https://example.com/article.md
+# Specify a style
+/article-illustrator path/to/article.md --style tech
+/article-illustrator path/to/article.md --style warm
+/article-illustrator path/to/article.md --style minimal
+
+# Combine with other options
+/article-illustrator path/to/article.md --style playful
 ```
+
+## Options
+
+| Option | Description |
+|--------|-------------|
+| `--style <name>` | Specify illustration style (see Style Gallery below) |
+
+## Style Gallery
+
+### 1. `elegant` (Default)
+Refined, sophisticated, professional
+- **Colors**: Soft coral, muted teal, dusty rose, cream background
+- **Elements**: Delicate line work, subtle icons, balanced composition
+- **Best for**: Professional articles, thought leadership, business topics
+
+### 2. `tech`
+Modern, futuristic, digital
+- **Colors**: Deep blue, electric cyan, purple, dark backgrounds
+- **Elements**: Geometric shapes, circuit patterns, data visualizations, tech icons
+- **Best for**: AI, programming, technology, digital transformation articles
+
+### 3. `warm`
+Friendly, approachable, human-centered
+- **Colors**: Warm orange, golden yellow, terracotta, cream
+- **Elements**: Rounded shapes, friendly characters, sun/light motifs, hearts
+- **Best for**: Personal growth, lifestyle, education, human interest stories
+
+### 4. `bold`
+High contrast, impactful, energetic
+- **Colors**: Vibrant red/orange, deep black, bright yellow accents
+- **Elements**: Strong shapes, dramatic contrast, dynamic compositions
+- **Best for**: Opinion pieces, important warnings, call-to-action content
+
+### 5. `minimal`
+Ultra-clean, zen-like, focused
+- **Colors**: Black, white, single accent color
+- **Elements**: Maximum whitespace, single focal element, simple lines
+- **Best for**: Philosophy, minimalism, focused explanations
+
+### 6. `playful`
+Fun, creative, whimsical
+- **Colors**: Pastel rainbow, bright pops, light backgrounds
+- **Elements**: Doodles, quirky characters, speech bubbles, emoji-style icons
+- **Best for**: Tutorials, beginner guides, casual content, fun topics
+
+### 7. `nature`
+Organic, calm, earthy
+- **Colors**: Forest green, earth brown, sky blue, sand beige
+- **Elements**: Plant motifs, natural textures, flowing lines, organic shapes
+- **Best for**: Sustainability, wellness, outdoor topics, slow living
+
+### 8. `sketch`
+Raw, authentic, notebook-style
+- **Colors**: Pencil gray, paper white, occasional color highlights
+- **Elements**: Rough lines, sketch marks, handwritten notes, arrows
+- **Best for**: Ideas in progress, brainstorming, thought processes
+
+## Auto Style Selection
+
+When no `--style` is specified, analyze content to select the best style:
+
+| Content Signals | Selected Style |
+|----------------|----------------|
+| AI, coding, tech, digital, algorithm, data | `tech` |
+| Personal story, emotion, growth, life, feeling | `warm` |
+| Warning, urgent, must-read, critical, important | `bold` |
+| Simple, zen, focus, essential, core | `minimal` |
+| Fun, easy, beginner, tutorial, guide, how-to | `playful` |
+| Nature, eco, wellness, health, organic, green | `nature` |
+| Idea, thought, concept, draft, brainstorm | `sketch` |
+| Business, professional, strategy, analysis | `elegant` |
 
 ## File Management
 
 Save illustrations to `imgs/` subdirectory in the same folder as the article:
 
 ```
-vibe-coding-guide/
-├── final.md
+path/to/
+├── article.md
 └── imgs/
+    ├── outline.md
     ├── prompts/
-    │   ├── illustration-evolution.md
-    │   ├── illustration-comparison.md
+    │   ├── illustration-concept-a.md
+    │   ├── illustration-concept-b.md
     │   └── ...
-    ├── illustration-evolution.png
-    ├── illustration-comparison.png
+    ├── illustration-concept-a.png
+    ├── illustration-concept-b.png
     └── ...
 ```
 
 ## Workflow
 
-### Step 1: Retrieve Article Content
+### Step 1: Analyze Content & Select Style
 
-1. **Local path**: Read file directly
-2. **URL**: Download Markdown content to temporary location
+1. Read article content
+2. If `--style` specified, use that style
+3. Otherwise, scan for style signals and auto-select
+4. Extract key information:
+   - Main topic and themes
+   - Core messages per section
+   - Abstract concepts needing visualization
 
-### Step 2: Analyze Illustration Requirements
-
-Analyze article paragraph by paragraph, identify positions requiring illustrations.
+### Step 2: Identify Illustration Positions
 
 **Three Purposes of Illustrations**:
-1. **Information Supplement**: Help understand abstract concepts (e.g., "iterative development" shown as skateboard → bicycle → car evolution)
-2. **Concept Visualization**: Transform abstract ideas into concrete visuals for instant comprehension
-3. **Imagination Guidance**: Create atmosphere, spark associations, enhance reading experience
+1. **Information Supplement**: Help understand abstract concepts
+2. **Concept Visualization**: Transform abstract ideas into concrete visuals
+3. **Imagination Guidance**: Create atmosphere, enhance reading experience
 
 **Content Suitable for Illustrations**:
 - Abstract concepts needing visualization
@@ -56,26 +136,19 @@ Analyze article paragraph by paragraph, identify positions requiring illustratio
 - Comparisons needing visual representation
 - Core arguments needing reinforcement
 - Scenarios needing imagination guidance
-- Emotions/atmosphere needing enhancement
-
-**Content NOT Needing Illustrations**:
-- Already intuitive descriptions (e.g., code examples, specific numbers)
-- Simple list enumerations
-- Direct quotes
 
 **Illustration Count**:
-- Consider at least 1 image per major section, prioritize core arguments and abstract concepts
-- Opening/ending may add 1 image (for atmosphere)
-- **Principle: More is better than fewer** - visual content significantly enhances reading experience
+- Consider at least 1 image per major section
+- Prioritize core arguments and abstract concepts
+- **Principle: More is better than fewer**
 
 ### Step 3: Generate Illustration Plan
-
-Create plan for each illustration position:
 
 ```markdown
 # Illustration Plan
 
 **Article**: [article path]
+**Style**: [selected style]
 **Illustration Count**: N images
 
 ---
@@ -85,7 +158,7 @@ Create plan for each illustration position:
 **Insert Position**: [section name] / [paragraph description]
 **Purpose**: [why illustration needed here]
 **Visual Content**: [what the image should show]
-**Filename**: illustration-[slug].png (slug convention: lowercase letters, numbers, hyphens)
+**Filename**: illustration-[slug].png
 
 ---
 
@@ -93,38 +166,39 @@ Create plan for each illustration position:
 ...
 ```
 
-### Step 4: Generate Prompts and Save
+### Step 4: Create Prompt Files
 
-Create detailed prompt for each illustration, save to `prompts/` directory.
+Save prompts to `prompts/` directory with style-specific details.
 
-**Slug Naming Rules**:
-- Use meaningful English description, following slug convention (lowercase letters, numbers, hyphens)
-- Examples: `product-evolution`, `ai-vs-human-comparison`, `step-by-step-workflow`
-- If file exists, generate a different slug; never overwrite
-
-**Prompt File Format** (each prompts/illustration-[slug].md):
+**Prompt Format**:
 
 ```markdown
-[Specific content description including:]
-- Main visual elements
-- Element layout and positioning
-- Text content (if any)
-- Decorative elements
+Illustration theme: [concept in 2-3 words]
+Style: [style name]
 
-[System prompt style specifications auto-appended]
+Visual composition:
+- Main visual: [description matching style]
+- Layout: [element positioning]
+- Decorative elements: [style-appropriate decorations]
+
+Color scheme:
+- Primary: [style primary color]
+- Background: [style background color]
+- Accent: [style accent color]
+
+Text content (if any):
+- [Any labels or captions in content language]
+
+Style notes: [specific style characteristics]
 ```
 
-### Step 5: Generate Images Using `/gemini-web`
+### Step 5: Generate Images
 
 For each illustration, call:
 
-```
+```bash
 /gemini-web --promptfiles [SKILL_ROOT]/skills/article-illustrator/prompts/system.md [ARTICLE_DIR]/imgs/prompts/illustration-[slug].md --image [ARTICLE_DIR]/imgs/illustration-[slug].png
 ```
-
-- `[SKILL_ROOT]`: The baoyu-skills root directory
-- `--promptfiles`: Concatenates system.md (style guidelines) + image-specific prompt
-- `--image`: Output path for generated image
 
 Generation flow:
 1. Generate images sequentially
@@ -137,7 +211,7 @@ Generation flow:
 Insert generated images at corresponding positions:
 
 ```markdown
-![illustration description](imgs/illustration-evolution.png)
+![illustration description](imgs/illustration-[slug].png)
 ```
 
 **Insertion Rules**:
@@ -145,77 +219,95 @@ Insert generated images at corresponding positions:
 - Leave one blank line before and after image
 - Alt text uses concise description in article's language
 
-**Infographic Handling**:
-- Check if `imgs/` directory contains `infographic.png`
-- If exists, insert infographic at appropriate position near article end (before summary or at very end)
-- Format: `![Infographic](imgs/infographic.png)`
-
 ### Step 7: Output Summary
 
 ```
 Article Illustration Complete!
 
 Article: [article path]
+Style: [style name]
 Generated: X/N images successful
 
 Illustration Positions:
-- illustration-failure-trap.png → After section "Common Pitfalls"
-- illustration-iteration.png → After section "Iterative Development"
+- illustration-xxx.png → After section "Section Name"
+- illustration-yyy.png → After section "Another Section"
 ...
 
 [If any failures]
 Failed:
-- illustration-workflow.png: [failure reason]
+- illustration-zzz.png: [failure reason]
 ```
 
-## Visual Style Guidelines
+## Style Reference Details
 
-See `prompts/system.md` for details. Style can be flexibly chosen based on content.
+### elegant
+```
+Colors: Soft coral (#E8A598), muted teal (#5B8A8A), dusty rose (#D4A5A5)
+Background: Warm cream (#F5F0E6), soft beige
+Accents: Gold (#C9A962), copper
+Elements: Delicate lines, refined icons, subtle gradients, balanced whitespace
+```
 
-### Default Style (Cartoon Hand-drawn)
+### tech
+```
+Colors: Deep blue (#1A365D), electric cyan (#00D4FF), purple (#6B46C1)
+Background: Dark gray (#1A202C), near-black (#0D1117)
+Accents: Neon green (#00FF88), bright white
+Elements: Circuit patterns, data nodes, geometric grids, glowing effects
+```
 
-- **Minimalist**: Clean composition, ample whitespace
-- **Hand-drawn illustration**: Cartoon style, warm and approachable
-- **Retro-tech aesthetic**: Warm, soft color tones
+### warm
+```
+Colors: Warm orange (#ED8936), golden yellow (#F6AD55), terracotta (#C05621)
+Background: Cream (#FFFAF0), soft peach (#FED7AA)
+Accents: Deep brown (#744210), soft red
+Elements: Rounded shapes, smiling faces, sun rays, hearts, cozy lighting
+```
 
-### Optional Style Variants
+### bold
+```
+Colors: Vibrant red (#E53E3E), bright orange (#DD6B20), electric yellow (#F6E05E)
+Background: Deep black (#000000), dark charcoal
+Accents: White, neon highlights
+Elements: Strong shapes, exclamation marks, arrows, dramatic contrast
+```
 
-Choose most appropriate style based on content:
-- **Sci-fi futuristic**: Suitable for AI, cutting-edge technology topics
-- **Sketch doodle**: Suitable for casual, contemplative content
-- **Infographic**: Suitable for processes, comparisons, data content
-- **Scene illustration**: Suitable for narrative, imaginative content
+### minimal
+```
+Colors: Pure black (#000000), white (#FFFFFF)
+Background: White or off-white (#FAFAFA)
+Accents: Single color (content-derived)
+Elements: Single focal point, maximum negative space, thin precise lines
+```
 
-### Visual Elements
+### playful
+```
+Colors: Pastel pink (#FED7E2), mint (#C6F6D5), lavender (#E9D8FD), sky blue (#BEE3F8)
+Background: Light cream (#FFFBEB), soft white
+Accents: Bright pops - yellow, coral, turquoise
+Elements: Doodles, stars, swirls, cute characters, speech bubbles
+```
 
-- **Aspect Ratio**: 16:9 landscape
-- **Background**: Based on style, default cream/off-white
-- **Elements**: Graphics matching content
-- **Watermark**: "宝玉" in bottom-right corner
+### nature
+```
+Colors: Forest green (#276749), sage (#9AE6B4), earth brown (#744210)
+Background: Sand beige (#F5E6D3), sky blue (#E0F2FE)
+Accents: Sunset orange, water blue
+Elements: Leaves, trees, mountains, organic flowing lines, natural textures
+```
 
-### Default Color Scheme
-
-- Primary: Warm orange, coral
-- Accent: Mint green, sky blue, light purple
-- Background: Cream, off-white
-- Outline: Dark gray line work
-
-(Colors may adjust based on style variant)
-
-## Terminology
-
-| English | Chinese |
-|---------|---------|
-| Token | Token |
-| AI Agent | AI 智能体 |
-| Vibe Coding | 凭感觉编程 |
-| AI Wrapper | AI 套壳 |
+### sketch
+```
+Colors: Pencil gray (#4A5568), paper white (#FAFAFA)
+Background: Off-white paper texture (#F7FAFC)
+Accents: Single highlight color (blue, red, or yellow)
+Elements: Rough sketch lines, arrows, handwritten labels, crossed-out marks
+```
 
 ## Notes
 
-- Illustrations serve the content: supplement information, visualize concepts, guide imagination
-- Avoid duplicating information already intuitive in article
+- Illustrations serve the content: supplement information, visualize concepts
+- Maintain selected style consistency across all illustrations in one article
 - Image generation typically takes 10-30 seconds per image
 - Sensitive figures should use cartoon alternatives
-- Maintain style consistency within same article
 - Prompt and illustration text language should match article language
