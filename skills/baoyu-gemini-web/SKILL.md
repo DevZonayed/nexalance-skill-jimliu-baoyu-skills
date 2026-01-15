@@ -1,6 +1,6 @@
 ---
 name: baoyu-gemini-web
-description: Interacts with Gemini Web to generate text and images. Use when the user needs AI-generated content via Gemini, including text responses and image generation.
+description: Image generation skill using Gemini Web. Generates images from text prompts via Google Gemini. Also supports text generation. Use as the image generation backend for other skills like cover-image, xhs-images, article-illustrator.
 ---
 
 # Gemini Web Client
