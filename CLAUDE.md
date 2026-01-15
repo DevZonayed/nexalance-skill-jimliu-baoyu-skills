@@ -10,12 +10,13 @@ Claude Code marketplace plugin providing AI-powered content generation skills. S
 
 ```
 skills/
-├── gemini-web/          # Core: Gemini API wrapper (text + image gen)
-├── xhs-images/          # Xiaohongshu infographic series (1-10 images)
-├── cover-image/         # Article cover images (2.35:1 aspect)
-├── slide-deck/          # Presentation slides with outlines
-├── article-illustrator/ # Smart illustration placement
-└── post-to-x/           # X/Twitter posting automation
+├── baoyu-gemini-web/          # Core: Gemini API wrapper (text + image gen)
+├── baoyu-xhs-images/          # Xiaohongshu infographic series (1-10 images)
+├── baoyu-cover-image/         # Article cover images (2.35:1 aspect)
+├── baoyu-slide-deck/          # Presentation slides with outlines
+├── baoyu-article-illustrator/ # Smart illustration placement
+├── baoyu-post-to-x/           # X/Twitter posting automation
+└── baoyu-post-to-wechat/      # WeChat Official Account posting
 ```
 
 Each skill contains:
@@ -34,24 +35,24 @@ npx -y bun skills/<skill>/scripts/main.ts [options]
 Examples:
 ```bash
 # Text generation
-npx -y bun skills/gemini-web/scripts/main.ts "Hello"
+npx -y bun skills/baoyu-gemini-web/scripts/main.ts "Hello"
 
 # Image generation
-npx -y bun skills/gemini-web/scripts/main.ts --prompt "A cat" --image cat.png
+npx -y bun skills/baoyu-gemini-web/scripts/main.ts --prompt "A cat" --image cat.png
 
 # From prompt files
-npx -y bun skills/gemini-web/scripts/main.ts --promptfiles system.md content.md --image out.png
+npx -y bun skills/baoyu-gemini-web/scripts/main.ts --promptfiles system.md content.md --image out.png
 ```
 
 ## Key Dependencies
 
 - **Bun**: TypeScript runtime (via `npx -y bun`)
-- **Chrome**: Required for `gemini-web` auth and `post-to-x` automation
+- **Chrome**: Required for `baoyu-gemini-web` auth and `baoyu-post-to-x` automation
 - **No npm packages**: Self-contained TypeScript, no external dependencies
 
 ## Authentication
 
-`gemini-web` uses browser cookies for Google auth:
+`baoyu-gemini-web` uses browser cookies for Google auth:
 - First run opens Chrome for login
 - Cookies cached in data directory
 - Force refresh: `--login` flag
@@ -62,10 +63,14 @@ npx -y bun skills/gemini-web/scripts/main.ts --promptfiles system.md content.md 
 
 ## Adding New Skills
 
-1. Create `skills/<name>/SKILL.md` with YAML front matter
-2. Add TypeScript in `skills/<name>/scripts/`
-3. Add prompt templates in `skills/<name>/prompts/` if needed
-4. Register in `marketplace.json` plugins[0].skills array
+**IMPORTANT**: All skills MUST use `baoyu-` prefix to avoid conflicts when users import this plugin.
+
+1. Create `skills/baoyu-<name>/SKILL.md` with YAML front matter
+   - Directory name: `baoyu-<name>`
+   - SKILL.md `name` field: `baoyu-<name>`
+2. Add TypeScript in `skills/baoyu-<name>/scripts/`
+3. Add prompt templates in `skills/baoyu-<name>/prompts/` if needed
+4. Register in `marketplace.json` plugins[0].skills array as `./skills/baoyu-<name>`
 
 ## Code Style
 

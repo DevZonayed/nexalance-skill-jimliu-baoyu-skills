@@ -1,5 +1,5 @@
 ---
-name: slide-deck
+name: baoyu-slide-deck
 description: Generate professional slide deck images from content. Creates comprehensive outlines with style instructions, then generates individual slide images. Use when user asks to "create slides", "make a presentation", "generate deck", or "slide deck".
 ---
 
@@ -11,26 +11,26 @@ Transform content into professional slide deck with comprehensive outlines and g
 
 ```bash
 # From markdown file
-/slide-deck path/to/article.md
+/baoyu-slide-deck path/to/article.md
 
 # With style preference
-/slide-deck path/to/article.md --style corporate
-/slide-deck path/to/article.md --style playful
-/slide-deck path/to/article.md --style technical
+/baoyu-slide-deck path/to/article.md --style corporate
+/baoyu-slide-deck path/to/article.md --style playful
+/baoyu-slide-deck path/to/article.md --style technical
 
 # With audience specification
-/slide-deck path/to/article.md --audience beginners
-/slide-deck path/to/article.md --audience executives
+/baoyu-slide-deck path/to/article.md --audience beginners
+/baoyu-slide-deck path/to/article.md --audience executives
 
 # With language
-/slide-deck path/to/article.md --lang zh
-/slide-deck path/to/article.md --lang en
+/baoyu-slide-deck path/to/article.md --lang zh
+/baoyu-slide-deck path/to/article.md --lang en
 
 # Outline only (no image generation)
-/slide-deck path/to/article.md --outline-only
+/baoyu-slide-deck path/to/article.md --outline-only
 
 # Direct content input
-/slide-deck
+/baoyu-slide-deck
 [paste content]
 ```
 
@@ -131,7 +131,7 @@ path/to/
 ### Without Article Path
 
 ```
-./slide-deck-outputs/YYYY-MM-DD/[topic-slug]/
+./baoyu-slide-deck-outputs/YYYY-MM-DD/[topic-slug]/
 ├── outline.md
 ├── prompts/
 │   ├── 01-cover.md
@@ -272,7 +272,7 @@ Style notes: [specific style characteristics to emphasize]
 For each slide, generate using:
 
 ```bash
-/gemini-web --promptfiles [SKILL_ROOT]/skills/slide-deck/prompts/system.md [TARGET_DIR]/prompts/01-cover.md --image [TARGET_DIR]/01-cover.png
+/baoyu-gemini-web --promptfiles [SKILL_ROOT]/skills/baoyu-slide-deck/prompts/system.md [TARGET_DIR]/prompts/01-cover.md --image [TARGET_DIR]/01-cover.png
 ```
 
 Generation flow:

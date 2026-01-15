@@ -16,10 +16,10 @@ function printUsage(exitCode = 0): never {
   const profileDir = resolveGeminiWebChromeProfileDir();
 
   console.log(`Usage:
-  npx -y bun skills/gemini-web/scripts/main.ts --prompt "Hello"
-  npx -y bun skills/gemini-web/scripts/main.ts "Hello"
-  npx -y bun skills/gemini-web/scripts/main.ts --prompt "A cute cat" --image generated.png
-  npx -y bun skills/gemini-web/scripts/main.ts --promptfiles system.md content.md --image out.png
+  npx -y bun skills/baoyu-gemini-web/scripts/main.ts --prompt "Hello"
+  npx -y bun skills/baoyu-gemini-web/scripts/main.ts "Hello"
+  npx -y bun skills/baoyu-gemini-web/scripts/main.ts --prompt "A cute cat" --image generated.png
+  npx -y bun skills/baoyu-gemini-web/scripts/main.ts --promptfiles system.md content.md --image out.png
 
 Options:
   -p, --prompt <text>       Prompt text

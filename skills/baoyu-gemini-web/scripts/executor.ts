@@ -100,7 +100,7 @@ export async function loadGeminiCookies(
   }
 
   log?.(
-    '[gemini-web] Missing Gemini auth cookies. Run `npx -y bun skills/gemini-web/scripts/main.ts --login` to sign in and refresh cookies.',
+    '[gemini-web] Missing Gemini auth cookies. Run `npx -y bun skills/baoyu-gemini-web/scripts/main.ts --login` to sign in and refresh cookies.',
   );
   return merged;
 }
@@ -124,7 +124,7 @@ export function createGeminiWebExecutor(
     const cookieMap = await loadGeminiCookies(runOptions.config, log);
     if (!hasRequiredGeminiCookies(cookieMap)) {
       throw new Error(
-        'Gemini browser mode requires auth cookies (missing __Secure-1PSID/__Secure-1PSIDTS). Run `npx -y bun skills/gemini-web/scripts/main.ts --login` to sign in and save cookies.',
+        'Gemini browser mode requires auth cookies (missing __Secure-1PSID/__Secure-1PSIDTS). Run `npx -y bun skills/baoyu-gemini-web/scripts/main.ts --login` to sign in and save cookies.',
       );
     }
 

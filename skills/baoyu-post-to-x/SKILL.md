@@ -1,5 +1,5 @@
 ---
-name: post-to-x
+name: baoyu-post-to-x
 description: Post content and articles to X (Twitter). Supports regular posts with images and X Articles (long-form Markdown). Uses real Chrome with CDP to bypass anti-automation.
 ---
 
@@ -16,16 +16,16 @@ Post content, images, and long-form articles to X using real Chrome browser (byp
 
 ```bash
 # Post text only
-/post-to-x "Your post content here"
+/baoyu-post-to-x "Your post content here"
 
 # Post with image
-/post-to-x "Your post content" --image /path/to/image.png
+/baoyu-post-to-x "Your post content" --image /path/to/image.png
 
 # Post with multiple images (up to 4)
-/post-to-x "Your post content" --image img1.png --image img2.png
+/baoyu-post-to-x "Your post content" --image img1.png --image img2.png
 
 # Actually submit the post
-/post-to-x "Your post content" --submit
+/baoyu-post-to-x "Your post content" --submit
 ```
 
 ## Prerequisites
@@ -102,7 +102,7 @@ mcp__playwright__browser_take_screenshot filename="preview.png"
 ## Example Session
 
 ```
-User: /post-to-x "Hello from Claude!" --image ./screenshot.png
+User: /baoyu-post-to-x "Hello from Claude!" --image ./screenshot.png
 
 Claude:
 1. Runs: npx -y bun ./scripts/x-browser.ts "Hello from Claude!" --image ./screenshot.png
@@ -147,16 +147,16 @@ Publish Markdown articles to X Articles editor with rich text formatting and ima
 
 ```bash
 # Publish markdown article (preview mode)
-/post-to-x article /path/to/article.md
+/baoyu-post-to-x article /path/to/article.md
 
 # With custom cover image
-/post-to-x article article.md --cover ./hero.png
+/baoyu-post-to-x article article.md --cover ./hero.png
 
 # With custom title
-/post-to-x article article.md --title "My Custom Title"
+/baoyu-post-to-x article article.md --title "My Custom Title"
 
 # Actually publish (not just draft)
-/post-to-x article article.md --submit
+/baoyu-post-to-x article article.md --submit
 ```
 
 ## Prerequisites for Articles
@@ -292,7 +292,7 @@ JSON output:
 ## Article Example Session
 
 ```
-User: /post-to-x article ./blog/my-post.md --cover ./thumbnail.png
+User: /baoyu-post-to-x article ./blog/my-post.md --cover ./thumbnail.png
 
 Claude:
 1. Parses markdown: title="My Post", 3 content images

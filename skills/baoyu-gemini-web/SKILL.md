@@ -1,5 +1,5 @@
 ---
-name: gemini-web
+name: baoyu-gemini-web
 description: Interacts with Gemini Web to generate text and images. Use when the user needs AI-generated content via Gemini, including text responses and image generation.
 ---
 
