@@ -42,53 +42,18 @@ Generate hand-drawn style cover images for articles with multiple style options.
 
 ## Style Gallery
 
-### 1. `elegant` (Default)
-Refined, sophisticated, understated
-- **Colors**: Soft coral, muted teal, dusty rose, cream background
-- **Elements**: Delicate line work, subtle icons, balanced composition
-- **Best for**: Professional content, thought leadership, business topics
+| Style | Description |
+|-------|-------------|
+| `elegant` (Default) | Refined, sophisticated, understated |
+| `tech` | Modern, clean, futuristic |
+| `warm` | Friendly, approachable, human-centered |
+| `bold` | High contrast, attention-grabbing, energetic |
+| `minimal` | Ultra-clean, zen-like, focused |
+| `playful` | Fun, creative, whimsical |
+| `nature` | Organic, calm, earthy |
+| `retro` | Vintage, nostalgic, classic |
 
-### 2. `tech`
-Modern, clean, futuristic
-- **Colors**: Deep blue, electric cyan, dark gray, white accents
-- **Elements**: Geometric shapes, circuit patterns, glowing effects, tech icons
-- **Best for**: AI, programming, technology, digital transformation
-
-### 3. `warm`
-Friendly, approachable, human-centered
-- **Colors**: Warm orange, golden yellow, terracotta, cream
-- **Elements**: Rounded shapes, friendly characters, sun/light motifs
-- **Best for**: Personal growth, lifestyle, education, human stories
-
-### 4. `bold`
-High contrast, attention-grabbing, energetic
-- **Colors**: Vibrant red/orange, deep black, bright yellow accents
-- **Elements**: Strong typography, dramatic contrast, dynamic shapes
-- **Best for**: Opinion pieces, controversial takes, urgent topics
-
-### 5. `minimal`
-Ultra-clean, zen-like, focused
-- **Colors**: Black, white, single accent color
-- **Elements**: Maximum whitespace, single focal element, simple lines
-- **Best for**: Philosophy, minimalism, focused concepts
-
-### 6. `playful`
-Fun, creative, whimsical
-- **Colors**: Pastel rainbow, bright pops of color, light backgrounds
-- **Elements**: Doodles, quirky characters, speech bubbles, emoji-style icons
-- **Best for**: Casual content, tutorials, beginner guides, fun topics
-
-### 7. `nature`
-Organic, calm, earthy
-- **Colors**: Forest green, earth brown, sky blue, sand beige
-- **Elements**: Plant motifs, natural textures, flowing lines, organic shapes
-- **Best for**: Sustainability, wellness, outdoor topics, slow living
-
-### 8. `retro`
-Vintage, nostalgic, classic
-- **Colors**: Muted pastels, sepia tones, faded colors
-- **Elements**: Vintage typography, halftone dots, classic illustrations
-- **Best for**: History, retrospectives, classic topics, throwback content
+Detailed style definitions: `references/styles/<style>.md`
 
 ## Auto Style Selection
 
@@ -209,80 +174,6 @@ Title: [cover title] (or "No title - visual only")
 Location: [output path]
 
 Preview the image to verify it matches your expectations.
-```
-
-## Style Reference Details
-
-### elegant
-```
-Colors: Soft coral (#E8A598), muted teal (#5B8A8A), dusty rose (#D4A5A5)
-Background: Warm cream (#F5F0E6), soft beige
-Accents: Gold (#C9A962), copper
-Elements: Delicate lines, refined icons, subtle gradients
-Typography: Elegant serif-style hand lettering
-```
-
-### tech
-```
-Colors: Deep blue (#1A365D), electric cyan (#00D4FF), purple (#6B46C1)
-Background: Dark gray (#1A202C), near-black (#0D1117)
-Accents: Neon green (#00FF88), bright white
-Elements: Circuit patterns, data nodes, geometric grids, code snippets
-Typography: Monospace-style hand lettering, glowing effects
-```
-
-### warm
-```
-Colors: Warm orange (#ED8936), golden yellow (#F6AD55), terracotta (#C05621)
-Background: Cream (#FFFAF0), soft peach (#FED7AA)
-Accents: Deep brown (#744210), soft red
-Elements: Rounded shapes, smiling faces, sun rays, hearts, warm lighting
-Typography: Friendly rounded hand lettering
-```
-
-### bold
-```
-Colors: Vibrant red (#E53E3E), bright orange (#DD6B20), electric yellow (#F6E05E)
-Background: Deep black (#000000), dark charcoal
-Accents: White, neon highlights
-Elements: Exclamation marks, lightning bolts, arrows, strong shapes
-Typography: Bold, impactful, large hand lettering with shadows
-```
-
-### minimal
-```
-Colors: Pure black (#000000), white (#FFFFFF)
-Background: White or off-white (#FAFAFA)
-Accents: Single color (user's choice or content-derived)
-Elements: Single focal point, maximum negative space, thin lines
-Typography: Clean, simple hand lettering, lots of breathing room
-```
-
-### playful
-```
-Colors: Pastel pink (#FED7E2), mint (#C6F6D5), lavender (#E9D8FD), sky blue (#BEE3F8)
-Background: Light cream (#FFFBEB), soft white
-Accents: Bright pops - yellow, coral, turquoise
-Elements: Doodles, stars, swirls, cute characters, emoji-style icons
-Typography: Bouncy, irregular hand lettering, playful angles
-```
-
-### nature
-```
-Colors: Forest green (#276749), sage (#9AE6B4), earth brown (#744210)
-Background: Sand beige (#F5E6D3), sky blue (#E0F2FE)
-Accents: Sunset orange, water blue
-Elements: Leaves, trees, mountains, sun, clouds, organic flowing lines
-Typography: Organic, flowing hand lettering with natural textures
-```
-
-### retro
-```
-Colors: Muted orange (#ED8936 at 70%), dusty pink (#FED7E2 at 80%), faded teal
-Background: Aged paper (#F5E6D3), sepia tones
-Accents: Faded red, vintage gold
-Elements: Halftone dots, vintage badges, classic icons, aged textures
-Typography: Vintage-style hand lettering, classic serif influence
 ```
 
 ## Notes

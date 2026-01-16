@@ -49,103 +49,32 @@ Style × Layout can be freely combined. Example: `--style notion --layout dense`
 
 ## Style Gallery
 
-### 1. `cute` (Default)
-Sweet, adorable, girly - classic Xiaohongshu aesthetic
-- **Colors**: Pink, peach, mint, lavender, cream background
-- **Elements**: Cute stickers, emoji icons, hearts, stars, sparkles
-- **Best for**: Lifestyle, beauty, fashion, daily tips
+| Style | Description |
+|-------|-------------|
+| `cute` (Default) | Sweet, adorable, girly - classic Xiaohongshu aesthetic |
+| `fresh` | Clean, refreshing, natural |
+| `tech` | Modern, smart, digital |
+| `warm` | Cozy, friendly, approachable |
+| `bold` | High impact, attention-grabbing |
+| `minimal` | Ultra-clean, sophisticated |
+| `retro` | Vintage, nostalgic, trendy |
+| `pop` | Vibrant, energetic, eye-catching |
+| `notion` | Minimalist hand-drawn line art, intellectual |
 
-### 2. `fresh`
-Clean, refreshing, natural
-- **Colors**: Mint green, sky blue, white, light yellow
-- **Elements**: Plant icons, clouds, simple shapes, breathing room
-- **Best for**: Health, wellness, minimalist lifestyle, self-care
-
-### 3. `tech`
-Modern, smart, digital
-- **Colors**: Deep blue, purple, cyan, dark backgrounds with neon accents
-- **Elements**: Geometric shapes, data icons, circuit patterns, glowing effects
-- **Best for**: Tech tutorials, AI content, digital tools, productivity
-
-### 4. `warm`
-Cozy, friendly, approachable
-- **Colors**: Warm orange, golden yellow, brown, cream
-- **Elements**: Sun motifs, coffee cups, cozy illustrations, warm lighting
-- **Best for**: Personal stories, life lessons, emotional content
-
-### 5. `bold`
-High impact, attention-grabbing
-- **Colors**: Red, orange, black, yellow accents
-- **Elements**: Strong typography, exclamation marks, arrows, contrast
-- **Best for**: Important tips, warnings, must-know content
-
-### 6. `minimal`
-Ultra-clean, sophisticated
-- **Colors**: Black, white, single accent color
-- **Elements**: Maximum whitespace, simple icons, clean lines
-- **Best for**: Professional content, serious topics, elegant presentations
-
-### 7. `retro`
-Vintage, nostalgic, trendy
-- **Colors**: Muted pastels, sepia, faded tones
-- **Elements**: Vintage badges, halftone dots, classic typography
-- **Best for**: Throwback content, classic tips, timeless advice
-
-### 8. `pop`
-Vibrant, energetic, eye-catching
-- **Colors**: Bright primary colors, neon accents, white
-- **Elements**: Bold shapes, comic-style elements, dynamic compositions
-- **Best for**: Exciting announcements, fun facts, engaging tutorials
-
-### 9. `notion`
-Minimalist hand-drawn line art, intellectual
-- **Colors**: Black outlines, white background, 1-2 pastel accents
-- **Elements**: Simple line doodles, geometric shapes, hand-drawn wobble, maximum whitespace
-- **Best for**: Knowledge sharing, concept explanations, SaaS content, productivity tips
+Detailed style definitions: `references/styles/<style>.md`
 
 ## Layout Gallery
 
-### 1. `sparse` (Default)
-Minimal information, maximum impact
-- **Density**: 1-2 key points per image
-- **Whitespace**: 60-70% of canvas
-- **Structure**: Single focal point, one core message
-- **Best for**: Covers, quotes, impactful statements, emotional content
+| Layout | Description |
+|--------|-------------|
+| `sparse` (Default) | Minimal information, maximum impact (1-2 points) |
+| `balanced` | Standard content layout (3-4 points) |
+| `dense` | High information density, knowledge card style (5-8 points) |
+| `list` | Enumeration and ranking format (4-7 items) |
+| `comparison` | Side-by-side contrast layout |
+| `flow` | Process and timeline layout (3-6 steps) |
 
-### 2. `balanced`
-Standard content layout
-- **Density**: 3-4 key points per image
-- **Whitespace**: 40-50% of canvas
-- **Structure**: Title + 3-4 bullet points or sections
-- **Best for**: Regular content pages, tutorials, explanations
-
-### 3. `dense`
-High information density, knowledge card style
-- **Density**: 5-8 key points per image
-- **Whitespace**: 20-30% of canvas
-- **Structure**: Multiple sections, structured grid, more text
-- **Best for**: Summary cards, cheat sheets, comprehensive guides, 干货总结
-
-### 4. `list`
-Enumeration and ranking format
-- **Density**: 4-7 items
-- **Whitespace**: 30-40% of canvas
-- **Structure**: Numbered or bulleted vertical list, consistent item format
-- **Best for**: Top N lists, checklists, step-by-step guides, rankings
-
-### 5. `comparison`
-Side-by-side contrast layout
-- **Density**: 2 main sections with 2-4 points each
-- **Whitespace**: 30-40% of canvas
-- **Structure**: Left vs Right, Before/After, Pros/Cons
-- **Best for**: Comparisons, transformations, decision helpers, 对比图
-
-### 6. `flow`
-Process and timeline layout
-- **Density**: 3-6 steps/stages
-- **Whitespace**: 30-40% of canvas
-- **Structure**: Connected nodes with arrows, sequential flow
-- **Best for**: Processes, timelines, cause-effect chains, workflows
+Detailed layout definitions: `references/layouts/<layout>.md`
 
 ## Auto Style Selection
 
@@ -355,151 +284,6 @@ Images: N total
 - 04-ending.png ✓ Ending (sparse)
 
 Outline: outline.md
-```
-
-## Style Reference Details
-
-### cute
-```
-Colors: Pink (#FED7E2), peach (#FEEBC8), mint (#C6F6D5), lavender (#E9D8FD)
-Background: Cream (#FFFAF0), soft pink (#FFF5F7)
-Accents: Hot pink, coral
-Elements: Hearts, stars, sparkles, cute faces, ribbon decorations, sticker-style
-Typography: Rounded, bubbly hand lettering
-```
-
-### fresh
-```
-Colors: Mint green (#9AE6B4), sky blue (#90CDF4), light yellow (#FAF089)
-Background: Pure white (#FFFFFF), soft mint (#F0FFF4)
-Accents: Leaf green, water blue
-Elements: Plant leaves, clouds, water drops, simple geometric shapes
-Typography: Clean, light hand lettering with breathing room
-```
-
-### tech
-```
-Colors: Deep blue (#1A365D), purple (#6B46C1), cyan (#00D4FF)
-Background: Dark gray (#1A202C), near-black (#0D1117)
-Accents: Neon green (#00FF88), electric blue
-Elements: Circuit patterns, data icons, geometric grids, glowing effects
-Typography: Monospace-style hand lettering, subtle glow
-```
-
-### warm
-```
-Colors: Warm orange (#ED8936), golden yellow (#F6AD55), terracotta (#C05621)
-Background: Cream (#FFFAF0), soft peach (#FED7AA)
-Accents: Deep brown (#744210), soft red
-Elements: Sun rays, coffee cups, cozy items, warm lighting effects
-Typography: Friendly, rounded hand lettering
-```
-
-### bold
-```
-Colors: Vibrant red (#E53E3E), orange (#DD6B20), yellow (#F6E05E)
-Background: Deep black (#000000), dark charcoal
-Accents: White, neon yellow
-Elements: Exclamation marks, arrows, warning icons, strong shapes
-Typography: Bold, impactful hand lettering with shadows
-```
-
-### minimal
-```
-Colors: Black (#000000), white (#FFFFFF)
-Background: Off-white (#FAFAFA), pure white
-Accents: Single color (content-derived - blue, green, or coral)
-Elements: Single focal point, thin lines, maximum whitespace
-Typography: Clean, simple hand lettering
-```
-
-### retro
-```
-Colors: Muted orange, dusty pink (#FED7E2 at 70%), faded teal
-Background: Aged paper (#F5E6D3), sepia tones
-Accents: Faded red, vintage gold
-Elements: Halftone dots, vintage badges, classic icons, tape effects
-Typography: Vintage-style hand lettering, classic feel
-```
-
-### pop
-```
-Colors: Bright red (#F56565), yellow (#ECC94B), blue (#4299E1), green (#48BB78)
-Background: White (#FFFFFF), light gray
-Accents: Neon pink, electric purple
-Elements: Bold shapes, speech bubbles, comic-style effects, starburst
-Typography: Dynamic, energetic hand lettering with outlines
-```
-
-### notion
-```
-Colors: Black (#1A1A1A), dark gray (#4A4A4A)
-Background: Pure white (#FFFFFF), off-white (#FAFAFA)
-Accents: Pastel blue (#A8D4F0), pastel yellow (#F9E79F), pastel pink (#FADBD8)
-Elements: Simple line doodles, hand-drawn wobble effect, geometric shapes, stick figures, maximum whitespace
-Typography: Clean hand-drawn lettering, simple sans-serif labels
-```
-
-## Layout Reference Details
-
-### sparse
-```
-Information Density: Very Low (1-2 points)
-Whitespace: 60-70%
-Structure: Single centered focal point
-Text Elements: Title only, or title + one subtitle/tagline
-Visual Balance: Centered, symmetrical, breathing room on all sides
-Best Pairing: Any style, especially effective with bold, minimal, notion
-```
-
-### balanced
-```
-Information Density: Medium (3-4 points)
-Whitespace: 40-50%
-Structure: Title at top, content sections below
-Text Elements: Title + 3-4 bullet points or key messages
-Visual Balance: Top-weighted title, evenly distributed content below
-Best Pairing: All styles work well
-```
-
-### dense
-```
-Information Density: High (5-8 points)
-Whitespace: 20-30%
-Structure: Multi-section grid or stacked blocks
-Text Elements: Title + multiple sections with headers + numerous points
-Visual Balance: Organized chaos, clear section boundaries, compact spacing
-Best Pairing: tech, notion, minimal (clean styles prevent visual overload)
-```
-
-### list
-```
-Information Density: Medium-High (4-7 items)
-Whitespace: 30-40%
-Structure: Vertical enumeration with numbers or bullets
-Text Elements: Title + numbered/bulleted items, consistent format per item
-Visual Balance: Left-aligned list, clear number/bullet hierarchy
-Best Pairing: All styles, especially cute (checklist), bold (rankings)
-```
-
-### comparison
-```
-Information Density: Medium (2×2-4 points)
-Whitespace: 30-40%
-Structure: Two-column split with center divider
-Text Elements: Title + left label + right label + mirrored points
-Visual Balance: Symmetrical left/right, clear visual contrast
-Best Pairing: bold (dramatic contrast), tech (data comparison), warm (before/after stories)
-```
-
-### flow
-```
-Information Density: Medium (3-6 steps)
-Whitespace: 30-40%
-Structure: Connected nodes with directional arrows
-Text Elements: Title + step labels + optional descriptions per step
-Visual Balance: Directional flow (top→bottom or left→right), clear progression
-Best Pairing: tech (process diagrams), notion (simple flows), fresh (organic flows)
 ```
 
 ## Content Breakdown Principles

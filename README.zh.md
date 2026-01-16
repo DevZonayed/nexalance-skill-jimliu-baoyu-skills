@@ -61,43 +61,43 @@ npx add-skill jimliu/baoyu-skills
 
 ## 可用技能
 
-### gemini-web
+### baoyu-gemini-web
 
 与 Gemini Web 交互，生成文本和图片。
 
 **文本生成：**
 
 ```bash
-/gemini-web "你好，Gemini"
-/gemini-web --prompt "解释量子计算"
+/baoyu-gemini-web "你好，Gemini"
+/baoyu-gemini-web --prompt "解释量子计算"
 ```
 
 **图片生成：**
 
 ```bash
-/gemini-web --prompt "一只可爱的猫" --image cat.png
-/gemini-web --promptfiles system.md content.md --image out.png
+/baoyu-gemini-web --prompt "一只可爱的猫" --image cat.png
+/baoyu-gemini-web --promptfiles system.md content.md --image out.png
 ```
 
-### xhs-images
+### baoyu-xhs-images
 
 小红书信息图系列生成器。将内容拆解为 1-10 张卡通风格信息图，支持 **风格 × 布局** 二维系统。
 
 ```bash
 # 自动选择风格和布局
-/xhs-images posts/ai-future/article.md
+/baoyu-xhs-images posts/ai-future/article.md
 
 # 指定风格
-/xhs-images posts/ai-future/article.md --style notion
+/baoyu-xhs-images posts/ai-future/article.md --style notion
 
 # 指定布局
-/xhs-images posts/ai-future/article.md --layout dense
+/baoyu-xhs-images posts/ai-future/article.md --layout dense
 
 # 组合风格和布局
-/xhs-images posts/ai-future/article.md --style tech --layout list
+/baoyu-xhs-images posts/ai-future/article.md --style tech --layout list
 
 # 直接输入内容
-/xhs-images 今日星座运势
+/baoyu-xhs-images 今日星座运势
 ```
 
 **风格**（视觉美学）：`cute`（默认）、`fresh`、`tech`、`warm`、`bold`、`minimal`、`retro`、`pop`、`notion`
@@ -112,70 +112,111 @@ npx add-skill jimliu/baoyu-skills
 | `comparison` | 双栏 | 对比、优劣 |
 | `flow` | 3-6 步 | 流程、时间线 |
 
-### cover-image
+### baoyu-cover-image
 
 为文章生成手绘风格封面图，支持多种风格选项。
 
 ```bash
 # 从 markdown 文件生成（自动选择风格）
-/cover-image path/to/article.md
+/baoyu-cover-image path/to/article.md
 
 # 指定风格
-/cover-image path/to/article.md --style tech
-/cover-image path/to/article.md --style warm
+/baoyu-cover-image path/to/article.md --style tech
+/baoyu-cover-image path/to/article.md --style warm
 
 # 不包含标题文字
-/cover-image path/to/article.md --no-title
+/baoyu-cover-image path/to/article.md --no-title
 ```
 
 可用风格：`elegant`（默认）、`tech`、`warm`、`bold`、`minimal`、`playful`、`nature`、`retro`
 
-### slide-deck
+### baoyu-slide-deck
 
 从内容生成专业的幻灯片图片。先创建包含样式说明的完整大纲，然后逐页生成幻灯片图片。
 
 ```bash
 # 从 markdown 文件生成
-/slide-deck path/to/article.md
+/baoyu-slide-deck path/to/article.md
 
 # 指定风格和受众
-/slide-deck path/to/article.md --style corporate
-/slide-deck path/to/article.md --audience executives
+/baoyu-slide-deck path/to/article.md --style corporate
+/baoyu-slide-deck path/to/article.md --audience executives
 
 # 仅生成大纲（不生成图片）
-/slide-deck path/to/article.md --outline-only
+/baoyu-slide-deck path/to/article.md --outline-only
 
 # 指定语言
-/slide-deck path/to/article.md --lang zh
+/baoyu-slide-deck path/to/article.md --lang zh
 ```
 
 可用风格：`editorial`（默认）、`corporate`、`technical`、`playful`、`minimal`、`storytelling`、`warm`、`retro-flat`、`notion`
 
-### post-to-wechat
+### baoyu-comic
+
+知识漫画创作器，支持多种风格（Logicomix/清线风格、欧姆社漫画教程风格）。创作带有详细分镜布局的原创教育漫画，逐页生成图片。
+
+```bash
+# 从素材文件生成
+/baoyu-comic posts/turing-story/source.md
+
+# 指定风格
+/baoyu-comic posts/turing-story/source.md --style dramatic
+/baoyu-comic posts/turing-story/source.md --style ohmsha
+
+# 指定布局
+/baoyu-comic posts/turing-story/source.md --layout cinematic
+/baoyu-comic posts/turing-story/source.md --layout webtoon
+
+# 直接输入内容
+/baoyu-comic "图灵的故事与计算机科学的诞生"
+```
+
+**风格**（视觉美学）：
+| 风格 | 描述 | 适用场景 |
+|------|------|----------|
+| `classic` | 传统清线风格，平衡 | 传记、平衡叙事 |
+| `dramatic` | 高对比度，紧张感 | 突破时刻、冲突 |
+| `warm` | 怀旧、个人化 | 个人故事、师生情 |
+| `tech` | 现代、数字化 | 计算机史、AI 故事 |
+| `sepia` | 历史、档案感 | 1950 年前、古典科学 |
+| `vibrant` | 活力、吸引人 | 科普、青少年读者 |
+| `ohmsha` | 欧姆社漫画风格，视觉比喻 | 教程、复杂概念（机器学习、物理） |
+
+**布局**（分镜排列）：
+| 布局 | 每页分镜数 | 适用场景 |
+|------|-----------|----------|
+| `standard` | 4-6 | 对话、叙事推进 |
+| `cinematic` | 2-4 | 戏剧性时刻、建立镜头 |
+| `dense` | 6-9 | 技术说明、时间线 |
+| `splash` | 1-2 大图 | 关键时刻、揭示 |
+| `mixed` | 3-7 不等 | 复杂叙事、情感弧线 |
+| `webtoon` | 3-5 竖向 | 欧姆社教程、手机阅读 |
+
+### baoyu-post-to-wechat
 
 发布内容到微信公众号，支持两种模式：
 
 **图文模式** - 多图配短标题和正文：
 
 ```bash
-/post-to-wechat 图文 --markdown article.md --images ./photos/
-/post-to-wechat 图文 --markdown article.md --image img1.png --image img2.png --image img3.png
-/post-to-wechat 图文 --title "标题" --content "内容" --image img1.png --submit
+/baoyu-post-to-wechat 图文 --markdown article.md --images ./photos/
+/baoyu-post-to-wechat 图文 --markdown article.md --image img1.png --image img2.png --image img3.png
+/baoyu-post-to-wechat 图文 --title "标题" --content "内容" --image img1.png --submit
 ```
 
 **文章模式** - 完整 markdown/HTML 富文本格式：
 
 ```bash
-/post-to-wechat 文章 --markdown article.md
-/post-to-wechat 文章 --markdown article.md --theme grace
-/post-to-wechat 文章 --html article.html
+/baoyu-post-to-wechat 文章 --markdown article.md
+/baoyu-post-to-wechat 文章 --markdown article.md --theme grace
+/baoyu-post-to-wechat 文章 --html article.html
 ```
 
 前置要求：已安装 Google Chrome，首次运行需扫码登录（登录状态会保存）
 
 ## 免责声明
 
-### gemini-web
+### baoyu-gemini-web
 
 此技能使用 Gemini Web API（逆向工程）。
 

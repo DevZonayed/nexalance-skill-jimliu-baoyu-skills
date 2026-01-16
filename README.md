@@ -61,43 +61,43 @@ You can also **Enable auto-update** to get the latest versions automatically.
 
 ## Available Skills
 
-### gemini-web
+### baoyu-gemini-web
 
 Interacts with Gemini Web to generate text and images.
 
 **Text Generation:**
 
 ```bash
-/gemini-web "Hello, Gemini"
-/gemini-web --prompt "Explain quantum computing"
+/baoyu-gemini-web "Hello, Gemini"
+/baoyu-gemini-web --prompt "Explain quantum computing"
 ```
 
 **Image Generation:**
 
 ```bash
-/gemini-web --prompt "A cute cat" --image cat.png
-/gemini-web --promptfiles system.md content.md --image out.png
+/baoyu-gemini-web --prompt "A cute cat" --image cat.png
+/baoyu-gemini-web --promptfiles system.md content.md --image out.png
 ```
 
-### xhs-images
+### baoyu-xhs-images
 
 Xiaohongshu (RedNote) infographic series generator. Breaks down content into 1-10 cartoon-style infographics with **Style × Layout** two-dimensional system.
 
 ```bash
 # Auto-select style and layout
-/xhs-images posts/ai-future/article.md
+/baoyu-xhs-images posts/ai-future/article.md
 
 # Specify style
-/xhs-images posts/ai-future/article.md --style notion
+/baoyu-xhs-images posts/ai-future/article.md --style notion
 
 # Specify layout
-/xhs-images posts/ai-future/article.md --layout dense
+/baoyu-xhs-images posts/ai-future/article.md --layout dense
 
 # Combine style and layout
-/xhs-images posts/ai-future/article.md --style tech --layout list
+/baoyu-xhs-images posts/ai-future/article.md --style tech --layout list
 
 # Direct content input
-/xhs-images 今日星座运势
+/baoyu-xhs-images 今日星座运势
 ```
 
 **Styles** (visual aesthetics): `cute` (default), `fresh`, `tech`, `warm`, `bold`, `minimal`, `retro`, `pop`, `notion`
@@ -112,70 +112,111 @@ Xiaohongshu (RedNote) infographic series generator. Breaks down content into 1-1
 | `comparison` | 2 sides | Before/after, pros/cons |
 | `flow` | 3-6 steps | Processes, timelines |
 
-### cover-image
+### baoyu-cover-image
 
 Generate hand-drawn style cover images for articles with multiple style options.
 
 ```bash
 # From markdown file (auto-select style)
-/cover-image path/to/article.md
+/baoyu-cover-image path/to/article.md
 
 # Specify a style
-/cover-image path/to/article.md --style tech
-/cover-image path/to/article.md --style warm
+/baoyu-cover-image path/to/article.md --style tech
+/baoyu-cover-image path/to/article.md --style warm
 
 # Without title text
-/cover-image path/to/article.md --no-title
+/baoyu-cover-image path/to/article.md --no-title
 ```
 
 Available styles: `elegant` (default), `tech`, `warm`, `bold`, `minimal`, `playful`, `nature`, `retro`
 
-### slide-deck
+### baoyu-slide-deck
 
 Generate professional slide deck images from content. Creates comprehensive outlines with style instructions, then generates individual slide images.
 
 ```bash
 # From markdown file
-/slide-deck path/to/article.md
+/baoyu-slide-deck path/to/article.md
 
 # With style and audience
-/slide-deck path/to/article.md --style corporate
-/slide-deck path/to/article.md --audience executives
+/baoyu-slide-deck path/to/article.md --style corporate
+/baoyu-slide-deck path/to/article.md --audience executives
 
 # Outline only (no image generation)
-/slide-deck path/to/article.md --outline-only
+/baoyu-slide-deck path/to/article.md --outline-only
 
 # With language
-/slide-deck path/to/article.md --lang zh
+/baoyu-slide-deck path/to/article.md --lang zh
 ```
 
 Available styles: `editorial` (default), `corporate`, `technical`, `playful`, `minimal`, `storytelling`, `warm`, `retro-flat`, `notion`
 
-### post-to-wechat
+### baoyu-comic
+
+Knowledge comic creator supporting multiple styles (Logicomix/Ligne Claire, Ohmsha manga guide). Creates original educational comics with detailed panel layouts and sequential image generation.
+
+```bash
+# From source material
+/baoyu-comic posts/turing-story/source.md
+
+# Specify style
+/baoyu-comic posts/turing-story/source.md --style dramatic
+/baoyu-comic posts/turing-story/source.md --style ohmsha
+
+# Specify layout
+/baoyu-comic posts/turing-story/source.md --layout cinematic
+/baoyu-comic posts/turing-story/source.md --layout webtoon
+
+# Direct content input
+/baoyu-comic "The story of Alan Turing and the birth of computer science"
+```
+
+**Styles** (visual aesthetics):
+| Style | Description | Best for |
+|-------|-------------|----------|
+| `classic` | Traditional Ligne Claire, balanced | Biographies, balanced narratives |
+| `dramatic` | High contrast, intense | Breakthroughs, conflicts |
+| `warm` | Nostalgic, personal | Personal stories, mentorship |
+| `tech` | Modern, digital | Computing history, AI stories |
+| `sepia` | Historical, archival | Pre-1950s, classical science |
+| `vibrant` | Energetic, engaging | Science basics, young audience |
+| `ohmsha` | Manga guide style, visual metaphors | Tutorials, complex concepts (ML, physics) |
+
+**Layouts** (panel arrangement):
+| Layout | Panels/Page | Best for |
+|--------|-------------|----------|
+| `standard` | 4-6 | Dialogue, narrative flow |
+| `cinematic` | 2-4 | Dramatic moments, establishing shots |
+| `dense` | 6-9 | Technical explanations, timelines |
+| `splash` | 1-2 large | Key moments, revelations |
+| `mixed` | 3-7 varies | Complex narratives, emotional arcs |
+| `webtoon` | 3-5 vertical | Ohmsha tutorials, mobile reading |
+
+### baoyu-post-to-wechat
 
 Post content to WeChat Official Account (微信公众号). Two modes available:
 
 **Image-Text (图文)** - Multiple images with short title/content:
 
 ```bash
-/post-to-wechat 图文 --markdown article.md --images ./photos/
-/post-to-wechat 图文 --markdown article.md --image img1.png --image img2.png --image img3.png
-/post-to-wechat 图文 --title "标题" --content "内容" --image img1.png --submit
+/baoyu-post-to-wechat 图文 --markdown article.md --images ./photos/
+/baoyu-post-to-wechat 图文 --markdown article.md --image img1.png --image img2.png --image img3.png
+/baoyu-post-to-wechat 图文 --title "标题" --content "内容" --image img1.png --submit
 ```
 
 **Article (文章)** - Full markdown/HTML with rich formatting:
 
 ```bash
-/post-to-wechat 文章 --markdown article.md
-/post-to-wechat 文章 --markdown article.md --theme grace
-/post-to-wechat 文章 --html article.html
+/baoyu-post-to-wechat 文章 --markdown article.md
+/baoyu-post-to-wechat 文章 --markdown article.md --theme grace
+/baoyu-post-to-wechat 文章 --html article.html
 ```
 
 Prerequisites: Google Chrome installed. First run requires QR code login (session preserved).
 
 ## Disclaimer
 
-### gemini-web
+### baoyu-gemini-web
 
 This skill uses the Gemini Web API (reverse-engineered).
 

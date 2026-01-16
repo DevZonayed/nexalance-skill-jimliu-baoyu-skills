@@ -46,59 +46,35 @@ Transform content into professional slide deck with comprehensive outlines and g
 
 ## Style Gallery
 
-### 1. `editorial` (Default)
-Clean, sophisticated, minimalist
-- **Aesthetic**: High-end journal, architectural blueprints
-- **Colors**: Off-white background (#F8F7F5), dark slate text (#2F3542), blue accents (#007AFF)
-- **Best for**: Thought leadership, research presentations
+| Style | Description |
+|-------|-------------|
+| `editorial` (Default) | Clean, sophisticated, minimalist |
+| `corporate` | Professional, trustworthy, polished |
+| `technical` | Precise, data-driven, analytical |
+| `playful` | Bold, energetic, engaging |
+| `minimal` | Ultra-clean, zen-like, focused |
+| `storytelling` | Narrative-driven, cinematic, immersive |
+| `warm` | Cozy, healing, hand-drawn illustration style |
+| `retro-flat` | Flat vector illustration with retro palette |
+| `notion` | Minimalist hand-drawn line art, intellectual |
 
-### 2. `corporate`
-Professional, trustworthy, polished
-- **Aesthetic**: Clean lines, structured layouts, business-appropriate
-- **Colors**: Navy (#1E3A5F), white, gold accents (#C9A227)
-- **Best for**: Business presentations, investor decks, reports
+Detailed style definitions: `references/styles/<style>.md`
 
-### 3. `technical`
-Precise, data-driven, analytical
-- **Aesthetic**: Blueprint style, schematic diagrams, grid layouts
-- **Colors**: Dark charcoal (#1A1A2E), cyan accents (#00D4FF), light gray text (#E8E8E8)
-- **Best for**: Technical documentation, engineering presentations
+## Auto Style Selection
 
-### 4. `playful`
-Bold, energetic, engaging
-- **Aesthetic**: Dynamic shapes, vibrant colors, creative layouts
-- **Colors**: Warm white (#FFFDF7), deep purple (#4A1D96), coral (#FF6B6B)
-- **Best for**: Creative pitches, educational content, workshops
+When no `--style` is specified, analyze content for style signals:
 
-### 5. `minimal`
-Ultra-clean, zen-like, focused
-- **Aesthetic**: Maximum whitespace, single focal points, elegant typography
-- **Colors**: Black, white, single accent color
-- **Best for**: Keynotes, philosophical content, product launches
-
-### 6. `storytelling`
-Narrative-driven, cinematic, immersive
-- **Aesthetic**: Full-bleed imagery, dramatic typography, chapter-like flow
-- **Colors**: Rich charcoal (#2D2D2D), warm white (#FAF9F6), gold (#D4AF37)
-- **Best for**: Case studies, journey narratives, brand stories
-
-### 7. `warm`
-Cozy, healing, hand-drawn illustration style
-- **Aesthetic**: Soft hand-drawn illustrations, cozy and healing atmosphere, gentle curves, watercolor textures
-- **Colors**: Cream gradient background (#FFF8E7 → #FFE4C4), warm brown text (#5D4037), soft coral accents (#FF8A80)
-- **Best for**: Personal growth, wellness, emotional content, lifestyle topics
-
-### 8. `retro-flat`
-Flat vector illustration with retro palette
-- **Aesthetic**: Flat vector with clear black outlines (monoline), geometric simplification, toy-model cuteness, NO gradients
-- **Colors**: Retro muted palette - dusty pink (#E8B4B8), sage green (#A8C686), mustard yellow (#E8B84A), off-white background (#F5F0E6)
-- **Best for**: Tutorials, explainers, product introductions, educational content
-
-### 9. `notion`
-Minimalist hand-drawn line art, intellectual
-- **Aesthetic**: Simple line doodles with hand-drawn wobble, geometric shapes, maximum whitespace, SaaS product feel
-- **Colors**: Black outlines (#1A1A1A), white background (#FFFFFF), 1-2 pastel accents (blue #A8D4F0, yellow #F9E79F)
-- **Best for**: Knowledge sharing, concept explanations, productivity content, SaaS presentations
+| Content Signals | Selected Style |
+|----------------|----------------|
+| AI, coding, tech, digital, algorithm, data | `technical` |
+| Business, strategy, investment, corporate | `corporate` |
+| Personal story, journey, narrative, emotion | `storytelling` |
+| Simple, zen, focus, essential, one idea | `minimal` |
+| Fun, creative, workshop, educational | `playful` |
+| Research, analysis, thought leadership | `editorial` |
+| Wellness, healing, cozy, self-care, lifestyle, comfort | `warm` |
+| Tutorial, explainer, how-to, beginner, product, guide | `retro-flat` |
+| Knowledge, concept, productivity, SaaS, notion, intellectual | `notion` |
 
 ## Audience Presets
 
@@ -146,20 +122,7 @@ path/to/
 
 1. Read source content
 2. If `--style` specified, use that style
-3. Otherwise, analyze content for style signals:
-
-| Content Signals | Selected Style |
-|----------------|----------------|
-| AI, coding, tech, digital, algorithm, data | `technical` |
-| Business, strategy, investment, corporate | `corporate` |
-| Personal story, journey, narrative, emotion | `storytelling` |
-| Simple, zen, focus, essential, one idea | `minimal` |
-| Fun, creative, workshop, educational | `playful` |
-| Research, analysis, thought leadership | `editorial` |
-| Wellness, healing, cozy, self-care, lifestyle, comfort | `warm` |
-| Tutorial, explainer, how-to, beginner, product, guide | `retro-flat` |
-| Knowledge, concept, productivity, SaaS, notion, intellectual | `notion` |
-
+3. Otherwise, analyze content for style signals
 4. Extract key information:
    - Core narrative and key messages
    - Important data points and statistics
@@ -303,109 +266,6 @@ Outline: outline.md
 [If any failures]
 Failed:
 - 0X-slide-name.png: [failure reason]
-```
-
-## Style Reference Details
-
-### editorial
-```
-Design Aesthetic: Clean, sophisticated, minimalist editorial inspired by architectural blueprints and high-end technical journals
-Background Color: Subtle textured off-white #F8F7F5
-Primary Font: Neue Haas Grotesk Display Pro (bold headlines)
-Secondary Font: Tiempos Text (body copy, annotations)
-Primary Text Color: Dark slate grey #2F3542
-Primary Accent Color: Intelligent blue #007AFF
-Visual Elements: Thin precise line work, schematic diagrams, clean vectors, spacious layouts
-```
-
-### corporate
-```
-Design Aesthetic: Professional, trustworthy, structured business presentation
-Background Color: Clean white #FFFFFF with navy accents
-Primary Font: Inter (headlines)
-Secondary Font: Source Sans Pro (body)
-Primary Text Color: Navy #1E3A5F
-Primary Accent Color: Gold #C9A227
-Visual Elements: Clean charts, professional icons, structured grids, subtle shadows
-```
-
-### technical
-```
-Design Aesthetic: Blueprint-style, precise, data-driven analytical presentation
-Background Color: Dark charcoal #1A1A2E
-Primary Font: JetBrains Mono (headlines)
-Secondary Font: IBM Plex Sans (body)
-Primary Text Color: Light gray #E8E8E8
-Primary Accent Color: Cyan #00D4FF
-Visual Elements: Grid overlays, circuit patterns, data visualizations, monospace code blocks
-```
-
-### playful
-```
-Design Aesthetic: Bold, energetic, creative with dynamic visual interest
-Background Color: Warm white #FFFDF7
-Primary Font: Poppins (headlines)
-Secondary Font: Nunito (body)
-Primary Text Color: Deep purple #4A1D96
-Primary Accent Color: Vibrant coral #FF6B6B
-Visual Elements: Rounded shapes, gradients, illustrations, dynamic compositions, bright pops
-```
-
-### minimal
-```
-Design Aesthetic: Ultra-clean, zen-like focus with elegant restraint
-Background Color: Pure white #FFFFFF
-Primary Font: Helvetica Neue (headlines)
-Secondary Font: Garamond (body)
-Primary Text Color: Pure black #000000
-Primary Accent Color: Single accent (content-derived)
-Visual Elements: Maximum whitespace, single focal points, hairline rules, elegant typography
-```
-
-### storytelling
-```
-Design Aesthetic: Cinematic, narrative-driven with immersive visual flow
-Background Color: Rich charcoal #2D2D2D or full-bleed imagery
-Primary Font: Playfair Display (headlines)
-Secondary Font: Lora (body)
-Primary Text Color: Warm white #FAF9F6
-Primary Accent Color: Warm gold #D4AF37
-Visual Elements: Full-bleed photos, dramatic typography, chapter markers, emotional imagery
-```
-
-### warm
-```
-Design Aesthetic: Cozy healing hand-drawn illustration style, soft sketch lines, warm and comforting atmosphere
-Background Color: Cream gradient #FFF8E7 → #FFE4C4
-Primary Font: Rounded hand-drawn style lettering
-Secondary Font: Soft serif hand lettering
-Primary Text Color: Warm brown #5D4037
-Primary Accent Color: Soft coral #FF8A80, Peachy pink #FFAB91
-Visual Elements: Soft watercolor textures, gentle curves, cozy illustrations, warm lighting, hearts and stars, plant motifs, cute characters
-```
-
-### retro-flat
-```
-Design Aesthetic: Flat vector illustration with clear uniform-width black outlines, geometric simplification, toy-model cuteness
-Background Color: Off-white #F5F0E6, soft cream
-Primary Font: Bold geometric sans-serif with black outline
-Secondary Font: Clean sans-serif
-Primary Text Color: Black #000000 (clean outlines)
-Primary Accent Color: Retro muted palette - Dusty pink #E8B4B8, Sage green #A8C686, Mustard yellow #E8B84A, Muted blue #7BA7BC
-Visual Elements: Clear black monoline outlines (uniform width), flat color fills with NO gradients, geometric simplified shapes, toy-like proportions, minimal shadows, vintage badge style, halftone dots optional
-Style Rules: MUST use clear black outlines on all elements, NO 3D effects, NO gradients, simple flat color blocks only
-```
-
-### notion
-```
-Design Aesthetic: Minimalist hand-drawn line art with intellectual SaaS product feel, Notion-style doodles
-Background Color: Pure white #FFFFFF, off-white #FAFAFA
-Primary Font: Clean hand-drawn lettering, simple sans-serif
-Secondary Font: Simple sans-serif labels
-Primary Text Color: Black #1A1A1A, dark gray #4A4A4A
-Primary Accent Color: Pastel blue #A8D4F0, Pastel yellow #F9E79F, Pastel pink #FADBD8
-Visual Elements: Simple line doodles with hand-drawn wobble effect, geometric shapes, stick figures, maximum whitespace, single-weight ink lines
-Style Rules: Single color lines (black/dark gray), 1-2 pastel accents only, NO complex gradients, NO heavy shadows, imperfect hand-drawn feel
 ```
 
 ## Notes
