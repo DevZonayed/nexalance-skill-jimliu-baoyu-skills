@@ -71,6 +71,30 @@ npx -y bun skills/baoyu-gemini-web/scripts/main.ts --promptfiles system.md conte
 2. Add TypeScript in `skills/baoyu-<name>/scripts/`
 3. Add prompt templates in `skills/baoyu-<name>/prompts/` if needed
 4. Register in `marketplace.json` plugins[0].skills array as `./skills/baoyu-<name>`
+5. **Add Script Directory section** to SKILL.md (see template below)
+
+### Script Directory Template
+
+Every SKILL.md with scripts MUST include this section after Usage:
+
+```markdown
+## Script Directory
+
+**Important**: All scripts are located in the `scripts/` subdirectory of this skill.
+
+**Agent Execution Instructions**:
+1. Determine this SKILL.md file's directory path as `SKILL_DIR`
+2. Script path = `${SKILL_DIR}/scripts/<script-name>.ts`
+3. Replace all `${SKILL_DIR}` in this document with the actual path
+
+**Script Reference**:
+| Script | Purpose |
+|--------|---------|
+| `scripts/main.ts` | Main entry point |
+| `scripts/other.ts` | Other functionality |
+```
+
+When referencing scripts in workflow sections, use `${SKILL_DIR}/scripts/<name>.ts` so agents can resolve the correct path.
 
 ## Code Style
 

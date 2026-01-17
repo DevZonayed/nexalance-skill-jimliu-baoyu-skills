@@ -12,6 +12,21 @@ Supports:
 - Multi-turn conversations within the same executor instance (`keepSession`)
 - Experimental video generation (`generateVideo`) — Gemini may return an async placeholder; download might require Gemini web UI
 
+## Script Directory
+
+**Important**: All scripts are located in the `scripts/` subdirectory of this skill.
+
+**Agent Execution Instructions**:
+1. Determine this SKILL.md file's directory path as `SKILL_DIR`
+2. Script path = `${SKILL_DIR}/scripts/<script-name>.ts`
+3. Replace all `${SKILL_DIR}` in this document with the actual path
+
+**Script Reference**:
+| Script | Purpose |
+|--------|---------|
+| `scripts/main.ts` | CLI entry point for text/image generation |
+| `scripts/executor.ts` | Programmatic Gemini executor API |
+
 ## Quick start
 
 ```bash

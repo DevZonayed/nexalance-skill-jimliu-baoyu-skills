@@ -37,6 +37,21 @@ Transform content into professional slide deck images with flexible style option
 /baoyu-slide-deck path/to/content.md --style storytelling --audience experts --slides 15
 ```
 
+## Script Directory
+
+**Important**: All scripts are located in the `scripts/` subdirectory of this skill.
+
+**Agent Execution Instructions**:
+1. Determine this SKILL.md file's directory path as `SKILL_DIR`
+2. Script path = `${SKILL_DIR}/scripts/<script-name>.ts`
+3. Replace all `${SKILL_DIR}` in this document with the actual path
+
+**Script Reference**:
+| Script | Purpose |
+|--------|---------|
+| `scripts/merge-to-pptx.ts` | Merge slides into PowerPoint |
+| `scripts/merge-to-pdf.ts` | Merge slides into PDF |
+
 ## Options
 
 | Option | Description |
@@ -105,7 +120,9 @@ content-dir/
     │   └── ...
     ├── 01-slide-cover.png
     ├── 02-slide-{slug}.png
-    └── ...
+    ├── ...
+    ├── {topic-slug}.pptx
+    └── {topic-slug}.pdf
 ```
 
 ### Without Content Path
@@ -121,7 +138,9 @@ slide-outputs/
         │   ├── 01-slide-cover.md
         │   └── ...
         ├── 01-slide-cover.png
-        └── ...
+        ├── ...
+        ├── ai-future-trends.pptx
+        └── ai-future-trends.pdf
 ```
 
 ## Workflow
@@ -282,17 +301,18 @@ If the image generation skill supports `--sessionId`:
 3. Report progress: "Generated X/N"
 4. Continue to next
 
-### Step 6: Merge to PPTX
+### Step 6: Merge to PPTX and PDF
 
-After all images are generated, merge them into a PowerPoint file:
+After all images are generated, merge them into PowerPoint and PDF files:
 
 ```bash
-npx -y bun skills/baoyu-slide-deck/scripts/merge-to-pptx.ts <slide-deck-dir>
+npx -y bun ${SKILL_DIR}/scripts/merge-to-pptx.ts <slide-deck-dir>
+npx -y bun ${SKILL_DIR}/scripts/merge-to-pdf.ts <slide-deck-dir>
 ```
 
-This creates `{topic-slug}.pptx` in the slide deck directory with:
-- All images as full-bleed 16:9 slides
-- Prompt content added as speaker notes (from `prompts/` directory)
+This creates:
+- `{topic-slug}.pptx` - PowerPoint with all images as full-bleed 16:9 slides and prompt content as speaker notes
+- `{topic-slug}.pdf` - PDF with all images as full-page slides
 
 ### Step 7: Output Summary
 
@@ -313,6 +333,7 @@ Slides: N total
 
 Outline: outline.md
 PPTX: {topic-slug}.pptx
+PDF: {topic-slug}.pdf
 ```
 
 ## Content Rules
