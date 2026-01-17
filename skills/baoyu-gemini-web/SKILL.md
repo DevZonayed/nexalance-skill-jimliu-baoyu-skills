@@ -5,6 +5,13 @@ description: Image generation skill using Gemini Web. Generates images from text
 
 # Gemini Web Client
 
+Supports:
+- Text generation
+- Image generation (download + save)
+- Reference image upload (attach images for vision tasks)
+- Multi-turn conversations within the same executor instance (`keepSession`)
+- Experimental video generation (`generateVideo`) — Gemini may return an async placeholder; download might require Gemini web UI
+
 ## Quick start
 
 ```bash
@@ -13,6 +20,19 @@ npx -y bun scripts/main.ts --prompt "Explain quantum computing"
 npx -y bun scripts/main.ts --prompt "A cute cat" --image cat.png
 npx -y bun scripts/main.ts --promptfiles system.md content.md --image out.png
 ```
+
+## Executor options (programmatic)
+
+This skill is typically consumed via `createGeminiWebExecutor(geminiOptions)` (see `scripts/executor.ts`).
+
+Key options in `GeminiWebOptions`:
+- `referenceImages?: string | string[]` Upload local images as references (vision input).
+- `keepSession?: boolean` Reuse Gemini `chatMetadata` to continue the same conversation across calls (required if you want reference images to persist across multiple messages).
+- `generateVideo?: string` Generate a video and (best-effort) download to the given path. Gemini may return `video_gen_chip` (async); in that case you must open Gemini web UI to download the result.
+
+Notes:
+- `generateVideo` cannot be combined with `generateImage` / `editImage`.
+- When `keepSession=true` and `referenceImages` is set, reference images are uploaded once per executor instance.
 
 ## Commands
 
@@ -69,6 +89,8 @@ npx -y bun scripts/main.ts "Hello" --json
 | `--cookie-path <path>` | | Custom cookie file path |
 | `--profile-dir <path>` | | Chrome profile directory |
 | `--help` | `-h` | Show help |
+
+CLI note: `scripts/main.ts` currently supports text + image generation. Reference images / multi-turn / video generation are exposed via the executor options above.
 
 ## Models
 

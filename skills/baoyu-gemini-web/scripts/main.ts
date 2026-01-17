@@ -27,6 +27,7 @@ Options:
   -m, --model <id>          gemini-3-pro | gemini-2.5-pro | gemini-2.5-flash (default: gemini-3-pro)
   --json                    Output JSON
   --image [path]            Generate an image and save it (default: ./generated.png)
+  --reference <files...>    Reference images for vision input
   --login                   Only refresh cookies, then exit
   --cookie-path <path>      Cookie file path (default: ${cookiePath})
   --profile-dir <path>      Chrome profile dir (default: ${profileDir})
@@ -75,6 +76,7 @@ function parseArgs(argv: string[]): {
   loginOnly?: boolean;
   cookiePath?: string;
   profileDir?: string;
+  referenceImages?: string[];
 } {
   const out: ReturnType<typeof parseArgs> = {};
   const positional: string[] = [];
@@ -157,6 +159,19 @@ function parseArgs(argv: string[]): {
       out.profileDir = arg.slice('--profile-dir='.length);
       continue;
     }
+    if (arg === '--reference' || arg === '--ref') {
+      out.referenceImages = [];
+      while (i + 1 < argv.length) {
+        const next = argv[i + 1];
+        if (next && !next.startsWith('-')) {
+          out.referenceImages.push(next);
+          i += 1;
+        } else {
+          break;
+        }
+      }
+      continue;
+    }
 
     if (arg.startsWith('-')) {
       throw new Error(`Unknown option: ${arg}`);
@@ -178,6 +193,7 @@ function parseArgs(argv: string[]): {
   if (out.cookiePath === '') delete out.cookiePath;
   if (out.profileDir === '') delete out.profileDir;
   if (out.promptFiles?.length === 0) delete out.promptFiles;
+  if (out.referenceImages?.length === 0) delete out.referenceImages;
 
   return out;
 }
@@ -186,7 +202,7 @@ async function isCookieMapValid(cookieMap: Record<string, string>): Promise<bool
   if (!hasRequiredGeminiCookies(cookieMap)) return false;
 
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 10_000);
+  const timer = setTimeout(() => controller.abort(), 30_000);
   try {
     await fetchGeminiAccessToken(cookieMap, controller.signal);
     return true;
@@ -201,7 +217,7 @@ async function ensureGeminiCookieMap(options: {
   cookiePath: string;
   profileDir: string;
 }): Promise<Record<string, string>> {
-  const log = (msg: string) => console.log(msg);
+  const log = (msg: string) => console.error(msg);
 
   let cookieMap = await readGeminiCookieMapFromDisk({ cookiePath: options.cookiePath, log });
   if (await isCookieMapValid(cookieMap)) return cookieMap;
@@ -256,80 +272,39 @@ async function main(): Promise<void> {
     return;
   }
 
-  const promptFromStdin = await readPromptFromStdin();
   const promptFromFiles = args.promptFiles ? readPromptFiles(args.promptFiles) : null;
-  const prompt = promptFromFiles || args.prompt || promptFromStdin;
+  const promptFromArgs = promptFromFiles || args.prompt;
+  const prompt = promptFromArgs || (await readPromptFromStdin());
   if (!prompt) printUsage(1);
 
   let cookieMap = await ensureGeminiCookieMap({ cookiePath, profileDir });
 
   const desiredModel = resolveModel(args.model || 'gemini-3-pro');
   const imagePath = resolveImageOutputPath(args.imagePath);
+  const referenceImages = (args.referenceImages ?? []).map((p) =>
+    path.isAbsolute(p) ? p : path.resolve(process.cwd(), p),
+  );
 
   try {
-    const effectivePrompt = imagePath ? `Generate an image: ${prompt}` : prompt;
-    const out = await runGeminiWebWithFallback({
-      prompt: effectivePrompt,
-      files: [],
-      model: desiredModel,
-      cookieMap,
-      chatMetadata: null,
-    });
+    const controller = new AbortController();
+    const timeoutMs = imagePath ? 300_000 : 120_000;
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
-    let imageSaved = false;
-    let imageCount = 0;
-    if (imagePath) {
-      const save = await saveFirstGeminiImageFromOutput(out, cookieMap, imagePath);
-      imageSaved = save.saved;
-      imageCount = save.imageCount;
-      if (!imageSaved) {
-        throw new Error(`No images generated. Response text:\n${out.text || '(empty response)'}`);
-      }
-    }
-
-    if (args.json) {
-      process.stdout.write(
-        `${JSON.stringify(
-          imagePath ? { ...out, imageSaved, imageCount, imagePath } : out,
-          null,
-          2,
-        )}\n`,
-      );
-      if (out.errorMessage) process.exit(1);
-      return;
-    }
-
-    if (out.errorMessage) {
-      throw new Error(out.errorMessage);
-    }
-
-    process.stdout.write(out.text ?? '');
-    if (!out.text?.endsWith('\n')) process.stdout.write('\n');
-    if (imagePath) {
-      process.stdout.write(`Saved image (${imageCount || 1}) to: ${imagePath}\n`);
-    }
-    return;
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-
-    if (message.includes('Unable to locate Gemini access token')) {
-      console.error('[gemini-web] Cookies may be expired. Re-opening browser to refresh cookies...');
-      await sleep(500);
-      cookieMap = await getGeminiCookieMapViaChrome({ userDataDir: profileDir, log: (m) => console.log(m) });
-      await writeGeminiCookieMapToDisk(cookieMap, { cookiePath, log: (m) => console.log(m) });
-
+    try {
+      const effectivePrompt = imagePath ? `Generate an image: ${prompt}` : prompt;
       const out = await runGeminiWebWithFallback({
-        prompt: imagePath ? `Generate an image: ${prompt}` : prompt,
-        files: [],
+        prompt: effectivePrompt,
+        files: referenceImages,
         model: desiredModel,
         cookieMap,
         chatMetadata: null,
+        signal: controller.signal,
       });
 
       let imageSaved = false;
       let imageCount = 0;
       if (imagePath) {
-        const save = await saveFirstGeminiImageFromOutput(out, cookieMap, imagePath);
+        const save = await saveFirstGeminiImageFromOutput(out, cookieMap, imagePath, controller.signal);
         imageSaved = save.saved;
         imageCount = save.imageCount;
         if (!imageSaved) {
@@ -359,6 +334,68 @@ async function main(): Promise<void> {
         process.stdout.write(`Saved image (${imageCount || 1}) to: ${imagePath}\n`);
       }
       return;
+    } finally {
+      clearTimeout(timeout);
+    }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+
+    if (message.includes('Unable to locate Gemini access token')) {
+      console.error('[gemini-web] Cookies may be expired. Re-opening browser to refresh cookies...');
+      await sleep(500);
+      cookieMap = await getGeminiCookieMapViaChrome({ userDataDir: profileDir, log: (m) => console.error(m) });
+      await writeGeminiCookieMapToDisk(cookieMap, { cookiePath, log: (m) => console.error(m) });
+
+      const controller = new AbortController();
+      const timeoutMs = imagePath ? 300_000 : 120_000;
+      const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
+      try {
+        const out = await runGeminiWebWithFallback({
+          prompt: imagePath ? `Generate an image: ${prompt}` : prompt,
+          files: referenceImages,
+          model: desiredModel,
+          cookieMap,
+          chatMetadata: null,
+          signal: controller.signal,
+        });
+
+        let imageSaved = false;
+        let imageCount = 0;
+        if (imagePath) {
+          const save = await saveFirstGeminiImageFromOutput(out, cookieMap, imagePath, controller.signal);
+          imageSaved = save.saved;
+          imageCount = save.imageCount;
+          if (!imageSaved) {
+            throw new Error(`No images generated. Response text:\n${out.text || '(empty response)'}`);
+          }
+        }
+
+        if (args.json) {
+          process.stdout.write(
+            `${JSON.stringify(
+              imagePath ? { ...out, imageSaved, imageCount, imagePath } : out,
+              null,
+              2,
+            )}\n`,
+          );
+          if (out.errorMessage) process.exit(1);
+          return;
+        }
+
+        if (out.errorMessage) {
+          throw new Error(out.errorMessage);
+        }
+
+        process.stdout.write(out.text ?? '');
+        if (!out.text?.endsWith('\n')) process.stdout.write('\n');
+        if (imagePath) {
+          process.stdout.write(`Saved image (${imageCount || 1}) to: ${imagePath}\n`);
+        }
+        return;
+      } finally {
+        clearTimeout(timeout);
+      }
     }
 
     throw error;

@@ -67,19 +67,69 @@ function buildCookieHeader(cookieMap: Record<string, string>): string {
     .join('; ');
 }
 
+function getSetCookieHeaders(res: Response): string[] {
+  const headers = res.headers as unknown as { getSetCookie?: () => string[] };
+  if (typeof headers.getSetCookie === 'function') {
+    try {
+      return headers.getSetCookie();
+    } catch {
+      return [];
+    }
+  }
+  const raw = res.headers.get('set-cookie');
+  return raw ? [raw] : [];
+}
+
+function applySetCookiesToMap(setCookies: string[], cookieMap: Record<string, string>): void {
+  for (const raw of setCookies) {
+    const first = raw.split(';')[0]?.trim();
+    if (!first) continue;
+    const idx = first.indexOf('=');
+    if (idx <= 0) continue;
+    const name = first.slice(0, idx).trim();
+    const value = first.slice(idx + 1).trim();
+    if (!name) continue;
+    cookieMap[name] = value;
+  }
+}
+
+async function fetchWithCookieJar(
+  url: string,
+  init: Omit<RequestInit, 'redirect' | 'headers'> & { headers?: Record<string, string> },
+  cookieMap: Record<string, string>,
+  signal?: AbortSignal,
+  maxRedirects = 20,
+): Promise<Response> {
+  let current = url;
+  for (let i = 0; i <= maxRedirects; i += 1) {
+    const cookieHeader = buildCookieHeader(cookieMap);
+    const headers: Record<string, string> = {
+      ...(init.headers ?? {}),
+      ...(cookieHeader ? { cookie: cookieHeader } : {}),
+      'user-agent': USER_AGENT,
+    };
+
+    const res = await fetch(current, { ...init, redirect: 'manual', signal, headers });
+    applySetCookiesToMap(getSetCookieHeaders(res), cookieMap);
+
+    if (res.status >= 300 && res.status < 400) {
+      const location = res.headers.get('location');
+      if (!location) return res;
+      current = new URL(location, current).toString();
+      continue;
+    }
+
+    return res;
+  }
+
+  throw new Error(`Too many redirects while fetching ${url} (>${maxRedirects}).`);
+}
+
 export async function fetchGeminiAccessToken(
   cookieMap: Record<string, string>,
   signal?: AbortSignal,
 ): Promise<string> {
-  const cookieHeader = buildCookieHeader(cookieMap);
-  const res = await fetch(GEMINI_APP_URL, {
-    redirect: 'follow',
-    signal,
-    headers: {
-      cookie: cookieHeader,
-      'user-agent': USER_AGENT,
-    },
-  });
+  const res = await fetchWithCookieJar(GEMINI_APP_URL, { method: 'GET' }, cookieMap, signal);
   const html = await res.text();
 
   const tokens = ['SNlM0e', 'thykhd'] as const;
@@ -107,7 +157,21 @@ function extractErrorCode(responseJson: unknown): number | undefined {
 }
 
 function extractGgdlUrls(rawText: string): string[] {
-  const matches = rawText.match(/https:\/\/lh3\.googleusercontent\.com\/gg-dl\/[^\s"']+/g) ?? [];
+  const matches =
+    rawText.match(/https?:\/\/[^/\s"']*googleusercontent\.com\/gg-dl\/[^\s"']+/g) ?? [];
+  const seen = new Set<string>();
+  const urls: string[] = [];
+  for (const match of matches) {
+    if (seen.has(match)) continue;
+    seen.add(match);
+    urls.push(match);
+  }
+  return urls;
+}
+
+function extractImageGenerationContentUrls(rawText: string): string[] {
+  const matches =
+    rawText.match(/https?:\/\/googleusercontent\.com\/image_generation_content\/\d+/g) ?? [];
   const seen = new Set<string>();
   const urls: string[] = [];
   for (const match of matches) {
@@ -119,9 +183,17 @@ function extractGgdlUrls(rawText: string): string[] {
 }
 
 function ensureFullSizeImageUrl(url: string): string {
-  if (url.includes('=s2048')) return url;
-  if (url.includes('=s')) return url;
-  return `${url}=s2048`;
+  const trimmed = url.trim();
+  let normalized = trimmed;
+  const backslashIndex = normalized.indexOf('\\');
+  if (backslashIndex >= 0) normalized = normalized.slice(0, backslashIndex);
+  // Some Gemini responses embed a size suffix as "/=s2048" which breaks downloads.
+  normalized = normalized.replace(/\/=s(?=\d+(?:$|[?#]))/, '=s');
+  normalized = normalized.replace(/\/=s(?=$|[?#])/, '=s');
+  if (normalized.endsWith('/')) normalized = normalized.slice(0, -1);
+  if (normalized.includes('=s2048')) return normalized;
+  if (normalized.includes('=s')) return normalized;
+  return `${normalized}=s2048`;
 }
 
 async function fetchWithCookiePreservingRedirects(
@@ -190,6 +262,29 @@ async function uploadGeminiFile(filePath: string, signal?: AbortSignal): Promise
   return { id: text, name: fileName };
 }
 
+function guessMimeType(fileName: string): string {
+  const ext = path.extname(fileName).toLowerCase();
+  switch (ext) {
+    case '.png':
+      return 'image/png';
+    case '.jpg':
+    case '.jpeg':
+      return 'image/jpeg';
+    case '.webp':
+      return 'image/webp';
+    case '.gif':
+      return 'image/gif';
+    case '.mp4':
+      return 'video/mp4';
+    case '.mov':
+      return 'video/quicktime';
+    case '.webm':
+      return 'video/webm';
+    default:
+      return 'application/octet-stream';
+  }
+}
+
 function buildGeminiFReqPayload(
   prompt: string,
   uploaded: Array<{ id: string; name: string }>,
@@ -201,9 +296,8 @@ function buildGeminiFReqPayload(
           prompt,
           0,
           null,
-          // Matches gemini-webapi payload format: [[[fileId, 1]]] for a single attachment.
-          // Keep it extensible for multiple uploads by emitting one [[id, 1]] entry per file.
-          uploaded.map((file) => [[file.id, 1]]),
+          // Matches gemini-web payload format: [[[fileId, 1, null, mimeType], fileName]] for an attachment.
+          uploaded.map((file) => [[file.id, 1, null, guessMimeType(file.name)], file.name]),
         ]
       : [prompt];
 
@@ -248,7 +342,19 @@ export function parseGeminiStreamGenerateResponse(rawText: string): {
     ? (getNestedValue<string | null>(firstCandidate, [22, 0], null) ?? textRaw)
     : textRaw;
   const thoughts = getNestedValue<string | null>(firstCandidate, [37, 0, 0], null);
-  const metadata = getNestedValue<unknown>(body, [1], []);
+  const conversationMeta = getNestedValue<unknown[]>(body, [1], []);
+  const conversationId =
+    typeof conversationMeta[0] === 'string' && conversationMeta[0].length > 0
+      ? conversationMeta[0]
+      : null;
+  const responseId =
+    typeof conversationMeta[1] === 'string' && conversationMeta[1].length > 0
+      ? conversationMeta[1]
+      : null;
+  const choiceIdRaw = getNestedValue<string | null>(firstCandidate, [0], null);
+  const choiceId = typeof choiceIdRaw === 'string' && choiceIdRaw.length > 0 ? choiceIdRaw : null;
+  const metadata =
+    conversationId && responseId && choiceId ? [conversationId, responseId, choiceId] : conversationMeta;
 
   const images: GeminiWebCandidateImage[] = [];
 
@@ -305,8 +411,8 @@ export function isGeminiModelUnavailable(errorCode: number | undefined): boolean
 }
 
 export async function runGeminiWebOnce(input: GeminiWebRunInput): Promise<GeminiWebRunOutput> {
-  const cookieHeader = buildCookieHeader(input.cookieMap);
   const at = await fetchGeminiAccessToken(input.cookieMap, input.signal);
+  const cookieHeader = buildCookieHeader(input.cookieMap);
 
   const uploaded: Array<{ id: string; name: string }> = [];
   for (const file of input.files ?? []) {
@@ -403,10 +509,18 @@ export async function saveFirstGeminiImageFromOutput(
     return { saved: true, imageCount: output.images.length };
   }
 
-  const ggdl = extractGgdlUrls(output.rawResponseText);
-  if (ggdl[0]) {
-    await downloadGeminiImage(ggdl[0], cookieMap, outputPath, signal);
+  const ggdl = extractGgdlUrls(`${output.text}\n${output.rawResponseText}`);
+  const preferred = ggdl.length > 0 ? ggdl[ggdl.length - 1] : null;
+  if (preferred) {
+    await downloadGeminiImage(preferred, cookieMap, outputPath, signal);
     return { saved: true, imageCount: ggdl.length };
+  }
+
+  const imageGen = extractImageGenerationContentUrls(`${output.text}\n${output.rawResponseText}`);
+  const imageGenPreferred = imageGen.length > 0 ? imageGen[imageGen.length - 1] : null;
+  if (imageGenPreferred) {
+    await downloadGeminiImage(imageGenPreferred, cookieMap, outputPath, signal);
+    return { saved: true, imageCount: imageGen.length };
   }
 
   return { saved: false, imageCount: 0 };

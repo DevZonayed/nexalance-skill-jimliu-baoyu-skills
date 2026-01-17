@@ -1,7 +1,8 @@
+import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import type { BrowserRunOptions, BrowserRunResult, BrowserLogger, CookieParam } from '../browser/types.js';
 import { runGeminiWebWithFallback, saveFirstGeminiImageFromOutput } from './client.js';
-import type { GeminiWebModelId } from './client.js';
+import type { GeminiWebModelId, GeminiWebRunOutput } from './client.js';
 import {
   buildGeminiCookieMap,
   hasRequiredGeminiCookies,
@@ -10,6 +11,9 @@ import {
 import type { GeminiWebOptions, GeminiWebResponse } from './types.js';
 
 export { hasRequiredGeminiCookies } from './cookie-store.js';
+
+const USER_AGENT =
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 
 function estimateTokenCount(text: string): number {
   return Math.ceil(text.length / 4);
@@ -20,6 +24,115 @@ function resolveInvocationPath(value: string | undefined): string | undefined {
   const trimmed = value.trim();
   if (!trimmed) return undefined;
   return path.isAbsolute(trimmed) ? trimmed : path.resolve(process.cwd(), trimmed);
+}
+
+function normalizePathList(value: string | string[] | undefined): string[] {
+  if (!value) return [];
+  const raw = Array.isArray(value) ? value : [value];
+  const out: string[] = [];
+  for (const entry of raw) {
+    if (typeof entry !== 'string') continue;
+    const resolved = resolveInvocationPath(entry);
+    if (!resolved) continue;
+    out.push(resolved);
+  }
+  return out;
+}
+
+function dedupePaths(paths: string[]): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const item of paths) {
+    const trimmed = item.trim();
+    if (!trimmed || seen.has(trimmed)) continue;
+    seen.add(trimmed);
+    out.push(trimmed);
+  }
+  return out;
+}
+
+function buildCookieHeader(cookieMap: Record<string, string>): string {
+  return Object.entries(cookieMap)
+    .filter(([, value]) => typeof value === 'string' && value.length > 0)
+    .map(([name, value]) => `${name}=${value}`)
+    .join('; ');
+}
+
+async function fetchWithCookiePreservingRedirects(
+  url: string,
+  init: Omit<RequestInit, 'redirect'>,
+  signal?: AbortSignal,
+  maxRedirects = 10,
+): Promise<Response> {
+  let current = url;
+  for (let i = 0; i <= maxRedirects; i += 1) {
+    const res = await fetch(current, { ...init, redirect: 'manual', signal });
+    if (res.status >= 300 && res.status < 400) {
+      const location = res.headers.get('location');
+      if (!location) return res;
+      current = new URL(location, current).toString();
+      continue;
+    }
+    return res;
+  }
+  throw new Error(`Too many redirects while downloading media (>${maxRedirects}).`);
+}
+
+async function downloadGeminiMedia(
+  url: string,
+  cookieMap: Record<string, string>,
+  outputPath: string,
+  signal?: AbortSignal,
+): Promise<void> {
+  const cookieHeader = buildCookieHeader(cookieMap);
+  const res = await fetchWithCookiePreservingRedirects(
+    url,
+    {
+      headers: {
+        cookie: cookieHeader,
+        'user-agent': USER_AGENT,
+      },
+    },
+    signal,
+  );
+  if (!res.ok) {
+    throw new Error(`Failed to download media: ${res.status} ${res.statusText} (${res.url})`);
+  }
+
+  const data = new Uint8Array(await res.arrayBuffer());
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  await writeFile(outputPath, data);
+}
+
+function extractGgdlUrls(rawText: string): string[] {
+  const matches =
+    rawText.match(/https?:\/\/[^/\s"']*googleusercontent\.com\/gg-dl\/[^\s"']+/g) ?? [];
+  const seen = new Set<string>();
+  const urls: string[] = [];
+  for (const match of matches) {
+    if (seen.has(match)) continue;
+    seen.add(match);
+    urls.push(match);
+  }
+  return urls;
+}
+
+async function saveFirstGeminiVideoFromOutput(
+  output: GeminiWebRunOutput,
+  cookieMap: Record<string, string>,
+  outputPath: string,
+  signal?: AbortSignal,
+): Promise<{ saved: boolean; videoCount: number }> {
+  const ggdl = extractGgdlUrls(output.rawResponseText);
+  if (!ggdl[0]) return { saved: false, videoCount: 0 };
+
+  const videoCandidates = ggdl.filter((url) => /\.(mp4|webm|mov)(?:$|[?#])/i.test(url));
+  const preferred =
+    (videoCandidates.length > 0 ? videoCandidates[videoCandidates.length - 1] : null) ??
+    ggdl.find((url) => /video/i.test(url)) ??
+    ggdl[ggdl.length - 1];
+  await downloadGeminiMedia(preferred, cookieMap, outputPath, signal);
+  return { saved: true, videoCount: ggdl.length };
 }
 
 function resolveGeminiWebModel(
@@ -115,6 +228,9 @@ export async function loadGeminiCookieMap(log?: BrowserLogger): Promise<Record<s
 export function createGeminiWebExecutor(
   geminiOptions: GeminiWebOptions,
 ): (runOptions: BrowserRunOptions) => Promise<BrowserRunResult> {
+  let persistedChatMetadata: unknown | null = null;
+  let referenceImagesUploaded = false;
+
   return async (runOptions: BrowserRunOptions): Promise<BrowserRunResult> => {
     const startTime = Date.now();
     const log = runOptions.log;
@@ -133,23 +249,38 @@ export function createGeminiWebExecutor(
         ? Math.max(1_000, runOptions.config.timeoutMs)
         : null;
 
+    const generateVideoPath = resolveInvocationPath(geminiOptions.generateVideo);
+
     const defaultTimeoutMs = geminiOptions.youtube
       ? 240_000
-      : geminiOptions.generateImage || geminiOptions.editImage
+      : generateVideoPath
+        ? 900_000
+        : geminiOptions.generateImage || geminiOptions.editImage
         ? 300_000
         : 120_000;
 
-    const timeoutMs = Math.min(configTimeout ?? defaultTimeoutMs, 600_000);
+    const timeoutCapMs = generateVideoPath ? 1_800_000 : 600_000;
+    const timeoutMs = Math.min(configTimeout ?? defaultTimeoutMs, timeoutCapMs);
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
+    const keepSession = geminiOptions.keepSession === true;
 
     const generateImagePath = resolveInvocationPath(geminiOptions.generateImage);
     const editImagePath = resolveInvocationPath(geminiOptions.editImage);
     const outputPath = resolveInvocationPath(geminiOptions.outputPath);
     const attachmentPaths = (runOptions.attachments ?? []).map((attachment) => attachment.path);
+    const referenceImagePaths = normalizePathList(geminiOptions.referenceImages);
+    const requestFilePaths = dedupePaths(
+      keepSession ? attachmentPaths : [...referenceImagePaths, ...attachmentPaths],
+    );
+
+    if (generateVideoPath && (generateImagePath || editImagePath)) {
+      throw new Error('Gemini web executor: generateVideo cannot be combined with generateImage/editImage options.');
+    }
 
     let prompt = runOptions.prompt;
-    if (geminiOptions.aspectRatio && (generateImagePath || editImagePath)) {
+    if (geminiOptions.aspectRatio && (generateImagePath || editImagePath || generateVideoPath)) {
       prompt = `${prompt} (aspect ratio: ${geminiOptions.aspectRatio})`;
     }
     if (geminiOptions.youtube) {
@@ -158,29 +289,50 @@ export function createGeminiWebExecutor(
     if (generateImagePath && !editImagePath) {
       prompt = `Generate an image: ${prompt}`;
     }
+    if (generateVideoPath) {
+      prompt = `Generate a video: ${prompt}`;
+    }
 
     const model: GeminiWebModelId = resolveGeminiWebModel(runOptions.config?.desiredModel, log);
     let response: GeminiWebResponse;
+    let videoSaveSummary: { saved: boolean; videoCount: number; outputPath: string } | null = null;
 
     try {
+      let chatMetadata: unknown = keepSession ? persistedChatMetadata : null;
+
+      if (keepSession && referenceImagePaths.length > 0 && !referenceImagesUploaded) {
+        const intro = await runGeminiWebWithFallback({
+          prompt: 'Here are reference images for future messages.',
+          files: referenceImagePaths,
+          model,
+          cookieMap,
+          chatMetadata,
+          signal: controller.signal,
+        });
+        chatMetadata = intro.metadata;
+        persistedChatMetadata = intro.metadata;
+        referenceImagesUploaded = true;
+      }
+
       if (editImagePath) {
         const intro = await runGeminiWebWithFallback({
           prompt: 'Here is an image to edit',
           files: [editImagePath],
           model,
           cookieMap,
-          chatMetadata: null,
+          chatMetadata,
           signal: controller.signal,
         });
         const editPrompt = `Use image generation tool to ${prompt}`;
         const out = await runGeminiWebWithFallback({
           prompt: editPrompt,
-          files: attachmentPaths,
+          files: requestFilePaths,
           model,
           cookieMap,
           chatMetadata: intro.metadata,
           signal: controller.signal,
         });
+        if (keepSession) persistedChatMetadata = out.metadata;
         response = {
           text: out.text ?? null,
           thoughts: geminiOptions.showThoughts ? out.thoughts : null,
@@ -198,12 +350,13 @@ export function createGeminiWebExecutor(
       } else if (generateImagePath) {
         const out = await runGeminiWebWithFallback({
           prompt,
-          files: attachmentPaths,
+          files: requestFilePaths,
           model,
           cookieMap,
-          chatMetadata: null,
+          chatMetadata,
           signal: controller.signal,
         });
+        if (keepSession) persistedChatMetadata = out.metadata;
         response = {
           text: out.text ?? null,
           thoughts: geminiOptions.showThoughts ? out.thoughts : null,
@@ -216,15 +369,36 @@ export function createGeminiWebExecutor(
         if (!imageSave.saved) {
           throw new Error(`No images generated. Response text:\n${out.text || '(empty response)'}`);
         }
+      } else if (generateVideoPath) {
+        const out = await runGeminiWebWithFallback({
+          prompt,
+          files: requestFilePaths,
+          model,
+          cookieMap,
+          chatMetadata,
+          signal: controller.signal,
+        });
+        if (keepSession) persistedChatMetadata = out.metadata;
+        response = {
+          text: out.text ?? null,
+          thoughts: geminiOptions.showThoughts ? out.thoughts : null,
+          has_images: false,
+          image_count: 0,
+        };
+
+        const resolvedOutputPath = generateVideoPath ?? outputPath ?? 'generated.mp4';
+        const save = await saveFirstGeminiVideoFromOutput(out, cookieMap, resolvedOutputPath, controller.signal);
+        videoSaveSummary = { ...save, outputPath: resolvedOutputPath };
       } else {
         const out = await runGeminiWebWithFallback({
           prompt,
-          files: attachmentPaths,
+          files: requestFilePaths,
           model,
           cookieMap,
-          chatMetadata: null,
+          chatMetadata,
           signal: controller.signal,
         });
+        if (keepSession) persistedChatMetadata = out.metadata;
         response = {
           text: out.text ?? null,
           thoughts: geminiOptions.showThoughts ? out.thoughts : null,
@@ -246,6 +420,15 @@ export function createGeminiWebExecutor(
     if (response.has_images && response.image_count > 0) {
       const imagePath = generateImagePath || outputPath || 'generated.png';
       answerMarkdown += `\n\n*Generated ${response.image_count} image(s). Saved to: ${imagePath}*`;
+    }
+    if (videoSaveSummary) {
+      if (videoSaveSummary.saved) {
+        answerMarkdown += `\n\n*Generated ${videoSaveSummary.videoCount || 1} video(s). Saved to: ${videoSaveSummary.outputPath}*`;
+      } else if (/video_gen_chip/.test(answerMarkdown) || /video_gen_chip/.test(response.text ?? '')) {
+        answerMarkdown += '\n\n*Video generation is asynchronous. Check Gemini web UI to download the result.*';
+      } else {
+        answerMarkdown += '\n\n*No downloadable video URL found in Gemini response.*';
+      }
     }
 
     const tookMs = Date.now() - startTime;

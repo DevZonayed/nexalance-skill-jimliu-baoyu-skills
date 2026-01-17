@@ -216,6 +216,7 @@ class CdpConnection {
 export async function getGeminiCookieMapViaChrome(options?: {
   timeoutMs?: number;
   debugConnectTimeoutMs?: number;
+  tokenCheckTimeoutMs?: number;
   pollIntervalMs?: number;
   log?: GeminiWebLog;
   userDataDir?: string;
@@ -224,6 +225,7 @@ export async function getGeminiCookieMapViaChrome(options?: {
   const log = options?.log;
   const timeoutMs = options?.timeoutMs ?? 5 * 60_000;
   const debugConnectTimeoutMs = options?.debugConnectTimeoutMs ?? 30_000;
+  const tokenCheckTimeoutMs = options?.tokenCheckTimeoutMs ?? 30_000;
   const pollIntervalMs = options?.pollIntervalMs ?? 2_000;
   const userDataDir = options?.userDataDir ?? resolveGeminiWebChromeProfileDir();
 
@@ -290,7 +292,7 @@ export async function getGeminiCookieMapViaChrome(options?: {
       if (hasRequiredGeminiCookies(cookieMap)) {
         try {
           const controller = new AbortController();
-          const timer = setTimeout(() => controller.abort(), 10_000);
+          const timer = setTimeout(() => controller.abort(), tokenCheckTimeoutMs);
           try {
             await fetchGeminiAccessToken(cookieMap, controller.signal);
           } finally {
