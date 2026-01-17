@@ -58,7 +58,24 @@ Default behavior:
 - If changes include `feat:` or new skills → Minor bump
 - Otherwise → Patch bump
 
-### Step 3: Update Changelogs
+### Step 3: Check and Update README
+
+Before updating changelogs, check if README files need updates based on changes:
+
+**When to update README**:
+- New skills added → Add to skill list
+- Skills removed → Remove from skill list
+- Skill renamed → Update references
+- New features affecting usage → Update usage section
+- Breaking changes → Update migration notes
+
+**Files to sync**:
+- `README.md` (English)
+- `README.zh.md` (Chinese)
+
+If changes include new skills or significant feature changes, update both README files to reflect the new capabilities. Keep both files in sync with the same structure and information.
+
+### Step 4: Update Changelogs
 
 Files to update:
 - `CHANGELOG.md` (English)
@@ -86,7 +103,7 @@ Only include sections that have changes. Omit empty sections.
 
 For Chinese changelog, translate the content maintaining the same structure.
 
-### Step 4: Update marketplace.json
+### Step 5: Update marketplace.json
 
 Update `.claude-plugin/marketplace.json`:
 ```json
@@ -97,14 +114,14 @@ Update `.claude-plugin/marketplace.json`:
 }
 ```
 
-### Step 5: Commit Changes
+### Step 6: Commit Changes
 
 ```bash
-git add CHANGELOG.md CHANGELOG.zh.md .claude-plugin/marketplace.json
+git add README.md README.zh.md CHANGELOG.md CHANGELOG.zh.md .claude-plugin/marketplace.json
 git commit -m "chore: release v{NEW_VERSION}"
 ```
 
-### Step 6: Create Version Tag
+### Step 7: Create Version Tag
 
 ```bash
 git tag v{NEW_VERSION}
@@ -150,7 +167,12 @@ Changelog preview (EN):
 ### Fixes
 - `baoyu-bar`: fixed timeout issue
 
+README updates needed: Yes/No
+(If yes, show proposed changes)
+
 Files to modify:
+- README.md (if updates needed)
+- README.zh.md (if updates needed)
 - CHANGELOG.md
 - CHANGELOG.zh.md
 - .claude-plugin/marketplace.json

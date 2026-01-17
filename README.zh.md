@@ -178,13 +178,27 @@ npx add-skill jimliu/baoyu-skills
 /baoyu-comic posts/turing-story/source.md --style dramatic
 /baoyu-comic posts/turing-story/source.md --style ohmsha
 
-# 指定布局
+# 自定义风格（自然语言描述）
+/baoyu-comic posts/turing-story/source.md --style "水彩风格，边缘柔和"
+
+# 指定布局和比例
 /baoyu-comic posts/turing-story/source.md --layout cinematic
-/baoyu-comic posts/turing-story/source.md --layout webtoon
+/baoyu-comic posts/turing-story/source.md --aspect 16:9
+
+# 指定语言
+/baoyu-comic posts/turing-story/source.md --lang zh
 
 # 直接输入内容
 /baoyu-comic "图灵的故事与计算机科学的诞生"
 ```
+
+**选项**：
+| 选项 | 取值 |
+|------|------|
+| `--style` | `classic`（默认）、`dramatic`、`warm`、`tech`、`sepia`、`vibrant`、`ohmsha`、`realistic`，或自然语言描述 |
+| `--layout` | `standard`（默认）、`cinematic`、`dense`、`splash`、`mixed`、`webtoon` |
+| `--aspect` | `3:4`（默认，竖版）、`4:3`（横版）、`16:9`（宽屏） |
+| `--lang` | `auto`（默认）、`zh`、`en`、`ja` 等 |
 
 **风格**（视觉美学）：
 

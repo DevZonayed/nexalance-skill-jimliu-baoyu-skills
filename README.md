@@ -178,13 +178,27 @@ Knowledge comic creator supporting multiple styles (Logicomix/Ligne Claire, Ohms
 /baoyu-comic posts/turing-story/source.md --style dramatic
 /baoyu-comic posts/turing-story/source.md --style ohmsha
 
-# Specify layout
+# Custom style (natural language)
+/baoyu-comic posts/turing-story/source.md --style "watercolor with soft edges"
+
+# Specify layout and aspect ratio
 /baoyu-comic posts/turing-story/source.md --layout cinematic
-/baoyu-comic posts/turing-story/source.md --layout webtoon
+/baoyu-comic posts/turing-story/source.md --aspect 16:9
+
+# Specify language
+/baoyu-comic posts/turing-story/source.md --lang zh
 
 # Direct content input
 /baoyu-comic "The story of Alan Turing and the birth of computer science"
 ```
+
+**Options**:
+| Option | Values |
+|--------|--------|
+| `--style` | `classic` (default), `dramatic`, `warm`, `tech`, `sepia`, `vibrant`, `ohmsha`, `realistic`, or custom description |
+| `--layout` | `standard` (default), `cinematic`, `dense`, `splash`, `mixed`, `webtoon` |
+| `--aspect` | `3:4` (default, portrait), `4:3` (landscape), `16:9` (widescreen) |
+| `--lang` | `auto` (default), `zh`, `en`, `ja`, etc. |
 
 **Styles** (visual aesthetics):
 
