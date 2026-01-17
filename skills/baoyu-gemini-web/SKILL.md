@@ -19,6 +19,10 @@ npx -y bun scripts/main.ts "Hello, Gemini"
 npx -y bun scripts/main.ts --prompt "Explain quantum computing"
 npx -y bun scripts/main.ts --prompt "A cute cat" --image cat.png
 npx -y bun scripts/main.ts --promptfiles system.md content.md --image out.png
+
+# Multi-turn conversation (agent generates unique sessionId)
+npx -y bun scripts/main.ts "Remember this: 42" --sessionId my-unique-id-123
+npx -y bun scripts/main.ts "What number?" --sessionId my-unique-id-123
 ```
 
 ## Executor options (programmatic)
@@ -78,19 +82,21 @@ npx -y bun scripts/main.ts "Hello" --json
 
 ## Options
 
-| Option | Short | Description |
-|--------|-------|-------------|
-| `--prompt <text>` | `-p` | Prompt text |
-| `--promptfiles <files...>` | | Read prompt from files (concatenated in order) |
-| `--model <id>` | `-m` | Model: gemini-3-pro (default), gemini-2.5-pro, gemini-2.5-flash |
-| `--image [path]` | | Generate image, save to path (default: generated.png) |
-| `--json` | | Output as JSON |
-| `--login` | | Refresh cookies only, then exit |
-| `--cookie-path <path>` | | Custom cookie file path |
-| `--profile-dir <path>` | | Chrome profile directory |
-| `--help` | `-h` | Show help |
+| Option | Description |
+|--------|-------------|
+| `--prompt <text>`, `-p` | Prompt text |
+| `--promptfiles <files...>` | Read prompt from files (concatenated in order) |
+| `--model <id>`, `-m` | Model: gemini-3-pro (default), gemini-2.5-pro, gemini-2.5-flash |
+| `--image [path]` | Generate image, save to path (default: generated.png) |
+| `--sessionId <id>` | Session ID for multi-turn conversation (agent generates unique ID) |
+| `--list-sessions` | List saved sessions (max 100, sorted by update time) |
+| `--json` | Output as JSON |
+| `--login` | Refresh cookies only, then exit |
+| `--cookie-path <path>` | Custom cookie file path |
+| `--profile-dir <path>` | Chrome profile directory |
+| `--help`, `-h` | Show help |
 
-CLI note: `scripts/main.ts` currently supports text + image generation. Reference images / multi-turn / video generation are exposed via the executor options above.
+CLI note: `scripts/main.ts` supports text generation, image generation, and multi-turn conversations via `--sessionId`. Reference images and video generation are exposed via the executor API.
 
 ## Models
 
@@ -138,3 +144,22 @@ npx -y bun scripts/main.ts "Hello" --json | jq '.text'
 # Concatenate system.md + content.md as prompt
 npx -y bun scripts/main.ts --promptfiles system.md content.md --image output.png
 ```
+
+### Multi-turn conversation
+```bash
+# Start a session with unique ID (agent generates this)
+npx -y bun scripts/main.ts "You are a helpful math tutor." --sessionId task-abc123
+
+# Continue the conversation (remembers context)
+npx -y bun scripts/main.ts "What is 2+2?" --sessionId task-abc123
+npx -y bun scripts/main.ts "Now multiply that by 10" --sessionId task-abc123
+
+# List recent sessions (max 100, sorted by update time)
+npx -y bun scripts/main.ts --list-sessions
+```
+
+Session files are stored in `~/Library/Application Support/baoyu-skills/gemini-web/sessions/<id>.json` and contain:
+- `id`: Session ID
+- `metadata`: Gemini chat metadata for continuation
+- `messages`: Array of `{role, content, timestamp, error?}`
+- `createdAt`, `updatedAt`: Timestamps

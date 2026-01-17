@@ -34,3 +34,12 @@ export function resolveGeminiWebChromeProfileDir(): string {
   if (override) return path.resolve(override);
   return path.join(resolveGeminiWebDataDir(), PROFILE_DIR_NAME);
 }
+
+export function resolveGeminiWebSessionsDir(): string {
+  return path.join(resolveGeminiWebDataDir(), 'sessions');
+}
+
+export function resolveGeminiWebSessionPath(name: string): string {
+  const sanitized = name.replace(/[^a-zA-Z0-9_-]/g, '_');
+  return path.join(resolveGeminiWebSessionsDir(), `${sanitized}.json`);
+}

@@ -261,8 +261,14 @@ Style notes: [style-specific characteristics]
 1. Check available image generation skills
 2. If multiple skills available, ask user to choose
 
+**Session Management**:
+If the image generation skill supports `--sessionId`:
+1. Generate a unique session ID at the start (e.g., `xhs-{topic-slug}-{timestamp}`)
+2. Use the same session ID for all images in the series
+3. This ensures style consistency across all generated images
+
 **Generation Flow**:
-1. Call selected image generation skill with prompt file and output path
+1. Call selected image generation skill with prompt file, output path, and session ID
 2. Confirm generation success
 3. Report progress: "Generated X/N"
 4. Continue to next

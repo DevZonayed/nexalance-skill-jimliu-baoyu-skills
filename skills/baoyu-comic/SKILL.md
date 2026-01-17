@@ -104,6 +104,12 @@ For each page (cover + pages):
   - If text-only: concatenate prompts into single text
 - If multiple skills available, ask user preference
 
+**Session Management**:
+If the image generation skill supports `--sessionId`:
+1. Generate a unique session ID at the start (e.g., `comic-{topic-slug}-{timestamp}`)
+2. Use the same session ID for character sheet and all pages
+3. This ensures visual consistency (character appearance, style) across all generated images
+
 3. Report progress after each generation
 
 ### Step 5: Completion Report

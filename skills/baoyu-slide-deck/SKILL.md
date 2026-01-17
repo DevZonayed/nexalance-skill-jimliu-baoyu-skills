@@ -232,14 +232,21 @@ Style notes: [specific style characteristics to emphasize]
 
 ### Step 5: Generate Images
 
+**Session Management**:
+If the image generation skill supports `--sessionId`:
+1. Generate a unique session ID at the start (e.g., `slides-{topic-slug}-{timestamp}`)
+2. Use the same session ID for all slides
+3. This ensures visual consistency (color scheme, style, typography) across all slides
+
 For each slide, generate using:
 
 ```bash
-/baoyu-gemini-web --promptfiles [SKILL_ROOT]/skills/baoyu-slide-deck/prompts/system.md [TARGET_DIR]/prompts/01-cover.md --image [TARGET_DIR]/01-cover.png
+# With session support
+/baoyu-gemini-web --promptfiles [SKILL_ROOT]/skills/baoyu-slide-deck/prompts/system.md [TARGET_DIR]/prompts/01-cover.md --image [TARGET_DIR]/01-cover.png --sessionId slides-topic-20260117
 ```
 
 Generation flow:
-1. Generate images sequentially
+1. Generate images sequentially with the same session ID
 2. After each image, output progress: "Generated X/N"
 3. On failure, auto-retry once
 4. If retry fails, log reason, continue to next

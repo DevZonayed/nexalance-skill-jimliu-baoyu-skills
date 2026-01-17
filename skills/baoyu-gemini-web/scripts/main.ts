@@ -10,6 +10,7 @@ import {
   writeGeminiCookieMapToDisk,
 } from './cookie-store.js';
 import { resolveGeminiWebChromeProfileDir, resolveGeminiWebCookiePath } from './paths.js';
+import { readSession, writeSession, listSessions } from './session-store.js';
 
 function printUsage(exitCode = 0): never {
   const cookiePath = resolveGeminiWebCookiePath();
@@ -21,6 +22,10 @@ function printUsage(exitCode = 0): never {
   npx -y bun skills/baoyu-gemini-web/scripts/main.ts --prompt "A cute cat" --image generated.png
   npx -y bun skills/baoyu-gemini-web/scripts/main.ts --promptfiles system.md content.md --image out.png
 
+Multi-turn conversation (agent generates unique sessionId):
+  npx -y bun skills/baoyu-gemini-web/scripts/main.ts "Remember 42" --sessionId abc123
+  npx -y bun skills/baoyu-gemini-web/scripts/main.ts "What number?" --sessionId abc123
+
 Options:
   -p, --prompt <text>       Prompt text
   --promptfiles <files...>  Read prompt from one or more files (concatenated in order)
@@ -28,6 +33,8 @@ Options:
   --json                    Output JSON
   --image [path]            Generate an image and save it (default: ./generated.png)
   --reference <files...>    Reference images for vision input
+  --sessionId <id>          Session ID for multi-turn conversation (agent should generate unique ID)
+  --list-sessions           List saved sessions (max 100, sorted by update time)
   --login                   Only refresh cookies, then exit
   --cookie-path <path>      Cookie file path (default: ${cookiePath})
   --profile-dir <path>      Chrome profile dir (default: ${profileDir})
@@ -77,6 +84,8 @@ function parseArgs(argv: string[]): {
   cookiePath?: string;
   profileDir?: string;
   referenceImages?: string[];
+  sessionId?: string;
+  listSessions?: boolean;
 } {
   const out: ReturnType<typeof parseArgs> = {};
   const positional: string[] = [];
@@ -172,6 +181,19 @@ function parseArgs(argv: string[]): {
       }
       continue;
     }
+    if (arg === '--sessionId' || arg === '--session-id') {
+      out.sessionId = argv[i + 1] ?? '';
+      i += 1;
+      continue;
+    }
+    if (arg.startsWith('--sessionId=') || arg.startsWith('--session-id=')) {
+      out.sessionId = arg.split('=')[1] ?? '';
+      continue;
+    }
+    if (arg === '--list-sessions') {
+      out.listSessions = true;
+      continue;
+    }
 
     if (arg.startsWith('-')) {
       throw new Error(`Unknown option: ${arg}`);
@@ -194,6 +216,8 @@ function parseArgs(argv: string[]): {
   if (out.profileDir === '') delete out.profileDir;
   if (out.promptFiles?.length === 0) delete out.promptFiles;
   if (out.referenceImages?.length === 0) delete out.referenceImages;
+  if (out.sessionId != null) out.sessionId = out.sessionId.trim();
+  if (out.sessionId === '') delete out.sessionId;
 
   return out;
 }
@@ -267,6 +291,18 @@ async function main(): Promise<void> {
   const cookiePath = args.cookiePath ?? resolveGeminiWebCookiePath();
   const profileDir = args.profileDir ?? resolveGeminiWebChromeProfileDir();
 
+  if (args.listSessions) {
+    const sessions = await listSessions();
+    if (sessions.length === 0) {
+      console.log('No saved sessions.');
+    } else {
+      for (const { id, updatedAt } of sessions) {
+        console.log(`${id}\t${updatedAt}`);
+      }
+    }
+    return;
+  }
+
   if (args.loginOnly) {
     await ensureGeminiCookieMap({ cookiePath, profileDir });
     return;
@@ -276,6 +312,9 @@ async function main(): Promise<void> {
   const promptFromArgs = promptFromFiles || args.prompt;
   const prompt = promptFromArgs || (await readPromptFromStdin());
   if (!prompt) printUsage(1);
+
+  const sessionData = args.sessionId ? await readSession(args.sessionId) : null;
+  const chatMetadata = sessionData?.metadata ?? null;
 
   let cookieMap = await ensureGeminiCookieMap({ cookiePath, profileDir });
 
@@ -297,9 +336,13 @@ async function main(): Promise<void> {
         files: referenceImages,
         model: desiredModel,
         cookieMap,
-        chatMetadata: null,
+        chatMetadata,
         signal: controller.signal,
       });
+
+      if (args.sessionId && out.metadata) {
+        await writeSession(args.sessionId, out.metadata, prompt, out.text ?? '', out.errorMessage);
+      }
 
       let imageSaved = false;
       let imageCount = 0;
@@ -313,13 +356,8 @@ async function main(): Promise<void> {
       }
 
       if (args.json) {
-        process.stdout.write(
-          `${JSON.stringify(
-            imagePath ? { ...out, imageSaved, imageCount, imagePath } : out,
-            null,
-            2,
-          )}\n`,
-        );
+        const jsonOut = { ...out, ...(imagePath && { imageSaved, imageCount, imagePath }), ...(args.sessionId && { sessionId: args.sessionId }) };
+        process.stdout.write(`${JSON.stringify(jsonOut, null, 2)}\n`);
         if (out.errorMessage) process.exit(1);
         return;
       }
@@ -356,9 +394,13 @@ async function main(): Promise<void> {
           files: referenceImages,
           model: desiredModel,
           cookieMap,
-          chatMetadata: null,
+          chatMetadata,
           signal: controller.signal,
         });
+
+        if (args.sessionId && out.metadata) {
+          await writeSession(args.sessionId, out.metadata, prompt, out.text ?? '', out.errorMessage);
+        }
 
         let imageSaved = false;
         let imageCount = 0;
@@ -372,13 +414,8 @@ async function main(): Promise<void> {
         }
 
         if (args.json) {
-          process.stdout.write(
-            `${JSON.stringify(
-              imagePath ? { ...out, imageSaved, imageCount, imagePath } : out,
-              null,
-              2,
-            )}\n`,
-          );
+          const jsonOut = { ...out, ...(imagePath && { imageSaved, imageCount, imagePath }), ...(args.sessionId && { sessionId: args.sessionId }) };
+          process.stdout.write(`${JSON.stringify(jsonOut, null, 2)}\n`);
           if (out.errorMessage) process.exit(1);
           return;
         }
