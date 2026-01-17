@@ -135,6 +135,53 @@ Use this template when implementing image generation in skills:
 4. On failure, auto-retry once before reporting error
 ```
 
+### Output Path Convention
+
+Generated images from the same skill and source file MUST be grouped together:
+
+**With source file** (e.g., `/path/to/project/content/my-article.md`):
+```
+/path/to/project/content/my-article/<skill-suffix>/
+```
+- Remove file extension from source filename
+- Use skill name suffix (e.g., `xhs-images`, `cover-image`, `slide-deck`)
+- Example: source `/tests-data/anthropic-economic-index.md` + skill `baoyu-xhs-images` → `/tests-data/anthropic-economic-index/xhs-images/`
+
+**Without source file**:
+```
+./<skill-suffix>/<source-slug>/
+```
+- Place under current project directory
+- Use descriptive slug for the content
+
+**Directory Backup**:
+- If output directory already exists, rename existing directory with timestamp
+- Format: `<dirname>-backup-YYYYMMDD-HHMMSS`
+- Example: `xhs-images` → `xhs-images-backup-20260117-143052`
+
+### Image Naming Convention
+
+Image filenames MUST include meaningful slugs for readability:
+
+**Format**: `NN-{type}-[slug].png`
+- `NN`: Two-digit sequence number (01, 02, ...)
+- `{type}`: Image type (cover, content, page, slide, illustration, etc.)
+- `[slug]`: Descriptive kebab-case slug derived from content
+
+**Examples**:
+```
+01-cover-ai-future.png
+02-content-key-benefits.png
+03-page-enigma-machine.png
+04-slide-architecture-overview.png
+```
+
+**Slug Rules**:
+- Derived from image purpose or content (kebab-case)
+- Must be unique within the output directory
+- 2-5 words, concise but descriptive
+- When content changes significantly, update slug accordingly
+
 ### Best Practices
 
 - Always read the image generation skill's SKILL.md before calling

@@ -110,8 +110,12 @@ Detailed layout definitions: `references/layouts/<layout>.md`
 ```
 
 **Target directory**:
-- With source path: `[source-dir]/xhs-images/`
-- Without source: `xhs-outputs/YYYY-MM-DD/[topic-slug]/`
+- With source path: `[source-dir]/[source-name-no-ext]/xhs-images/`
+  - Example: `/tests-data/article.md` → `/tests-data/article/xhs-images/`
+- Without source: `./xhs-images/[topic-slug]/`
+
+**Directory backup**:
+- If target directory exists, rename existing to `<dirname>-backup-YYYYMMDD-HHMMSS`
 
 ## Workflow
 

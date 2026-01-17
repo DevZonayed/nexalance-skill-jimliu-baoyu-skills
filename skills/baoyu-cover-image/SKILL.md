@@ -76,30 +76,36 @@ When no `--style` is specified, the system analyzes content to select the best s
 
 ### With Article Path
 
-Save to `imgs/` subdirectory in the same folder as the article:
+Save to `[source-name-no-ext]/cover-image/` subdirectory in the same folder as the article:
 
 ```
 path/to/
 ├── article.md
-└── imgs/
+└── article/
+    └── cover-image/
+        ├── prompts/
+        │   └── cover.md
+        └── cover.png
+```
+
+Example: `/posts/ai-future.md` → `/posts/ai-future/cover-image/`
+
+### Without Article Path (Pasted Content)
+
+Save to `./cover-image/[topic-slug]/`:
+
+```
+cover-image/
+└── ai-future/
+    ├── source.md           # Saved pasted content
     ├── prompts/
     │   └── cover.md
     └── cover.png
 ```
 
-### Without Article Path (Pasted Content)
+### Directory Backup
 
-Save to `cover-outputs/YYYY-MM-DD/[topic-slug]/`:
-
-```
-cover-outputs/
-└── 2026-01-17/
-    └── ai-future/
-        ├── source.md           # Saved pasted content
-        ├── prompts/
-        │   └── cover.md
-        └── cover.png
-```
+If target directory exists, rename existing to `<dirname>-backup-YYYYMMDD-HHMMSS`
 
 ## Workflow
 

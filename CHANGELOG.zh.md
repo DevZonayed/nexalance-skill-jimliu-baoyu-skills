@@ -2,6 +2,16 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 0.8.0 - 2026-01-17
+
+### 新功能
+- `baoyu-xhs-images`：新增内容分析框架（`analysis-framework.md`、`outline-template.md`），提供结构化内容拆解与大纲生成方案。
+
+### 文档
+- `CLAUDE.md`：新增 Output Path Convention（目录结构、备份规则）和 Image Naming Convention（文件命名格式、slug 规则），统一图片生成输出规范。
+- 多个技能：更新文件管理规范，采用统一目录结构（`[source-name-no-ext]/<skill-suffix>/`）。
+  - `baoyu-article-illustrator`、`baoyu-comic`、`baoyu-cover-image`、`baoyu-slide-deck`、`baoyu-xhs-images`
+
 ## 0.7.0 - 2026-01-17
 
 ### 新功能

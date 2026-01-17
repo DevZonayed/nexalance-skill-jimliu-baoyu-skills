@@ -2,6 +2,16 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 0.8.0 - 2026-01-17
+
+### Features
+- `baoyu-xhs-images`: adds content analysis framework (`analysis-framework.md`, `outline-template.md`) for structured content breakdown and outline generation.
+
+### Documentation
+- `CLAUDE.md`: adds Output Path Convention (directory structure, backup rules) and Image Naming Convention (format, slug rules) to standardize image generation outputs.
+- Multiple skills: updates file management conventions to use unified directory structure (`[source-name-no-ext]/<skill-suffix>/`).
+  - `baoyu-article-illustrator`, `baoyu-comic`, `baoyu-cover-image`, `baoyu-slide-deck`, `baoyu-xhs-images`
+
 ## 0.7.0 - 2026-01-17
 
 ### Features

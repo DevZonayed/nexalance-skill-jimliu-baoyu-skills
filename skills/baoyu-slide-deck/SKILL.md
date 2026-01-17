@@ -89,18 +89,21 @@ This deck is designed for **reading and sharing**, not live presentation:
 ```
 content-dir/
 ├── source-content.md
-└── slide-deck/
-    ├── outline.md
-    ├── prompts/
-    │   └── 01-slide-cover.md, 02-slide-{slug}.md, ...
-    ├── 01-slide-cover.png, 02-slide-{slug}.png, ...
-    ├── {topic-slug}.pptx
-    └── {topic-slug}.pdf
+└── source-content/
+    └── slide-deck/
+        ├── outline.md
+        ├── prompts/
+        │   └── 01-slide-cover.md, 02-slide-{slug}.md, ...
+        ├── 01-slide-cover.png, 02-slide-{slug}.png, ...
+        ├── {topic-slug}.pptx
+        └── {topic-slug}.pdf
 ```
+
+Example: `/posts/ai-intro.md` → `/posts/ai-intro/slide-deck/`
 
 ### Without Content Path (Pasted Content)
 ```
-slide-outputs/YYYY-MM-DD/{topic-slug}/
+slide-deck/{topic-slug}/
 ├── source.md
 ├── outline.md
 ├── prompts/
@@ -108,6 +111,10 @@ slide-outputs/YYYY-MM-DD/{topic-slug}/
 ├── {topic-slug}.pptx
 └── {topic-slug}.pdf
 ```
+
+### Directory Backup
+
+If target directory exists, rename existing to `<dirname>-backup-YYYYMMDD-HHMMSS`
 
 ## Workflow
 

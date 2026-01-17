@@ -102,21 +102,43 @@ When no `--style` is specified, analyze content to select the best style:
 
 ## File Management
 
-Save illustrations to `imgs/` subdirectory in the same folder as the article:
+### With Article Path
+
+Save illustrations to `[source-name-no-ext]/illustrations/` subdirectory in the same folder as the article:
 
 ```
 path/to/
 ├── article.md
-└── imgs/
+└── article/
+    └── illustrations/
+        ├── outline.md
+        ├── prompts/
+        │   ├── illustration-concept-a.md
+        │   ├── illustration-concept-b.md
+        │   └── ...
+        ├── illustration-concept-a.png
+        ├── illustration-concept-b.png
+        └── ...
+```
+
+Example: `/posts/ai-future.md` → `/posts/ai-future/illustrations/`
+
+### Without Article Path (Pasted Content)
+
+Save to `./illustrations/[topic-slug]/`:
+
+```
+illustrations/
+└── ai-future/
+    ├── source.md
     ├── outline.md
     ├── prompts/
-    │   ├── illustration-concept-a.md
-    │   ├── illustration-concept-b.md
-    │   └── ...
-    ├── illustration-concept-a.png
-    ├── illustration-concept-b.png
-    └── ...
+    └── *.png
 ```
+
+### Directory Backup
+
+If target directory exists, rename existing to `<dirname>-backup-YYYYMMDD-HHMMSS`
 
 ## Workflow
 
@@ -266,7 +288,7 @@ Style notes: [specific style characteristics]
 Insert generated images at corresponding positions:
 
 ```markdown
-![illustration description](imgs/illustration-[slug].png)
+![illustration description]([article-name]/illustrations/illustration-[slug].png)
 ```
 
 **Insertion Rules**:

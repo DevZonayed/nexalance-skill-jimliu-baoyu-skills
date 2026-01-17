@@ -84,8 +84,12 @@ Style × Layout × Aspect can be freely combined. Custom styles can be described
 ```
 
 **Target directory**:
-- With source path: `[source-dir]/comic/`
-- Without source: `comic-outputs/YYYY-MM-DD/[topic-slug]/`
+- With source path: `[source-dir]/[source-name-no-ext]/comic/`
+  - Example: `/posts/turing-story.md` → `/posts/turing-story/comic/`
+- Without source: `./comic/[topic-slug]/`
+
+**Directory backup**:
+- If target directory exists, rename existing to `<dirname>-backup-YYYYMMDD-HHMMSS`
 
 ## Workflow
 
