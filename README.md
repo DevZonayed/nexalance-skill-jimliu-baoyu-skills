@@ -245,6 +245,34 @@ Post content to WeChat Official Account (微信公众号). Two modes available:
 
 Prerequisites: Google Chrome installed. First run requires QR code login (session preserved).
 
+## Customization
+
+All skills support customization via `EXTEND.md` files. Create an extension file to override default styles, add custom configurations, or define your own presets.
+
+**Extension paths** (checked in priority order):
+1. `.baoyu-skills/<skill-name>/EXTEND.md` - Project-level (for team/project-specific settings)
+2. `~/.baoyu-skills/<skill-name>/EXTEND.md` - User-level (for personal preferences)
+
+**Example**: To customize `baoyu-cover-image` with your brand colors:
+
+```bash
+mkdir -p .baoyu-skills/baoyu-cover-image
+```
+
+Then create `.baoyu-skills/baoyu-cover-image/EXTEND.md`:
+
+```markdown
+## Custom Styles
+
+### brand
+- Primary color: #1a73e8
+- Secondary color: #34a853
+- Font style: Modern sans-serif
+- Always include company logo watermark
+```
+
+The extension content will be loaded before skill execution and override defaults.
+
 ## Disclaimer
 
 ### baoyu-gemini-web

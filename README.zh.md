@@ -245,6 +245,34 @@ npx add-skill jimliu/baoyu-skills
 
 前置要求：已安装 Google Chrome，首次运行需扫码登录（登录状态会保存）
 
+## 自定义扩展
+
+所有技能支持通过 `EXTEND.md` 文件自定义。创建扩展文件可覆盖默认样式、添加自定义配置或定义个人预设。
+
+**扩展路径**（按优先级检查）：
+1. `.baoyu-skills/<skill-name>/EXTEND.md` - 项目级（团队/项目特定设置）
+2. `~/.baoyu-skills/<skill-name>/EXTEND.md` - 用户级（个人偏好设置）
+
+**示例**：为 `baoyu-cover-image` 自定义品牌配色：
+
+```bash
+mkdir -p .baoyu-skills/baoyu-cover-image
+```
+
+然后创建 `.baoyu-skills/baoyu-cover-image/EXTEND.md`：
+
+```markdown
+## 自定义风格
+
+### brand
+- 主色：#1a73e8
+- 辅色：#34a853
+- 字体风格：现代无衬线
+- 始终包含公司 logo 水印
+```
+
+扩展内容会在技能执行前加载，并覆盖默认设置。
+
 ## 免责声明
 
 ### baoyu-gemini-web
