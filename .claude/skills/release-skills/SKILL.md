@@ -121,6 +121,8 @@ git add README.md README.zh.md CHANGELOG.md CHANGELOG.zh.md .claude-plugin/marke
 git commit -m "chore: release v{NEW_VERSION}"
 ```
 
+**Note**: Do NOT add Co-Authored-By line. This is a release commit, not a code contribution.
+
 ### Step 7: Create Version Tag
 
 ```bash

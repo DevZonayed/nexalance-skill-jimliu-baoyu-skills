@@ -2,6 +2,16 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 0.8.2 - 2026-01-17
+
+### 重构
+- `baoyu-gemini-web`：重组脚本架构——将模块文件移至 `gemini-webapi/` 子目录，并更新 SKILL.md 使用 `${SKILL_DIR}` 路径引用。
+
+## 0.8.1 - 2026-01-17
+
+### 重构
+- `baoyu-gemini-web`：重构脚本架构——将 10 个分散的脚本文件整合为结构化的 `gemini-webapi/` 模块（gemini_webapi Python 库的 TypeScript 移植版）。
+
 ## 0.8.0 - 2026-01-17
 
 ### 新功能

@@ -2,6 +2,16 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 0.8.2 - 2026-01-17
+
+### Refactor
+- `baoyu-gemini-web`: reorganizes script architecture—moves modular files into `gemini-webapi/` subdirectory and updates SKILL.md with `${SKILL_DIR}` path references.
+
+## 0.8.1 - 2026-01-17
+
+### Refactor
+- `baoyu-gemini-web`: refactors script architecture—consolidates 10 separate files into a structured `gemini-webapi/` module (TypeScript port of gemini_webapi Python library).
+
 ## 0.8.0 - 2026-01-17
 
 ### Features
