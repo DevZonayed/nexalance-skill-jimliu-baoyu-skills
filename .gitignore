@@ -140,3 +140,6 @@ vite.config.ts.timestamp-*
 tests-data/
 
 .DS_Store
+
+# Skill extensions (user customization)
+.baoyu-skills/

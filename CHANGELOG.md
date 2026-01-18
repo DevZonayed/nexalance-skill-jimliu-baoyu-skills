@@ -2,6 +2,14 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 0.9.0 - 2026-01-17
+
+### Features
+- Extension support: all skills now support customization via `EXTEND.md` files. Check `.baoyu-skills/<skill-name>/EXTEND.md` (project) or `~/.baoyu-skills/<skill-name>/EXTEND.md` (user) for custom styles and configurations.
+
+### Other
+- `.gitignore`: adds `.baoyu-skills/` directory for user extension files.
+
 ## 0.8.2 - 2026-01-17
 
 ### Refactor

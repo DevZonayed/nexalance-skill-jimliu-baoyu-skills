@@ -175,3 +175,13 @@ Session files are stored in `~/Library/Application Support/baoyu-skills/gemini-w
 - `metadata`: Gemini chat metadata for continuation
 - `messages`: Array of `{role, content, timestamp, error?}`
 - `createdAt`, `updatedAt`: Timestamps
+
+## Extension Support
+
+Custom configurations via EXTEND.md.
+
+**Check paths** (priority order):
+1. `.baoyu-skills/baoyu-gemini-web/EXTEND.md` (project)
+2. `~/.baoyu-skills/baoyu-gemini-web/EXTEND.md` (user)
+
+If found, load before workflow. Extension content overrides defaults.

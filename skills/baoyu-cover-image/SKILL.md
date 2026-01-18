@@ -252,3 +252,13 @@ Preview the image to verify it matches your expectations.
 - Image generation typically takes 10-30 seconds
 - Title text uses user's confirmed language preference
 - Aspect ratio: 2.35:1 for cinematic/dramatic, 16:9 for widescreen, 1:1 for social media
+
+## Extension Support
+
+Custom styles and configurations via EXTEND.md.
+
+**Check paths** (priority order):
+1. `.baoyu-skills/baoyu-cover-image/EXTEND.md` (project)
+2. `~/.baoyu-skills/baoyu-cover-image/EXTEND.md` (user)
+
+If found, load before Step 1. Extension content overrides defaults.

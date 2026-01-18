@@ -101,3 +101,13 @@ cover_image: /path/to/cover.jpg
 - Always preview before using `--submit`
 - Browser closes automatically after operation
 - Supports macOS, Linux, and Windows
+
+## Extension Support
+
+Custom configurations via EXTEND.md.
+
+**Check paths** (priority order):
+1. `.baoyu-skills/baoyu-post-to-x/EXTEND.md` (project)
+2. `~/.baoyu-skills/baoyu-post-to-x/EXTEND.md` (user)
+
+If found, load before workflow. Extension content overrides defaults.

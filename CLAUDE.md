@@ -188,3 +188,21 @@ Image filenames MUST include meaningful slugs for readability:
 - Pass parameters exactly as documented in the skill
 - Handle failures gracefully with retry logic
 - Provide clear progress feedback to user
+
+## Extension Support
+
+Every SKILL.md MUST include an Extension Support section at the end:
+
+```markdown
+## Extension Support
+
+Custom styles and configurations via EXTEND.md.
+
+**Check paths** (priority order):
+1. `.baoyu-skills/<skill-name>/EXTEND.md` (project)
+2. `~/.baoyu-skills/<skill-name>/EXTEND.md` (user)
+
+If found, load before Step 1. Extension content overrides defaults.
+```
+
+Replace `<skill-name>` with the actual skill name (e.g., `baoyu-cover-image`).

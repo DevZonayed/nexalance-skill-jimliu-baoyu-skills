@@ -449,3 +449,13 @@ Typography: Clean hand-drawn lettering, simple sans-serif labels
 - Sensitive figures should use cartoon alternatives
 - Prompts written in user's confirmed language preference
 - Illustration text (labels, captions) should match article language
+
+## Extension Support
+
+Custom styles and configurations via EXTEND.md.
+
+**Check paths** (priority order):
+1. `.baoyu-skills/baoyu-article-illustrator/EXTEND.md` (project)
+2. `~/.baoyu-skills/baoyu-article-illustrator/EXTEND.md` (user)
+
+If found, load before Step 1. Extension content overrides defaults.

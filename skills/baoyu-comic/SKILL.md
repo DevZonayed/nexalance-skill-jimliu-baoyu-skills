@@ -388,3 +388,13 @@ Detailed templates and guidelines in `references/` directory:
 - `ohmsha-guide.md` - Ohmsha manga style specifics
 - `styles/` - Detailed style definitions
 - `layouts/` - Detailed layout definitions
+
+## Extension Support
+
+Custom styles and configurations via EXTEND.md.
+
+**Check paths** (priority order):
+1. `.baoyu-skills/baoyu-comic/EXTEND.md` (project)
+2. `~/.baoyu-skills/baoyu-comic/EXTEND.md` (user)
+
+If found, load before Step 1. Extension content overrides defaults.

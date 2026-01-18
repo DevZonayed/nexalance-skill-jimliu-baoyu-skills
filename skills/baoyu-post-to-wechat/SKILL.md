@@ -72,3 +72,13 @@ npx -y bun ${SKILL_DIR}/scripts/wechat-article.ts --markdown article.md --theme 
 - **Not logged in**: First run opens browser - scan QR code to log in, session is preserved
 - **Chrome not found**: Set `WECHAT_BROWSER_CHROME_PATH` environment variable
 - **Paste fails**: Check system clipboard permissions
+
+## Extension Support
+
+Custom configurations via EXTEND.md.
+
+**Check paths** (priority order):
+1. `.baoyu-skills/baoyu-post-to-wechat/EXTEND.md` (project)
+2. `~/.baoyu-skills/baoyu-post-to-wechat/EXTEND.md` (user)
+
+If found, load before workflow. Extension content overrides defaults.

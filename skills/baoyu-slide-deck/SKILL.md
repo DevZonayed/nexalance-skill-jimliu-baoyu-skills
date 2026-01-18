@@ -214,3 +214,13 @@ See `references/modification-guide.md` for:
 - Auto-retry once on generation failure
 - Use stylized alternatives for sensitive public figures
 - Maintain style consistency via session ID
+
+## Extension Support
+
+Custom styles and configurations via EXTEND.md.
+
+**Check paths** (priority order):
+1. `.baoyu-skills/baoyu-slide-deck/EXTEND.md` (project)
+2. `~/.baoyu-skills/baoyu-slide-deck/EXTEND.md` (user)
+
+If found, load before Step 1. Extension content overrides defaults.

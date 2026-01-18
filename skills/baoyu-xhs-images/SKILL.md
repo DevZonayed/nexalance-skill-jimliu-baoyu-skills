@@ -301,3 +301,13 @@ Detailed templates and guidelines in `references/` directory:
 - Use cartoon alternatives for sensitive public figures
 - All prompts and text use confirmed language preference
 - Maintain style consistency across all images in series
+
+## Extension Support
+
+Custom styles and configurations via EXTEND.md.
+
+**Check paths** (priority order):
+1. `.baoyu-skills/baoyu-xhs-images/EXTEND.md` (project)
+2. `~/.baoyu-skills/baoyu-xhs-images/EXTEND.md` (user)
+
+If found, load before Step 1. Extension content overrides defaults.

@@ -2,6 +2,14 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 0.9.0 - 2026-01-17
+
+### 新功能
+- 扩展支持：所有技能现支持通过 `EXTEND.md` 文件自定义。检查 `.baoyu-skills/<skill-name>/EXTEND.md`（项目级）或 `~/.baoyu-skills/<skill-name>/EXTEND.md`（用户级）配置自定义样式与设置。
+
+### 其他
+- `.gitignore`：添加 `.baoyu-skills/` 目录忽略，存放用户扩展文件。
+
 ## 0.8.2 - 2026-01-17
 
 ### 重构
