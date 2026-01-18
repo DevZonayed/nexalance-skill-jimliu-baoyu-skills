@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 0.11.0 - 2026-01-18
+
+### Features
+- `baoyu-gemini-web`: adds disclaimer consent check flow—requires user acceptance before first use, with persistent consent storage per platform.
+
 ## 0.10.0 - 2026-01-18
 
 ### Features

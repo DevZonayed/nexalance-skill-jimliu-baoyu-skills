@@ -26,6 +26,86 @@ Supports:
 | `scripts/main.ts` | CLI entry point for text/image generation |
 | `scripts/gemini-webapi/*` | TypeScript port of `gemini_webapi` (GeminiClient, types, utils) |
 
+## ⚠️ Disclaimer (REQUIRED)
+
+**Before using this skill**, the consent check MUST be performed.
+
+### Consent Check Flow
+
+**Step 1**: Check consent file
+
+```bash
+# macOS
+cat ~/Library/Application\ Support/baoyu-skills/gemini-web/consent.json 2>/dev/null
+
+# Linux
+cat ~/.local/share/baoyu-skills/gemini-web/consent.json 2>/dev/null
+
+# Windows (PowerShell)
+Get-Content "$env:APPDATA\baoyu-skills\gemini-web\consent.json" 2>$null
+```
+
+**Step 2**: If consent exists and `accepted: true` with matching `disclaimerVersion: "1.0"`:
+
+Print warning and proceed:
+```
+⚠️  Warning: Using reverse-engineered Gemini Web API (not official). Accepted on: <acceptedAt date>
+```
+
+**Step 3**: If consent file doesn't exist or `disclaimerVersion` mismatch:
+
+Display disclaimer and ask user:
+
+```
+⚠️  DISCLAIMER
+
+This tool uses a reverse-engineered Gemini Web API, NOT an official Google API.
+
+Risks:
+- May break without notice if Google changes their API
+- No official support or guarantees
+- Use at your own risk
+
+Do you accept these terms and wish to continue?
+```
+
+Use `AskUserQuestion` tool with options:
+- **Yes, I accept** - Continue and save consent
+- **No, I decline** - Exit immediately
+
+**Step 4**: On acceptance, create consent file:
+
+```bash
+# macOS
+mkdir -p ~/Library/Application\ Support/baoyu-skills/gemini-web
+cat > ~/Library/Application\ Support/baoyu-skills/gemini-web/consent.json << 'EOF'
+{
+  "version": 1,
+  "accepted": true,
+  "acceptedAt": "<ISO timestamp>",
+  "disclaimerVersion": "1.0"
+}
+EOF
+
+# Linux
+mkdir -p ~/.local/share/baoyu-skills/gemini-web
+cat > ~/.local/share/baoyu-skills/gemini-web/consent.json << 'EOF'
+{
+  "version": 1,
+  "accepted": true,
+  "acceptedAt": "<ISO timestamp>",
+  "disclaimerVersion": "1.0"
+}
+EOF
+```
+
+**Step 5**: On decline, output message and stop:
+```
+User declined the disclaimer. Exiting.
+```
+
+---
+
 ## Quick start
 
 ```bash
