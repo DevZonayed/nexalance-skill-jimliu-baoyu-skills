@@ -2,6 +2,11 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.4.2 - 2026-01-19
+
+### 文档
+- `baoyu-danger-gemini-web`：添加支持的浏览器列表（Chrome、Chromium、Edge）和代理配置指南。
+
 ## 1.4.1 - 2026-01-18
 
 ### 修复

@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.4.2 - 2026-01-19
+
+### Documentation
+- `baoyu-danger-gemini-web`: adds supported browsers list (Chrome, Chromium, Edge) and proxy configuration guide.
+
 ## 1.4.1 - 2026-01-18
 
 ### Fixes
