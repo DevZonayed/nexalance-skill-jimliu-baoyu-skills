@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.7.0 - 2026-01-19
+
+### Features
+- `baoyu-comic`: adds `shoujo` style—classic shoujo manga style with large sparkling eyes, flowers, sparkles, and soft pink/lavender palette. Best for romance, coming-of-age, friendship, and emotional drama.
+
 ## 1.6.0 - 2026-01-19
 
 ### Features
