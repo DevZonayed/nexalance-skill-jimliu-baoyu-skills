@@ -45,6 +45,7 @@ Analyze article structure and content, identify positions requiring visual aids,
 | `chalkboard` | Classroom chalk drawing style | Education, tutorials, workshops |
 | `editorial` | Magazine-style infographic | Tech explainers, journalism |
 | `flat` | Modern flat vector illustration | Startups, digital, contemporary |
+| `flat-doodle` | Bold outlines, pastel colors, cute | Productivity, SaaS, workflows |
 | `retro` | 80s/90s vibrant nostalgic | Pop culture, gaming, entertainment |
 | `blueprint` | Technical schematics, engineering precision | Architecture, system design |
 | `vector-illustration` | Flat vector with black outlines, retro colors | Educational, creative, brand content |
@@ -74,6 +75,7 @@ When no `--style` is specified, analyze content to select the best style:
 | Education, classroom, teaching, school, lecture, workshop | `chalkboard` |
 | Explainer, journalism, magazine, in-depth, investigation | `editorial` |
 | Modern, startup, app, product, digital marketing, saas | `flat` |
+| Productivity, workflow, cute, tools, app tutorial | `flat-doodle` |
 | 80s, 90s, retro, pop culture, music, nostalgia | `retro` |
 | Architecture, system, infrastructure, engineering, technical | `blueprint` |
 | Brand, explainer, children, cute, toy, geometric | `vector-illustration` |

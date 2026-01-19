@@ -127,7 +127,7 @@ npx add-skill jimliu/baoyu-skills
 /baoyu-cover-image path/to/article.md --no-title
 ```
 
-可用风格：`elegant`（默认）、`blueprint`、`bold-editorial`、`chalkboard`、`dark-atmospheric`、`editorial-infographic`、`fantasy-animation`、`intuition-machine`、`minimal`、`nature`、`notion`、`pixel-art`、`playful`、`retro`、`sketch-notes`、`vector-illustration`、`vintage`、`warm`、`watercolor`
+可用风格：`elegant`（默认）、`blueprint`、`bold-editorial`、`chalkboard`、`dark-atmospheric`、`editorial-infographic`、`fantasy-animation`、`flat-doodle`、`intuition-machine`、`minimal`、`nature`、`notion`、`pixel-art`、`playful`、`retro`、`sketch-notes`、`vector-illustration`、`vintage`、`warm`、`watercolor`
 
 **风格预览**：
 
@@ -145,8 +145,8 @@ npx add-skill jimliu/baoyu-skills
 | playful | retro | sketch-notes |
 | ![vector-illustration](./screenshots/cover-image-styles/vector-illustration.webp) | ![vintage](./screenshots/cover-image-styles/vintage.webp) | ![warm](./screenshots/cover-image-styles/warm.webp) |
 | vector-illustration | vintage | warm |
-| ![watercolor](./screenshots/cover-image-styles/watercolor.webp) | | |
-| watercolor | | |
+| ![watercolor](./screenshots/cover-image-styles/watercolor.webp) | ![flat-doodle](./screenshots/cover-image-styles/flat-doodle.webp) | |
+| watercolor | flat-doodle | |
 
 #### baoyu-slide-deck
 
@@ -235,7 +235,7 @@ npx add-skill jimliu/baoyu-skills
 **选项**：
 | 选项 | 取值 |
 |------|------|
-| `--style` | `classic`（默认）、`dramatic`、`warm`、`sepia`、`vibrant`、`ohmsha`、`realistic`、`wuxia`，或自然语言描述 |
+| `--style` | `classic`（默认）、`dramatic`、`warm`、`sepia`、`vibrant`、`ohmsha`、`realistic`、`wuxia`、`shoujo`，或自然语言描述 |
 | `--layout` | `standard`（默认）、`cinematic`、`dense`、`splash`、`mixed`、`webtoon` |
 | `--aspect` | `3:4`（默认，竖版）、`4:3`（横版）、`16:9`（宽屏） |
 | `--lang` | `auto`（默认）、`zh`、`en`、`ja` 等 |
@@ -252,6 +252,7 @@ npx add-skill jimliu/baoyu-skills
 | `ohmsha` | 欧姆社漫画风格，视觉比喻、道具、学生/导师互动 | 技术教程、复杂概念（机器学习、物理） |
 | `realistic` | 全彩写实日漫风格，数字绘画、平滑渐变、准确人体比例 | 红酒、美食、商业、生活方式、专业话题 |
 | `wuxia` | 港漫武侠风格，水墨笔触、动态打斗、气功特效 | 武侠、仙侠、中国历史小说 |
+| `shoujo` | 经典少女漫画风格，大眼睛闪亮高光、花朵星星装饰、粉紫色调 | 恋爱、青春成长、友情、情感故事 |
 
 **风格预览**：
 
@@ -261,8 +262,8 @@ npx add-skill jimliu/baoyu-skills
 | classic | dramatic | warm |
 | ![sepia](./screenshots/comic-styles/sepia.webp) | ![vibrant](./screenshots/comic-styles/vibrant.webp) | ![ohmsha](./screenshots/comic-styles/ohmsha.webp) |
 | sepia | vibrant | ohmsha |
-| ![realistic](./screenshots/comic-styles/realistic.webp) | ![wuxia](./screenshots/comic-styles/wuxia.webp) | |
-| realistic | wuxia | |
+| ![realistic](./screenshots/comic-styles/realistic.webp) | ![wuxia](./screenshots/comic-styles/wuxia.webp) | ![shoujo](./screenshots/comic-styles/shoujo.webp) |
+| realistic | wuxia | shoujo |
 
 **布局**（分镜排列）：
 | 布局 | 每页分镜数 | 适用场景 |
@@ -313,6 +314,7 @@ npx add-skill jimliu/baoyu-skills
 | `chalkboard` | 教室粉笔画风格 | 教育、教程 |
 | `editorial` | 杂志风格信息图 | 科技解说、新闻 |
 | `flat` | 现代扁平矢量插画 | 创业公司、数字化 |
+| `flat-doodle` | 粗轮廓、粉彩色、可爱风 | 生产力、SaaS、工作流 |
 | `retro` | 80/90 年代复古鲜艳 | 流行文化、娱乐 |
 | `blueprint` | 技术蓝图、工程精度 | 架构、系统设计 |
 | `vector-illustration` | 扁平矢量、黑色轮廓、复古 | 教育、创意、品牌 |
@@ -337,8 +339,8 @@ npx add-skill jimliu/baoyu-skills
 | flat | retro | blueprint |
 | ![vector-illustration](./screenshots/article-illustrator-styles/vector-illustration.webp) | ![sketch-notes](./screenshots/article-illustrator-styles/sketch-notes.webp) | ![pixel-art](./screenshots/article-illustrator-styles/pixel-art.webp) |
 | vector-illustration | sketch-notes | pixel-art |
-| ![intuition-machine](./screenshots/article-illustrator-styles/intuition-machine.webp) | ![fantasy-animation](./screenshots/article-illustrator-styles/fantasy-animation.webp) | |
-| intuition-machine | fantasy-animation | |
+| ![intuition-machine](./screenshots/article-illustrator-styles/intuition-machine.webp) | ![fantasy-animation](./screenshots/article-illustrator-styles/fantasy-animation.webp) | ![flat-doodle](./screenshots/article-illustrator-styles/flat-doodle.webp) |
+| intuition-machine | fantasy-animation | flat-doodle |
 
 #### baoyu-post-to-x
 

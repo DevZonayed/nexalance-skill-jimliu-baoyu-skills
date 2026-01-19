@@ -127,7 +127,7 @@ Generate hand-drawn style cover images for articles with multiple style options.
 /baoyu-cover-image path/to/article.md --no-title
 ```
 
-Available styles: `elegant` (default), `blueprint`, `bold-editorial`, `chalkboard`, `dark-atmospheric`, `editorial-infographic`, `fantasy-animation`, `intuition-machine`, `minimal`, `nature`, `notion`, `pixel-art`, `playful`, `retro`, `sketch-notes`, `vector-illustration`, `vintage`, `warm`, `watercolor`
+Available styles: `elegant` (default), `blueprint`, `bold-editorial`, `chalkboard`, `dark-atmospheric`, `editorial-infographic`, `fantasy-animation`, `flat-doodle`, `intuition-machine`, `minimal`, `nature`, `notion`, `pixel-art`, `playful`, `retro`, `sketch-notes`, `vector-illustration`, `vintage`, `warm`, `watercolor`
 
 **Style Previews**:
 
@@ -145,8 +145,8 @@ Available styles: `elegant` (default), `blueprint`, `bold-editorial`, `chalkboar
 | playful | retro | sketch-notes |
 | ![vector-illustration](./screenshots/cover-image-styles/vector-illustration.webp) | ![vintage](./screenshots/cover-image-styles/vintage.webp) | ![warm](./screenshots/cover-image-styles/warm.webp) |
 | vector-illustration | vintage | warm |
-| ![watercolor](./screenshots/cover-image-styles/watercolor.webp) | | |
-| watercolor | | |
+| ![watercolor](./screenshots/cover-image-styles/watercolor.webp) | ![flat-doodle](./screenshots/cover-image-styles/flat-doodle.webp) | |
+| watercolor | flat-doodle | |
 
 #### baoyu-slide-deck
 
@@ -235,7 +235,7 @@ Knowledge comic creator supporting multiple styles (Logicomix/Ligne Claire, Ohms
 **Options**:
 | Option | Values |
 |--------|--------|
-| `--style` | `classic` (default), `dramatic`, `warm`, `sepia`, `vibrant`, `ohmsha`, `realistic`, `wuxia`, or custom description |
+| `--style` | `classic` (default), `dramatic`, `warm`, `sepia`, `vibrant`, `ohmsha`, `realistic`, `wuxia`, `shoujo`, or custom description |
 | `--layout` | `standard` (default), `cinematic`, `dense`, `splash`, `mixed`, `webtoon` |
 | `--aspect` | `3:4` (default, portrait), `4:3` (landscape), `16:9` (widescreen) |
 | `--lang` | `auto` (default), `zh`, `en`, `ja`, etc. |
@@ -252,6 +252,7 @@ Knowledge comic creator supporting multiple styles (Logicomix/Ligne Claire, Ohms
 | `ohmsha` | Manga guide style with visual metaphors, gadgets, student/mentor dynamic | Technical tutorials, complex concepts (ML, physics) |
 | `realistic` | Full-color realistic manga with digital painting, smooth gradients, accurate proportions | Wine, food, business, lifestyle, professional topics |
 | `wuxia` | Hong Kong martial arts style with ink brush strokes, dynamic combat, qi effects | Martial arts, wuxia/xianxia, Chinese historical fiction |
+| `shoujo` | Classic shoujo manga with large sparkling eyes, flowers, sparkles, soft pink/lavender palette | Romance, coming-of-age, friendship, emotional drama |
 
 **Style Previews**:
 
@@ -261,8 +262,8 @@ Knowledge comic creator supporting multiple styles (Logicomix/Ligne Claire, Ohms
 | classic | dramatic | warm |
 | ![sepia](./screenshots/comic-styles/sepia.webp) | ![vibrant](./screenshots/comic-styles/vibrant.webp) | ![ohmsha](./screenshots/comic-styles/ohmsha.webp) |
 | sepia | vibrant | ohmsha |
-| ![realistic](./screenshots/comic-styles/realistic.webp) | ![wuxia](./screenshots/comic-styles/wuxia.webp) | |
-| realistic | wuxia | |
+| ![realistic](./screenshots/comic-styles/realistic.webp) | ![wuxia](./screenshots/comic-styles/wuxia.webp) | ![shoujo](./screenshots/comic-styles/shoujo.webp) |
+| realistic | wuxia | shoujo |
 
 **Layouts** (panel arrangement):
 | Layout | Panels/Page | Best for |
@@ -313,6 +314,7 @@ Smart article illustration skill. Analyzes article content and generates illustr
 | `chalkboard` | Classroom chalk drawing style | Education, tutorials |
 | `editorial` | Magazine-style infographic | Tech explainers, journalism |
 | `flat` | Modern flat vector illustration | Startups, digital |
+| `flat-doodle` | Bold outlines, pastel colors, cute | Productivity, SaaS, workflows |
 | `retro` | 80s/90s vibrant nostalgic | Pop culture, entertainment |
 | `blueprint` | Technical schematics, engineering | Architecture, system design |
 | `vector-illustration` | Flat vector, black outlines, retro | Educational, creative, brand |
@@ -337,8 +339,8 @@ Smart article illustration skill. Analyzes article content and generates illustr
 | flat | retro | blueprint |
 | ![vector-illustration](./screenshots/article-illustrator-styles/vector-illustration.webp) | ![sketch-notes](./screenshots/article-illustrator-styles/sketch-notes.webp) | ![pixel-art](./screenshots/article-illustrator-styles/pixel-art.webp) |
 | vector-illustration | sketch-notes | pixel-art |
-| ![intuition-machine](./screenshots/article-illustrator-styles/intuition-machine.webp) | ![fantasy-animation](./screenshots/article-illustrator-styles/fantasy-animation.webp) | |
-| intuition-machine | fantasy-animation | |
+| ![intuition-machine](./screenshots/article-illustrator-styles/intuition-machine.webp) | ![fantasy-animation](./screenshots/article-illustrator-styles/fantasy-animation.webp) | ![flat-doodle](./screenshots/article-illustrator-styles/flat-doodle.webp) |
+| intuition-machine | fantasy-animation | flat-doodle |
 
 #### baoyu-post-to-x
 

@@ -47,6 +47,7 @@ Generate hand-drawn style cover images for articles with multiple style options.
 | Style | Description |
 |-------|-------------|
 | `elegant` (Default) | Refined, sophisticated, understated |
+| `flat-doodle` | Bold outlines, pastel colors, cute rounded shapes |
 | `blueprint` | Technical schematics, engineering precision |
 | `bold-editorial` | Magazine cover impact, dramatic typography |
 | `chalkboard` | Black chalkboard, colorful chalk drawings |
@@ -87,6 +88,7 @@ When no `--style` is specified, the system analyzes content to select the best s
 | Nature, eco, wellness, health, organic | `nature` |
 | Pop culture, 80s/90s nostalgia, badges | `retro` |
 | Product, SaaS, dashboard, productivity | `notion` |
+| Productivity, workflow, app, tools, cute | `flat-doodle` |
 | Gaming, retro tech, developer, 8-bit | `pixel-art` |
 | Educational, tutorial, knowledge sharing | `sketch-notes` |
 | Creative proposals, brand, toy-like | `vector-illustration` |
