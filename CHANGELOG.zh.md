@@ -2,6 +2,11 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.4.1 - 2026-01-18
+
+### 修复
+- `baoyu-post-to-x`：支持 X Articles 多语言 UI 选择器（感谢 [@ianchenx](https://github.com/ianchenx) 贡献）。
+
 ## 1.4.0 - 2026-01-18
 
 ### 新功能

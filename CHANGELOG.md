@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.4.1 - 2026-01-18
+
+### Fixes
+- `baoyu-post-to-x`: supports multi-language UI selectors for X Articles (contributed by [@ianchenx](https://github.com/ianchenx)).
+
 ## 1.4.0 - 2026-01-18
 
 ### Features
