@@ -48,7 +48,6 @@ Generate hand-drawn style cover images for articles with multiple style options.
 |-------|-------------|
 | `elegant` (Default) | Refined, sophisticated, understated |
 | `blueprint` | Technical schematics, engineering precision |
-| `bold` | High contrast, attention-grabbing, energetic |
 | `bold-editorial` | Magazine cover impact, dramatic typography |
 | `chalkboard` | Black chalkboard, colorful chalk drawings |
 | `dark-atmospheric` | Cinematic dark mode, glowing accents |
@@ -83,7 +82,6 @@ When no `--style` is specified, the system analyzes content to select the best s
 | Storytelling, children, fantasy, magical | `fantasy-animation` |
 | Technical docs, academic, bilingual | `intuition-machine` |
 | Personal story, emotion, growth, life | `warm` |
-| Controversial, urgent, must-read, warning | `bold` |
 | Simple, zen, focus, essential | `minimal` |
 | Fun, easy, beginner, casual | `playful` |
 | Nature, eco, wellness, health, organic | `nature` |

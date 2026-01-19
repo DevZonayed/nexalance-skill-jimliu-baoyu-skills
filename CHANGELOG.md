@@ -2,6 +2,18 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.5.0 - 2026-01-19
+
+### Features
+- `baoyu-article-illustrator`: expands style library to 20 styles—extracts styles to `references/styles/` directory and adds 11 new styles (`blueprint`, `chalkboard`, `editorial`, `fantasy-animation`, `flat`, `intuition-machine`, `pixel-art`, `retro`, `scientific`, `sketch-notes`, `vector-illustration`, `vintage`, `watercolor`).
+
+### Breaking Changes
+- `baoyu-article-illustrator`: removes `tech`, `bold`, and `isometric` styles.
+- `baoyu-cover-image`: removes `bold` style (use `bold-editorial` for bold editorial content).
+
+### Documentation
+- `README.md`, `README.zh.md`: adds style preview gallery for article-illustrator (20 styles).
+
 ## 1.4.2 - 2026-01-19
 
 ### Documentation

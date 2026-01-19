@@ -127,26 +127,26 @@ Generate hand-drawn style cover images for articles with multiple style options.
 /baoyu-cover-image path/to/article.md --no-title
 ```
 
-Available styles: `elegant` (default), `blueprint`, `bold`, `bold-editorial`, `chalkboard`, `dark-atmospheric`, `editorial-infographic`, `fantasy-animation`, `intuition-machine`, `minimal`, `nature`, `notion`, `pixel-art`, `playful`, `retro`, `sketch-notes`, `vector-illustration`, `vintage`, `warm`, `watercolor`
+Available styles: `elegant` (default), `blueprint`, `bold-editorial`, `chalkboard`, `dark-atmospheric`, `editorial-infographic`, `fantasy-animation`, `intuition-machine`, `minimal`, `nature`, `notion`, `pixel-art`, `playful`, `retro`, `sketch-notes`, `vector-illustration`, `vintage`, `warm`, `watercolor`
 
 **Style Previews**:
 
 | | | |
 |:---:|:---:|:---:|
-| ![elegant](./screenshots/cover-image-styles/elegant.webp) | ![blueprint](./screenshots/cover-image-styles/blueprint.webp) | ![bold](./screenshots/cover-image-styles/bold.webp) |
-| elegant | blueprint | bold |
-| ![bold-editorial](./screenshots/cover-image-styles/bold-editorial.webp) | ![chalkboard](./screenshots/cover-image-styles/chalkboard.webp) | ![dark-atmospheric](./screenshots/cover-image-styles/dark-atmospheric.webp) |
-| bold-editorial | chalkboard | dark-atmospheric |
-| ![editorial-infographic](./screenshots/cover-image-styles/editorial-infographic.webp) | ![fantasy-animation](./screenshots/cover-image-styles/fantasy-animation.webp) | ![intuition-machine](./screenshots/cover-image-styles/intuition-machine.webp) |
-| editorial-infographic | fantasy-animation | intuition-machine |
-| ![minimal](./screenshots/cover-image-styles/minimal.webp) | ![nature](./screenshots/cover-image-styles/nature.webp) | ![notion](./screenshots/cover-image-styles/notion.webp) |
-| minimal | nature | notion |
-| ![pixel-art](./screenshots/cover-image-styles/pixel-art.webp) | ![playful](./screenshots/cover-image-styles/playful.webp) | ![retro](./screenshots/cover-image-styles/retro.webp) |
-| pixel-art | playful | retro |
-| ![sketch-notes](./screenshots/cover-image-styles/sketch-notes.webp) | ![vector-illustration](./screenshots/cover-image-styles/vector-illustration.webp) | ![vintage](./screenshots/cover-image-styles/vintage.webp) |
-| sketch-notes | vector-illustration | vintage |
-| ![warm](./screenshots/cover-image-styles/warm.webp) | ![watercolor](./screenshots/cover-image-styles/watercolor.webp) | |
-| warm | watercolor | |
+| ![elegant](./screenshots/cover-image-styles/elegant.webp) | ![blueprint](./screenshots/cover-image-styles/blueprint.webp) | ![bold-editorial](./screenshots/cover-image-styles/bold-editorial.webp) |
+| elegant | blueprint | bold-editorial |
+| ![chalkboard](./screenshots/cover-image-styles/chalkboard.webp) | ![dark-atmospheric](./screenshots/cover-image-styles/dark-atmospheric.webp) | ![editorial-infographic](./screenshots/cover-image-styles/editorial-infographic.webp) |
+| chalkboard | dark-atmospheric | editorial-infographic |
+| ![fantasy-animation](./screenshots/cover-image-styles/fantasy-animation.webp) | ![intuition-machine](./screenshots/cover-image-styles/intuition-machine.webp) | ![minimal](./screenshots/cover-image-styles/minimal.webp) |
+| fantasy-animation | intuition-machine | minimal |
+| ![nature](./screenshots/cover-image-styles/nature.webp) | ![notion](./screenshots/cover-image-styles/notion.webp) | ![pixel-art](./screenshots/cover-image-styles/pixel-art.webp) |
+| nature | notion | pixel-art |
+| ![playful](./screenshots/cover-image-styles/playful.webp) | ![retro](./screenshots/cover-image-styles/retro.webp) | ![sketch-notes](./screenshots/cover-image-styles/sketch-notes.webp) |
+| playful | retro | sketch-notes |
+| ![vector-illustration](./screenshots/cover-image-styles/vector-illustration.webp) | ![vintage](./screenshots/cover-image-styles/vintage.webp) | ![warm](./screenshots/cover-image-styles/warm.webp) |
+| vector-illustration | vintage | warm |
+| ![watercolor](./screenshots/cover-image-styles/watercolor.webp) | | |
+| watercolor | | |
 
 #### baoyu-slide-deck
 
@@ -288,8 +288,57 @@ Knowledge comic creator supporting multiple styles (Logicomix/Ligne Claire, Ohms
 Smart article illustration skill. Analyzes article content and generates illustrations at positions requiring visual aids.
 
 ```bash
+# Auto-select style based on content
 /baoyu-article-illustrator path/to/article.md
+
+# Specify a style
+/baoyu-article-illustrator path/to/article.md --style warm
+/baoyu-article-illustrator path/to/article.md --style watercolor
 ```
+
+**Styles** (visual aesthetics):
+
+| Style | Description | Best For |
+|-------|-------------|----------|
+| `notion` (default) | Minimalist hand-drawn line art | Knowledge sharing, SaaS, productivity |
+| `elegant` | Refined, sophisticated, professional | Business, thought leadership |
+| `warm` | Friendly, approachable, human-centered | Personal growth, lifestyle |
+| `minimal` | Ultra-clean, zen-like, focused | Philosophy, minimalism |
+| `playful` | Fun, creative, whimsical | Tutorials, beginner guides |
+| `nature` | Organic, calm, earthy | Sustainability, wellness |
+| `sketch` | Raw, authentic, notebook-style | Ideas, brainstorming |
+| `watercolor` | Soft artistic with natural warmth | Lifestyle, travel, creative |
+| `vintage` | Nostalgic aged-paper aesthetic | Historical, biography |
+| `scientific` | Academic precise diagrams | Biology, chemistry, technical |
+| `chalkboard` | Classroom chalk drawing style | Education, tutorials |
+| `editorial` | Magazine-style infographic | Tech explainers, journalism |
+| `flat` | Modern flat vector illustration | Startups, digital |
+| `retro` | 80s/90s vibrant nostalgic | Pop culture, entertainment |
+| `blueprint` | Technical schematics, engineering | Architecture, system design |
+| `vector-illustration` | Flat vector, black outlines, retro | Educational, creative, brand |
+| `sketch-notes` | Soft hand-drawn, warm feel | Knowledge sharing, tutorials |
+| `pixel-art` | Retro 8-bit gaming aesthetic | Gaming, tech, developer |
+| `intuition-machine` | Technical briefing, bilingual | Academic, technical, research |
+| `fantasy-animation` | Ghibli/Disney whimsical style | Storytelling, children's |
+
+**Style Previews**:
+
+| | | |
+|:---:|:---:|:---:|
+| ![notion](./screenshots/article-illustrator-styles/notion.webp) | ![elegant](./screenshots/article-illustrator-styles/elegant.webp) | ![warm](./screenshots/article-illustrator-styles/warm.webp) |
+| notion | elegant | warm |
+| ![minimal](./screenshots/article-illustrator-styles/minimal.webp) | ![playful](./screenshots/article-illustrator-styles/playful.webp) | ![nature](./screenshots/article-illustrator-styles/nature.webp) |
+| minimal | playful | nature |
+| ![sketch](./screenshots/article-illustrator-styles/sketch.webp) | ![watercolor](./screenshots/article-illustrator-styles/watercolor.webp) | ![vintage](./screenshots/article-illustrator-styles/vintage.webp) |
+| sketch | watercolor | vintage |
+| ![scientific](./screenshots/article-illustrator-styles/scientific.webp) | ![chalkboard](./screenshots/article-illustrator-styles/chalkboard.webp) | ![editorial](./screenshots/article-illustrator-styles/editorial.webp) |
+| scientific | chalkboard | editorial |
+| ![flat](./screenshots/article-illustrator-styles/flat.webp) | ![retro](./screenshots/article-illustrator-styles/retro.webp) | ![blueprint](./screenshots/article-illustrator-styles/blueprint.webp) |
+| flat | retro | blueprint |
+| ![vector-illustration](./screenshots/article-illustrator-styles/vector-illustration.webp) | ![sketch-notes](./screenshots/article-illustrator-styles/sketch-notes.webp) | ![pixel-art](./screenshots/article-illustrator-styles/pixel-art.webp) |
+| vector-illustration | sketch-notes | pixel-art |
+| ![intuition-machine](./screenshots/article-illustrator-styles/intuition-machine.webp) | ![fantasy-animation](./screenshots/article-illustrator-styles/fantasy-animation.webp) | |
+| intuition-machine | fantasy-animation | |
 
 #### baoyu-post-to-x
 

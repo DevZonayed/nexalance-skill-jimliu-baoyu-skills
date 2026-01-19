@@ -2,6 +2,18 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.5.0 - 2026-01-19
+
+### 新功能
+- `baoyu-article-illustrator`：风格库扩展至 20 种——将风格定义提取到 `references/styles/` 目录，新增 11 种风格（`blueprint`（蓝图）、`chalkboard`（黑板）、`editorial`（杂志信息图）、`fantasy-animation`（奇幻动画）、`flat`（扁平矢量）、`intuition-machine`（技术简报）、`pixel-art`（像素艺术）、`retro`（复古）、`scientific`（科学图解）、`sketch-notes`（手绘笔记）、`vector-illustration`（矢量插画）、`vintage`（复古文献）、`watercolor`（水彩））。
+
+### 破坏性变更
+- `baoyu-article-illustrator`：移除 `tech`、`bold`、`isometric` 风格。
+- `baoyu-cover-image`：移除 `bold` 风格（大胆编辑内容改用 `bold-editorial` 风格）。
+
+### 文档
+- `README.md`、`README.zh.md`：新增 article-illustrator 风格预览图库（20 种风格）。
+
 ## 1.4.2 - 2026-01-19
 
 ### 文档
