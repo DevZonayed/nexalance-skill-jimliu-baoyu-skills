@@ -214,7 +214,7 @@ Knowledge comic creator supporting multiple styles (Logicomix/Ligne Claire, Ohms
 **Options**:
 | Option | Values |
 |--------|--------|
-| `--style` | `classic` (default), `dramatic`, `warm`, `tech`, `sepia`, `vibrant`, `ohmsha`, `realistic`, or custom description |
+| `--style` | `classic` (default), `dramatic`, `warm`, `sepia`, `vibrant`, `ohmsha`, `realistic`, `wuxia`, or custom description |
 | `--layout` | `standard` (default), `cinematic`, `dense`, `splash`, `mixed`, `webtoon` |
 | `--aspect` | `3:4` (default, portrait), `4:3` (landscape), `16:9` (widescreen) |
 | `--lang` | `auto` (default), `zh`, `en`, `ja`, etc. |
@@ -226,11 +226,22 @@ Knowledge comic creator supporting multiple styles (Logicomix/Ligne Claire, Ohms
 | `classic` (default) | Traditional Ligne Claire with clean uniform outlines, flat colors, detailed backgrounds | Biographies, balanced narratives, educational content |
 | `dramatic` | High contrast with heavy shadows, intense expressions, angular compositions | Pivotal discoveries, conflicts, climactic scenes |
 | `warm` | Soft edges, golden tones, cozy interiors with nostalgic feel | Personal stories, childhood scenes, mentorship |
-| `tech` | Precise geometric lines, circuit motifs, neon accents on dark backgrounds | Computing history, AI stories, modern tech |
 | `sepia` | Vintage illustration style with aged paper effect, period-accurate details | Pre-1950s stories, classical science, historical figures |
 | `vibrant` | Energetic lines with weight variation, bright colors, dynamic poses | Science explanations, "aha" moments, young audience |
 | `ohmsha` | Manga guide style with visual metaphors, gadgets, student/mentor dynamic | Technical tutorials, complex concepts (ML, physics) |
 | `realistic` | Full-color realistic manga with digital painting, smooth gradients, accurate proportions | Wine, food, business, lifestyle, professional topics |
+| `wuxia` | Hong Kong martial arts style with ink brush strokes, dynamic combat, qi effects | Martial arts, wuxia/xianxia, Chinese historical fiction |
+
+**Style Previews**:
+
+| | | |
+|:---:|:---:|:---:|
+| ![classic](./screenshots/comic-styles/classic.webp) | ![dramatic](./screenshots/comic-styles/dramatic.webp) | ![warm](./screenshots/comic-styles/warm.webp) |
+| classic | dramatic | warm |
+| ![sepia](./screenshots/comic-styles/sepia.webp) | ![vibrant](./screenshots/comic-styles/vibrant.webp) | ![ohmsha](./screenshots/comic-styles/ohmsha.webp) |
+| sepia | vibrant | ohmsha |
+| ![realistic](./screenshots/comic-styles/realistic.webp) | ![wuxia](./screenshots/comic-styles/wuxia.webp) | |
+| realistic | wuxia | |
 
 **Layouts** (panel arrangement):
 | Layout | Panels/Page | Best for |
@@ -241,6 +252,15 @@ Knowledge comic creator supporting multiple styles (Logicomix/Ligne Claire, Ohms
 | `splash` | 1-2 large | Key moments, revelations |
 | `mixed` | 3-7 varies | Complex narratives, emotional arcs |
 | `webtoon` | 3-5 vertical | Ohmsha tutorials, mobile reading |
+
+**Layout Previews**:
+
+| | | |
+|:---:|:---:|:---:|
+| ![standard](./screenshots/comic-layouts/standard.webp) | ![cinematic](./screenshots/comic-layouts/cinematic.webp) | ![dense](./screenshots/comic-layouts/dense.webp) |
+| standard | cinematic | dense |
+| ![splash](./screenshots/comic-layouts/splash.webp) | ![mixed](./screenshots/comic-layouts/mixed.webp) | ![webtoon](./screenshots/comic-layouts/webtoon.webp) |
+| splash | mixed | webtoon |
 
 #### baoyu-article-illustrator
 

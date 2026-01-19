@@ -2,6 +2,15 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.3.0 - 2026-01-18
+
+### Features
+- `baoyu-comic`: adds `wuxia` style—Hong Kong martial arts comic style with ink brush strokes, dynamic combat poses, and qi energy effects. Best for wuxia/xianxia and Chinese historical fiction.
+- `baoyu-comic`: adds style and layout preview screenshots for all 8 styles and 6 layouts in README.
+
+### Refactor
+- `baoyu-comic`: removes `tech` style (replaced by `ohmsha` for technical content).
+
 ## 1.2.0 - 2026-01-18
 
 ### Features

@@ -214,7 +214,7 @@ npx add-skill jimliu/baoyu-skills
 **选项**：
 | 选项 | 取值 |
 |------|------|
-| `--style` | `classic`（默认）、`dramatic`、`warm`、`tech`、`sepia`、`vibrant`、`ohmsha`、`realistic`，或自然语言描述 |
+| `--style` | `classic`（默认）、`dramatic`、`warm`、`sepia`、`vibrant`、`ohmsha`、`realistic`、`wuxia`，或自然语言描述 |
 | `--layout` | `standard`（默认）、`cinematic`、`dense`、`splash`、`mixed`、`webtoon` |
 | `--aspect` | `3:4`（默认，竖版）、`4:3`（横版）、`16:9`（宽屏） |
 | `--lang` | `auto`（默认）、`zh`、`en`、`ja` 等 |
@@ -226,11 +226,22 @@ npx add-skill jimliu/baoyu-skills
 | `classic`（默认） | 传统清线风格，统一线条、平涂色彩、精细背景 | 传记、平衡叙事、教育内容 |
 | `dramatic` | 高对比度，重阴影、紧张表情、棱角分明的构图 | 重大发现、冲突、高潮场景 |
 | `warm` | 柔和边缘、金色调、温馨室内、怀旧感 | 个人故事、童年场景、师生情 |
-| `tech` | 精确几何线条、电路纹理、深色背景配霓虹色 | 计算机史、AI 故事、现代科技 |
 | `sepia` | 复古插画风格、做旧纸张效果、时代准确细节 | 1950 年前故事、古典科学、历史人物 |
 | `vibrant` | 富有活力的线条、明亮色彩、动感姿态 | 科学解说、"顿悟"时刻、青少年读者 |
 | `ohmsha` | 欧姆社漫画风格，视觉比喻、道具、学生/导师互动 | 技术教程、复杂概念（机器学习、物理） |
 | `realistic` | 全彩写实日漫风格，数字绘画、平滑渐变、准确人体比例 | 红酒、美食、商业、生活方式、专业话题 |
+| `wuxia` | 港漫武侠风格，水墨笔触、动态打斗、气功特效 | 武侠、仙侠、中国历史小说 |
+
+**风格预览**：
+
+| | | |
+|:---:|:---:|:---:|
+| ![classic](./screenshots/comic-styles/classic.webp) | ![dramatic](./screenshots/comic-styles/dramatic.webp) | ![warm](./screenshots/comic-styles/warm.webp) |
+| classic | dramatic | warm |
+| ![sepia](./screenshots/comic-styles/sepia.webp) | ![vibrant](./screenshots/comic-styles/vibrant.webp) | ![ohmsha](./screenshots/comic-styles/ohmsha.webp) |
+| sepia | vibrant | ohmsha |
+| ![realistic](./screenshots/comic-styles/realistic.webp) | ![wuxia](./screenshots/comic-styles/wuxia.webp) | |
+| realistic | wuxia | |
 
 **布局**（分镜排列）：
 | 布局 | 每页分镜数 | 适用场景 |
@@ -241,6 +252,15 @@ npx add-skill jimliu/baoyu-skills
 | `splash` | 1-2 大图 | 关键时刻、揭示 |
 | `mixed` | 3-7 不等 | 复杂叙事、情感弧线 |
 | `webtoon` | 3-5 竖向 | 欧姆社教程、手机阅读 |
+
+**布局预览**：
+
+| | | |
+|:---:|:---:|:---:|
+| ![standard](./screenshots/comic-layouts/standard.webp) | ![cinematic](./screenshots/comic-layouts/cinematic.webp) | ![dense](./screenshots/comic-layouts/dense.webp) |
+| standard | cinematic | dense |
+| ![splash](./screenshots/comic-layouts/splash.webp) | ![mixed](./screenshots/comic-layouts/mixed.webp) | ![webtoon](./screenshots/comic-layouts/webtoon.webp) |
+| splash | mixed | webtoon |
 
 #### baoyu-article-illustrator
 

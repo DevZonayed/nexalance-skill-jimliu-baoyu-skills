@@ -18,7 +18,7 @@ Create original knowledge comics with multiple visual styles.
 
 | Option | Values |
 |--------|--------|
-| `--style` | classic (default), dramatic, warm, tech, sepia, vibrant, ohmsha, realistic, or custom description |
+| `--style` | classic (default), dramatic, warm, sepia, vibrant, ohmsha, realistic, wuxia, or custom description |
 | `--layout` | standard (default), cinematic, dense, splash, mixed, webtoon |
 | `--aspect` | 3:4 (default, portrait), 4:3 (landscape), 16:9 (widescreen) |
 | `--lang` | auto (default), zh, en, ja, etc. |
@@ -32,11 +32,12 @@ Style × Layout × Aspect can be freely combined. Custom styles can be described
 | Content Signals | Style | Layout |
 |-----------------|-------|--------|
 | Tutorial, how-to, beginner | ohmsha | webtoon |
-| Computing, AI, programming | tech | dense |
+| Computing, AI, programming | ohmsha | dense |
 | Pre-1950, classical, ancient | sepia | cinematic |
 | Personal story, mentor | warm | standard |
 | Conflict, breakthrough | dramatic | splash |
 | Wine, food, business, lifestyle, professional | realistic | cinematic |
+| Martial arts, wuxia, xianxia, Chinese historical | wuxia | splash |
 | Biography, balanced | classic | mixed |
 
 ## Script Directory
@@ -172,7 +173,7 @@ What readers will gain:
 ## Content Signals
 
 - "biography" → classic + mixed
-- "computing history" → tech + dense
+- "computing history" → ohmsha + dense
 - "personal tragedy" → dramatic + splash
 
 ## Recommended Approaches
@@ -189,7 +190,7 @@ Create three distinct variants, each combining a narrative approach with a recom
 | Variant | Narrative Approach | Recommended Style | Layout |
 |---------|-------------------|-------------------|--------|
 | A | Chronological | sepia | cinematic |
-| B | Thematic | tech | dense |
+| B | Thematic | ohmsha | dense |
 | C | Character-focused | warm | standard |
 
 **For each variant**:
@@ -237,13 +238,13 @@ Create three distinct variants, each combining a narrative approach with a recom
 ```
 Question 1 (Storyboard): Which storyboard variant?
 - A: Chronological + sepia (Recommended)
-- B: Thematic + tech
+- B: Thematic + ohmsha
 - C: Character-focused + warm
 - Custom
 
 Question 2 (Style): Which visual style?
 - sepia (Recommended from variant)
-- classic / dramatic / warm / tech / vibrant / ohmsha / realistic
+- classic / dramatic / warm / sepia / vibrant / ohmsha / realistic / wuxia
 - Custom description
 
 Question 3 (Language) - only if mismatch:
