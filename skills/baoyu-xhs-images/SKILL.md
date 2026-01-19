@@ -92,9 +92,11 @@ Detailed layout definitions: `references/layouts/<layout>.md`
 
 ## File Structure
 
+Each session creates an independent directory named by content slug:
+
 ```
-[target]/
-├── source.md                       # Source content (if pasted)
+xhs-images/{topic-slug}/
+├── source-{slug}.{ext}             # Source files (text, images, etc.)
 ├── analysis.md                     # Deep analysis results
 ├── outline-style-[slug].md         # Variant A (e.g., outline-style-tech.md)
 ├── outline-style-[slug].md         # Variant B (e.g., outline-style-notion.md)
@@ -109,13 +111,19 @@ Detailed layout definitions: `references/layouts/<layout>.md`
 └── NN-ending-[slug].png
 ```
 
-**Target directory**:
-- With source path: `[source-dir]/[source-name-no-ext]/xhs-images/`
-  - Example: `/tests-data/article.md` → `/tests-data/article/xhs-images/`
-- Without source: `./xhs-images/[topic-slug]/`
+**Slug Generation**:
+1. Extract main topic from content (2-4 words, kebab-case)
+2. Example: "AI工具推荐" → `ai-tools-recommend`
 
-**Directory backup**:
-- If target directory exists, rename existing to `<dirname>-backup-YYYYMMDD-HHMMSS`
+**Conflict Resolution**:
+If `xhs-images/{topic-slug}/` already exists:
+- Append timestamp: `{topic-slug}-YYYYMMDD-HHMMSS`
+- Example: `ai-tools` exists → `ai-tools-20260118-143052`
+
+**Source Files**:
+Copy all sources with naming `source-{slug}.{ext}`:
+- `source-article.md`, `source-photo.jpg`, etc.
+- Multiple sources supported: text, images, files from conversation
 
 ## Workflow
 

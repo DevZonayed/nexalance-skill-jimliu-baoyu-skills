@@ -173,27 +173,33 @@ Use this template when implementing image generation in skills:
 
 ### Output Path Convention
 
-Generated images from the same skill and source file MUST be grouped together:
+Each session creates an independent directory. Even the same source file generates a new directory per session.
 
-**With source file** (e.g., `/path/to/project/content/my-article.md`):
+**Output Directory**:
 ```
-/path/to/project/content/my-article/<skill-suffix>/
+<skill-suffix>/<topic-slug>/
 ```
-- Remove file extension from source filename
-- Use skill name suffix (e.g., `xhs-images`, `cover-image`, `slide-deck`)
-- Example: source `/tests-data/anthropic-economic-index.md` + skill `baoyu-xhs-images` → `/tests-data/anthropic-economic-index/xhs-images/`
+- `<skill-suffix>`: Skill name suffix (e.g., `xhs-images`, `cover-image`, `slide-deck`, `comic`)
+- `<topic-slug>`: Generated from content topic (2-4 words, kebab-case)
+- Example: `xhs-images/ai-future-trends/`
 
-**Without source file**:
-```
-./<skill-suffix>/<source-slug>/
-```
-- Place under current project directory
-- Use descriptive slug for the content
+**Slug Generation**:
+1. Extract main topic from content (2-4 words, kebab-case)
+2. Example: "Introduction to Machine Learning" → `intro-machine-learning`
 
-**Directory Backup**:
-- If output directory already exists, rename existing directory with timestamp
-- Format: `<dirname>-backup-YYYYMMDD-HHMMSS`
-- Example: `xhs-images` → `xhs-images-backup-20260117-143052`
+**Conflict Resolution**:
+If `<skill-suffix>/<topic-slug>/` already exists:
+- Append timestamp: `<topic-slug>-YYYYMMDD-HHMMSS`
+- Example: `ai-future` exists → `ai-future-20260118-143052`
+
+**Source Files**:
+- Copy all sources to `<skill-suffix>/<topic-slug>/` with naming: `source-{slug}.{ext}`
+- Multiple sources supported: text, images, files from conversation
+- Examples:
+  - `source-article.md` (main text content)
+  - `source-reference.png` (image from conversation)
+  - `source-data.csv` (additional file)
+- Original source files remain unchanged
 
 ### Image Naming Convention
 

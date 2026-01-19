@@ -74,38 +74,35 @@ When no `--style` is specified, the system analyzes content to select the best s
 
 ## File Management
 
-### With Article Path
+### Output Directory
 
-Save to `[source-name-no-ext]/cover-image/` subdirectory in the same folder as the article:
-
-```
-path/to/
-├── article.md
-└── article/
-    └── cover-image/
-        ├── prompts/
-        │   └── cover.md
-        └── cover.png
-```
-
-Example: `/posts/ai-future.md` → `/posts/ai-future/cover-image/`
-
-### Without Article Path (Pasted Content)
-
-Save to `./cover-image/[topic-slug]/`:
+Each session creates an independent directory named by content slug:
 
 ```
-cover-image/
-└── ai-future/
-    ├── source.md           # Saved pasted content
-    ├── prompts/
-    │   └── cover.md
-    └── cover.png
+cover-image/{topic-slug}/
+├── source-{slug}.{ext}    # Source files (text, images, etc.)
+├── prompts/
+│   └── cover.md
+└── cover.png
 ```
 
-### Directory Backup
+**Slug Generation**:
+1. Extract main topic from content (2-4 words, kebab-case)
+2. Example: "The Future of AI" → `future-of-ai`
 
-If target directory exists, rename existing to `<dirname>-backup-YYYYMMDD-HHMMSS`
+### Conflict Resolution
+
+If `cover-image/{topic-slug}/` already exists:
+- Append timestamp: `{topic-slug}-YYYYMMDD-HHMMSS`
+- Example: `ai-future` exists → `ai-future-20260118-143052`
+
+### Source Files
+
+Copy all sources with naming `source-{slug}.{ext}`:
+- `source-article.md` (main text content)
+- `source-logo.png` (image from conversation)
+
+Multiple sources supported: text, images, files from conversation.
 
 ## Workflow
 

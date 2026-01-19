@@ -2,6 +2,17 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.2.0 - 2026-01-18
+
+### Features
+- Session-independent output directories: each generation session creates a new directory (`<skill-suffix>/<topic-slug>/`), even for the same source file. Conflicts resolved by appending timestamp.
+- Multi-source file support: source files now saved as `source-{slug}.{ext}`, supporting multiple inputs (text, images, files from conversation).
+
+### Documentation
+- `CLAUDE.md`: updates Output Path Convention with new session-independent directory structure and multi-source file naming.
+- Multiple skills: updates file management sections to reflect new directory and source file conventions.
+  - `baoyu-slide-deck`, `baoyu-article-illustrator`, `baoyu-cover-image`, `baoyu-xhs-images`, `baoyu-comic`
+
 ## 1.1.0 - 2026-01-18
 
 ### Features

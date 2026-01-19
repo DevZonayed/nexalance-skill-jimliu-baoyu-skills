@@ -95,36 +95,40 @@ This deck is designed for **reading and sharing**, not live presentation:
 
 ## File Management
 
-### With Content Path
-```
-content-dir/
-├── source-content.md
-└── source-content/
-    └── slide-deck/
-        ├── outline.md
-        ├── prompts/
-        │   └── 01-slide-cover.md, 02-slide-{slug}.md, ...
-        ├── 01-slide-cover.png, 02-slide-{slug}.png, ...
-        ├── {topic-slug}.pptx
-        └── {topic-slug}.pdf
-```
+### Output Directory
 
-Example: `/posts/ai-intro.md` → `/posts/ai-intro/slide-deck/`
+Each session creates an independent directory named by content slug:
 
-### Without Content Path (Pasted Content)
 ```
 slide-deck/{topic-slug}/
-├── source.md
+├── source-{slug}.{ext}    # Source files (text, images, etc.)
 ├── outline.md
+├── outline-{style}.md     # Style variant outlines
 ├── prompts/
-├── *.png
+│   └── 01-slide-cover.md, 02-slide-{slug}.md, ...
+├── 01-slide-cover.png, 02-slide-{slug}.png, ...
 ├── {topic-slug}.pptx
 └── {topic-slug}.pdf
 ```
 
-### Directory Backup
+**Slug Generation**:
+1. Extract main topic from content (2-4 words, kebab-case)
+2. Example: "Introduction to Machine Learning" → `intro-machine-learning`
 
-If target directory exists, rename existing to `<dirname>-backup-YYYYMMDD-HHMMSS`
+### Conflict Resolution
+
+If `slide-deck/{topic-slug}/` already exists:
+- Append timestamp: `{topic-slug}-YYYYMMDD-HHMMSS`
+- Example: `intro-ml` exists → `intro-ml-20260118-143052`
+
+### Source Files
+
+Copy all sources with naming `source-{slug}.{ext}`:
+- `source-article.md` (main text content)
+- `source-diagram.png` (image from conversation)
+- `source-data.xlsx` (additional file)
+
+Multiple sources supported: text, images, files from conversation.
 
 ## Workflow
 

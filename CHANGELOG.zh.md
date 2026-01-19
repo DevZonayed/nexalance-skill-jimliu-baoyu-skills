@@ -2,6 +2,17 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.2.0 - 2026-01-18
+
+### 新功能
+- Session 独立输出目录：每次生成创建独立目录（`<skill-suffix>/<topic-slug>/`），即使是同一源文件也会新建目录。目录冲突时追加时间戳。
+- 多源文件支持：源文件现以 `source-{slug}.{ext}` 命名，支持多个输入（文本、图片、会话中的文件）。
+
+### 文档
+- `CLAUDE.md`：更新 Output Path Convention，采用新的 session 独立目录结构和多源文件命名规范。
+- 多个技能：更新文件管理部分，反映新的目录和源文件规范。
+  - `baoyu-slide-deck`、`baoyu-article-illustrator`、`baoyu-cover-image`、`baoyu-xhs-images`、`baoyu-comic`
+
 ## 1.1.0 - 2026-01-18
 
 ### 新功能

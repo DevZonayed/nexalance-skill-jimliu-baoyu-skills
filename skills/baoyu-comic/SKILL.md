@@ -55,9 +55,11 @@ Style × Layout × Aspect can be freely combined. Custom styles can be described
 
 ## File Structure
 
+Each session creates an independent directory named by content slug:
+
 ```
-[target]/
-├── source.md                      # Source content (if pasted, not file)
+comic/{topic-slug}/
+├── source-{slug}.{ext}            # Source files (text, images, etc.)
 ├── analysis.md                    # Deep analysis results (YAML+MD)
 ├── storyboard-chronological.md    # Variant A (preserved)
 ├── storyboard-thematic.md         # Variant B (preserved)
@@ -83,13 +85,19 @@ Style × Layout × Aspect can be freely combined. Custom styles can be described
 └── {topic-slug}.pdf
 ```
 
-**Target directory**:
-- With source path: `[source-dir]/[source-name-no-ext]/comic/`
-  - Example: `/posts/turing-story.md` → `/posts/turing-story/comic/`
-- Without source: `./comic/[topic-slug]/`
+**Slug Generation**:
+1. Extract main topic from content (2-4 words, kebab-case)
+2. Example: "Alan Turing Biography" → `alan-turing-bio`
 
-**Directory backup**:
-- If target directory exists, rename existing to `<dirname>-backup-YYYYMMDD-HHMMSS`
+**Conflict Resolution**:
+If `comic/{topic-slug}/` already exists:
+- Append timestamp: `{topic-slug}-YYYYMMDD-HHMMSS`
+- Example: `turing-story` exists → `turing-story-20260118-143052`
+
+**Source Files**:
+Copy all sources with naming `source-{slug}.{ext}`:
+- `source-biography.md`, `source-portrait.jpg`, `source-timeline.png`, etc.
+- Multiple sources supported: text, images, files from conversation
 
 ## Workflow
 

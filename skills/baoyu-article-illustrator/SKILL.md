@@ -102,43 +102,42 @@ When no `--style` is specified, analyze content to select the best style:
 
 ## File Management
 
-### With Article Path
+### Output Directory
 
-Save illustrations to `[source-name-no-ext]/illustrations/` subdirectory in the same folder as the article:
-
-```
-path/to/
-├── article.md
-└── article/
-    └── illustrations/
-        ├── outline.md
-        ├── prompts/
-        │   ├── illustration-concept-a.md
-        │   ├── illustration-concept-b.md
-        │   └── ...
-        ├── illustration-concept-a.png
-        ├── illustration-concept-b.png
-        └── ...
-```
-
-Example: `/posts/ai-future.md` → `/posts/ai-future/illustrations/`
-
-### Without Article Path (Pasted Content)
-
-Save to `./illustrations/[topic-slug]/`:
+Each session creates an independent directory named by content slug:
 
 ```
-illustrations/
-└── ai-future/
-    ├── source.md
-    ├── outline.md
-    ├── prompts/
-    └── *.png
+illustrations/{topic-slug}/
+├── source-{slug}.{ext}    # Source files (text, images, etc.)
+├── outline.md
+├── outline-{style}.md     # Style variant outlines
+├── prompts/
+│   ├── illustration-concept-a.md
+│   ├── illustration-concept-b.md
+│   └── ...
+├── illustration-concept-a.png
+├── illustration-concept-b.png
+└── ...
 ```
 
-### Directory Backup
+**Slug Generation**:
+1. Extract main topic from content (2-4 words, kebab-case)
+2. Example: "The Future of AI" → `future-of-ai`
 
-If target directory exists, rename existing to `<dirname>-backup-YYYYMMDD-HHMMSS`
+### Conflict Resolution
+
+If `illustrations/{topic-slug}/` already exists:
+- Append timestamp: `{topic-slug}-YYYYMMDD-HHMMSS`
+- Example: `ai-future` exists → `ai-future-20260118-143052`
+
+### Source Files
+
+Copy all sources with naming `source-{slug}.{ext}`:
+- `source-article.md` (main text content)
+- `source-photo.jpg` (image from conversation)
+- `source-reference.pdf` (additional file)
+
+Multiple sources supported: text, images, files from conversation.
 
 ## Workflow
 
