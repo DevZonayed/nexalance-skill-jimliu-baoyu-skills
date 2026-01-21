@@ -2,6 +2,15 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.11.0 - 2026-01-21
+
+### 新功能
+- `baoyu-image-gen`：新增基于 AI SDK 的图像生成技能，使用官方 OpenAI 和 Google API。支持文生图、参考图（Google 多模态）、宽高比和质量预设（`normal`、`2k`）。根据可用的 API 密钥自动选择服务商。
+- `baoyu-slide-deck`：新增布局库（Layout Gallery），包含 24 种布局类型——10 种幻灯片专用布局（`title-hero` 标题主图、`quote-callout` 引用突出、`key-stat` 关键数据、`split-screen` 分屏、`icon-grid` 图标网格、`two-columns` 双栏、`three-columns` 三栏、`image-caption` 图片说明、`agenda` 议程、`bullet-list` 要点列表）和 14 种信息图衍生布局（`linear-progression` 线性流程、`binary-comparison` 二元对比、`comparison-matrix` 对比矩阵、`hierarchical-layers` 层级、`hub-spoke` 中心辐射、`bento-grid` 便当盒、`funnel` 漏斗、`dashboard` 仪表盘、`venn-diagram` 韦恩图、`circular-flow` 循环流程、`winding-roadmap` 蜿蜒路线图、`tree-branching` 树状分支、`iceberg` 冰山、`bridge` 桥接）。
+
+### 文档
+- `README.md`、`README.zh.md`：新增 baoyu-image-gen 文档，包含用法示例、选项表和环境变量说明；新增环境配置章节，介绍 API 密钥设置方法。
+
 ## 1.10.0 - 2026-01-21
 
 ### 新功能

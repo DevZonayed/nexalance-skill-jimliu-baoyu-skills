@@ -54,7 +54,7 @@ Simply tell Claude Code:
 | Plugin | Description | Skills |
 |--------|-------------|--------|
 | **content-skills** | Content generation and publishing | [xhs-images](#baoyu-xhs-images), [infographic](#baoyu-infographic), [cover-image](#baoyu-cover-image), [slide-deck](#baoyu-slide-deck), [comic](#baoyu-comic), [article-illustrator](#baoyu-article-illustrator), [post-to-x](#baoyu-post-to-x), [post-to-wechat](#baoyu-post-to-wechat) |
-| **ai-generation-skills** | AI-powered generation backends | [danger-gemini-web](#baoyu-danger-gemini-web) |
+| **ai-generation-skills** | AI-powered generation backends | [image-gen](#baoyu-image-gen), [danger-gemini-web](#baoyu-danger-gemini-web) |
 | **utility-skills** | Utility tools for content processing | [danger-x-to-markdown](#baoyu-danger-x-to-markdown), [compress-image](#baoyu-compress-image) |
 
 ## Update Skills
@@ -515,6 +515,55 @@ Prerequisites: Google Chrome installed. First run requires QR code login (sessio
 
 AI-powered generation backends.
 
+#### baoyu-image-gen
+
+AI SDK-based image generation using official OpenAI and Google APIs. Supports text-to-image, reference images, aspect ratios, and quality presets.
+
+```bash
+# Basic generation (auto-detect provider)
+/baoyu-image-gen --prompt "A cute cat" --image cat.png
+
+# With aspect ratio
+/baoyu-image-gen --prompt "A landscape" --image landscape.png --ar 16:9
+
+# High quality (2k)
+/baoyu-image-gen --prompt "A banner" --image banner.png --quality 2k
+
+# Specific provider
+/baoyu-image-gen --prompt "A cat" --image cat.png --provider openai
+
+# With reference images (Google multimodal only)
+/baoyu-image-gen --prompt "Make it blue" --image out.png --ref source.png
+```
+
+**Options**:
+| Option | Description |
+|--------|-------------|
+| `--prompt`, `-p` | Prompt text |
+| `--promptfiles` | Read prompt from files (concatenated) |
+| `--image` | Output image path (required) |
+| `--provider` | `google` or `openai` (default: google) |
+| `--model`, `-m` | Model ID |
+| `--ar` | Aspect ratio (e.g., `16:9`, `1:1`, `4:3`) |
+| `--size` | Size (e.g., `1024x1024`) |
+| `--quality` | `normal` or `2k` (default: normal) |
+| `--ref` | Reference images (Google multimodal only) |
+
+**Environment Variables** (see [Environment Configuration](#environment-configuration) for setup):
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `OPENAI_API_KEY` | OpenAI API key | - |
+| `GOOGLE_API_KEY` | Google API key | - |
+| `OPENAI_IMAGE_MODEL` | OpenAI model | `gpt-image-1.5` |
+| `GOOGLE_IMAGE_MODEL` | Google model | `gemini-3-pro-image-preview` |
+| `OPENAI_BASE_URL` | Custom OpenAI endpoint | - |
+| `GOOGLE_BASE_URL` | Custom Google endpoint | - |
+
+**Provider Auto-Selection**:
+1. If `--provider` specified → use it
+2. If only one API key available → use that provider
+3. If both available → default to Google
+
 #### baoyu-danger-gemini-web
 
 Interacts with Gemini Web to generate text and images.
@@ -566,6 +615,44 @@ Compress images to reduce file size while maintaining quality.
 ```bash
 /baoyu-compress-image path/to/image.png
 /baoyu-compress-image path/to/images/ --quality 80
+```
+
+## Environment Configuration
+
+Some skills require API keys or custom configuration. Environment variables can be set in `.env` files:
+
+**Load Priority** (higher priority overrides lower):
+1. CLI environment variables (e.g., `OPENAI_API_KEY=xxx /baoyu-image-gen ...`)
+2. `process.env` (system environment)
+3. `<cwd>/.baoyu-skills/.env` (project-level)
+4. `~/.baoyu-skills/.env` (user-level)
+
+**Setup**:
+
+```bash
+# Create user-level config directory
+mkdir -p ~/.baoyu-skills
+
+# Create .env file
+cat > ~/.baoyu-skills/.env << 'EOF'
+# OpenAI
+OPENAI_API_KEY=sk-xxx
+OPENAI_IMAGE_MODEL=gpt-image-1.5
+# OPENAI_BASE_URL=https://api.openai.com/v1
+
+# Google
+GOOGLE_API_KEY=xxx
+GOOGLE_IMAGE_MODEL=gemini-3-pro-image-preview
+# GOOGLE_BASE_URL=https://generativelanguage.googleapis.com/v1beta
+EOF
+```
+
+**Project-level config** (for team sharing):
+
+```bash
+mkdir -p .baoyu-skills
+# Add .baoyu-skills/.env to .gitignore to avoid committing secrets
+echo ".baoyu-skills/.env" >> .gitignore
 ```
 
 ## Customization

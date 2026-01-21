@@ -54,7 +54,7 @@ npx skills add jimliu/baoyu-skills
 | 插件 | 说明 | 包含技能 |
 |------|------|----------|
 | **content-skills** | 内容生成和发布 | [xhs-images](#baoyu-xhs-images), [infographic](#baoyu-infographic), [cover-image](#baoyu-cover-image), [slide-deck](#baoyu-slide-deck), [comic](#baoyu-comic), [article-illustrator](#baoyu-article-illustrator), [post-to-x](#baoyu-post-to-x), [post-to-wechat](#baoyu-post-to-wechat) |
-| **ai-generation-skills** | AI 生成后端 | [danger-gemini-web](#baoyu-danger-gemini-web) |
+| **ai-generation-skills** | AI 生成后端 | [image-gen](#baoyu-image-gen), [danger-gemini-web](#baoyu-danger-gemini-web) |
 | **utility-skills** | 内容处理工具 | [danger-x-to-markdown](#baoyu-danger-x-to-markdown), [compress-image](#baoyu-compress-image) |
 
 ## 更新技能
@@ -515,6 +515,55 @@ npx skills add jimliu/baoyu-skills
 
 AI 驱动的生成后端。
 
+#### baoyu-image-gen
+
+基于 AI SDK 的图像生成，使用官方 OpenAI 和 Google API。支持文生图、参考图、宽高比和质量预设。
+
+```bash
+# 基础生成（自动检测服务商）
+/baoyu-image-gen --prompt "一只可爱的猫" --image cat.png
+
+# 指定宽高比
+/baoyu-image-gen --prompt "风景图" --image landscape.png --ar 16:9
+
+# 高质量（2k 分辨率）
+/baoyu-image-gen --prompt "横幅图" --image banner.png --quality 2k
+
+# 指定服务商
+/baoyu-image-gen --prompt "一只猫" --image cat.png --provider openai
+
+# 带参考图（仅 Google 多模态支持）
+/baoyu-image-gen --prompt "把它变成蓝色" --image out.png --ref source.png
+```
+
+**选项**：
+| 选项 | 说明 |
+|------|------|
+| `--prompt`, `-p` | 提示词文本 |
+| `--promptfiles` | 从文件读取提示词（多文件拼接） |
+| `--image` | 输出图片路径（必需） |
+| `--provider` | `google` 或 `openai`（默认：google） |
+| `--model`, `-m` | 模型 ID |
+| `--ar` | 宽高比（如 `16:9`、`1:1`、`4:3`） |
+| `--size` | 尺寸（如 `1024x1024`） |
+| `--quality` | `normal` 或 `2k`（默认：normal） |
+| `--ref` | 参考图片（仅 Google 多模态支持） |
+
+**环境变量**（配置方法见[环境配置](#环境配置)）：
+| 变量 | 说明 | 默认值 |
+|------|------|--------|
+| `OPENAI_API_KEY` | OpenAI API 密钥 | - |
+| `GOOGLE_API_KEY` | Google API 密钥 | - |
+| `OPENAI_IMAGE_MODEL` | OpenAI 模型 | `gpt-image-1.5` |
+| `GOOGLE_IMAGE_MODEL` | Google 模型 | `gemini-3-pro-image-preview` |
+| `OPENAI_BASE_URL` | 自定义 OpenAI 端点 | - |
+| `GOOGLE_BASE_URL` | 自定义 Google 端点 | - |
+
+**服务商自动选择**：
+1. 如果指定了 `--provider` → 使用指定的
+2. 如果只有一个 API 密钥 → 使用对应服务商
+3. 如果两个都有 → 默认使用 Google
+
 #### baoyu-danger-gemini-web
 
 与 Gemini Web 交互，生成文本和图片。
@@ -566,6 +615,44 @@ AI 驱动的生成后端。
 ```bash
 /baoyu-compress-image path/to/image.png
 /baoyu-compress-image path/to/images/ --quality 80
+```
+
+## 环境配置
+
+部分技能需要 API 密钥或自定义配置。环境变量可以在 `.env` 文件中设置：
+
+**加载优先级**（高优先级覆盖低优先级）：
+1. 命令行环境变量（如 `OPENAI_API_KEY=xxx /baoyu-image-gen ...`）
+2. `process.env`（系统环境变量）
+3. `<cwd>/.baoyu-skills/.env`（项目级）
+4. `~/.baoyu-skills/.env`（用户级）
+
+**配置方法**：
+
+```bash
+# 创建用户级配置目录
+mkdir -p ~/.baoyu-skills
+
+# 创建 .env 文件
+cat > ~/.baoyu-skills/.env << 'EOF'
+# OpenAI
+OPENAI_API_KEY=sk-xxx
+OPENAI_IMAGE_MODEL=gpt-image-1.5
+# OPENAI_BASE_URL=https://api.openai.com/v1
+
+# Google
+GOOGLE_API_KEY=xxx
+GOOGLE_IMAGE_MODEL=gemini-3-pro-image-preview
+# GOOGLE_BASE_URL=https://generativelanguage.googleapis.com/v1beta
+EOF
+```
+
+**项目级配置**（团队共享）：
+
+```bash
+mkdir -p .baoyu-skills
+# 将 .baoyu-skills/.env 添加到 .gitignore 避免提交密钥
+echo ".baoyu-skills/.env" >> .gitignore
 ```
 
 ## 自定义扩展
