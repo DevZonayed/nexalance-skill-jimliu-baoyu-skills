@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.10.0 - 2026-01-21
+
+### Features
+- `baoyu-post-to-x`: adds video posting support—new `x-video.ts` script for posting text with video files (MP4, MOV, WebM). Supports preview mode and handles video processing timeouts.
+
 ## 1.9.0 - 2026-01-20
 
 ### Features
