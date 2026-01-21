@@ -14,7 +14,7 @@
 ### 快速安装（推荐）
 
 ```bash
-npx add-skill jimliu/baoyu-skills
+npx skills add jimliu/baoyu-skills
 ```
 
 ### 注册插件市场
