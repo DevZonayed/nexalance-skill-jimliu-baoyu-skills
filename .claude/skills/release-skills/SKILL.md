@@ -7,12 +7,26 @@ description: Release workflow for baoyu-skills plugin. This skill should be used
 
 Automate the release process for baoyu-skills plugin: analyze changes, update changelogs, bump version, commit, and tag.
 
+## CRITICAL: Mandatory Release Checklist
+
+**NEVER skip these steps when releasing:**
+
+1. ✅ Update `CHANGELOG.md` (English)
+2. ✅ Update `CHANGELOG.zh.md` (Chinese)
+3. ✅ Update `marketplace.json` version
+4. ✅ Update `README.md` / `README.zh.md` if needed
+5. ✅ Commit all changes together
+6. ✅ Create version tag
+
+**If user says "直接 push" or "just push" - STILL follow all steps above first!**
+
 ## When to Use
 
 Trigger this skill when user requests:
 - "release", "发布", "create release", "new version"
 - "bump version", "update version"
 - "prepare release"
+- "push to remote" (with uncommitted changes)
 
 ## Workflow
 
