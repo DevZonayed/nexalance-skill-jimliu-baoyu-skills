@@ -2,6 +2,14 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.14.0 - 2026-01-22
+
+### Fixes
+- `baoyu-post-to-x`: improves video ready detection for more reliable video posting.
+
+### Documentation
+- `baoyu-slide-deck`: comprehensive SKILL.md enhancement—adds slide count guidance (recommended 8-25, max 30), audience guidelines table with audience-specific principles, style selection principles with content-type recommendations, layout selection tips with common mistakes to avoid, visual hierarchy principles, content density guidelines (McKinsey-style high-density principles), color selection guide, typography principles with font recommendations (English and Chinese fonts with multilingual pairing), and visual elements reference (backgrounds, typography treatments, geometric accents).
+
 ## 1.13.0 - 2026-01-21
 
 ### Features

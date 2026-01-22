@@ -41,10 +41,73 @@ Transform content into professional slide deck images with flexible style option
 | `--style <name>` | Visual style (see Style Gallery) |
 | `--audience <type>` | Target audience: beginners, intermediate, experts, executives, general |
 | `--lang <code>` | Output language (en, zh, ja, etc.) |
-| `--slides <number>` | Target slide count |
+| `--slides <number>` | Target slide count (recommended: 8-25, max: 30) |
 | `--outline-only` | Generate outline only, skip image generation |
 
+**Slide Count Guidance**:
+| Content Length | Recommended Slides |
+|----------------|-------------------|
+| Short (< 1000 words) | 5-10 |
+| Medium (1000-3000 words) | 10-18 |
+| Long (3000-5000 words) | 15-25 |
+| Very Long (> 5000 words) | 20-30 (consider splitting) |
+
+Maximum 30 slides per deck. For longer content, split into multiple decks.
+
+## Audience Guidelines
+
+Design decisions should adapt to target audience. Use `--audience` to set.
+
+| Audience | Content Density | Visual Style | Terminology | Slides |
+|----------|-----------------|--------------|-------------|--------|
+| `beginners` | Low | Friendly, illustrative | Plain language | 8-15 |
+| `intermediate` | Medium | Balanced, structured | Some jargon OK | 10-20 |
+| `experts` | High | Data-rich, precise | Technical terms | 12-25 |
+| `executives` | Medium-High | Clean, impactful | Business language | 8-12 |
+| `general` | Medium | Accessible, engaging | Minimal jargon | 10-18 |
+
+### Audience-Specific Principles
+
+**Beginners**:
+- One concept per slide
+- Visual metaphors over abstract diagrams
+- Step-by-step progression
+- Generous whitespace
+
+**Experts**:
+- Multiple data points per slide acceptable
+- Technical diagrams with precise labels
+- Assume domain knowledge
+- Dense but organized information
+
+**Executives**:
+- Lead with insights, not data
+- "So what?" on every slide
+- Decision-enabling content
+- Bottom-line upfront (BLUF)
+
 ## Style Gallery
+
+### Style Selection Principles
+
+**Content-First Approach**:
+1. Analyze content topic, mood, and industry before selecting
+2. Consider target audience expectations
+3. Match style to subject matter (not personal preference)
+
+**Quick Reference by Content Type**:
+| Content Type | Recommended Styles |
+|--------------|-------------------|
+| Technical/Architecture | `blueprint`, `intuition-machine` |
+| Educational/Tutorials | `sketch-notes`, `chalkboard` |
+| Corporate/Business | `corporate`, `minimal` |
+| Creative/Artistic | `vector-illustration`, `watercolor` |
+| Product/SaaS | `notion`, `bold-editorial` |
+| Scientific/Research | `scientific`, `editorial-infographic` |
+
+**Note**: Full style specifications in `references/styles/<style>.md`
+
+### Available Styles
 
 | Style | Description | Best For |
 |-------|-------------|----------|
@@ -127,6 +190,32 @@ Optional layout hints for individual slides. Specify in outline's `// LAYOUT` se
 
 **Usage**: Add `Layout: <name>` in slide's `// LAYOUT` section to guide visual composition.
 
+### Layout Selection Tips
+
+**Match Layout to Content**:
+| Content Type | Recommended Layouts |
+|--------------|-------------------|
+| Single narrative | `bullet-list`, `image-caption` |
+| Two concepts | `split-screen`, `binary-comparison` |
+| Three items | `three-columns`, `icon-grid` |
+| Process/Steps | `linear-progression`, `winding-roadmap` |
+| Data/Metrics | `dashboard`, `key-stat` |
+| Relationships | `hub-spoke`, `venn-diagram` |
+| Hierarchy | `hierarchical-layers`, `tree-branching` |
+
+**Layout Flow Patterns**:
+| Position | Recommended Layouts |
+|----------|-------------------|
+| Opening | `title-hero`, `agenda` |
+| Middle | Content-specific layouts |
+| Closing | `quote-callout`, `key-stat` |
+
+**Common Mistakes to Avoid**:
+- ✗ Using 3-column layout for 2 items (leaves columns empty)
+- ✗ Stacking charts/tables below text (use side-by-side instead)
+- ✗ Image layouts without actual images
+- ✗ Quote layouts for emphasis (use only for real quotes with attribution)
+
 ## Design Philosophy
 
 This deck is designed for **reading and sharing**, not live presentation:
@@ -134,6 +223,142 @@ This deck is designed for **reading and sharing**, not live presentation:
 - Structure content for **logical flow** when scrolling
 - Include **all necessary context** within each slide
 - Optimize for **social media sharing** and offline reading
+
+### Visual Hierarchy Principles
+
+| Principle | Description |
+|-----------|-------------|
+| Focal Point | ONE dominant element per slide draws attention first |
+| Rule of Thirds | Position key elements at grid intersections |
+| Z-Pattern | Guide eye: top-left → top-right → bottom-left → bottom-right |
+| Size Contrast | Headlines 2-3x larger than body text |
+| Breathing Room | Minimum 10% margin from all edges |
+
+### Content Density
+
+Professional presentations balance information density with clarity.
+
+| Level | Description | Use When |
+|-------|-------------|----------|
+| High | Multiple data points, detailed charts, dense text | Expert audience, technical reviews, data-driven decisions |
+| Medium | Key points with supporting details, moderate visuals | General business, mixed audiences |
+| Low | One main idea, large visuals, minimal text | Beginners, keynotes, emotional impact |
+
+**High-Density Principles** (McKinsey-style):
+- Every element earns its space
+- Data speaks louder than decoration
+- Annotations explain insights, not describe data
+- White space is strategic, not filler
+- Information hierarchy guides the eye
+
+**Density by Slide Type**:
+| Slide Type | Recommended Density |
+|------------|-------------------|
+| Cover/Title | Low |
+| Agenda/Overview | Medium |
+| Content/Analysis | Medium-High |
+| Data/Metrics | High |
+| Quote/Impact | Low |
+| Summary/Takeaway | Medium |
+
+### Color Selection
+
+**Content-First Approach**:
+1. Analyze content topic, mood, and industry
+2. Consider target audience expectations
+3. Match palette to subject matter (not defaults)
+4. Ensure strong contrast for readability
+
+**Quick Palette Guide**:
+| Content Type | Recommended Palettes |
+|--------------|---------------------|
+| Technical/Architecture | Blues, grays, blueprint tones |
+| Educational/Friendly | Warm colors, earth tones |
+| Corporate/Professional | Navy, gold, structured palettes |
+| Creative/Artistic | Bold colors, unexpected combinations |
+| Scientific/Medical | Clean whites, precise color coding |
+
+**Note**: Full color specs in `references/styles/<style>.md`
+
+### Typography Principles
+
+| Element | Treatment |
+|---------|-----------|
+| Headlines | Bold, 2-3x body size, narrative style |
+| Body Text | Regular weight, readable size |
+| Captions | Smaller, lighter weight |
+| Data Labels | Monospace for technical content |
+| Emphasis | Use bold or color, not underlines |
+
+### Font Recommendations
+
+Fonts for AI-generated slides. Specify in prompts for consistent rendering.
+
+**English Fonts**:
+| Font | Style | Best For |
+|------|-------|----------|
+| Liter | Sans-serif, geometric | Modern, clean, technical |
+| HedvigLettersSans | Sans-serif, distinctive | Brand-forward, creative |
+| Oranienbaum | High-contrast serif | Elegant, classical |
+| SortsMillGoudy | Classical serif | Traditional, readable |
+| Coda | Round sans-serif | Friendly, approachable |
+
+**Chinese Fonts**:
+| Font | Style | Best For |
+|------|-------|----------|
+| MiSans | Modern sans-serif | Clean, versatile, screen-optimized |
+| Noto Sans SC | Neutral sans-serif | Standard, multilingual |
+| siyuanSongti | Refined Song typeface | Elegant, editorial |
+| alimamashuheiti | Geometric sans-serif | Commercial, structured |
+| LXGW Bright | Song-Kai hybrid | Warm, readable |
+
+**Multilingual Pairing**:
+| Use Case | English | Chinese |
+|----------|---------|---------|
+| Technical | Liter | MiSans |
+| Editorial | Oranienbaum | siyuanSongti |
+| Friendly | Coda | LXGW Bright |
+| Corporate | HedvigLettersSans | alimamashuheiti |
+
+### Consistency Requirements
+
+| Element | Guideline |
+|---------|-----------|
+| Spacing | Consistent margins and padding throughout |
+| Colors | Maximum 3-4 colors per slide, palette consistent across deck |
+| Typography | Same font families and sizes for same content types |
+| Visual Language | Repeat patterns, shapes, and treatments |
+
+## Visual Elements Reference
+
+Quick reference for visual treatments. Full specs in style definitions.
+
+### Background Treatments
+
+| Treatment | Description | Best For |
+|-----------|-------------|----------|
+| Solid color | Single background color | Clean, minimal |
+| Split background | Two colors, diagonal or vertical | Contrast, sections |
+| Gradient | Subtle vertical or diagonal fade | Modern, dynamic |
+| Textured | Pattern or texture overlay | Character, style |
+
+### Typography Treatments
+
+| Treatment | Description | Best For |
+|-----------|-------------|----------|
+| Size contrast | 3-4x difference headline vs body | Impact, hierarchy |
+| All-caps headers | Uppercase with letter spacing | Authority, structure |
+| Monospace data | Fixed-width for numbers/code | Technical, precision |
+| Hand-drawn | Organic, imperfect letterforms | Friendly, approachable |
+
+### Geometric Accents
+
+| Element | Description | Best For |
+|---------|-------------|----------|
+| Diagonal dividers | Angled section separators | Energy, movement |
+| Corner brackets | L-shaped frames | Focus, framing |
+| Circles/hexagons | Shape frames for images | Modern, tech |
+| Underline accents | Thick lines under headers | Emphasis, hierarchy |
 
 ## File Management
 
