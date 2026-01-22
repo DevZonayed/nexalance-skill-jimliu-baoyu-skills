@@ -112,24 +112,44 @@ export async function postVideoToX(options: XVideoOptions): Promise<void> {
       nodeId,
       files: [absVideoPath],
     }, { sessionId });
-    console.log('[x-video] Video file set, waiting for processing...');
+    console.log('[x-video] Video file set, uploading in background...');
 
-    // Wait for video to process
+    // Wait a moment for upload to start, then type text while video processes
+    await sleep(2000);
+
+    // Type text while video uploads in background
+    if (text) {
+      console.log('[x-video] Typing text...');
+      await cdp.send('Runtime.evaluate', {
+        expression: `
+          const editor = document.querySelector('[data-testid="tweetTextarea_0"]');
+          if (editor) {
+            editor.focus();
+            document.execCommand('insertText', false, ${JSON.stringify(text)});
+          }
+        `,
+      }, { sessionId });
+      await sleep(500);
+    }
+
+    // Wait for video to finish processing by checking if tweet button is enabled
+    console.log('[x-video] Waiting for video processing...');
     const waitForVideoReady = async (maxWaitMs = 180_000): Promise<boolean> => {
       const start = Date.now();
       let dots = 0;
       while (Date.now() - start < maxWaitMs) {
-        const result = await cdp!.send<{ result: { value: { hasMedia: boolean; isProcessing: boolean } } }>('Runtime.evaluate', {
+        const result = await cdp!.send<{ result: { value: { hasMedia: boolean; buttonEnabled: boolean } } }>('Runtime.evaluate', {
           expression: `(() => {
             const hasMedia = !!document.querySelector('[data-testid="attachments"] video, [data-testid="videoPlayer"], video');
-            const isProcessing = !!document.querySelector('[role="progressbar"], [data-testid="progressBar"]');
-            return { hasMedia, isProcessing };
+            const tweetBtn = document.querySelector('[data-testid="tweetButton"]');
+            const buttonEnabled = tweetBtn && !tweetBtn.disabled && tweetBtn.getAttribute('aria-disabled') !== 'true';
+            return { hasMedia, buttonEnabled };
           })()`,
           returnByValue: true,
         }, { sessionId });
 
-        const { hasMedia, isProcessing } = result.result.value;
-        if (hasMedia && !isProcessing) {
+        const { hasMedia, buttonEnabled } = result.result.value;
+        if (hasMedia && buttonEnabled) {
           console.log('');
           return true;
         }
@@ -148,21 +168,6 @@ export async function postVideoToX(options: XVideoOptions): Promise<void> {
       console.log('[x-video] Video ready!');
     } else {
       console.log('[x-video] Video may still be processing. Please check browser window.');
-    }
-
-    // Type text AFTER video is uploaded
-    if (text) {
-      console.log('[x-video] Typing text...');
-      await cdp.send('Runtime.evaluate', {
-        expression: `
-          const editor = document.querySelector('[data-testid="tweetTextarea_0"]');
-          if (editor) {
-            editor.focus();
-            document.execCommand('insertText', false, ${JSON.stringify(text)});
-          }
-        `,
-      }, { sessionId });
-      await sleep(500);
     }
 
     if (submit) {
