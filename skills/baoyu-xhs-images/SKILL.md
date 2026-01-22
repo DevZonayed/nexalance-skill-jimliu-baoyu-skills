@@ -20,7 +20,7 @@ Break down complex content into eye-catching infographic series for Xiaohongshu 
 /baoyu-xhs-images posts/ai-future/article.md --layout dense
 
 # Combine style and layout
-/baoyu-xhs-images posts/ai-future/article.md --style tech --layout list
+/baoyu-xhs-images posts/ai-future/article.md --style notion --layout list
 
 # Direct content input
 /baoyu-xhs-images
@@ -98,7 +98,7 @@ Each session creates an independent directory named by content slug:
 xhs-images/{topic-slug}/
 ├── source-{slug}.{ext}             # Source files (text, images, etc.)
 ├── analysis.md                     # Deep analysis results
-├── outline-style-[slug].md         # Variant A (e.g., outline-style-tech.md)
+├── outline-style-[slug].md         # Variant A (e.g., outline-style-notion.md)
 ├── outline-style-[slug].md         # Variant B (e.g., outline-style-notion.md)
 ├── outline-style-[slug].md         # Variant C (e.g., outline-style-minimal.md)
 ├── outline.md                      # Final selected
@@ -162,7 +162,7 @@ Based on analysis, create three distinct style variants.
 
 | Variant | Selection Logic | Example Filename |
 |---------|-----------------|------------------|
-| A | Primary recommendation | `outline-style-tech.md` |
+| A | Primary recommendation | `outline-style-notion.md` |
 | B | Alternative style | `outline-style-notion.md` |
 | C | Different audience/mood | `outline-style-minimal.md` |
 
@@ -188,7 +188,7 @@ Based on analysis, create three distinct style variants.
 
 ```
 Question 1 (Style): Which style variant?
-- A: tech + dense (Recommended) - 专业科技感，适合干货
+- A: notion + dense (Recommended) - 知识卡片风格，适合干货
 - B: notion + list - 清爽知识卡片
 - C: minimal + balanced - 简约高端风格
 - Custom: 自定义风格描述
@@ -239,10 +239,10 @@ Location: [directory path]
 Images: N total
 
 ✓ analysis.md
-✓ outline-style-tech.md
 ✓ outline-style-notion.md
+✓ outline-style-chalkboard.md
 ✓ outline-style-minimal.md
-✓ outline.md (selected: tech + dense)
+✓ outline.md (selected: notion + dense)
 
 Files:
 - 01-cover-[slug].png ✓ Cover (sparse)

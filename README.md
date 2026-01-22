@@ -55,7 +55,7 @@ Simply tell Claude Code:
 |--------|-------------|--------|
 | **content-skills** | Content generation and publishing | [xhs-images](#baoyu-xhs-images), [infographic](#baoyu-infographic), [cover-image](#baoyu-cover-image), [slide-deck](#baoyu-slide-deck), [comic](#baoyu-comic), [article-illustrator](#baoyu-article-illustrator), [post-to-x](#baoyu-post-to-x), [post-to-wechat](#baoyu-post-to-wechat) |
 | **ai-generation-skills** | AI-powered generation backends | [image-gen](#baoyu-image-gen), [danger-gemini-web](#baoyu-danger-gemini-web) |
-| **utility-skills** | Utility tools for content processing | [danger-x-to-markdown](#baoyu-danger-x-to-markdown), [compress-image](#baoyu-compress-image) |
+| **utility-skills** | Utility tools for content processing | [url-to-markdown](#baoyu-url-to-markdown), [danger-x-to-markdown](#baoyu-danger-x-to-markdown), [compress-image](#baoyu-compress-image) |
 
 ## Update Skills
 
@@ -585,6 +585,35 @@ Interacts with Gemini Web to generate text and images.
 ### Utility Skills
 
 Utility tools for content processing.
+
+#### baoyu-url-to-markdown
+
+Fetch any URL via Chrome CDP and convert to clean markdown. Supports two capture modes for different scenarios.
+
+```bash
+# Auto mode (default) - capture when page loads
+/baoyu-url-to-markdown https://example.com/article
+
+# Wait mode - for login-required pages
+/baoyu-url-to-markdown https://example.com/private --wait
+
+# Save to specific file
+/baoyu-url-to-markdown https://example.com/article -o output.md
+```
+
+**Capture Modes**:
+| Mode | Description | Best For |
+|------|-------------|----------|
+| Auto (default) | Captures immediately after page load | Public pages, static content |
+| Wait (`--wait`) | Waits for user signal before capture | Login-required, dynamic content |
+
+**Options**:
+| Option | Description |
+|--------|-------------|
+| `<url>` | URL to fetch |
+| `-o <path>` | Output file path |
+| `--wait` | Wait for user signal before capturing |
+| `--timeout <ms>` | Page load timeout (default: 30000) |
 
 #### baoyu-danger-x-to-markdown
 

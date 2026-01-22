@@ -2,6 +2,14 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.13.0 - 2026-01-21
+
+### Features
+- `baoyu-url-to-markdown`: new utility skill for fetching any URL via Chrome CDP and converting to clean markdown. Supports two capture modes—auto (immediate capture on page load) and wait (user-controlled capture for login-required pages).
+
+### Improvements
+- `baoyu-xhs-images`: updates style recommendations—replaces `tech` references with `notion` and `chalkboard` for technical and educational content.
+
 ## 1.12.0 - 2026-01-21
 
 ### Refactor

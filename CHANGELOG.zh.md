@@ -2,6 +2,14 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.13.0 - 2026-01-21
+
+### 新功能
+- `baoyu-url-to-markdown`：新增 URL 转 Markdown 工具技能，通过 Chrome CDP 抓取任意网页并转换为干净的 Markdown 格式。支持两种抓取模式——自动模式（页面加载后立即抓取）和等待模式（用户控制抓取时机，适用于需要登录的页面）。
+
+### 改进
+- `baoyu-xhs-images`：更新风格推荐——将 `tech` 风格引用替换为 `notion` 和 `chalkboard`，用于技术和教育内容。
+
 ## 1.12.0 - 2026-01-21
 
 ### 重构

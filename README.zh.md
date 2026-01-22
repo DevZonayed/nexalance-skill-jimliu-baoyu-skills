@@ -55,7 +55,7 @@ npx skills add jimliu/baoyu-skills
 |------|------|----------|
 | **content-skills** | 内容生成和发布 | [xhs-images](#baoyu-xhs-images), [infographic](#baoyu-infographic), [cover-image](#baoyu-cover-image), [slide-deck](#baoyu-slide-deck), [comic](#baoyu-comic), [article-illustrator](#baoyu-article-illustrator), [post-to-x](#baoyu-post-to-x), [post-to-wechat](#baoyu-post-to-wechat) |
 | **ai-generation-skills** | AI 生成后端 | [image-gen](#baoyu-image-gen), [danger-gemini-web](#baoyu-danger-gemini-web) |
-| **utility-skills** | 内容处理工具 | [danger-x-to-markdown](#baoyu-danger-x-to-markdown), [compress-image](#baoyu-compress-image) |
+| **utility-skills** | 内容处理工具 | [url-to-markdown](#baoyu-url-to-markdown), [danger-x-to-markdown](#baoyu-danger-x-to-markdown), [compress-image](#baoyu-compress-image) |
 
 ## 更新技能
 
@@ -585,6 +585,35 @@ AI 驱动的生成后端。
 ### 工具技能 (Utility Skills)
 
 内容处理工具。
+
+#### baoyu-url-to-markdown
+
+通过 Chrome CDP 抓取任意 URL 并转换为干净的 Markdown。支持两种抓取模式，适应不同场景。
+
+```bash
+# 自动模式（默认）- 页面加载后立即抓取
+/baoyu-url-to-markdown https://example.com/article
+
+# 等待模式 - 适用于需要登录的页面
+/baoyu-url-to-markdown https://example.com/private --wait
+
+# 保存到指定文件
+/baoyu-url-to-markdown https://example.com/article -o output.md
+```
+
+**抓取模式**：
+| 模式 | 说明 | 适用场景 |
+|------|------|----------|
+| 自动（默认） | 页面加载后立即抓取 | 公开页面、静态内容 |
+| 等待（`--wait`） | 等待用户信号后抓取 | 需登录页面、动态内容 |
+
+**选项**：
+| 选项 | 说明 |
+|------|------|
+| `<url>` | 要抓取的 URL |
+| `-o <path>` | 输出文件路径 |
+| `--wait` | 等待用户信号后抓取 |
+| `--timeout <ms>` | 页面加载超时（默认：30000） |
 
 #### baoyu-danger-x-to-markdown
 
