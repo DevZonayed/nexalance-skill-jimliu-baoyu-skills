@@ -2,6 +2,14 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.15.0 - 2026-01-22
+
+### Features
+- `baoyu-xhs-images`: adds user preferences support via EXTEND.md—configure watermark (content, position, opacity), preferred style, preferred layout, and custom styles. New Step 0 checks for preferences at project (`.baoyu-skills/`) or user (`~/.baoyu-skills/`) level with first-time setup flow.
+
+### Documentation
+- `baoyu-xhs-images`: adds three reference documents—`preferences-schema.md` (YAML schema), `watermark-guide.md` (position and opacity guide), `first-time-setup.md` (setup flow).
+
 ## 1.14.0 - 2026-01-22
 
 ### Fixes

@@ -2,6 +2,14 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.15.0 - 2026-01-22
+
+### 新功能
+- `baoyu-xhs-images`：新增用户偏好设置支持（通过 EXTEND.md 配置）——可设置水印（内容、位置、透明度）、首选风格、首选布局和自定义风格。新增 Step 0 检查项目级（`.baoyu-skills/`）或用户级（`~/.baoyu-skills/`）偏好设置，首次使用时引导设置。
+
+### 文档
+- `baoyu-xhs-images`：新增三个参考文档——`preferences-schema.md`（YAML 配置模式）、`watermark-guide.md`（水印位置和透明度指南）、`first-time-setup.md`（首次设置流程）。
+
 ## 1.14.0 - 2026-01-22
 
 ### 修复

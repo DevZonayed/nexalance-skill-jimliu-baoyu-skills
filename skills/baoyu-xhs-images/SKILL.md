@@ -127,6 +127,31 @@ Copy all sources with naming `source-{slug}.{ext}`:
 
 ## Workflow
 
+### Step 0: Check Preferences
+
+**Check paths** (priority order):
+1. `.baoyu-skills/baoyu-xhs-images/EXTEND.md` (project)
+2. `~/.baoyu-skills/baoyu-xhs-images/EXTEND.md` (user)
+
+**If preferences found**:
+1. Parse YAML frontmatter
+2. Display current preferences summary:
+   ```
+   Loaded preferences from [path]:
+   - Watermark: [enabled/disabled] "[content]" at [position]
+   - Style: [name] - [description]
+   - Layout: [layout]
+   - Language: [lang]
+   ```
+3. Continue to Step 1
+
+**If NO preferences found**:
+1. Ask user with AskUserQuestion (see `references/first-time-setup.md`)
+2. Create EXTEND.md with user choices
+3. Continue to Step 1
+
+Schema reference: `references/preferences-schema.md`
+
 ### Step 1: Analyze Content → `analysis.md`
 
 Read source content, save it if needed, and perform deep analysis.
@@ -172,6 +197,10 @@ Based on analysis, create three distinct style variants.
 
 **IMPORTANT**: Present ALL options in a single confirmation step using AskUserQuestion. Do NOT interrupt workflow with multiple separate confirmations.
 
+**Prioritize user preferences** (from Step 0):
+- If user has `preferred_style`: Show as first option with "(Your preference)"
+- If user has `preferred_layout`: Show as first option with "(Your preference)"
+
 **Determine which questions to ask**:
 
 | Question | When to Ask |
@@ -188,14 +217,15 @@ Based on analysis, create three distinct style variants.
 
 ```
 Question 1 (Style): Which style variant?
-- A: notion + dense (Recommended) - 知识卡片风格，适合干货
-- B: notion + list - 清爽知识卡片
-- C: minimal + balanced - 简约高端风格
+- User preference: notion + dense (Your preference) - 您的默认设置
+- A: notion + list - AI推荐: 清爽知识卡片
+- B: minimal + balanced - AI推荐: 简约高端风格
 - Custom: 自定义风格描述
 
 Question 2 (Layout) - only if relevant:
+- Your preference: dense (Your preference)
 - Keep variant default (Recommended)
-- sparse / balanced / dense / list / comparison / flow
+- sparse / balanced / list / comparison / flow
 
 Question 3 (Language) - only if mismatch:
 - 中文 (匹配原文)
@@ -216,6 +246,15 @@ With confirmed outline + style + layout:
 1. Save prompt to `prompts/NN-{type}-[slug].md` (in user's preferred language)
 2. Generate image using confirmed style and layout
 3. Report progress after each generation
+
+**Watermark Application** (if enabled in preferences):
+Add to each image generation prompt:
+```
+Include a subtle watermark "[content]" positioned at [position]
+with approximately [opacity*100]% visibility. The watermark should
+be legible but not distracting from the main content.
+```
+Reference: `references/watermark-guide.md`
 
 **Image Generation Skill Selection**:
 - Check available image generation skills
@@ -301,6 +340,9 @@ Detailed templates and guidelines in `references/` directory:
 - `styles/<style>.md` - Detailed style definitions
 - `layouts/<layout>.md` - Detailed layout definitions
 - `base-prompt.md` - Base prompt template
+- `preferences-schema.md` - EXTEND.md YAML schema
+- `watermark-guide.md` - Watermark configuration guide
+- `first-time-setup.md` - First-time setup flow
 
 ## Notes
 
@@ -318,4 +360,13 @@ Custom styles and configurations via EXTEND.md.
 1. `.baoyu-skills/baoyu-xhs-images/EXTEND.md` (project)
 2. `~/.baoyu-skills/baoyu-xhs-images/EXTEND.md` (user)
 
-If found, load before Step 1. Extension content overrides defaults.
+If found, load in Step 0. Extension content overrides defaults.
+
+**Supported preferences**:
+- Watermark settings (content, position, opacity)
+- Preferred style with custom description
+- Preferred layout
+- Custom style definitions
+
+**Schema**: `references/preferences-schema.md`
+**First-time setup**: `references/first-time-setup.md`
