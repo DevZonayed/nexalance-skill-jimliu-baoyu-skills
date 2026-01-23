@@ -186,7 +186,29 @@ Japanese (CHANGELOG.ja.md):
 - コネクションプールのメモリリークを修正
 ```
 
-### Step 5: Update Version File
+### Step 5: Check README Updates
+
+**IMPORTANT**: Before updating version file, check if README needs updates.
+
+1. **Scan for README files**: `README*.md` in project root
+2. **For each skill/feature changed**, check if README documentation matches:
+   - Options/flags documented correctly
+   - Usage examples reflect current syntax
+   - Feature descriptions are accurate
+3. **If README is outdated**:
+   - Update README.md (and README.zh.md if exists) to reflect changes
+   - Include in release commit
+
+**Common README Updates Needed**:
+| Change Type | README Section to Check |
+|-------------|------------------------|
+| New options/flags | Options table, usage examples |
+| Renamed options | Options table, usage examples |
+| New features | Feature description, examples |
+| Breaking changes | Migration notes, deprecation warnings |
+| Restructured internals | Architecture section (if exposed to users) |
+
+### Step 6: Update Version File
 
 1. Read version file (JSON/TOML/text)
 2. Update version number
@@ -202,7 +224,7 @@ Japanese (CHANGELOG.ja.md):
 | marketplace.json | `$.metadata.version` |
 | VERSION / version.txt | Direct content |
 
-### Step 6: Commit and Tag
+### Step 7: Commit and Tag
 
 ```bash
 git add <all modified files>

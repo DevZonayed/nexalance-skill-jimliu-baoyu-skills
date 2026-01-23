@@ -2,6 +2,15 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.15.3 - 2026-01-23
+
+### 重构
+- `baoyu-comic`：风格系统重构为三维架构——将 10 个单一风格文件拆分为模块化的 `art-styles/`（5 种画风：ligne-claire 清线、manga 日漫、realistic 写实、ink-brush 水墨、chalk 粉笔）、`tones/`（7 种基调：neutral 中性、warm 温馨、dramatic 戏剧、romantic 浪漫、energetic 活力、vintage 复古、action 动作）和 `presets/`（3 种预设：ohmsha、wuxia 武侠、shoujo 少女漫画）。新的画风 × 基调 × 布局系统支持灵活组合，同时预设保留特定类型的专属规则。
+
+### 文档
+- `release-skills`：新增 Step 5（检查 README 更新）——确保发布时 README 文档与代码变更保持同步。
+- `README.md`、`README.zh.md`：更新 baoyu-comic 文档，反映新的 `--art` 和 `--tone` 选项（替代原 `--style`）。
+
 ## 1.15.2 - 2026-01-23
 
 ### 文档

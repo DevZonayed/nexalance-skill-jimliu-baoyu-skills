@@ -2,6 +2,15 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.15.3 - 2026-01-23
+
+### Refactor
+- `baoyu-comic`: restructures style system into 3-dimension architecture—replaces 10 monolithic style files with modular `art-styles/` (5 styles: ligne-claire, manga, realistic, ink-brush, chalk), `tones/` (7 moods: neutral, warm, dramatic, romantic, energetic, vintage, action), and `presets/` (3 shortcuts: ohmsha, wuxia, shoujo). New art × tone × layout system enables flexible combinations while presets preserve special rules for specific genres.
+
+### Documentation
+- `release-skills`: adds Step 5 (Check README Updates)—ensures README documentation stays in sync with code changes during releases.
+- `README.md`, `README.zh.md`: updates baoyu-comic documentation to reflect new `--art` and `--tone` options replacing `--style`.
+
 ## 1.15.2 - 2026-01-23
 
 ### Documentation

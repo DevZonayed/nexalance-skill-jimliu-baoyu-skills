@@ -340,18 +340,19 @@ npx skills add jimliu/baoyu-skills
 
 #### baoyu-comic
 
-知识漫画创作器，支持多种风格（Logicomix/清线风格、欧姆社漫画教程风格）。创作带有详细分镜布局的原创教育漫画，逐页生成图片。
+知识漫画创作器，支持画风 × 基调灵活组合。创作带有详细分镜布局的原创教育漫画，逐页生成图片。
 
 ```bash
-# 从素材文件生成
+# 从素材文件生成（自动选择画风 + 基调）
 /baoyu-comic posts/turing-story/source.md
 
-# 指定风格
-/baoyu-comic posts/turing-story/source.md --style dramatic
-/baoyu-comic posts/turing-story/source.md --style ohmsha
+# 指定画风和基调
+/baoyu-comic posts/turing-story/source.md --art manga --tone warm
+/baoyu-comic posts/turing-story/source.md --art ink-brush --tone dramatic
 
-# 自定义风格（自然语言描述）
-/baoyu-comic posts/turing-story/source.md --style "水彩风格，边缘柔和"
+# 使用预设（包含特殊规则）
+/baoyu-comic posts/turing-story/source.md --style ohmsha
+/baoyu-comic posts/turing-story/source.md --style wuxia
 
 # 指定布局和比例
 /baoyu-comic posts/turing-story/source.md --layout cinematic
@@ -367,35 +368,42 @@ npx skills add jimliu/baoyu-skills
 **选项**：
 | 选项 | 取值 |
 |------|------|
-| `--style` | `classic`（默认）、`dramatic`、`warm`、`sepia`、`vibrant`、`ohmsha`、`realistic`、`wuxia`、`shoujo`，或自然语言描述 |
+| `--art` | `ligne-claire`（默认）、`manga`、`realistic`、`ink-brush`、`chalk` |
+| `--tone` | `neutral`（默认）、`warm`、`dramatic`、`romantic`、`energetic`、`vintage`、`action` |
+| `--style` | `ohmsha`、`wuxia`、`shoujo`（预设，含特殊规则） |
 | `--layout` | `standard`（默认）、`cinematic`、`dense`、`splash`、`mixed`、`webtoon` |
 | `--aspect` | `3:4`（默认，竖版）、`4:3`（横版）、`16:9`（宽屏） |
 | `--lang` | `auto`（默认）、`zh`、`en`、`ja` 等 |
 
-**风格**（视觉美学）：
+**画风**（渲染技法）：
 
-| 风格 | 描述 | 适用场景 |
-|------|------|----------|
-| `classic`（默认） | 传统清线风格，统一线条、平涂色彩、精细背景 | 传记、平衡叙事、教育内容 |
-| `dramatic` | 高对比度，重阴影、紧张表情、棱角分明的构图 | 重大发现、冲突、高潮场景 |
-| `warm` | 柔和边缘、金色调、温馨室内、怀旧感 | 个人故事、童年场景、师生情 |
-| `sepia` | 复古插画风格、做旧纸张效果、时代准确细节 | 1950 年前故事、古典科学、历史人物 |
-| `vibrant` | 富有活力的线条、明亮色彩、动感姿态 | 科学解说、"顿悟"时刻、青少年读者 |
-| `ohmsha` | 欧姆社漫画风格，视觉比喻、道具、学生/导师互动 | 技术教程、复杂概念（机器学习、物理） |
-| `realistic` | 全彩写实日漫风格，数字绘画、平滑渐变、准确人体比例 | 红酒、美食、商业、生活方式、专业话题 |
-| `wuxia` | 港漫武侠风格，水墨笔触、动态打斗、气功特效 | 武侠、仙侠、中国历史小说 |
-| `shoujo` | 经典少女漫画风格，大眼睛闪亮高光、花朵星星装饰、粉紫色调 | 恋爱、青春成长、友情、情感故事 |
+| 画风 | 描述 |
+|------|------|
+| `ligne-claire` | 统一线条、平涂色彩，欧洲漫画传统（丁丁、Logicomix） |
+| `manga` | 大眼睛、日漫风格、表情丰富 |
+| `realistic` | 数字绘画、写实比例、精致细腻 |
+| `ink-brush` | 中国水墨笔触、水墨晕染效果 |
+| `chalk` | 黑板粉笔风格、手绘温暖感 |
 
-**风格预览**：
+**基调**（氛围/情绪）：
 
-| | | |
-|:---:|:---:|:---:|
-| ![classic](./screenshots/comic-styles/classic.webp) | ![dramatic](./screenshots/comic-styles/dramatic.webp) | ![warm](./screenshots/comic-styles/warm.webp) |
-| classic | dramatic | warm |
-| ![sepia](./screenshots/comic-styles/sepia.webp) | ![vibrant](./screenshots/comic-styles/vibrant.webp) | ![ohmsha](./screenshots/comic-styles/ohmsha.webp) |
-| sepia | vibrant | ohmsha |
-| ![realistic](./screenshots/comic-styles/realistic.webp) | ![wuxia](./screenshots/comic-styles/wuxia.webp) | ![shoujo](./screenshots/comic-styles/shoujo.webp) |
-| realistic | wuxia | shoujo |
+| 基调 | 描述 |
+|------|------|
+| `neutral` | 平衡、理性、教育性 |
+| `warm` | 怀旧、个人化、温馨 |
+| `dramatic` | 高对比、紧张、有力 |
+| `romantic` | 柔和、唯美、装饰性元素 |
+| `energetic` | 明亮、动感、活力 |
+| `vintage` | 历史感、做旧、时代真实性 |
+| `action` | 速度线、冲击效果、战斗 |
+
+**预设**（画风 + 基调 + 特殊规则）：
+
+| 预设 | 等价于 | 特殊规则 |
+|------|--------|----------|
+| `ohmsha` | manga + neutral | 视觉比喻、禁止大头对话、道具揭秘 |
+| `wuxia` | ink-brush + action | 气功特效、战斗视觉、氛围元素 |
+| `shoujo` | manga + romantic | 装饰元素、眼睛细节、浪漫情节 |
 
 **布局**（分镜排列）：
 | 布局 | 每页分镜数 | 适用场景 |

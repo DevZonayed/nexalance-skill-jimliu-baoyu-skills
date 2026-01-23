@@ -340,18 +340,19 @@ After generation, slides are automatically merged into a `.pptx` file for easy s
 
 #### baoyu-comic
 
-Knowledge comic creator supporting multiple styles (Logicomix/Ligne Claire, Ohmsha manga guide). Creates original educational comics with detailed panel layouts and sequential image generation.
+Knowledge comic creator with flexible art style × tone combinations. Creates original educational comics with detailed panel layouts and sequential image generation.
 
 ```bash
-# From source material
+# From source material (auto-selects art + tone)
 /baoyu-comic posts/turing-story/source.md
 
-# Specify style
-/baoyu-comic posts/turing-story/source.md --style dramatic
-/baoyu-comic posts/turing-story/source.md --style ohmsha
+# Specify art style and tone
+/baoyu-comic posts/turing-story/source.md --art manga --tone warm
+/baoyu-comic posts/turing-story/source.md --art ink-brush --tone dramatic
 
-# Custom style (natural language)
-/baoyu-comic posts/turing-story/source.md --style "watercolor with soft edges"
+# Use preset (includes special rules)
+/baoyu-comic posts/turing-story/source.md --style ohmsha
+/baoyu-comic posts/turing-story/source.md --style wuxia
 
 # Specify layout and aspect ratio
 /baoyu-comic posts/turing-story/source.md --layout cinematic
@@ -367,35 +368,42 @@ Knowledge comic creator supporting multiple styles (Logicomix/Ligne Claire, Ohms
 **Options**:
 | Option | Values |
 |--------|--------|
-| `--style` | `classic` (default), `dramatic`, `warm`, `sepia`, `vibrant`, `ohmsha`, `realistic`, `wuxia`, `shoujo`, or custom description |
+| `--art` | `ligne-claire` (default), `manga`, `realistic`, `ink-brush`, `chalk` |
+| `--tone` | `neutral` (default), `warm`, `dramatic`, `romantic`, `energetic`, `vintage`, `action` |
+| `--style` | `ohmsha`, `wuxia`, `shoujo` (presets with special rules) |
 | `--layout` | `standard` (default), `cinematic`, `dense`, `splash`, `mixed`, `webtoon` |
 | `--aspect` | `3:4` (default, portrait), `4:3` (landscape), `16:9` (widescreen) |
 | `--lang` | `auto` (default), `zh`, `en`, `ja`, etc. |
 
-**Styles** (visual aesthetics):
+**Art Styles** (rendering technique):
 
-| Style | Description | Best For |
-|-------|-------------|----------|
-| `classic` (default) | Traditional Ligne Claire with clean uniform outlines, flat colors, detailed backgrounds | Biographies, balanced narratives, educational content |
-| `dramatic` | High contrast with heavy shadows, intense expressions, angular compositions | Pivotal discoveries, conflicts, climactic scenes |
-| `warm` | Soft edges, golden tones, cozy interiors with nostalgic feel | Personal stories, childhood scenes, mentorship |
-| `sepia` | Vintage illustration style with aged paper effect, period-accurate details | Pre-1950s stories, classical science, historical figures |
-| `vibrant` | Energetic lines with weight variation, bright colors, dynamic poses | Science explanations, "aha" moments, young audience |
-| `ohmsha` | Manga guide style with visual metaphors, gadgets, student/mentor dynamic | Technical tutorials, complex concepts (ML, physics) |
-| `realistic` | Full-color realistic manga with digital painting, smooth gradients, accurate proportions | Wine, food, business, lifestyle, professional topics |
-| `wuxia` | Hong Kong martial arts style with ink brush strokes, dynamic combat, qi effects | Martial arts, wuxia/xianxia, Chinese historical fiction |
-| `shoujo` | Classic shoujo manga with large sparkling eyes, flowers, sparkles, soft pink/lavender palette | Romance, coming-of-age, friendship, emotional drama |
+| Art Style | Description |
+|-----------|-------------|
+| `ligne-claire` | Uniform lines, flat colors, European comic tradition (Tintin, Logicomix) |
+| `manga` | Large eyes, manga conventions, expressive emotions |
+| `realistic` | Digital painting, realistic proportions, sophisticated |
+| `ink-brush` | Chinese brush strokes, ink wash effects |
+| `chalk` | Chalkboard aesthetic, hand-drawn warmth |
 
-**Style Previews**:
+**Tones** (mood/atmosphere):
 
-| | | |
-|:---:|:---:|:---:|
-| ![classic](./screenshots/comic-styles/classic.webp) | ![dramatic](./screenshots/comic-styles/dramatic.webp) | ![warm](./screenshots/comic-styles/warm.webp) |
-| classic | dramatic | warm |
-| ![sepia](./screenshots/comic-styles/sepia.webp) | ![vibrant](./screenshots/comic-styles/vibrant.webp) | ![ohmsha](./screenshots/comic-styles/ohmsha.webp) |
-| sepia | vibrant | ohmsha |
-| ![realistic](./screenshots/comic-styles/realistic.webp) | ![wuxia](./screenshots/comic-styles/wuxia.webp) | ![shoujo](./screenshots/comic-styles/shoujo.webp) |
-| realistic | wuxia | shoujo |
+| Tone | Description |
+|------|-------------|
+| `neutral` | Balanced, rational, educational |
+| `warm` | Nostalgic, personal, comforting |
+| `dramatic` | High contrast, intense, powerful |
+| `romantic` | Soft, beautiful, decorative elements |
+| `energetic` | Bright, dynamic, exciting |
+| `vintage` | Historical, aged, period authenticity |
+| `action` | Speed lines, impact effects, combat |
+
+**Presets** (art + tone + special rules):
+
+| Preset | Equivalent | Special Rules |
+|--------|-----------|---------------|
+| `ohmsha` | manga + neutral | Visual metaphors, NO talking heads, gadget reveals |
+| `wuxia` | ink-brush + action | Qi effects, combat visuals, atmospheric elements |
+| `shoujo` | manga + romantic | Decorative elements, eye details, romantic beats |
 
 **Layouts** (panel arrangement):
 | Layout | Panels/Page | Best for |

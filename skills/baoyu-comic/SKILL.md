@@ -1,45 +1,94 @@
 ---
 name: baoyu-comic
-description: Knowledge comic creator supporting multiple styles (Logicomix/Ligne Claire, Ohmsha manga guide). Creates original educational comics with detailed panel layouts and sequential image generation. Use when user asks to create "知识漫画", "教育漫画", "biography comic", "tutorial comic", or "Logicomix-style comic".
+description: Knowledge comic creator supporting multiple art styles and tones. Creates original educational comics with detailed panel layouts and sequential image generation. Use when user asks to create "知识漫画", "教育漫画", "biography comic", "tutorial comic", or "Logicomix-style comic".
 ---
 
 # Knowledge Comic Creator
 
-Create original knowledge comics with multiple visual styles.
+Create original knowledge comics with flexible art style × tone combinations.
 
 ## Usage
 
 ```bash
 /baoyu-comic posts/turing-story/source.md
+/baoyu-comic article.md --art manga --tone warm
 /baoyu-comic  # then paste content
 ```
 
 ## Options
 
-| Option | Values |
-|--------|--------|
-| `--style` | classic (default), dramatic, warm, sepia, vibrant, ohmsha, realistic, wuxia, shoujo, or custom description |
-| `--layout` | standard (default), cinematic, dense, splash, mixed, webtoon |
-| `--aspect` | 3:4 (default, portrait), 4:3 (landscape), 16:9 (widescreen) |
-| `--lang` | auto (default), zh, en, ja, etc. |
+### Visual Dimensions
 
-Style × Layout × Aspect can be freely combined. Custom styles can be described in natural language.
+| Option | Values | Description |
+|--------|--------|-------------|
+| `--art` | ligne-claire (default), manga, realistic, ink-brush, chalk | Art style / rendering technique |
+| `--tone` | neutral (default), warm, dramatic, romantic, energetic, vintage, action | Mood / atmosphere |
+| `--layout` | standard (default), cinematic, dense, splash, mixed, webtoon | Panel arrangement |
+| `--aspect` | 3:4 (default, portrait), 4:3 (landscape), 16:9 (widescreen) | Page aspect ratio |
+| `--lang` | auto (default), zh, en, ja, etc. | Output language |
 
-**Aspect ratio is consistent across all pages in a comic.**
+### Art Styles (画风)
+
+| Style | 中文 | Description |
+|-------|------|-------------|
+| `ligne-claire` | 清线 | Uniform lines, flat colors, European comic tradition (Tintin, Logicomix) |
+| `manga` | 日漫 | Large eyes, manga conventions, expressive emotions |
+| `realistic` | 写实 | Digital painting, realistic proportions, sophisticated |
+| `ink-brush` | 水墨 | Chinese brush strokes, ink wash effects |
+| `chalk` | 粉笔 | Chalkboard aesthetic, hand-drawn warmth |
+
+### Tones (基调)
+
+| Tone | 中文 | Description |
+|------|------|-------------|
+| `neutral` | 中性 | Balanced, rational, educational |
+| `warm` | 温馨 | Nostalgic, personal, comforting |
+| `dramatic` | 戏剧 | High contrast, intense, powerful |
+| `romantic` | 浪漫 | Soft, beautiful, decorative elements |
+| `energetic` | 活力 | Bright, dynamic, exciting |
+| `vintage` | 复古 | Historical, aged, period authenticity |
+| `action` | 动作 | Speed lines, impact effects, combat |
+
+### Preset Shortcuts
+
+Presets with special rules beyond art+tone:
+
+| Preset | Equivalent | Special Rules |
+|--------|-----------|---------------|
+| `--style ohmsha` | `--art manga --tone neutral` | Visual metaphors, NO talking heads, gadget reveals |
+| `--style wuxia` | `--art ink-brush --tone action` | Qi effects, combat visuals, atmospheric elements |
+| `--style shoujo` | `--art manga --tone romantic` | Decorative elements, eye details, romantic beats |
+
+### Compatibility Matrix
+
+| Art Style | ✓✓ Best | ✓ Works | ✗ Avoid |
+|-----------|---------|---------|---------|
+| ligne-claire | neutral, warm | dramatic, vintage, energetic | romantic, action |
+| manga | neutral, romantic, energetic, action | warm, dramatic | vintage |
+| realistic | neutral, warm, dramatic, vintage | action | romantic, energetic |
+| ink-brush | neutral, dramatic, action, vintage | warm | romantic, energetic |
+| chalk | neutral, warm, energetic | vintage | dramatic, action, romantic |
+
+Art Style × Tone × Layout can be freely combined. Incompatible combinations work but may produce unexpected results.
 
 ## Auto Selection
 
-| Content Signals | Style | Layout |
-|-----------------|-------|--------|
-| Tutorial, how-to, beginner | ohmsha | webtoon |
-| Computing, AI, programming | ohmsha | dense |
-| Pre-1950, classical, ancient | sepia | cinematic |
-| Personal story, mentor | warm | standard |
-| Conflict, breakthrough | dramatic | splash |
-| Wine, food, business, lifestyle, professional | realistic | cinematic |
-| Martial arts, wuxia, xianxia, Chinese historical | wuxia | splash |
-| Romance, love, school life, friendship, emotional | shoujo | standard |
-| Biography, balanced | classic | mixed |
+Content signals determine default art + tone + layout (or preset):
+
+| Content Signals | Art Style | Tone | Layout | Preset |
+|-----------------|-----------|------|--------|--------|
+| Tutorial, how-to, beginner | manga | neutral | webtoon | **ohmsha** |
+| Computing, AI, programming | manga | neutral | dense | **ohmsha** |
+| Technical explanation, educational | manga | neutral | webtoon | **ohmsha** |
+| Pre-1950, classical, ancient | realistic | vintage | cinematic | - |
+| Personal story, mentor | ligne-claire | warm | standard | - |
+| Conflict, breakthrough | (inherit) | dramatic | splash | - |
+| Wine, food, business, lifestyle | realistic | neutral | cinematic | - |
+| Martial arts, wuxia, xianxia | ink-brush | action | splash | **wuxia** |
+| Romance, love, school life | manga | romantic | standard | **shoujo** |
+| Biography, balanced | ligne-claire | neutral | mixed | - |
+
+**When preset is recommended**: Load `references/presets/{preset}.md` and apply all special rules.
 
 ## Script Directory
 
@@ -57,53 +106,93 @@ Style × Layout × Aspect can be freely combined. Custom styles can be described
 
 ## File Structure
 
-Each session creates an independent directory named by content slug:
+Output directory: `comic/{topic-slug}/`
+- Slug: 2-4 words kebab-case from topic (e.g., `alan-turing-bio`)
+- Conflict: append timestamp (e.g., `turing-story-20260118-143052`)
 
-```
-comic/{topic-slug}/
-├── source-{slug}.{ext}            # Source files (text, images, etc.)
-├── analysis.md                    # Deep analysis results (YAML+MD)
-├── storyboard-chronological.md    # Variant A (preserved)
-├── storyboard-thematic.md         # Variant B (preserved)
-├── storyboard-character.md        # Variant C (preserved)
-├── characters-chronological/      # Variant A chars (preserved)
-│   ├── characters.md
-│   └── characters.png
-├── characters-thematic/           # Variant B chars (preserved)
-│   ├── characters.md
-│   └── characters.png
-├── characters-character/          # Variant C chars (preserved)
-│   ├── characters.md
-│   └── characters.png
-├── storyboard.md                  # Final selected
-├── characters/                    # Final selected
-│   ├── characters.md
-│   └── characters.png
-├── prompts/
-│   ├── 00-cover-[slug].md
-│   └── NN-page-[slug].md
-├── 00-cover-[slug].png
-├── NN-page-[slug].png
-└── {topic-slug}.pdf
-```
-
-**Slug Generation**:
-1. Extract main topic from content (2-4 words, kebab-case)
-2. Example: "Alan Turing Biography" → `alan-turing-bio`
-
-**Conflict Resolution**:
-If `comic/{topic-slug}/` already exists:
-- Append timestamp: `{topic-slug}-YYYYMMDD-HHMMSS`
-- Example: `turing-story` exists → `turing-story-20260118-143052`
-
-**Source Files**:
-Copy all sources with naming `source-{slug}.{ext}`:
-- `source-biography.md`, `source-portrait.jpg`, `source-timeline.png`, etc.
-- Multiple sources supported: text, images, files from conversation
+**Contents**:
+- `source-{slug}.{ext}` - Source files
+- `analysis.md` - Content analysis
+- `storyboard.md` - Storyboard with panel breakdown
+- `characters/characters.md` - Character definitions
+- `characters/characters.png` - Character reference sheet
+- `prompts/NN-{cover|page}-[slug].md` - Generation prompts
+- `NN-{cover|page}-[slug].png` - Generated images
+- `{topic-slug}.pdf` - Final merged PDF
 
 ## Workflow
 
-### Step 1: Analyze Content → `analysis.md`
+### Progress Checklist
+
+Copy and track progress:
+
+```
+Comic Progress:
+- [ ] Step 1: Load preferences + Analyze content
+- [ ] Step 2: Confirmation 1 - Style & options ⚠️ REQUIRED
+- [ ] Step 3: Generate storyboard + characters
+- [ ] Step 4: Confirmation 2 - Review outline (if requested)
+- [ ] Step 5: Generate images (sequential)
+- [ ] Step 6: Merge to PDF
+- [ ] Step 7: Completion report
+```
+
+### Flow
+
+```
+Input → Preferences → Analyze → [Confirm 1: Style + Skip?] → Storyboard → [Confirm 2: if needed] → Generate → PDF → Complete
+```
+
+### Step 1: Setup & Analyze
+
+**1.1 Load Preferences (EXTEND.md)**
+
+Use Bash to check EXTEND.md existence (priority order):
+
+```bash
+# Check project-level first
+test -f .baoyu-skills/baoyu-comic/EXTEND.md && echo "project"
+
+# Then user-level (cross-platform: $HOME works on macOS/Linux/WSL)
+test -f "$HOME/.baoyu-skills/baoyu-comic/EXTEND.md" && echo "user"
+```
+
+┌──────────────────────────────────────────────┬───────────────────┐
+│                     Path                     │     Location      │
+├──────────────────────────────────────────────┼───────────────────┤
+│ .baoyu-skills/baoyu-comic/EXTEND.md          │ Project directory │
+├──────────────────────────────────────────────┼───────────────────┤
+│ $HOME/.baoyu-skills/baoyu-comic/EXTEND.md    │ User home         │
+└──────────────────────────────────────────────┴───────────────────┘
+
+**When EXTEND.md Found** → Read, parse, **output summary to user**:
+
+```
+📋 Loaded preferences from [full path]
+├─ Watermark: [enabled/disabled] [content if enabled]
+├─ Art Style: [style name or "auto-select"]
+├─ Tone: [tone name or "auto-select"]
+├─ Layout: [layout or "auto-select"]
+├─ Language: [language or "auto-detect"]
+└─ Character presets: [count] defined
+```
+
+**MUST output this summary** so user knows their current configuration. Do not skip or silently load.
+
+**When EXTEND.md Not Found** → First-time setup:
+
+1. Inform user: "No preferences found. Let's set up your defaults."
+2. Use AskUserQuestion to collect preferences (see `references/config/first-time-setup.md`)
+3. Create EXTEND.md at user-chosen location
+4. Confirm: "✓ Preferences saved to [path]"
+
+**EXTEND.md Supports**: Watermark | Preferred art/tone/layout | Custom style definitions | Character presets | Language preference
+
+Schema: `references/config/preferences-schema.md`
+
+**Important**: Once EXTEND.md exists, watermark, language, and style defaults are NOT asked again in Confirmation 1 or 2. These are session-persistent settings.
+
+**1.2 Analyze Content → `analysis.md`**
 
 Read source content, save it if needed, and perform deep analysis.
 
@@ -118,169 +207,209 @@ Read source content, save it if needed, and perform deep analysis.
    - Core themes and narrative potential
    - Key figures and their story arcs
 4. Detect source language
-5. Determine recommended page count:
+5. **Determine language**:
+   - If EXTEND.md has `language` → use it
+   - Else if `--lang` option provided → use it
+   - Else → use detected source language
+6. Determine recommended page count:
    - Short story: 5-8 pages
    - Medium complexity: 9-15 pages
    - Full biography: 16-25 pages
-6. Analyze content signals for style/layout recommendations
-7. **Save to `analysis.md`**
+7. Analyze content signals for art/tone/layout recommendations
+8. **Save to `analysis.md`**
 
-**analysis.md Format**:
+**analysis.md Format**: YAML front matter (title, topic, time_span, source_language, user_language, aspect_ratio, recommended_page_count, recommended_art, recommended_tone) + sections for Target Audience, Value Proposition, Core Themes, Key Figures & Story Arcs, Content Signals, Recommended Approaches. See `references/analysis-framework.md` for full template.
 
-```yaml
----
-title: "Alan Turing: Father of Computing"
-topic: Biography
-time_span: 1912-1954
-source_language: en
-user_language: zh
-aspect_ratio: "3:4"
-recommended_page_count: 12
----
+### Step 2: Confirmation 1 - Style & Options ⚠️
 
-## Target Audience
+**Purpose**: Select visual style + decide whether to review outline before generation. **Do NOT skip.**
 
-- **Primary**: Tech enthusiasts curious about computing history
-- **Secondary**: Students learning about scientific breakthroughs
-- **Tertiary**: General readers interested in biographical stories
+**Note**: Watermark and language already configured in EXTEND.md (Step 1).
 
-## Value Proposition
+**Display summary**:
+- Content type + topic identified
+- Key figures extracted
+- Time span detected
+- Recommended page count
+- Language: [from EXTEND.md or detected]
+- **Recommended style**: [art] + [tone] (based on content signals)
 
-What readers will gain:
-1. Understanding of how modern computing was born
-2. Emotional connection to a brilliant but tragic figure
-3. Appreciation for the human cost of innovation
+**Use AskUserQuestion** for:
 
-## Core Themes
+**Question 1: Visual Style**
 
-| Theme | Narrative Potential | Visual Opportunity |
-|-------|--------------------|--------------------|
-| Genius vs. Society | High conflict, dramatic arcs | Contrast scenes |
-| Code-breaking | Mystery, tension | Technical diagrams as art |
-| Personal tragedy | Emotional depth | Intimate, somber panels |
+If a preset is recommended (see Auto Selection), show it first:
 
-## Key Figures & Story Arcs
-
-### Alan Turing (Protagonist)
-- **Arc**: Misunderstood genius → War hero → Tragic end
-- **Visual identity**: Disheveled academic, intense eyes
-- **Key moments**: Enigma breakthrough, arrest, final days
-
-### Christopher Morcom (Catalyst)
-- **Role**: Early friend whose death shaped Turing
-- **Visual identity**: Youthful, bright
-- **Key moments**: School friendship, sudden death
-
-## Content Signals
-
-- "biography" → classic + mixed
-- "computing history" → ohmsha + dense
-- "personal tragedy" → dramatic + splash
-
-## Recommended Approaches
-
-1. **Chronological** - follow life timeline (recommended for biography)
-2. **Thematic** - organize by contributions (good for educational focus)
-3. **Character-focused** - relationships drive narrative (good for emotional impact)
+```
+header: "Style"
+question: "Which visual style for this comic?"
+options:
+  - label: "[preset name] preset (Recommended)"       # If preset recommended
+    description: "[preset description] - includes special rules"
+  - label: "[recommended art] + [recommended tone] (Recommended)"  # If no preset
+    description: "Best match for your content based on analysis"
+  - label: "ligne-claire + neutral"
+    description: "Classic educational, Logicomix style"
+  - label: "ohmsha preset"
+    description: "Educational manga with visual metaphors, gadgets, NO talking heads"
+  - label: "Custom"
+    description: "Specify your own art + tone or preset"
 ```
 
-### Step 2: Generate 3 Storyboard Variants
+**Preset vs Art+Tone**: Presets include special rules beyond art+tone. `ohmsha` = manga + neutral + visual metaphor rules + character roles + NO talking heads. Plain `manga + neutral` does NOT include these rules.
 
-Create three distinct variants, each combining a narrative approach with a recommended style.
+**Question 2: Narrative Focus** (multiSelect: true)
+```
+header: "Focus"
+question: "What should the comic emphasize? (Select all that apply)"
+options:
+  - label: "Biography/life story"
+    description: "Follow a person's journey through key life events"
+  - label: "Concept explanation"
+    description: "Break down complex ideas visually"
+  - label: "Historical event"
+    description: "Dramatize important historical moments"
+  - label: "Tutorial/how-to"
+    description: "Step-by-step educational guide"
+```
 
-| Variant | Narrative Approach | Recommended Style | Layout |
-|---------|-------------------|-------------------|--------|
-| A | Chronological | sepia | cinematic |
-| B | Thematic | ohmsha | dense |
-| C | Character-focused | warm | standard |
+**Question 3: Target Audience**
+```
+header: "Audience"
+question: "Who is the primary reader?"
+options:
+  - label: "General readers"
+    description: "Broad appeal, accessible content"
+  - label: "Students/learners"
+    description: "Educational focus, clear explanations"
+  - label: "Industry professionals"
+    description: "Technical depth, domain knowledge"
+  - label: "Children/young readers"
+    description: "Simplified language, engaging visuals"
+```
 
-**For each variant**:
+**Question 4: Outline Review**
+```
+header: "Review"
+question: "Do you want to review the outline before image generation?"
+options:
+  - label: "Yes, let me review (Recommended)"
+    description: "Review storyboard and characters before generating images"
+  - label: "No, generate directly"
+    description: "Skip outline review, start generating immediately"
+```
 
-1. **Generate storyboard** (`storyboard-{approach}.md`):
-   - YAML front matter with narrative_approach, recommended_style, recommended_layout, aspect_ratio
+**After response**:
+1. Update `analysis.md` with user preferences
+2. **Store `skip_outline_review`** flag based on Question 4 response
+3. → Step 3
+
+### Step 3: Generate Storyboard + Characters
+
+Create storyboard and character definitions using the confirmed style from Step 2.
+
+**Loading Style References**:
+- Art style: `references/art-styles/{art}.md`
+- Tone: `references/tones/{tone}.md`
+- If preset (ohmsha/wuxia/shoujo): also load `references/presets/{preset}.md`
+
+**Generate**:
+
+1. **Storyboard** (`storyboard.md`):
+   - YAML front matter with art_style, tone, layout, aspect_ratio
    - Cover design
    - Each page: layout, panel breakdown, visual prompts
-   - **Written in user's preferred language**
+   - **Written in user's preferred language** (from Step 1)
    - Reference: `references/storyboard-template.md`
+   - **If using preset**: Load and apply preset rules from `references/presets/`
 
-2. **Generate matching characters** (`characters-{approach}/`):
-   - `characters.md` - visual specs matching the recommended style (in user's preferred language)
-   - `characters.png` - character reference sheet
+2. **Character definitions** (`characters/characters.md`):
+   - Visual specs matching the art style (in user's preferred language)
+   - Include Reference Sheet Prompt for later image generation
    - Reference: `references/character-template.md`
 
-**All variants are preserved after selection for reference.**
+**After generation**:
+- If `skip_outline_review` is true → Skip Step 4, go directly to Step 5
+- If `skip_outline_review` is false → Continue to Step 4
 
-### Step 3: User Confirms All Options
+### Step 4: Confirmation 2 - Review Outline (Conditional)
 
-**IMPORTANT**: Present ALL options in a single confirmation step using AskUserQuestion. Do NOT interrupt workflow with multiple separate confirmations.
+**Skip this step** if user selected "No, generate directly" in Step 2.
 
-**Determine which questions to ask**:
+**Purpose**: User reviews and confirms storyboard + characters before generation.
 
-| Question | When to Ask |
-|----------|-------------|
-| Storyboard variant | Always (required) |
-| Visual style | Always (required) |
-| Language | Only if `source_language ≠ user_language` |
-| Aspect ratio | Only if user might prefer non-default (e.g., landscape content) |
+**Display**:
+- Page count and structure
+- Art style + Tone combination
+- Page-by-page summary (Cover → P1 → P2...)
+- Character list with brief descriptions
 
-**Language handling**:
-- If source language = user language: Just inform user (e.g., "Comic will be in Chinese")
-- If different: Ask which language to use
-
-**All storyboards and prompts are generated in the user's selected/preferred language.**
-
-**Aspect ratio handling**:
-- Default: 3:4 (portrait) - standard comic format
-- Offer 4:3 (landscape) if content suits it (e.g., panoramic scenes, technical diagrams)
-- Offer 16:9 (widescreen) for cinematic content
-
-**AskUserQuestion format** (example with all questions):
+**Use AskUserQuestion**:
 
 ```
-Question 1 (Storyboard): Which storyboard variant?
-- A: Chronological + sepia (Recommended)
-- B: Thematic + ohmsha
-- C: Character-focused + warm
-- Custom
-
-Question 2 (Style): Which visual style?
-- sepia (Recommended from variant)
-- classic / dramatic / warm / sepia / vibrant / ohmsha / realistic / wuxia
-- Custom description
-
-Question 3 (Language) - only if mismatch:
-- Chinese (source material language)
-- English (your preference)
-
-Question 4 (Aspect) - only if relevant:
-- 3:4 Portrait (Recommended)
-- 4:3 Landscape
-- 16:9 Widescreen
+header: "Confirm"
+question: "Ready to generate images with this outline?"
+options:
+  - label: "Yes, proceed (Recommended)"
+    description: "Generate character sheet and comic pages"
+  - label: "Edit storyboard first"
+    description: "I'll modify storyboard.md before continuing"
+  - label: "Edit characters first"
+    description: "I'll modify characters/characters.md before continuing"
+  - label: "Edit both"
+    description: "I'll modify both files before continuing"
 ```
 
-**After confirmation**:
-1. Copy selected storyboard → `storyboard.md`
-2. Copy selected characters → `characters/`
-3. Update YAML front matter with confirmed style, language, aspect_ratio
-4. If style differs from variant's recommended: regenerate `characters/characters.png`
-5. User may edit files directly for fine-tuning
+**After response**:
+1. If user wants to edit → Wait for user to finish editing, then ask again
+2. If user confirms → Continue to Step 5
 
-### Step 4: Generate Images
+### Step 5: Generate Images
 
-With confirmed storyboard + style + aspect ratio:
+With confirmed storyboard + art style + tone + aspect ratio:
+
+**Style Reference Loading**:
+- Read `references/art-styles/{art}.md` for rendering guidelines
+- Read `references/tones/{tone}.md` for mood/color adjustments
+- If preset: Read `references/presets/{preset}.md` for special rules
+
+**5.1 Generate Character Reference Sheet** (first):
+1. Use Reference Sheet Prompt from `characters/characters.md`
+2. Generate → `characters/characters.png`
+3. This ensures visual consistency for all subsequent pages
+
+**5.2 Generate Comic Pages**:
 
 **For each page (cover + pages)**:
 1. Save prompt to `prompts/NN-{cover|page}-[slug].md` (in user's preferred language)
-2. Generate image using confirmed style and aspect ratio
+2. Generate image using confirmed art style and tone guidelines
 3. Report progress after each generation
+
+**Watermark Application** (if enabled in preferences):
+Add to each image generation prompt:
+```
+Include a subtle watermark "[content]" positioned at [position]
+with approximately [opacity*100]% visibility. The watermark should
+be legible but not distracting from the comic panels and storytelling.
+Ensure watermark does not overlap speech bubbles or key action.
+```
+Reference: `references/config/watermark-guide.md`
 
 **Image Generation Skill Selection**:
 - Check available image generation skills
 - If multiple skills available, ask user preference
 
-**Character Reference Handling**:
-- If skill supports reference image: pass `characters/characters.png`
-- If skill does NOT support reference image: include `characters/characters.md` content in prompt
+**Character Reference Handling** (IMPORTANT for visual consistency):
+
+1. Read the selected image generation skill's SKILL.md
+2. Check if it supports reference image input (look for parameters like `--ref`, `--reference`, `--image-ref`, etc.)
+
+| Skill Support | Action |
+|---------------|--------|
+| **Supports reference image** | Pass `characters/characters.png` using the skill's reference parameter |
+| **Does NOT support reference image** | Prepend `characters/characters.md` content to each page prompt |
+
+Always verify the exact parameter name from the skill's documentation before calling.
 
 **Session Management**:
 If image generation skill supports `--sessionId`:
@@ -288,7 +417,7 @@ If image generation skill supports `--sessionId`:
 2. Use same session ID for all pages
 3. Ensures visual consistency across generated images
 
-### Step 5: Merge to PDF
+### Step 6: Merge to PDF
 
 After all images generated:
 
@@ -298,11 +427,12 @@ npx -y bun ${SKILL_DIR}/scripts/merge-to-pdf.ts <comic-dir>
 
 Creates `{topic-slug}.pdf` with all pages as full-page images.
 
-### Step 6: Completion Report
+### Step 7: Completion Report
 
 ```
 Comic Complete!
-Title: [title] | Style: [style] | Pages: [count] | Aspect: [ratio] | Language: [lang]
+Title: [title] | Art: [art] | Tone: [tone] | Pages: [count] | Aspect: [ratio] | Language: [lang]
+Watermark: [enabled/disabled]
 Location: [path]
 ✓ analysis.md
 ✓ characters.png
@@ -312,99 +442,53 @@ Location: [path]
 
 ## Page Modification
 
-Support for modifying individual pages after initial generation.
+| Action | Steps |
+|--------|-------|
+| **Edit** | Update prompt → Regenerate image → Regenerate PDF |
+| **Add** | Create prompt at position → Generate image → Renumber subsequent (NN+1) → Update storyboard → Regenerate PDF |
+| **Delete** | Remove files → Renumber subsequent (NN-1) → Update storyboard → Regenerate PDF |
 
-### Edit Single Page
+**File naming**: `NN-{cover|page}-[slug].png` (e.g., `03-page-enigma-machine.png`)
+- Slugs: kebab-case, unique, derived from content
+- Renumbering: Update NN prefix only, slugs unchanged
 
-Regenerate a specific page with modified prompt:
+## Preset: Ohmsha
 
-1. Identify page to edit (e.g., `03-page-enigma-machine.png`)
-2. Update prompt in `prompts/03-page-enigma-machine.md` if needed
-3. If content changes significantly, update slug in filename
-4. Regenerate image using same session ID and aspect ratio
-5. Regenerate PDF
+Default: Use Doraemon characters (大雄=learner, 哆啦A梦=mentor, 胖虎=challenge, 静香=support). Custom characters via `--characters "Student:小明,Mentor:教授"` or character presets in EXTEND.md.
 
-### Add New Page
+Requirements: Visual metaphors, NO talking heads, narrative page titles.
 
-Insert a new page at specified position:
-
-1. Specify insertion position (e.g., after page 3)
-2. Create new prompt with appropriate slug (e.g., `04-page-bletchley-park.md`)
-3. Generate new page image (same aspect ratio)
-4. **Renumber files**: All subsequent pages increment NN by 1
-   - `04-page-tragedy.png` → `05-page-tragedy.png`
-   - Slugs remain unchanged
-5. Update `storyboard.md` with new page entry
-6. Regenerate PDF
-
-### Delete Page
-
-Remove a page and renumber:
-
-1. Identify page to delete (e.g., `03-page-enigma-machine.png`)
-2. Remove image file and prompt file
-3. **Renumber files**: All subsequent pages decrement NN by 1
-   - `04-page-tragedy.png` → `03-page-tragedy.png`
-   - Slugs remain unchanged
-4. Update `storyboard.md` to remove page entry
-5. Regenerate PDF
-
-### File Naming Convention
-
-Files use meaningful slugs for better readability:
-```
-NN-cover-[slug].png / NN-page-[slug].png
-NN-cover-[slug].md / NN-page-[slug].md (in prompts/)
-```
-
-Examples:
-- `00-cover-turing-story.png`
-- `01-page-early-life.png`
-- `02-page-cambridge-years.png`
-- `03-page-enigma-machine.png`
-
-**Slug rules**:
-- Derived from page title/content (kebab-case)
-- Must be unique within the comic
-- When page content changes significantly, update slug accordingly
-
-**Renumbering**:
-- After add/delete, update NN prefix for affected pages
-- Slug remains unchanged unless content changes
-- Maintain sequential numbering with no gaps
-
-## Style-Specific Guidelines
-
-### Ohmsha Style (`--style ohmsha`)
-
-Additional requirements for educational manga:
-- **Default: Use Doraemon characters directly** - No need to create new characters
-  - 大雄 (Nobita): Student role, curious learner
-  - 哆啦A梦 (Doraemon): Mentor role, explains concepts with gadgets
-  - 胖虎 (Gian): Antagonist/challenge role, represents obstacles or misconceptions
-  - 静香 (Shizuka): Supporting role, asks clarifying questions
-- Custom characters only if explicitly requested: `--characters "Student:小明,Mentor:教授"`
-- Must use visual metaphors (gadgets, action scenes) - NO talking heads
-- Page titles: narrative style, not "Page X: Topic"
-
-**Reference**: `references/ohmsha-guide.md` for detailed guidelines.
+See `references/presets/ohmsha.md` and `references/ohmsha-guide.md` for details.
 
 ## References
 
 Detailed templates and guidelines in `references/` directory:
+
+**Core Templates**:
 - `analysis-framework.md` - Deep content analysis for comic adaptation
 - `character-template.md` - Character definition format and examples
 - `storyboard-template.md` - Storyboard structure and panel breakdown
 - `ohmsha-guide.md` - Ohmsha manga style specifics
-- `styles/` - Detailed style definitions
-- `layouts/` - Detailed layout definitions
+
+**Style Definitions** (new 3-dimension system):
+- `art-styles/` - Art style definitions (ligne-claire, manga, realistic, ink-brush, chalk)
+- `tones/` - Tone definitions (neutral, warm, dramatic, romantic, energetic, vintage, action)
+- `presets/` - Preset shortcuts with special rules (ohmsha, wuxia, shoujo)
+- `layouts/` - Layout definitions (standard, cinematic, dense, splash, mixed, webtoon)
+
+**Config**:
+- `config/preferences-schema.md` - EXTEND.md schema
+- `config/first-time-setup.md` - First-time setup flow
+- `config/watermark-guide.md` - Watermark configuration
+
+## Notes
+
+- Auto-retry once on failure | Cartoon alternatives for sensitive figures
+- Use confirmed language preference | Maintain style consistency
+- **Step 2 confirmation required** - do not skip (style selection + outline review option)
+- **Step 4 conditional** - only if user requested outline review in Step 2
+- Watermark/language configured once in EXTEND.md, not asked in confirmations
 
 ## Extension Support
 
-Custom styles and configurations via EXTEND.md.
-
-**Check paths** (priority order):
-1. `.baoyu-skills/baoyu-comic/EXTEND.md` (project)
-2. `~/.baoyu-skills/baoyu-comic/EXTEND.md` (user)
-
-If found, load before Step 1. Extension content overrides defaults.
+Custom configurations via EXTEND.md. See **Step 1.1** for paths and supported options.
