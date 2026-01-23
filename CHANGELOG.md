@@ -2,6 +2,15 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.17.1 - 2026-01-23
+
+### Refactor
+- `baoyu-infographic`: simplifies SKILL.md documentation—removes redundant content, streamlines workflow description, and improves readability.
+- `baoyu-xhs-images`: improves Step 0 (Load Preferences) documentation—adds clearer first-time setup flow with visual tables and explicit path checking instructions.
+
+### Improvements
+- `baoyu-infographic`: enhances `craft-handmade` style with strict hand-drawn enforcement—requires all imagery to maintain cartoon/illustrated aesthetic, no realistic or photographic elements.
+
 ## 1.17.0 - 2026-01-23
 
 ### Features

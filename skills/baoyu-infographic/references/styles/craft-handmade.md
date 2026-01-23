@@ -21,8 +21,16 @@ Hand-drawn and paper craft aesthetic with warm, organic feel.
 - Organic, slightly imperfect shapes
 - Layered depth with shadows (paper variant)
 - Simple cartoon elements and icons
+- Character illustrations (people, personalities in cartoon form)
 - Ample whitespace, clean composition
 - Keywords and core concepts highlighted
+- **Strictly hand-drawn—no realistic or photographic elements**
+
+## Style Enforcement
+
+- All imagery must maintain cartoon/illustrated aesthetic
+- Replace real photos or realistic figures with hand-drawn equivalents
+- Maintain consistent line weight and illustration style throughout
 
 ## Typography
 

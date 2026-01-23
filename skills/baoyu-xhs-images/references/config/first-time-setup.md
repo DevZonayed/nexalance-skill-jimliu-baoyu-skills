@@ -31,7 +31,7 @@ No EXTEND.md found
 
 ## Questions
 
-**Language**: Use user's input language or preferred language for all questions. Do not always use English.
+**Language**: Use user's input language or saved language preference.
 
 Use single AskUserQuestion with multiple questions (AskUserQuestion auto-adds "Other" option):
 

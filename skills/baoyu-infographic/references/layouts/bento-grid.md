@@ -36,6 +36,6 @@ Modular grid layout with varied cell sizes, like a bento box.
 
 ## Recommended Pairings
 
-- `cartoon-hand-drawn`: Friendly overviews (default)
+- `craft-handmade`: Friendly overviews (default)
 - `corporate-memphis`: Business summaries
 - `pixel-art`: Retro feature grids

@@ -164,11 +164,11 @@ Copy and track progress:
 
 ```
 XHS Infographic Progress:
-- [ ] Step 0: Check preferences (EXTEND.md)
+- [ ] Step 0: Check preferences (EXTEND.md) ⚠️ REQUIRED if not found
 - [ ] Step 1: Analyze content → analysis.md
 - [ ] Step 2: Confirmation 1 - Content understanding ⚠️ REQUIRED
 - [ ] Step 3: Generate 3 outline + style variants
-- [ ] Step 4: Confirmation 2 - Outline & style selection ⚠️ REQUIRED
+- [ ] Step 4: Confirmation 2 - Outline & style & elements selection ⚠️ REQUIRED
 - [ ] Step 5: Generate images (sequential)
 - [ ] Step 6: Completion report
 ```
@@ -176,33 +176,48 @@ XHS Infographic Progress:
 ### Flow
 
 ```
-Input → Analyze → [Confirm 1] → 3 Outlines → [Confirm 2: Outline + Style] → Generate → Complete
+Input → Analyze → [Confirm 1] → 3 Outlines → [Confirm 2: Outline + Style + Elements] → Generate → Complete
 ```
 
-### Step 0: Check Preferences
+### Step 0: Load Preferences (EXTEND.md) ⚠️
 
-**Check paths** (priority order):
-1. `.baoyu-skills/baoyu-xhs-images/EXTEND.md` (project)
-2. `~/.baoyu-skills/baoyu-xhs-images/EXTEND.md` (user)
+**Purpose**: Load user preferences or run first-time setup. **Do NOT skip setup if EXTEND.md not found.**
 
-**If preferences found**:
-1. Parse YAML frontmatter
-2. Display current preferences summary:
-   ```
-   Loaded preferences from [path]:
-   - Watermark: [enabled/disabled] "[content]" at [position]
-   - Style: [name] - [description]
-   - Layout: [layout]
-   - Language: [lang]
-   ```
-3. Continue to Step 1
+Use Bash to check EXTEND.md existence (priority order):
 
-**If NO preferences found**:
-1. Ask user with AskUserQuestion (see `references/config/first-time-setup.md`)
-2. Create EXTEND.md with user choices
-3. Continue to Step 1
+```bash
+# Check project-level first
+test -f .baoyu-skills/baoyu-xhs-images/EXTEND.md && echo "project"
 
-Schema reference: `references/config/preferences-schema.md`
+# Then user-level (cross-platform: $HOME works on macOS/Linux/WSL)
+test -f "$HOME/.baoyu-skills/baoyu-xhs-images/EXTEND.md" && echo "user"
+```
+
+┌────────────────────────────────────────────────────┬───────────────────┐
+│                        Path                        │     Location      │
+├────────────────────────────────────────────────────┼───────────────────┤
+│ .baoyu-skills/baoyu-xhs-images/EXTEND.md           │ Project directory │
+├────────────────────────────────────────────────────┼───────────────────┤
+│ $HOME/.baoyu-skills/baoyu-xhs-images/EXTEND.md     │ User home         │
+└────────────────────────────────────────────────────┴───────────────────┘
+
+┌───────────┬───────────────────────────────────────────────────────────────────────────┐
+│  Result   │                                  Action                                   │
+├───────────┼───────────────────────────────────────────────────────────────────────────┤
+│ Found     │ Read, parse, display summary → Continue to Step 1                         │
+├───────────┼───────────────────────────────────────────────────────────────────────────┤
+│ Not found │ ⚠️ MUST run first-time setup (see below) → Then continue to Step 1        │
+└───────────┴───────────────────────────────────────────────────────────────────────────┘
+
+**First-Time Setup** (when EXTEND.md not found):
+
+**Language**: Use user's input language or saved language preference.
+
+Use AskUserQuestion with ALL questions in ONE call. See `references/config/first-time-setup.md` for question details.
+
+**EXTEND.md Supports**: Watermark | Preferred style/layout | Custom style definitions | Language preference
+
+Schema: `references/config/preferences-schema.md`
 
 ### Step 1: Analyze Content → `analysis.md`
 
@@ -262,6 +277,11 @@ strategy: a  # a, b, or c
 name: Story-Driven
 style: warm  # recommended style for this strategy
 style_reason: "Warm tones enhance emotional storytelling and personal connection"
+elements:  # from style preset, can be customized in Step 4
+  background: solid-pastel
+  decorations: [clouds, stars-sparkles]
+  emphasis: star-burst
+  typography: highlight
 layout: balanced  # primary layout
 image_count: 5
 ---
@@ -289,15 +309,15 @@ image_count: 5
 
 Reference: `references/workflows/outline-template.md`
 
-### Step 4: Confirmation 2 - Outline & Style Selection ⚠️
+### Step 4: Confirmation 2 - Outline & Style & Elements Selection ⚠️
 
-**Purpose**: User chooses outline strategy AND confirms visual style. **Do NOT skip.**
+**Purpose**: User chooses outline strategy, confirms visual style, and customizes elements. **Do NOT skip.**
 
 **Display each strategy**:
 - Strategy name + page count + recommended style
 - Page-by-page summary (P1 → P2 → P3...)
 
-**Use AskUserQuestion** with two questions:
+**Use AskUserQuestion** with three questions:
 
 **Question 1: Outline Strategy**
 - Strategy A (Recommended if "authentic sharing")
@@ -310,11 +330,22 @@ Reference: `references/workflows/outline-template.md`
 - Or select from: cute / fresh / warm / bold / minimal / retro / pop / notion / chalkboard
 - Or type custom style description
 
+**Question 3: Visual Elements** (show after style selection)
+Display the selected style's default elements from preset, then ask:
+- Use style defaults (Recommended) - show preview: background, decorations, emphasis
+- Adjust background - options: solid-pastel / solid-saturated / gradient-linear / gradient-radial / paper-texture / grid
+- Adjust decorations - options: hearts / stars-sparkles / flowers / clouds / leaves / confetti
+- Type custom element preferences
+
 **After response**:
 - Single strategy → copy to `outline.md` with confirmed style
 - Combination → merge specified pages with confirmed style
 - Custom request → regenerate based on feedback
-- Update `outline.md` frontmatter with final style choice
+- Style defaults → use preset's Element Combination as-is
+- Background adjustment → update elements.background with user choice
+- Decorations adjustment → update elements.decorations with user choice
+- Custom elements → parse user's preferences into elements fields
+- Update `outline.md` frontmatter with final style and elements
 
 ### Step 5: Generate Images
 
@@ -428,10 +459,4 @@ Detailed templates in `references/` directory:
 
 ## Extension Support
 
-Custom configurations via EXTEND.md. Loaded in Step 0, overrides defaults.
-
-**Check paths** (priority): `.baoyu-skills/baoyu-xhs-images/EXTEND.md` (project) → `~/.baoyu-skills/baoyu-xhs-images/EXTEND.md` (user)
-
-**Supports**: Watermark | Preferred style/layout | Custom style definitions
-
-**References**: `config/preferences-schema.md` | `config/first-time-setup.md`
+Custom configurations via EXTEND.md. See **Step 0** for paths and supported options.
