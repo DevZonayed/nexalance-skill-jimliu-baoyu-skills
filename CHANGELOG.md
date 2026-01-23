@@ -2,6 +2,19 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.18.0 - 2026-01-23
+
+### Features
+- `baoyu-slide-deck`: introduces dimension-based style system—replaces monolithic style definitions with modular 4-dimension architecture: **Texture** (clean, grid, organic, pixel, paper), **Mood** (professional, warm, cool, vibrant, dark, neutral), **Typography** (geometric, humanist, handwritten, editorial, technical), and **Density** (minimal, balanced, dense). 16 presets map to specific dimension combinations, with "Custom dimensions" option for full flexibility.
+- `baoyu-slide-deck`: adds two-round confirmation workflow—Round 1 asks style/audience/slides/review preferences, Round 2 (optional) collects custom dimension choices when user selects "Custom dimensions".
+- `baoyu-slide-deck`: adds conditional outline and prompt review—users can skip reviews for faster generation or enable them for more control.
+
+### Documentation
+- `baoyu-slide-deck`: adds dimension reference files—`references/dimensions/texture.md`, `references/dimensions/mood.md`, `references/dimensions/typography.md`, `references/dimensions/density.md`, and `references/dimensions/presets.md` (preset → dimension mapping).
+- `baoyu-slide-deck`: adds design guidelines—`references/design-guidelines.md` with audience principles, visual hierarchy, content density, color selection, typography, and font recommendations.
+- `baoyu-slide-deck`: adds layout reference—`references/layouts.md` with layout options and selection tips.
+- `baoyu-slide-deck`: adds preferences schema—`references/config/preferences-schema.md` for EXTEND.md configuration.
+
 ## 1.17.1 - 2026-01-23
 
 ### Refactor

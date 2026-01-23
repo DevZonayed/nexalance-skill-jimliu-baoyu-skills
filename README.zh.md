@@ -297,6 +297,9 @@ npx skills add jimliu/baoyu-skills
 /baoyu-slide-deck path/to/article.md --style corporate
 /baoyu-slide-deck path/to/article.md --audience executives
 
+# 指定页数
+/baoyu-slide-deck path/to/article.md --slides 15
+
 # 仅生成大纲（不生成图片）
 /baoyu-slide-deck path/to/article.md --outline-only
 
@@ -304,25 +307,50 @@ npx skills add jimliu/baoyu-skills
 /baoyu-slide-deck path/to/article.md --lang zh
 ```
 
-**风格**（视觉美学）：
+**选项**：
 
-| 风格 | 描述 | 适用场景 |
-|------|------|----------|
-| `blueprint`（默认） | 技术蓝图风格，网格纹理，工程精度 | 架构设计、系统设计 |
-| `notion` | SaaS 仪表盘美学，卡片式布局，数据清晰 | 产品演示、SaaS、B2B |
-| `bold-editorial` | 杂志社论风格，粗体排版，深色背景 | 产品发布、主题演讲 |
-| `corporate` | 海军蓝/金色配色，结构化布局，专业图标 | 投资者演示、客户提案 |
-| `dark-atmospheric` | 电影级暗色调，发光效果，氛围感 | 娱乐、游戏、创意 |
-| `editorial-infographic` | 杂志风格信息图，扁平插画 | 科技解说、研究报告 |
-| `fantasy-animation` | 吉卜力/迪士尼风格，手绘动画 | 教育、故事讲述 |
-| `intuition-machine` | 技术简报，双语标签，做旧纸张纹理 | 技术文档、双语内容 |
-| `minimal` | 极简风格，大量留白，单一强调色 | 高管简报、高端品牌 |
-| `pixel-art` | 复古 8-bit 像素风，怀旧游戏感 | 游戏、开发者分享 |
-| `scientific` | 学术图表，生物通路，精确标注 | 生物、化学、医学 |
-| `sketch-notes` | 手绘风格，柔和笔触，暖白色背景 | 教育、教程、知识分享 |
-| `vector-illustration` | 扁平矢量风格，黑色轮廓线，复古柔和配色 | 创意提案、说明性内容 |
-| `vintage` | 做旧纸张美学，历史文档风格 | 历史、传记、人文 |
-| `watercolor` | 柔和手绘水彩纹理，自然温暖 | 生活方式、健康、旅行 |
+| 选项 | 说明 |
+|------|------|
+| `--style <name>` | 视觉风格：预设名称或 `custom` |
+| `--audience <type>` | 目标受众：beginners、intermediate、experts、executives、general |
+| `--lang <code>` | 输出语言（en、zh、ja 等） |
+| `--slides <number>` | 目标页数（推荐 8-25，最多 30） |
+| `--outline-only` | 仅生成大纲，跳过图片 |
+| `--prompts-only` | 生成大纲 + 提示词，跳过图片 |
+| `--images-only` | 从现有提示词生成图片 |
+| `--regenerate <N>` | 重新生成指定页：`3` 或 `2,5,8` |
+
+**风格系统**：
+
+风格由 4 个维度组合而成：**纹理** × **氛围** × **字体** × **密度**
+
+| 维度 | 选项 |
+|------|------|
+| 纹理 | clean 纯净、grid 网格、organic 有机、pixel 像素、paper 纸张 |
+| 氛围 | professional 专业、warm 温暖、cool 冷静、vibrant 鲜艳、dark 暗色、neutral 中性 |
+| 字体 | geometric 几何、humanist 人文、handwritten 手写、editorial 编辑、technical 技术 |
+| 密度 | minimal 极简、balanced 均衡、dense 密集 |
+
+**预设**（预配置的维度组合）：
+
+| 预设 | 维度组合 | 适用场景 |
+|------|----------|----------|
+| `blueprint`（默认） | grid + cool + technical + balanced | 架构设计、系统设计 |
+| `chalkboard` | organic + warm + handwritten + balanced | 教育、教程 |
+| `corporate` | clean + professional + geometric + balanced | 投资者演示、提案 |
+| `minimal` | clean + neutral + geometric + minimal | 高管简报 |
+| `sketch-notes` | organic + warm + handwritten + balanced | 教育、教程 |
+| `watercolor` | organic + warm + humanist + minimal | 生活方式、健康 |
+| `dark-atmospheric` | clean + dark + editorial + balanced | 娱乐、游戏 |
+| `notion` | clean + neutral + geometric + dense | 产品演示、SaaS |
+| `bold-editorial` | clean + vibrant + editorial + balanced | 产品发布、主题演讲 |
+| `editorial-infographic` | clean + cool + editorial + dense | 科技解说、研究 |
+| `fantasy-animation` | organic + vibrant + handwritten + minimal | 教育故事 |
+| `intuition-machine` | clean + cool + technical + dense | 技术文档、学术 |
+| `pixel-art` | pixel + vibrant + technical + balanced | 游戏、开发者 |
+| `scientific` | clean + cool + technical + dense | 生物、化学、医学 |
+| `vector-illustration` | clean + vibrant + humanist + balanced | 创意、儿童内容 |
+| `vintage` | paper + warm + editorial + balanced | 历史、传记 |
 
 **风格预览**：
 
@@ -341,7 +369,7 @@ npx skills add jimliu/baoyu-skills
 | ![watercolor](./screenshots/slide-deck-styles/watercolor.webp) | | |
 | watercolor | | |
 
-生成完成后，所有幻灯片会自动合并为 `.pptx` 文件，方便分享。
+生成完成后，所有幻灯片会自动合并为 `.pptx` 和 `.pdf` 文件，方便分享。
 
 #### baoyu-comic
 

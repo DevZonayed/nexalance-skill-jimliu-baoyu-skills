@@ -2,6 +2,19 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.18.0 - 2026-01-23
+
+### 新功能
+- `baoyu-slide-deck`：引入基于维度的风格系统——将单一风格定义重构为模块化四维架构：**纹理** (clean 纯净、grid 网格、organic 有机、pixel 像素、paper 纸张)、**氛围** (professional 专业、warm 温暖、cool 冷静、vibrant 鲜艳、dark 暗色、neutral 中性)、**字体** (geometric 几何、humanist 人文、handwritten 手写、editorial 编辑、technical 技术)、**密度** (minimal 极简、balanced 均衡、dense 密集)。16 种预设映射到特定维度组合，并提供「自定义维度」选项实现完全灵活配置。
+- `baoyu-slide-deck`：新增两轮确认工作流——第一轮询问风格/受众/页数/审核偏好，第二轮（可选）在用户选择「自定义维度」时收集具体维度选择。
+- `baoyu-slide-deck`：新增条件性大纲和提示词审核——用户可跳过审核以加快生成，或启用审核以获得更多控制。
+
+### 文档
+- `baoyu-slide-deck`：新增维度参考文件——`references/dimensions/texture.md`、`references/dimensions/mood.md`、`references/dimensions/typography.md`、`references/dimensions/density.md`，以及 `references/dimensions/presets.md`（预设到维度的映射）。
+- `baoyu-slide-deck`：新增设计指南——`references/design-guidelines.md`，包含受众原则、视觉层次、内容密度、配色选择、字体排版和字体推荐。
+- `baoyu-slide-deck`：新增布局参考——`references/layouts.md`，包含布局选项和选择技巧。
+- `baoyu-slide-deck`：新增偏好配置模式——`references/config/preferences-schema.md`，用于 EXTEND.md 配置。
+
 ## 1.17.1 - 2026-01-23
 
 ### 重构

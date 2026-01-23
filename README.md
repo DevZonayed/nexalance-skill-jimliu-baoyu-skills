@@ -297,6 +297,9 @@ Generate professional slide deck images from content. Creates comprehensive outl
 /baoyu-slide-deck path/to/article.md --style corporate
 /baoyu-slide-deck path/to/article.md --audience executives
 
+# Target slide count
+/baoyu-slide-deck path/to/article.md --slides 15
+
 # Outline only (no image generation)
 /baoyu-slide-deck path/to/article.md --outline-only
 
@@ -304,25 +307,50 @@ Generate professional slide deck images from content. Creates comprehensive outl
 /baoyu-slide-deck path/to/article.md --lang zh
 ```
 
-**Styles** (visual aesthetics):
+**Options**:
 
-| Style | Description | Best For |
-|-------|-------------|----------|
-| `blueprint` (default) | Technical schematics, grid texture, engineering precision | Architecture, system design |
-| `notion` | SaaS dashboard aesthetic, card-based layouts, clean data focus | Product demos, SaaS, B2B |
-| `bold-editorial` | High-impact magazine style, bold typography, dark backgrounds | Product launches, keynotes |
-| `corporate` | Navy/gold palette, structured layouts, professional icons | Investor decks, proposals |
-| `dark-atmospheric` | Cinematic dark mode, glowing accents, atmospheric depth | Entertainment, gaming, creative |
-| `editorial-infographic` | Magazine-style explainers, flat illustrations | Tech explainers, research |
-| `fantasy-animation` | Whimsical Ghibli/Disney style, hand-drawn animation | Educational, storytelling |
-| `intuition-machine` | Technical briefing, bilingual labels, aged paper texture | Technical docs, bilingual |
-| `minimal` | Ultra-clean, maximum whitespace, single accent color | Executive briefings, premium |
-| `pixel-art` | Retro 8-bit aesthetic, chunky pixels, nostalgic gaming | Gaming, developer talks |
-| `scientific` | Academic diagrams, biological pathways, precise labeling | Biology, chemistry, medical |
-| `sketch-notes` | Hand-drawn feel, soft brush strokes, warm background | Educational, tutorials |
-| `vector-illustration` | Flat vector, black outlines, retro soft colors | Creative proposals, explainers |
-| `vintage` | Aged-paper aesthetic, historical document styling | Historical, heritage, biography |
-| `watercolor` | Soft hand-painted textures, natural warmth | Lifestyle, wellness, travel |
+| Option | Description |
+|--------|-------------|
+| `--style <name>` | Visual style: preset name or `custom` |
+| `--audience <type>` | Target: beginners, intermediate, experts, executives, general |
+| `--lang <code>` | Output language (en, zh, ja, etc.) |
+| `--slides <number>` | Target slide count (8-25 recommended, max 30) |
+| `--outline-only` | Generate outline only, skip images |
+| `--prompts-only` | Generate outline + prompts, skip images |
+| `--images-only` | Generate images from existing prompts |
+| `--regenerate <N>` | Regenerate specific slide(s): `3` or `2,5,8` |
+
+**Style System**:
+
+Styles are built from 4 dimensions: **Texture** × **Mood** × **Typography** × **Density**
+
+| Dimension | Options |
+|-----------|---------|
+| Texture | clean, grid, organic, pixel, paper |
+| Mood | professional, warm, cool, vibrant, dark, neutral |
+| Typography | geometric, humanist, handwritten, editorial, technical |
+| Density | minimal, balanced, dense |
+
+**Presets** (pre-configured dimension combinations):
+
+| Preset | Dimensions | Best For |
+|--------|------------|----------|
+| `blueprint` (default) | grid + cool + technical + balanced | Architecture, system design |
+| `chalkboard` | organic + warm + handwritten + balanced | Education, tutorials |
+| `corporate` | clean + professional + geometric + balanced | Investor decks, proposals |
+| `minimal` | clean + neutral + geometric + minimal | Executive briefings |
+| `sketch-notes` | organic + warm + handwritten + balanced | Educational, tutorials |
+| `watercolor` | organic + warm + humanist + minimal | Lifestyle, wellness |
+| `dark-atmospheric` | clean + dark + editorial + balanced | Entertainment, gaming |
+| `notion` | clean + neutral + geometric + dense | Product demos, SaaS |
+| `bold-editorial` | clean + vibrant + editorial + balanced | Product launches, keynotes |
+| `editorial-infographic` | clean + cool + editorial + dense | Tech explainers, research |
+| `fantasy-animation` | organic + vibrant + handwritten + minimal | Educational storytelling |
+| `intuition-machine` | clean + cool + technical + dense | Technical docs, academic |
+| `pixel-art` | pixel + vibrant + technical + balanced | Gaming, developer talks |
+| `scientific` | clean + cool + technical + dense | Biology, chemistry, medical |
+| `vector-illustration` | clean + vibrant + humanist + balanced | Creative, children's content |
+| `vintage` | paper + warm + editorial + balanced | Historical, heritage |
 
 **Style Previews**:
 
@@ -341,7 +369,7 @@ Generate professional slide deck images from content. Creates comprehensive outl
 | ![watercolor](./screenshots/slide-deck-styles/watercolor.webp) | | |
 | watercolor | | |
 
-After generation, slides are automatically merged into a `.pptx` file for easy sharing.
+After generation, slides are automatically merged into `.pptx` and `.pdf` files for easy sharing.
 
 #### baoyu-comic
 
