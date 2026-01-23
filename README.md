@@ -426,42 +426,45 @@ Knowledge comic creator with flexible art style × tone combinations. Creates or
 
 #### baoyu-article-illustrator
 
-Smart article illustration skill. Analyzes article content and generates illustrations at positions requiring visual aids.
+Smart article illustration skill with Type × Style two-dimension approach. Analyzes article structure, identifies positions requiring visual aids, and generates illustrations.
 
 ```bash
-# Auto-select style based on content
+# Auto-select type and style based on content
 /baoyu-article-illustrator path/to/article.md
 
-# Specify a style
-/baoyu-article-illustrator path/to/article.md --style warm
-/baoyu-article-illustrator path/to/article.md --style watercolor
+# Specify type
+/baoyu-article-illustrator path/to/article.md --type infographic
+
+# Specify style
+/baoyu-article-illustrator path/to/article.md --style blueprint
+
+# Combine type and style
+/baoyu-article-illustrator path/to/article.md --type flowchart --style notion
 ```
+
+**Types** (information structure):
+
+| Type | Description | Best For |
+|------|-------------|----------|
+| `infographic` | Data visualization, charts, metrics | Technical articles, data analysis |
+| `scene` | Atmospheric illustration, mood rendering | Narrative, personal stories |
+| `flowchart` | Process diagrams, step visualization | Tutorials, workflows |
+| `comparison` | Side-by-side, before/after contrast | Product comparisons |
+| `framework` | Concept maps, relationship diagrams | Methodologies, architecture |
+| `timeline` | Chronological progression | History, project progress |
 
 **Styles** (visual aesthetics):
 
 | Style | Description | Best For |
 |-------|-------------|----------|
 | `notion` (default) | Minimalist hand-drawn line art | Knowledge sharing, SaaS, productivity |
-| `elegant` | Refined, sophisticated, professional | Business, thought leadership |
-| `warm` | Friendly, approachable, human-centered | Personal growth, lifestyle |
-| `minimal` | Ultra-clean, zen-like, focused | Philosophy, minimalism |
-| `playful` | Fun, creative, whimsical | Tutorials, beginner guides |
-| `nature` | Organic, calm, earthy | Sustainability, wellness |
-| `sketch` | Raw, authentic, notebook-style | Ideas, brainstorming |
+| `elegant` | Refined, sophisticated | Business, thought leadership |
+| `warm` | Friendly, approachable | Personal growth, lifestyle |
+| `minimal` | Ultra-clean, zen-like | Philosophy, minimalism |
+| `blueprint` | Technical schematics | Architecture, system design |
 | `watercolor` | Soft artistic with natural warmth | Lifestyle, travel, creative |
-| `vintage` | Nostalgic aged-paper aesthetic | Historical, biography |
-| `scientific` | Academic precise diagrams | Biology, chemistry, technical |
-| `chalkboard` | Classroom chalk drawing style | Education, tutorials |
 | `editorial` | Magazine-style infographic | Tech explainers, journalism |
-| `flat` | Modern flat vector illustration | Startups, digital |
-| `flat-doodle` | Bold outlines, pastel colors, cute | Productivity, SaaS, workflows |
-| `retro` | 80s/90s vibrant nostalgic | Pop culture, entertainment |
-| `blueprint` | Technical schematics, engineering | Architecture, system design |
-| `vector-illustration` | Flat vector, black outlines, retro | Educational, creative, brand |
-| `sketch-notes` | Soft hand-drawn, warm feel | Knowledge sharing, tutorials |
-| `pixel-art` | Retro 8-bit gaming aesthetic | Gaming, tech, developer |
-| `intuition-machine` | Technical briefing, bilingual | Academic, technical, research |
-| `fantasy-animation` | Ghibli/Disney whimsical style | Storytelling, children's |
+| `scientific` | Academic precise diagrams | Biology, chemistry, technical |
 
 **Style Previews**:
 
@@ -469,18 +472,10 @@ Smart article illustration skill. Analyzes article content and generates illustr
 |:---:|:---:|:---:|
 | ![notion](./screenshots/article-illustrator-styles/notion.webp) | ![elegant](./screenshots/article-illustrator-styles/elegant.webp) | ![warm](./screenshots/article-illustrator-styles/warm.webp) |
 | notion | elegant | warm |
-| ![minimal](./screenshots/article-illustrator-styles/minimal.webp) | ![playful](./screenshots/article-illustrator-styles/playful.webp) | ![nature](./screenshots/article-illustrator-styles/nature.webp) |
-| minimal | playful | nature |
-| ![sketch](./screenshots/article-illustrator-styles/sketch.webp) | ![watercolor](./screenshots/article-illustrator-styles/watercolor.webp) | ![vintage](./screenshots/article-illustrator-styles/vintage.webp) |
-| sketch | watercolor | vintage |
-| ![scientific](./screenshots/article-illustrator-styles/scientific.webp) | ![chalkboard](./screenshots/article-illustrator-styles/chalkboard.webp) | ![editorial](./screenshots/article-illustrator-styles/editorial.webp) |
-| scientific | chalkboard | editorial |
-| ![flat](./screenshots/article-illustrator-styles/flat.webp) | ![retro](./screenshots/article-illustrator-styles/retro.webp) | ![blueprint](./screenshots/article-illustrator-styles/blueprint.webp) |
-| flat | retro | blueprint |
-| ![vector-illustration](./screenshots/article-illustrator-styles/vector-illustration.webp) | ![sketch-notes](./screenshots/article-illustrator-styles/sketch-notes.webp) | ![pixel-art](./screenshots/article-illustrator-styles/pixel-art.webp) |
-| vector-illustration | sketch-notes | pixel-art |
-| ![intuition-machine](./screenshots/article-illustrator-styles/intuition-machine.webp) | ![fantasy-animation](./screenshots/article-illustrator-styles/fantasy-animation.webp) | ![flat-doodle](./screenshots/article-illustrator-styles/flat-doodle.webp) |
-| intuition-machine | fantasy-animation | flat-doodle |
+| ![minimal](./screenshots/article-illustrator-styles/minimal.webp) | ![blueprint](./screenshots/article-illustrator-styles/blueprint.webp) | ![watercolor](./screenshots/article-illustrator-styles/watercolor.webp) |
+| minimal | blueprint | watercolor |
+| ![editorial](./screenshots/article-illustrator-styles/editorial.webp) | ![scientific](./screenshots/article-illustrator-styles/scientific.webp) | |
+| editorial | scientific | |
 
 #### baoyu-post-to-x
 

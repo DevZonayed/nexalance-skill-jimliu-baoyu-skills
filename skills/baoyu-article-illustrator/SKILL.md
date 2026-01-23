@@ -1,376 +1,452 @@
 ---
 name: baoyu-article-illustrator
-description: Smart article illustration skill. Analyzes article content and generates illustrations at positions requiring visual aids with multiple style options. Use when user asks to "add illustrations to article", "generate images for article", or "illustrate article".
+description: Analyzes article structure, identifies positions requiring visual aids, generates illustrations with Type × Style two-dimension approach. Use when user asks to "illustrate article", "add images", "generate images for article", or "为文章配图".
 ---
 
-# Smart Article Illustration Skill
+# Article Illustrator
 
-Analyze article structure and content, identify positions requiring visual aids, and generate illustrations with flexible style options.
+Analyze articles, identify illustration positions, generate images with Type × Style consistency.
 
 ## Usage
 
 ```bash
-# Auto-select style based on content
+# Auto-select type and style based on content
 /baoyu-article-illustrator path/to/article.md
 
-# Specify a style
-/baoyu-article-illustrator path/to/article.md --style warm
-/baoyu-article-illustrator path/to/article.md --style minimal
-/baoyu-article-illustrator path/to/article.md --style watercolor
+# Specify type
+/baoyu-article-illustrator path/to/article.md --type infographic
 
-# Combine with other options
-/baoyu-article-illustrator path/to/article.md --style playful
+# Specify style
+/baoyu-article-illustrator path/to/article.md --style blueprint
+
+# Combine type and style
+/baoyu-article-illustrator path/to/article.md --type flowchart --style notion
+
+# Specify density
+/baoyu-article-illustrator path/to/article.md --density rich
+
+# Direct content input
+/baoyu-article-illustrator
+[paste content]
 ```
 
 ## Options
 
 | Option | Description |
 |--------|-------------|
-| `--style <name>` | Specify illustration style (see Style Gallery below) |
+| `--type <name>` | Illustration type (see Type Gallery) |
+| `--style <name>` | Visual style (see Style Gallery) |
+| `--density <level>` | Image count: minimal / balanced / rich |
+
+## Two Dimensions
+
+| Dimension | Controls | Examples |
+|-----------|----------|----------|
+| **Type** | Information structure, content layout | infographic, scene, flowchart, comparison, framework, timeline |
+| **Style** | Visual aesthetics, colors, mood | notion, warm, minimal, blueprint, watercolor, elegant |
+
+Type × Style can be freely combined. Example: `--type infographic --style blueprint` creates technical data visualization with schematic aesthetics.
+
+## Type Gallery
+
+| Type | Description | Best For |
+|------|-------------|----------|
+| `infographic` | Data visualization, charts, metrics | Technical articles, data analysis, comparisons |
+| `scene` | Atmospheric illustration, mood rendering | Narrative articles, personal stories, emotional content |
+| `flowchart` | Process diagrams, step visualization | Tutorials, workflows, decision trees |
+| `comparison` | Side-by-side, before/after contrast | Product comparisons, option evaluations |
+| `framework` | Concept maps, relationship diagrams | Methodologies, models, architecture design |
+| `timeline` | Chronological progression | History, project progress, evolution |
+
+## Density Options
+
+| Density | Count | Description |
+|---------|-------|-------------|
+| `minimal` | 1-2 | Core concepts only |
+| `balanced` (Default) | 3-5 | Major sections coverage |
+| `rich` | 6+ | Rich visual support |
 
 ## Style Gallery
 
 | Style | Description | Best For |
 |-------|-------------|----------|
-| `notion` (Default) | Minimalist hand-drawn line art, intellectual | Knowledge sharing, SaaS, productivity |
-| `elegant` | Refined, sophisticated, professional | Business, thought leadership |
-| `warm` | Friendly, approachable, human-centered | Personal growth, lifestyle, education |
-| `minimal` | Ultra-clean, zen-like, focused | Philosophy, minimalism, core concepts |
-| `playful` | Fun, creative, whimsical | Tutorials, beginner guides, fun topics |
-| `nature` | Organic, calm, earthy | Sustainability, wellness, outdoor |
-| `sketch` | Raw, authentic, notebook-style | Ideas, brainstorming, drafts |
+| `notion` (Default) | Minimalist hand-drawn line art | Knowledge sharing, SaaS, productivity |
+| `elegant` | Refined, sophisticated | Business, thought leadership |
+| `warm` | Friendly, approachable | Personal growth, lifestyle, education |
+| `minimal` | Ultra-clean, zen-like | Philosophy, minimalism, core concepts |
+| `blueprint` | Technical schematics | Architecture, system design, engineering |
 | `watercolor` | Soft artistic with natural warmth | Lifestyle, travel, creative |
-| `vintage` | Nostalgic aged-paper aesthetic | Historical, biography, heritage |
-| `scientific` | Academic precise diagrams | Biology, chemistry, technical |
-| `chalkboard` | Classroom chalk drawing style | Education, tutorials, workshops |
 | `editorial` | Magazine-style infographic | Tech explainers, journalism |
-| `flat` | Modern flat vector illustration | Startups, digital, contemporary |
-| `flat-doodle` | Bold outlines, pastel colors, cute | Productivity, SaaS, workflows |
-| `retro` | 80s/90s vibrant nostalgic | Pop culture, gaming, entertainment |
-| `blueprint` | Technical schematics, engineering precision | Architecture, system design |
-| `vector-illustration` | Flat vector with black outlines, retro colors | Educational, creative, brand content |
-| `sketch-notes` | Soft hand-drawn, warm educational feel | Knowledge sharing, tutorials |
-| `pixel-art` | Retro 8-bit gaming aesthetic | Gaming, tech, developer content |
-| `intuition-machine` | Technical briefing with bilingual labels | Academic, technical, bilingual |
-| `fantasy-animation` | Ghibli/Disney whimsical style | Storytelling, children's, creative |
+| `scientific` | Academic precise diagrams | Biology, chemistry, technical research |
 
-Full style specifications in `references/styles/<style>.md`
+Full style specifications: `references/styles/<style>.md`
 
-## Auto Style Selection
+## Type × Style Compatibility
 
-When no `--style` is specified, analyze content to select the best style:
+| | notion | warm | minimal | blueprint | watercolor | elegant | editorial | scientific |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| infographic | ✓✓ | ✓ | ✓✓ | ✓✓ | ✓ | ✓✓ | ✓✓ | ✓✓ |
+| scene | ✓ | ✓✓ | ✓ | ✗ | ✓✓ | ✓ | ✓ | ✗ |
+| flowchart | ✓✓ | ✓ | ✓ | ✓✓ | ✗ | ✓ | ✓✓ | ✓ |
+| comparison | ✓✓ | ✓ | ✓✓ | ✓ | ✓ | ✓✓ | ✓✓ | ✓ |
+| framework | ✓✓ | ✓ | ✓✓ | ✓✓ | ✗ | ✓✓ | ✓ | ✓✓ |
+| timeline | ✓✓ | ✓ | ✓ | ✓ | ✓✓ | ✓✓ | ✓✓ | ✓ |
 
-| Content Signals | Selected Style |
-|----------------|----------------|
-| Personal story, emotion, growth, life, feeling, relationship | `warm` |
-| Simple, zen, focus, essential, core, minimalist | `minimal` |
-| Fun, easy, beginner, tutorial, guide, how-to, learn | `playful` |
-| Nature, eco, wellness, health, organic, green, outdoor | `nature` |
-| Idea, thought, concept, draft, brainstorm, sketch | `sketch` |
-| Business, professional, strategy, analysis, corporate | `elegant` |
-| Knowledge, concept, productivity, SaaS, notion, tool | `notion` |
-| Lifestyle, travel, food, art, creative, artistic | `watercolor` |
-| History, heritage, vintage, biography, classic, expedition | `vintage` |
-| Biology, chemistry, medical, scientific, research, academic | `scientific` |
-| Education, classroom, teaching, school, lecture, workshop | `chalkboard` |
-| Explainer, journalism, magazine, in-depth, investigation | `editorial` |
-| Modern, startup, app, product, digital marketing, saas | `flat` |
-| Productivity, workflow, cute, tools, app tutorial | `flat-doodle` |
-| 80s, 90s, retro, pop culture, music, nostalgia | `retro` |
-| Architecture, system, infrastructure, engineering, technical | `blueprint` |
-| Brand, explainer, children, cute, toy, geometric | `vector-illustration` |
-| Notes, doodle, friendly, warm tutorial, onboarding | `sketch-notes` |
-| Gaming, 8-bit, pixel, developer, retro tech | `pixel-art` |
-| Bilingual, briefing, academic, research, documentation | `intuition-machine` |
-| Fantasy, story, magical, Ghibli, Disney, children | `fantasy-animation` |
-| Default | `notion` |
+✓✓ = highly recommended | ✓ = compatible | ✗ = not recommended
 
-## File Management
+## Auto Selection
 
-### Output Directory
+| Content Signals | Recommended Type | Recommended Style |
+|-----------------|------------------|-------------------|
+| API, metrics, data, comparison, numbers | infographic | blueprint, notion |
+| Story, emotion, journey, experience, personal | scene | warm, watercolor |
+| How-to, steps, workflow, process, tutorial | flowchart | notion, minimal |
+| vs, pros/cons, before/after, alternatives | comparison | notion, elegant |
+| Framework, model, architecture, principles | framework | blueprint, notion |
+| History, timeline, progress, evolution | timeline | elegant, warm |
 
-Each session creates an independent directory named by content slug:
+## Output Directory
 
 ```
 illustrations/{topic-slug}/
-├── source-{slug}.{ext}    # Source files (text, images, etc.)
+├── source-{slug}.{ext}
 ├── outline.md
-├── outline-{style}.md     # Style variant outlines
 ├── prompts/
-│   ├── illustration-concept-a.md
-│   ├── illustration-concept-b.md
-│   └── ...
-├── illustration-concept-a.png
-├── illustration-concept-b.png
-└── ...
+│   └── illustration-{slug}.md
+└── NN-{type}-{slug}.png
 ```
 
-**Slug Generation**:
-1. Extract main topic from content (2-4 words, kebab-case)
-2. Example: "The Future of AI" → `future-of-ai`
-
-### Conflict Resolution
-
-If `illustrations/{topic-slug}/` already exists:
-- Append timestamp: `{topic-slug}-YYYYMMDD-HHMMSS`
-- Example: `ai-future` exists → `ai-future-20260118-143052`
-
-### Source Files
-
-Copy all sources with naming `source-{slug}.{ext}`:
-- `source-article.md` (main text content)
-- `source-photo.jpg` (image from conversation)
-- `source-reference.pdf` (additional file)
-
-Multiple sources supported: text, images, files from conversation.
+**Slug**: Extract 2-4 word topic in kebab-case.
+**Conflict**: Append `-YYYYMMDD-HHMMSS` if exists.
 
 ## Workflow
 
-### Step 1: Analyze Content & Select Style
+### Progress
 
-1. Read article content
-2. If `--style` specified, use that style
-3. Otherwise, scan for style signals and auto-select
-4. **Language detection**:
-   - Detect **source language** from article content
-   - Detect **user language** from conversation context
-   - Note if source_language ≠ user_language (will ask in Step 4)
-5. Extract key information:
-   - Main topic and themes
-   - Core messages per section
-   - Abstract concepts needing visualization
+```
+- [ ] Step 1: Setup & Analyze
+- [ ] Step 2: Confirm Settings ⚠️ REQUIRED
+- [ ] Step 3: Generate Outline
+- [ ] Step 4: Generate Images
+- [ ] Step 5: Finalize
+```
 
-### Step 2: Identify Illustration Positions
+### Step 1: Setup & Analyze
 
-**Three Purposes of Illustrations**:
-1. **Information Supplement**: Help understand abstract concepts
-2. **Concept Visualization**: Transform abstract ideas into concrete visuals
-3. **Imagination Guidance**: Create atmosphere, enhance reading experience
+**1.1 Load Preferences (EXTEND.md)**
 
-**Content Suitable for Illustrations**:
+Use Bash to check EXTEND.md existence (priority order):
+
+```bash
+# Check project-level first
+test -f .baoyu-skills/baoyu-article-illustrator/EXTEND.md && echo "project"
+
+# Then user-level (cross-platform: $HOME works on macOS/Linux/WSL)
+test -f "$HOME/.baoyu-skills/baoyu-article-illustrator/EXTEND.md" && echo "user"
+```
+
+┌──────────────────────────────────────────────────────────┬───────────────────┐
+│                           Path                           │     Location      │
+├──────────────────────────────────────────────────────────┼───────────────────┤
+│ .baoyu-skills/baoyu-article-illustrator/EXTEND.md        │ Project directory │
+├──────────────────────────────────────────────────────────┼───────────────────┤
+│ $HOME/.baoyu-skills/baoyu-article-illustrator/EXTEND.md  │ User home         │
+└──────────────────────────────────────────────────────────┴───────────────────┘
+
+┌───────────┬───────────────────────────────────────────────────────────────────────────┐
+│  Result   │                                  Action                                   │
+├───────────┼───────────────────────────────────────────────────────────────────────────┤
+│ Found     │ Read, parse, display summary                                              │
+├───────────┼───────────────────────────────────────────────────────────────────────────┤
+│ Not found │ Ask user with AskUserQuestion (see references/config/first-time-setup.md) │
+└───────────┴───────────────────────────────────────────────────────────────────────────┘
+
+**EXTEND.md Supports**: Watermark | Preferred type/style | Custom style definitions | Language preference
+
+Schema: `references/config/preferences-schema.md`
+
+**1.2 Analyze Content**
+
+Read article, detect language, classify content.
+
+| Analysis | Description |
+|----------|-------------|
+| Content type | Technical / Tutorial / Methodology / Narrative |
+| Core arguments | 2-5 main points that MUST be visualized |
+| Visual opportunities | Positions where illustrations add value |
+| Recommended type | Based on content signals |
+| Recommended density | Based on article length and complexity |
+
+**1.3 Extract Core Arguments**
+
+Extract 2-5 core arguments that MUST be visualized:
+- Main thesis
+- Key concepts reader needs
+- Comparisons/contrasts being made
+- Framework/model proposed
+
+**CRITICAL**: If article uses metaphors (e.g., "电锯切西瓜"), do NOT illustrate literally. Visualize the **underlying concept** instead.
+
+**1.4 Identify Positions**
+
+**What to Illustrate**:
+- Core arguments (REQUIRED)
 - Abstract concepts needing visualization
-- Processes/steps needing diagrams
-- Comparisons needing visual representation
-- Core arguments needing reinforcement
-- Scenarios needing imagination guidance
+- Data comparisons, metrics
+- Processes, workflows
 
-**Illustration Count**:
-- Consider at least 1 image per major section
-- Prioritize core arguments and abstract concepts
-- **Principle: More is better than fewer**
+**What NOT to Illustrate**:
+- Metaphors literally
+- Decorative scenes without information
+- Generic illustrations
 
-### Step 3: Generate Illustration Plan
+### Step 2: Confirm Settings ⚠️
 
-```markdown
-# Illustration Plan
+**Do NOT skip.** Use AskUserQuestion with 3-4 questions in ONE call.
 
-**Article**: [article path]
-**Style**: [selected style]
-**Illustration Count**: N images
+**Question 1: Illustration Type**
 
+Based on content analysis, recommend type:
+- [Recommended type based on signals] (Recommended)
+- infographic - Data visualization, charts
+- scene - Atmospheric, mood rendering
+- flowchart - Process, steps
+- comparison - Side-by-side contrast
+- framework - Concept relationships
+- timeline - Chronological progression
+- mixed - Combine multiple types
+
+**Question 2: Density**
+
+- minimal (1-2 images) - Core concepts only
+- balanced (3-5 images) (Recommended) - Major sections
+- rich (6+ images) - Comprehensive visual support
+
+**Question 3: Style**
+
+Based on recommended Type, suggest compatible styles (see Type × Style Compatibility matrix):
+- [Best compatible style for recommended type] (Recommended)
+- [Other highly compatible styles: ✓✓ from matrix]
+- [Compatible styles: ✓ from matrix]
+
+**Question 4** (only if source ≠ user language):
+- Language: Source language / User language
+
+### Step 3: Generate Outline
+
+Based on confirmed Type + Density + Style, generate illustration outline.
+
+**Outline Format** (`outline.md`):
+
+```yaml
+---
+type: infographic
+density: balanced
+style: blueprint
+image_count: 4
 ---
 
 ## Illustration 1
 
-**Insert Position**: [section name] / [paragraph description]
-**Purpose**: [why illustration needed here]
-**Visual Content**: [what the image should show]
-**Filename**: illustration-[slug].png
-
----
+**Position**: [section] / [paragraph]
+**Purpose**: [why this illustration helps]
+**Visual Content**: [what to show]
+**Type Application**: [how type applies here]
+**Filename**: 01-infographic-concept-name.png
 
 ## Illustration 2
 ...
 ```
 
-### Step 4: Review & Confirm
+**Outline Requirements**:
+- Each illustration position justified by content needs
+- Type applied consistently across all illustrations
+- Style characteristics reflected in visual descriptions
+- Count matches density selection
 
-**Purpose**: Let user confirm all options in a single step before image generation.
+### Step 4: Generate Images
 
-**IMPORTANT**: Present ALL options in a single confirmation step using AskUserQuestion. Do NOT interrupt workflow with multiple separate confirmations.
+**4.1 Create Prompts**
 
-1. **Generate 3 style variants**:
-   - Analyze content to select 3 most suitable styles
-   - Generate complete illustration plan for each style variant
-   - Save as `outline-{style}.md` (e.g., `outline-notion.md`, `outline-tech.md`, `outline-warm.md`)
+Follow Prompt Construction principles below. Save each to `prompts/illustration-{slug}.md`.
 
-2. **Determine which questions to ask**:
+**4.2 Select Generation Skill**
 
-   | Question | When to Ask |
-   |----------|-------------|
-   | Style variant | Always (required) |
-   | Language | Only if `source_language ≠ user_language` |
+Check available image generation skills. If multiple, ask user to choose.
 
-3. **Present options** (use AskUserQuestion with all applicable questions):
+**4.3 Apply Watermark** (if enabled in preferences)
 
-   **Question 1 (Style)** - always:
-   - Style A (recommended): [style name] - [brief description]
-   - Style B: [style name] - [brief description]
-   - Style C: [style name] - [brief description]
-   - Custom: Provide custom style reference
+Add to prompt: `Include a subtle watermark "[content]" positioned at [position] with approximately [opacity*100]% visibility.`
 
-   **Question 2 (Language)** - only if source ≠ user language:
-   - [Source language] (matches article language)
-   - [User language] (your preference)
+**4.4 Generate**
 
-   **Language handling**:
-   - If source language = user language: Just inform user (e.g., "Prompts will be in Chinese")
-   - If different: Ask which language to use for prompts
+1. Generate sequentially
+2. After each: "Generated X/N"
+3. On failure: auto-retry once, then log and continue
 
-4. **Apply selection**:
-   - Copy selected `outline-{style}.md` to `outline.md`
-   - If custom style provided, generate new plan with that style
-   - If different language selected, regenerate outline in that language
-   - User may edit `outline.md` directly for fine-tuning
-   - If modified, reload plan before proceeding
+### Step 5: Finalize
 
-5. **Proceed only after explicit user confirmation**
+**5.1 Update Article**
 
-### Step 5: Create Prompt Files
-
-Save prompts to `prompts/` directory with style-specific details.
-
-**All prompts are written in the user's confirmed language preference.**
-
-**Prompt Format**:
-
+Insert after corresponding paragraph:
 ```markdown
-Illustration theme: [concept in 2-3 words]
-Style: [style name]
-
-Visual composition:
-- Main visual: [description matching style]
-- Layout: [element positioning]
-- Decorative elements: [style-appropriate decorations]
-
-Color scheme:
-- Primary: [style primary color]
-- Background: [style background color]
-- Accent: [style accent color]
-
-Text content (if any):
-- [Any labels or captions in content language]
-
-Style notes: [specific style characteristics]
+![description](illustrations/{slug}/NN-{type}-{slug}.png)
 ```
 
-### Step 6: Generate Images
+Alt text: concise description in article's language.
 
-**Image Generation Skill Selection**:
-1. Check available image generation skills
-2. If multiple skills available, ask user to choose
-
-**Generation Flow**:
-1. Call selected image generation skill with prompt file and output path
-2. Generate images sequentially
-3. After each image, output progress: "Generated X/N"
-4. On failure, auto-retry once
-5. If retry fails, log reason, continue to next
-
-### Step 7: Update Article
-
-Insert generated images at corresponding positions:
-
-```markdown
-![illustration description]([article-name]/illustrations/illustration-[slug].png)
-```
-
-**Insertion Rules**:
-- Insert image after corresponding paragraph
-- Leave one blank line before and after image
-- Alt text uses concise description in article's language
-
-### Step 8: Output Summary
+**5.2 Output Summary**
 
 ```
 Article Illustration Complete!
 
-Article: [article path]
+Article: [path]
+Type: [type name]
+Density: [minimal/balanced/rich]
 Style: [style name]
-Generated: X/N images successful
+Location: [directory path]
+Images: X/N generated
 
-Illustration Positions:
-- illustration-xxx.png → After section "Section Name"
-- illustration-yyy.png → After section "Another Section"
+Positions:
+- 01-infographic-xxx.png → After "[Section]"
+- 02-infographic-yyy.png → After "[Section]"
+
+[If failures]
+Failed:
+- NN-type-zzz.png: [reason]
+```
+
+## Prompt Construction
+
+### Principles
+
+Good prompts must include:
+
+1. **Layout Structure First**: Describe composition, zones, flow direction
+2. **Specific Data/Labels**: Use actual numbers, terms from article
+3. **Visual Relationships**: How elements connect
+4. **Semantic Colors**: Meaning-based color choices (red=warning, green=efficient)
+5. **Style Characteristics**: Line treatment, texture, mood
+6. **Aspect Ratio**: End with ratio and complexity level
+
+### Type-Specific Prompts
+
+**Infographic**:
+```
+[Title] - Data Visualization
+
+Layout: [grid/radial/hierarchical]
+
+ZONES:
+- Zone 1: [data point with specific values]
+- Zone 2: [comparison with metrics]
+- Zone 3: [summary/conclusion]
+
+LABELS: [specific numbers, percentages, terms from article]
+COLORS: [semantic color mapping]
+STYLE: [style characteristics]
+ASPECT: 16:9
+```
+
+**Scene**:
+```
+[Title] - Atmospheric Scene
+
+FOCAL POINT: [main subject]
+ATMOSPHERE: [lighting, mood, environment]
+MOOD: [emotion to convey]
+COLOR TEMPERATURE: [warm/cool/neutral]
+STYLE: [style characteristics]
+ASPECT: 16:9
+```
+
+**Flowchart**:
+```
+[Title] - Process Flow
+
+Layout: [left-right/top-down/circular]
+
+STEPS:
+1. [Step name] - [brief description]
+2. [Step name] - [brief description]
 ...
 
-[If any failures]
-Failed:
-- illustration-zzz.png: [failure reason]
+CONNECTIONS: [arrow types, decision points]
+STYLE: [style characteristics]
+ASPECT: 16:9
 ```
 
-## Illustration Modification
-
-Support for modifying individual illustrations after initial generation.
-
-### Edit Single Illustration
-
-Regenerate a specific illustration with modified prompt:
-
-1. Identify illustration to edit (e.g., `illustration-concept-overview.png`)
-2. Update prompt in `prompts/illustration-concept-overview.md` if needed
-3. If content changes significantly, update slug in filename
-4. Regenerate image
-5. Update article if image reference changed
-
-### Add New Illustration
-
-Add a new illustration to the article:
-
-1. Identify insertion position in article
-2. Create new prompt with appropriate slug (e.g., `illustration-new-concept.md`)
-3. Generate new illustration image
-4. Update `outline.md` with new illustration entry
-5. Insert image reference in article at the specified position
-
-### Delete Illustration
-
-Remove an illustration from the article:
-
-1. Identify illustration to delete (e.g., `illustration-concept-overview.png`)
-2. Remove image file and prompt file
-3. Remove image reference from article
-4. Update `outline.md` to remove illustration entry
-
-### File Naming Convention
-
-Files use meaningful slugs for better readability:
+**Comparison**:
 ```
-illustration-[slug].png
-illustration-[slug].md (in prompts/)
+[Title] - Comparison View
+
+LEFT SIDE - [Option A]:
+- [Point 1]
+- [Point 2]
+
+RIGHT SIDE - [Option B]:
+- [Point 1]
+- [Point 2]
+
+DIVIDER: [visual separator]
+STYLE: [style characteristics]
+ASPECT: 16:9
 ```
 
-Examples:
-- `illustration-concept-overview.png`
-- `illustration-workflow-diagram.png`
-- `illustration-key-benefits.png`
+**Framework**:
+```
+[Title] - Conceptual Framework
 
-**Slug rules**:
-- Derived from illustration purpose/content (kebab-case)
-- Must be unique within the article
-- When content changes significantly, update slug accordingly
+STRUCTURE: [hierarchical/network/matrix]
+
+NODES:
+- [Concept 1] - [role]
+- [Concept 2] - [role]
+
+RELATIONSHIPS: [how nodes connect]
+STYLE: [style characteristics]
+ASPECT: 16:9
+```
+
+**Timeline**:
+```
+[Title] - Chronological View
+
+DIRECTION: [horizontal/vertical]
+
+EVENTS:
+- [Date/Period 1]: [milestone]
+- [Date/Period 2]: [milestone]
+
+MARKERS: [visual indicators]
+STYLE: [style characteristics]
+ASPECT: 16:9
+```
+
+### What to Avoid
+
+- Vague descriptions ("a nice image")
+- Literal metaphor illustrations
+- Missing concrete labels/annotations
+- Generic decorative elements
+
+## Modification
+
+| Action | Steps |
+|--------|-------|
+| **Edit** | Update prompt → Regenerate → Update reference |
+| **Add** | Identify position → Create prompt → Generate → Update outline → Insert reference |
+| **Delete** | Delete files → Remove reference → Update outline |
 
 ## References
 
 | File | Content |
 |------|---------|
-| `references/styles/<style>.md` | Full style specifications with colors, elements, rules |
-
-## Notes
-
-- Illustrations serve the content: supplement information, visualize concepts
-- Maintain selected style consistency across all illustrations in one article
-- Image generation typically takes 10-30 seconds per image
-- Sensitive figures should use cartoon alternatives
-- Prompts written in user's confirmed language preference
-- Illustration text (labels, captions) should match article language
+| [references/styles.md](references/styles.md) | Style gallery & compatibility matrix |
+| `references/styles/<style>.md` | Full style specifications |
+| `references/config/preferences-schema.md` | EXTEND.md schema |
+| `references/config/first-time-setup.md` | First-time setup flow |
 
 ## Extension Support
 
-Custom styles and configurations via EXTEND.md.
-
-**Check paths** (priority order):
-1. `.baoyu-skills/baoyu-article-illustrator/EXTEND.md` (project)
-2. `~/.baoyu-skills/baoyu-article-illustrator/EXTEND.md` (user)
-
-If found, load before Step 1. Extension content overrides defaults.
+Custom configurations via EXTEND.md. See **Step 1.1** for paths and supported options.

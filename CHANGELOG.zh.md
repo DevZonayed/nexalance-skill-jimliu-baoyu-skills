@@ -2,6 +2,18 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.16.0 - 2026-01-23
+
+### 新功能
+- `baoyu-article-illustrator`：新增用户偏好设置支持（通过 EXTEND.md 配置）——可设置水印（内容、位置、透明度）、首选类型/风格和自定义风格。新增 Step 1.1 检查项目级（`.baoyu-skills/`）或用户级（`~/.baoyu-skills/`）偏好设置，首次使用时引导设置。
+
+### 重构
+- `baoyu-article-illustrator`：重构为类型 × 风格二维系统——将 20+ 种单维风格替换为模块化的类型（infographic 信息图、scene 场景、flowchart 流程图、comparison 对比、framework 框架、timeline 时间线）× 风格（notion、elegant、warm、minimal、blueprint、watercolor、editorial、scientific）架构。新增 `--type` 和 `--density` 选项、类型 × 风格兼容性矩阵，以及结构化提示词构建模板。
+
+### 文档
+- `baoyu-article-illustrator`：新增三个参考文档——`references/styles.md`（风格库和兼容性矩阵）、`references/config/preferences-schema.md`（EXTEND.md YAML 配置模式）、`references/config/first-time-setup.md`（首次设置流程）。
+- `README.md`、`README.zh.md`：更新 baoyu-article-illustrator 文档，反映新的类型 × 风格系统及 `--type` 和 `--style` 选项。
+
 ## 1.15.3 - 2026-01-23
 
 ### 重构

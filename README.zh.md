@@ -426,42 +426,45 @@ npx skills add jimliu/baoyu-skills
 
 #### baoyu-article-illustrator
 
-智能文章插图技能。分析文章内容，在需要视觉辅助的位置生成插图。
+智能文章插图技能，采用类型 × 风格二维系统。分析文章结构，识别需要视觉辅助的位置，生成插图。
 
 ```bash
-# 根据内容自动选择风格
+# 根据内容自动选择类型和风格
 /baoyu-article-illustrator path/to/article.md
 
+# 指定类型
+/baoyu-article-illustrator path/to/article.md --type infographic
+
 # 指定风格
-/baoyu-article-illustrator path/to/article.md --style warm
-/baoyu-article-illustrator path/to/article.md --style watercolor
+/baoyu-article-illustrator path/to/article.md --style blueprint
+
+# 组合类型和风格
+/baoyu-article-illustrator path/to/article.md --type flowchart --style notion
 ```
+
+**类型**（信息结构）：
+
+| 类型 | 描述 | 适用场景 |
+|------|------|----------|
+| `infographic` | 数据可视化、图表、指标 | 技术文章、数据分析 |
+| `scene` | 氛围插图、情绪渲染 | 叙事、个人故事 |
+| `flowchart` | 流程图、步骤可视化 | 教程、工作流 |
+| `comparison` | 并排对比、前后对照 | 产品比较 |
+| `framework` | 概念图、关系图 | 方法论、架构 |
+| `timeline` | 时间线进展 | 历史、项目进度 |
 
 **风格**（视觉美学）：
 
 | 风格 | 描述 | 适用场景 |
 |------|------|----------|
 | `notion`（默认） | 极简手绘线条画 | 知识分享、SaaS、生产力 |
-| `elegant` | 精致、优雅、专业 | 商业、思想领导力 |
-| `warm` | 友好、亲切、人文关怀 | 个人成长、生活方式 |
-| `minimal` | 极简、禅意、专注 | 哲学、极简主义 |
-| `playful` | 有趣、创意、俏皮 | 教程、新手指南 |
-| `nature` | 自然、平静、质朴 | 可持续发展、健康 |
-| `sketch` | 原始、真实、笔记风格 | 想法、头脑风暴 |
+| `elegant` | 精致、优雅 | 商业、思想领导力 |
+| `warm` | 友好、亲切 | 个人成长、生活方式 |
+| `minimal` | 极简、禅意 | 哲学、极简主义 |
+| `blueprint` | 技术蓝图 | 架构、系统设计 |
 | `watercolor` | 柔和艺术感、自然温暖 | 生活方式、旅行、创意 |
-| `vintage` | 怀旧做旧纸张美学 | 历史、传记 |
-| `scientific` | 学术精确图表 | 生物、化学、技术 |
-| `chalkboard` | 教室粉笔画风格 | 教育、教程 |
 | `editorial` | 杂志风格信息图 | 科技解说、新闻 |
-| `flat` | 现代扁平矢量插画 | 创业公司、数字化 |
-| `flat-doodle` | 粗轮廓、粉彩色、可爱风 | 生产力、SaaS、工作流 |
-| `retro` | 80/90 年代复古鲜艳 | 流行文化、娱乐 |
-| `blueprint` | 技术蓝图、工程精度 | 架构、系统设计 |
-| `vector-illustration` | 扁平矢量、黑色轮廓、复古 | 教育、创意、品牌 |
-| `sketch-notes` | 柔和手绘、温暖感 | 知识分享、教程 |
-| `pixel-art` | 复古 8-bit 游戏风格 | 游戏、技术、开发者 |
-| `intuition-machine` | 技术简报、双语标签 | 学术、技术、研究 |
-| `fantasy-animation` | 吉卜力/迪士尼童话风格 | 故事、儿童、创意 |
+| `scientific` | 学术精确图表 | 生物、化学、技术 |
 
 **风格预览**：
 
@@ -469,18 +472,10 @@ npx skills add jimliu/baoyu-skills
 |:---:|:---:|:---:|
 | ![notion](./screenshots/article-illustrator-styles/notion.webp) | ![elegant](./screenshots/article-illustrator-styles/elegant.webp) | ![warm](./screenshots/article-illustrator-styles/warm.webp) |
 | notion | elegant | warm |
-| ![minimal](./screenshots/article-illustrator-styles/minimal.webp) | ![playful](./screenshots/article-illustrator-styles/playful.webp) | ![nature](./screenshots/article-illustrator-styles/nature.webp) |
-| minimal | playful | nature |
-| ![sketch](./screenshots/article-illustrator-styles/sketch.webp) | ![watercolor](./screenshots/article-illustrator-styles/watercolor.webp) | ![vintage](./screenshots/article-illustrator-styles/vintage.webp) |
-| sketch | watercolor | vintage |
-| ![scientific](./screenshots/article-illustrator-styles/scientific.webp) | ![chalkboard](./screenshots/article-illustrator-styles/chalkboard.webp) | ![editorial](./screenshots/article-illustrator-styles/editorial.webp) |
-| scientific | chalkboard | editorial |
-| ![flat](./screenshots/article-illustrator-styles/flat.webp) | ![retro](./screenshots/article-illustrator-styles/retro.webp) | ![blueprint](./screenshots/article-illustrator-styles/blueprint.webp) |
-| flat | retro | blueprint |
-| ![vector-illustration](./screenshots/article-illustrator-styles/vector-illustration.webp) | ![sketch-notes](./screenshots/article-illustrator-styles/sketch-notes.webp) | ![pixel-art](./screenshots/article-illustrator-styles/pixel-art.webp) |
-| vector-illustration | sketch-notes | pixel-art |
-| ![intuition-machine](./screenshots/article-illustrator-styles/intuition-machine.webp) | ![fantasy-animation](./screenshots/article-illustrator-styles/fantasy-animation.webp) | ![flat-doodle](./screenshots/article-illustrator-styles/flat-doodle.webp) |
-| intuition-machine | fantasy-animation | flat-doodle |
+| ![minimal](./screenshots/article-illustrator-styles/minimal.webp) | ![blueprint](./screenshots/article-illustrator-styles/blueprint.webp) | ![watercolor](./screenshots/article-illustrator-styles/watercolor.webp) |
+| minimal | blueprint | watercolor |
+| ![editorial](./screenshots/article-illustrator-styles/editorial.webp) | ![scientific](./screenshots/article-illustrator-styles/scientific.webp) | |
+| editorial | scientific | |
 
 #### baoyu-post-to-x
 

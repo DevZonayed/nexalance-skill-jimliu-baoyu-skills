@@ -2,6 +2,18 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.16.0 - 2026-01-23
+
+### Features
+- `baoyu-article-illustrator`: adds user preferences support via EXTEND.md—configure watermark (content, position, opacity), preferred type/style, and custom styles. New Step 1.1 checks for preferences at project (`.baoyu-skills/`) or user (`~/.baoyu-skills/`) level with first-time setup flow.
+
+### Refactor
+- `baoyu-article-illustrator`: restructures to Type × Style two-dimension system—replaces 20+ single-dimension styles with modular Type (infographic, scene, flowchart, comparison, framework, timeline) × Style (notion, elegant, warm, minimal, blueprint, watercolor, editorial, scientific) architecture. Adds `--type` and `--density` options, Type × Style compatibility matrix, and structured prompt construction templates.
+
+### Documentation
+- `baoyu-article-illustrator`: adds three reference documents—`references/styles.md` (style gallery and compatibility matrix), `references/config/preferences-schema.md` (EXTEND.md YAML schema), `references/config/first-time-setup.md` (setup flow).
+- `README.md`, `README.zh.md`: updates baoyu-article-illustrator documentation to reflect new Type × Style system with `--type` and `--style` options.
+
 ## 1.15.3 - 2026-01-23
 
 ### Refactor
