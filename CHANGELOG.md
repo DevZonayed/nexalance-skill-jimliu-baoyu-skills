@@ -2,6 +2,14 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.18.2 - 2026-01-23
+
+### Refactor
+- Streamline SKILL.md documentation across 7 skills (`baoyu-compress-image`, `baoyu-danger-gemini-web`, `baoyu-danger-x-to-markdown`, `baoyu-image-gen`, `baoyu-post-to-wechat`, `baoyu-post-to-x`, `baoyu-url-to-markdown`) following official best practices—reduces total documentation by ~300 lines while preserving all functionality.
+
+### Documentation
+- `CLAUDE.md`: adds official skill authoring best practices link, skill loading rules, description writing guidelines, and progressive disclosure patterns.
+
 ## 1.18.1 - 2026-01-23
 
 ### Documentation

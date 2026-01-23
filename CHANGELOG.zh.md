@@ -2,6 +2,14 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.18.2 - 2026-01-23
+
+### 重构
+- 精简 7 个技能的 SKILL.md 文档（`baoyu-compress-image`、`baoyu-danger-gemini-web`、`baoyu-danger-x-to-markdown`、`baoyu-image-gen`、`baoyu-post-to-wechat`、`baoyu-post-to-x`、`baoyu-url-to-markdown`），遵循官方最佳实践——总文档量减少约 300 行，功能完整保留。
+
+### 文档
+- `CLAUDE.md`：新增官方技能编写最佳实践链接、技能加载规则、描述编写指南和渐进式披露模式。
+
 ## 1.18.1 - 2026-01-23
 
 ### 文档

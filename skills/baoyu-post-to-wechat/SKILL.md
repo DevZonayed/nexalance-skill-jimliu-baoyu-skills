@@ -1,84 +1,94 @@
 ---
 name: baoyu-post-to-wechat
-description: Post content to WeChat Official Account (微信公众号). Supports both article posting (文章) and image-text posting (图文).
+description: Posts content to WeChat Official Account (微信公众号) via Chrome CDP automation. Supports article posting (文章) with full markdown formatting and image-text posting (图文) with multiple images. Use when user mentions "发布公众号", "post to wechat", "微信公众号", or "图文/文章".
 ---
 
-# Post to WeChat Official Account (微信公众号)
-
-Post content to WeChat Official Account using Chrome CDP automation.
+# Post to WeChat Official Account
 
 ## Script Directory
 
-**Important**: All scripts are located in the `scripts/` subdirectory of this skill.
+**Agent Execution**: Determine this SKILL.md directory as `SKILL_DIR`, then use `${SKILL_DIR}/scripts/<name>.ts`.
 
-**Agent Execution Instructions**:
-1. Determine this SKILL.md file's directory path as `SKILL_DIR`
-2. Script path = `${SKILL_DIR}/scripts/<script-name>.ts`
-3. Replace all `${SKILL_DIR}` in this document with the actual path
-
-**Script Reference**:
 | Script | Purpose |
 |--------|---------|
 | `scripts/wechat-browser.ts` | Image-text posts (图文) |
-| `scripts/wechat-article.ts` | Full article posting (文章) |
-| `scripts/md-to-wechat.ts` | Markdown → WeChat HTML conversion |
-| `scripts/copy-to-clipboard.ts` | Copy content to clipboard |
-| `scripts/paste-from-clipboard.ts` | Send real paste keystroke |
+| `scripts/wechat-article.ts` | Article posting (文章) |
+| `scripts/md-to-wechat.ts` | Markdown → WeChat HTML |
 
-## Quick Usage
+## Preferences (EXTEND.md)
 
-### Image-Text (图文) - Multiple images with title/content
+Use Bash to check EXTEND.md existence (priority order):
 
 ```bash
-# From markdown file and image directory
-npx -y bun ${SKILL_DIR}/scripts/wechat-browser.ts --markdown article.md --images ./images/
+# Check project-level first
+test -f .baoyu-skills/baoyu-post-to-wechat/EXTEND.md && echo "project"
 
-# With explicit parameters
-npx -y bun ${SKILL_DIR}/scripts/wechat-browser.ts --title "标题" --content "内容" --image img1.png --image img2.png --submit
+# Then user-level (cross-platform: $HOME works on macOS/Linux/WSL)
+test -f "$HOME/.baoyu-skills/baoyu-post-to-wechat/EXTEND.md" && echo "user"
 ```
 
-### Article (文章) - Full markdown with formatting
+┌────────────────────────────────────────────────────────┬───────────────────┐
+│                          Path                          │     Location      │
+├────────────────────────────────────────────────────────┼───────────────────┤
+│ .baoyu-skills/baoyu-post-to-wechat/EXTEND.md           │ Project directory │
+├────────────────────────────────────────────────────────┼───────────────────┤
+│ $HOME/.baoyu-skills/baoyu-post-to-wechat/EXTEND.md     │ User home         │
+└────────────────────────────────────────────────────────┴───────────────────┘
+
+┌───────────┬───────────────────────────────────────────────────────────────────────────┐
+│  Result   │                                  Action                                   │
+├───────────┼───────────────────────────────────────────────────────────────────────────┤
+│ Found     │ Read, parse, apply settings                                               │
+├───────────┼───────────────────────────────────────────────────────────────────────────┤
+│ Not found │ Use defaults                                                              │
+└───────────┴───────────────────────────────────────────────────────────────────────────┘
+
+**EXTEND.md Supports**: Default theme | Auto-submit preference | Chrome profile path
+
+## Usage
+
+### Image-Text (图文)
 
 ```bash
-# Post markdown article
+npx -y bun ${SKILL_DIR}/scripts/wechat-browser.ts --markdown article.md --images ./images/
+npx -y bun ${SKILL_DIR}/scripts/wechat-browser.ts --title "标题" --content "内容" --image img.png --submit
+```
+
+### Article (文章)
+
+```bash
 npx -y bun ${SKILL_DIR}/scripts/wechat-article.ts --markdown article.md --theme grace
 ```
 
-> **Note**: `${SKILL_DIR}` represents this skill's installation directory. Agent replaces with actual path at runtime.
+## Detailed References
 
-## References
+| Topic | Reference |
+|-------|-----------|
+| Image-text parameters, auto-compression | [references/image-text-posting.md](references/image-text-posting.md) |
+| Article themes, image handling | [references/article-posting.md](references/article-posting.md) |
 
-- **Image-Text Posting**: See `references/image-text-posting.md` for detailed image-text posting guide
-- **Article Posting**: See `references/article-posting.md` for detailed article posting guide
-
-## Prerequisites
-
-- Google Chrome installed
-- `bun` runtime (via `npx -y bun`)
-- First run: log in to WeChat Official Account in the opened browser window
-
-## Features
+## Feature Comparison
 
 | Feature | Image-Text | Article |
 |---------|------------|---------|
 | Multiple images | ✓ (up to 9) | ✓ (inline) |
 | Markdown support | Title/content extraction | Full formatting |
-| Auto title compression | ✓ (to 20 chars) | ✗ |
-| Content compression | ✓ (to 1000 chars) | ✗ |
+| Auto compression | ✓ (title: 20, content: 1000 chars) | ✗ |
 | Themes | ✗ | ✓ (default, grace, simple) |
+
+## Prerequisites
+
+- Google Chrome
+- First run: log in to WeChat Official Account (session preserved)
 
 ## Troubleshooting
 
-- **Not logged in**: First run opens browser - scan QR code to log in, session is preserved
-- **Chrome not found**: Set `WECHAT_BROWSER_CHROME_PATH` environment variable
-- **Paste fails**: Check system clipboard permissions
+| Issue | Solution |
+|-------|----------|
+| Not logged in | First run opens browser - scan QR to log in |
+| Chrome not found | Set `WECHAT_BROWSER_CHROME_PATH` env var |
+| Paste fails | Check system clipboard permissions |
 
 ## Extension Support
 
-Custom configurations via EXTEND.md.
-
-**Check paths** (priority order):
-1. `.baoyu-skills/baoyu-post-to-wechat/EXTEND.md` (project)
-2. `~/.baoyu-skills/baoyu-post-to-wechat/EXTEND.md` (user)
-
-If found, load before workflow. Extension content overrides defaults.
+Custom configurations via EXTEND.md. See **Preferences** section for paths and supported options.

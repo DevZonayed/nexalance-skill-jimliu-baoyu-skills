@@ -21,6 +21,36 @@ Fetches any URL via Chrome CDP and converts HTML to clean markdown.
 |--------|---------|
 | `scripts/main.ts` | CLI entry point for URL fetching |
 
+## Preferences (EXTEND.md)
+
+Use Bash to check EXTEND.md existence (priority order):
+
+```bash
+# Check project-level first
+test -f .baoyu-skills/baoyu-url-to-markdown/EXTEND.md && echo "project"
+
+# Then user-level (cross-platform: $HOME works on macOS/Linux/WSL)
+test -f "$HOME/.baoyu-skills/baoyu-url-to-markdown/EXTEND.md" && echo "user"
+```
+
+┌────────────────────────────────────────────────────────┬───────────────────┐
+│                          Path                          │     Location      │
+├────────────────────────────────────────────────────────┼───────────────────┤
+│ .baoyu-skills/baoyu-url-to-markdown/EXTEND.md          │ Project directory │
+├────────────────────────────────────────────────────────┼───────────────────┤
+│ $HOME/.baoyu-skills/baoyu-url-to-markdown/EXTEND.md    │ User home         │
+└────────────────────────────────────────────────────────┴───────────────────┘
+
+┌───────────┬───────────────────────────────────────────────────────────────────────────┐
+│  Result   │                                  Action                                   │
+├───────────┼───────────────────────────────────────────────────────────────────────────┤
+│ Found     │ Read, parse, apply settings                                               │
+├───────────┼───────────────────────────────────────────────────────────────────────────┤
+│ Not found │ Use defaults                                                              │
+└───────────┴───────────────────────────────────────────────────────────────────────────┘
+
+**EXTEND.md Supports**: Default output directory | Default capture mode | Timeout settings
+
 ## Features
 
 - Chrome CDP for full JavaScript rendering
@@ -52,103 +82,28 @@ npx -y bun ${SKILL_DIR}/scripts/main.ts <url> -o output.md
 
 ## Capture Modes
 
-### Auto Mode (default)
+| Mode | Behavior | Use When |
+|------|----------|----------|
+| Auto (default) | Capture on network idle | Public pages, static content |
+| Wait (`--wait`) | User signals when ready | Login-required, lazy loading, paywalls |
 
-Page loads → waits for network idle → captures immediately.
-
-Best for:
-- Public pages
-- Static content
-- No login required
-
-### Wait Mode (`--wait`)
-
-Page opens → user can interact (login, scroll, etc.) → user signals ready → captures.
-
-Best for:
-- Login-required pages
-- Dynamic content needing interaction
-- Pages with lazy loading
-
-**Agent workflow for wait mode**:
-1. Run script with `--wait` flag
-2. Script outputs: `Page opened. Press Enter when ready to capture...`
-3. Use `AskUserQuestion` to ask user if page is ready
-4. When user confirms, send newline to stdin to trigger capture
+**Wait mode workflow**:
+1. Run with `--wait` → script outputs "Press Enter when ready"
+2. Ask user to confirm page is ready
+3. Send newline to stdin to trigger capture
 
 ## Output Format
 
-```markdown
----
-url: https://example.com/page
-title: "Page Title"
-description: "Meta description if available"
-author: "Author if available"
-published: "2024-01-01"
-captured_at: "2024-01-15T10:30:00Z"
----
-
-# Page Title
-
-Converted markdown content...
-```
-
-## Mode Selection Guide
-
-When user requests URL capture, help select appropriate mode:
-
-**Suggest Auto Mode when**:
-- URL is public (no login wall visible)
-- Content appears static
-- User doesn't mention login requirements
-
-**Suggest Wait Mode when**:
-- User mentions needing to log in
-- Site known to require authentication
-- User wants to scroll/interact before capture
-- Content is behind paywall
-
-**Ask user when unclear**:
-```
-The page may require login or interaction before capturing.
-
-Which mode should I use?
-1. Auto - Capture immediately when loaded
-2. Wait - Wait for you to interact first
-```
+YAML front matter with `url`, `title`, `description`, `author`, `published`, `captured_at` fields, followed by converted markdown content.
 
 ## Output Directory
 
-Each capture creates a file organized by domain:
-
 ```
-url-to-markdown/
-└── <domain>/
-    └── <slug>.md
+url-to-markdown/<domain>/<slug>.md
 ```
 
-**Path Components**:
-- `<domain>`: Site domain (e.g., `example.com`, `github.com`)
-- `<slug>`: Generated from page title or URL path (kebab-case)
-
-**Slug Generation**:
-1. Extract from page title (preferred) or URL path
-2. Convert to kebab-case, 2-6 words
-3. Example: "Getting Started with React" → `getting-started-with-react`
-
-**Conflict Resolution**:
-If `url-to-markdown/<domain>/<slug>.md` already exists:
-- Append timestamp: `<slug>-YYYYMMDD-HHMMSS.md`
-- Example: `getting-started.md` exists → `getting-started-20260118-143052.md`
-
-## Error Handling
-
-| Error | Resolution |
-|-------|------------|
-| Chrome not found | Install Chrome or set `URL_CHROME_PATH` env |
-| Page timeout | Increase `--timeout` value |
-| Capture failed | Try wait mode for complex pages |
-| Empty content | Page may need JS rendering time |
+- `<slug>`: From page title or URL path (kebab-case, 2-6 words)
+- Conflict resolution: Append timestamp `<slug>-YYYYMMDD-HHMMSS.md`
 
 ## Environment Variables
 
@@ -158,12 +113,8 @@ If `url-to-markdown/<domain>/<slug>.md` already exists:
 | `URL_DATA_DIR` | Custom data directory |
 | `URL_CHROME_PROFILE_DIR` | Custom Chrome profile directory |
 
+**Troubleshooting**: Chrome not found → set `URL_CHROME_PATH`. Timeout → increase `--timeout`. Complex pages → try `--wait` mode.
+
 ## Extension Support
 
-Custom configurations via EXTEND.md.
-
-**Check paths** (priority order):
-1. `.baoyu-skills/baoyu-url-to-markdown/EXTEND.md` (project)
-2. `~/.baoyu-skills/baoyu-url-to-markdown/EXTEND.md` (user)
-
-If found, load before workflow. Extension content overrides defaults.
+Custom configurations via EXTEND.md. See **Preferences** section for paths and supported options.

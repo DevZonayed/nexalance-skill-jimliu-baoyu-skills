@@ -1,119 +1,107 @@
 ---
 name: baoyu-danger-x-to-markdown
-description: Convert X (Twitter) tweet or article URL to markdown. Uses reverse-engineered X API (private). Requires user consent before use.
+description: Converts X (Twitter) tweets and articles to markdown with YAML front matter. Uses reverse-engineered API requiring user consent. Use when user mentions "X to markdown", "tweet to markdown", "save tweet", or provides x.com/twitter.com URLs for conversion.
 ---
 
 # X to Markdown
 
-Converts X (Twitter) content to markdown format:
-- Tweet threads → Markdown with YAML front matter
-- X Articles → Full article content extraction
+Converts X content to markdown:
+- Tweets/threads → Markdown with YAML front matter
+- X Articles → Full content extraction
 
 ## Script Directory
 
-**Important**: All scripts are located in the `scripts/` subdirectory of this skill.
+Scripts located in `scripts/` subdirectory.
 
-**Agent Execution Instructions**:
-1. Determine this SKILL.md file's directory path as `SKILL_DIR`
-2. Script path = `${SKILL_DIR}/scripts/<script-name>.ts`
-3. Replace all `${SKILL_DIR}` in this document with the actual path
+**Path Resolution**:
+1. `SKILL_DIR` = this SKILL.md's directory
+2. Script path = `${SKILL_DIR}/scripts/main.ts`
 
-**Script Reference**:
-| Script | Purpose |
-|--------|---------|
-| `scripts/main.ts` | CLI entry point for URL conversion |
+## Consent Requirement
 
-## ⚠️ Disclaimer (REQUIRED)
+**Before any conversion**, check and obtain consent.
 
-**Before using this skill**, the consent check MUST be performed.
-
-### Consent Check Flow
+### Consent Flow
 
 **Step 1**: Check consent file
 
 ```bash
 # macOS
-cat ~/Library/Application\ Support/baoyu-skills/x-to-markdown/consent.json 2>/dev/null
+cat ~/Library/Application\ Support/baoyu-skills/x-to-markdown/consent.json
 
 # Linux
-cat ~/.local/share/baoyu-skills/x-to-markdown/consent.json 2>/dev/null
-
-# Windows (PowerShell)
-Get-Content "$env:APPDATA\baoyu-skills\x-to-markdown\consent.json" 2>$null
+cat ~/.local/share/baoyu-skills/x-to-markdown/consent.json
 ```
 
-**Step 2**: If consent exists and `accepted: true` with matching `disclaimerVersion: "1.0"`:
-
-Print warning and proceed:
+**Step 2**: If `accepted: true` and `disclaimerVersion: "1.0"` → print warning and proceed:
 ```
-⚠️  Warning: Using reverse-engineered X API (not official). Accepted on: <acceptedAt date>
+Warning: Using reverse-engineered X API. Accepted on: <acceptedAt>
 ```
 
-**Step 3**: If consent file doesn't exist or `disclaimerVersion` mismatch:
-
-Display disclaimer and ask user:
-
+**Step 3**: If missing or version mismatch → display disclaimer:
 ```
-⚠️  DISCLAIMER
+DISCLAIMER
 
-This tool uses a reverse-engineered X (Twitter) API, NOT an official API.
+This tool uses a reverse-engineered X API, NOT official.
 
 Risks:
-- May break without notice if X changes their API
-- No official support or guarantees
-- Account restrictions possible if API usage detected
+- May break if X changes API
+- No guarantees or support
+- Possible account restrictions
 - Use at your own risk
 
-Do you accept these terms and wish to continue?
+Accept terms and continue?
 ```
 
-Use `AskUserQuestion` tool with options:
-- **Yes, I accept** - Continue and save consent
-- **No, I decline** - Exit immediately
+Use `AskUserQuestion` with options: "Yes, I accept" | "No, I decline"
 
-**Step 4**: On acceptance, create consent file:
+**Step 4**: On accept → create consent file:
+```json
+{
+  "version": 1,
+  "accepted": true,
+  "acceptedAt": "<ISO timestamp>",
+  "disclaimerVersion": "1.0"
+}
+```
+
+**Step 5**: On decline → output "User declined. Exiting." and stop.
+
+## Preferences (EXTEND.md)
+
+Use Bash to check EXTEND.md existence (priority order):
 
 ```bash
-# macOS
-mkdir -p ~/Library/Application\ Support/baoyu-skills/x-to-markdown
-cat > ~/Library/Application\ Support/baoyu-skills/x-to-markdown/consent.json << 'EOF'
-{
-  "version": 1,
-  "accepted": true,
-  "acceptedAt": "<ISO timestamp>",
-  "disclaimerVersion": "1.0"
-}
-EOF
+# Check project-level first
+test -f .baoyu-skills/baoyu-danger-x-to-markdown/EXTEND.md && echo "project"
 
-# Linux
-mkdir -p ~/.local/share/baoyu-skills/x-to-markdown
-cat > ~/.local/share/baoyu-skills/x-to-markdown/consent.json << 'EOF'
-{
-  "version": 1,
-  "accepted": true,
-  "acceptedAt": "<ISO timestamp>",
-  "disclaimerVersion": "1.0"
-}
-EOF
+# Then user-level (cross-platform: $HOME works on macOS/Linux/WSL)
+test -f "$HOME/.baoyu-skills/baoyu-danger-x-to-markdown/EXTEND.md" && echo "user"
 ```
 
-**Step 5**: On decline, output message and stop:
-```
-User declined the disclaimer. Exiting.
-```
+┌────────────────────────────────────────────────────────────┬───────────────────┐
+│                            Path                            │     Location      │
+├────────────────────────────────────────────────────────────┼───────────────────┤
+│ .baoyu-skills/baoyu-danger-x-to-markdown/EXTEND.md         │ Project directory │
+├────────────────────────────────────────────────────────────┼───────────────────┤
+│ $HOME/.baoyu-skills/baoyu-danger-x-to-markdown/EXTEND.md   │ User home         │
+└────────────────────────────────────────────────────────────┴───────────────────┘
 
----
+┌───────────┬───────────────────────────────────────────────────────────────────────────┐
+│  Result   │                                  Action                                   │
+├───────────┼───────────────────────────────────────────────────────────────────────────┤
+│ Found     │ Read, parse, apply settings                                               │
+├───────────┼───────────────────────────────────────────────────────────────────────────┤
+│ Not found │ Use defaults                                                              │
+└───────────┴───────────────────────────────────────────────────────────────────────────┘
+
+**EXTEND.md Supports**: Default output directory | Output format preferences
 
 ## Usage
 
 ```bash
-# Convert tweet (outputs markdown path)
 npx -y bun ${SKILL_DIR}/scripts/main.ts <url>
-
-# Save to specific file
 npx -y bun ${SKILL_DIR}/scripts/main.ts <url> -o output.md
-
-# JSON output
 npx -y bun ${SKILL_DIR}/scripts/main.ts <url> --json
 ```
 
@@ -122,17 +110,9 @@ npx -y bun ${SKILL_DIR}/scripts/main.ts <url> --json
 | Option | Description |
 |--------|-------------|
 | `<url>` | Tweet or article URL |
-| `-o <path>` | Output path (file or dir) |
-| `--json` | Output as JSON |
+| `-o <path>` | Output path |
+| `--json` | JSON output |
 | `--login` | Refresh cookies only |
-
-## File Structure
-
-```
-x-to-markdown/
-└── {username}/
-    └── {tweet-id}.md
-```
 
 ## Supported URLs
 
@@ -140,38 +120,25 @@ x-to-markdown/
 - `https://twitter.com/<user>/status/<id>`
 - `https://x.com/i/article/<id>`
 
-## Output Format
+## Output
 
 ```markdown
 ---
-url: https://x.com/username/status/123
-author: "Display Name (@username)"
+url: https://x.com/user/status/123
+author: "Name (@user)"
 tweet_count: 3
 ---
 
-Tweet content...
-
----
-
-Thread continuation...
+Content...
 ```
+
+**File structure**: `x-to-markdown/{username}/{tweet-id}.md`
 
 ## Authentication
 
-**Option 1**: Environment variables (recommended)
-- `X_AUTH_TOKEN` - auth_token cookie
-- `X_CT0` - ct0 cookie
-
-**Option 2**: Chrome login (auto if env vars not set)
-- First run opens Chrome for login
-- Cookies cached locally
+1. **Environment variables** (preferred): `X_AUTH_TOKEN`, `X_CT0`
+2. **Chrome login** (fallback): Auto-opens Chrome, caches cookies locally
 
 ## Extension Support
 
-Custom configurations via EXTEND.md.
-
-**Check paths** (priority order):
-1. `.baoyu-skills/baoyu-danger-x-to-markdown/EXTEND.md` (project)
-2. `~/.baoyu-skills/baoyu-danger-x-to-markdown/EXTEND.md` (user)
-
-If found, load before workflow. Extension content overrides defaults.
+Custom configurations via EXTEND.md. See **Preferences** section for paths and supported options.

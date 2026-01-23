@@ -1,11 +1,11 @@
 ---
 name: baoyu-post-to-x
-description: Post content and articles to X (Twitter). Supports regular posts with images/videos and X Articles (long-form Markdown). Uses real Chrome with CDP to bypass anti-automation.
+description: Posts content and articles to X (Twitter). Supports regular posts with images/videos and X Articles (long-form Markdown). Uses real Chrome with CDP to bypass anti-automation. Use when user asks to "post to X", "tweet", "publish to Twitter", or "share on X".
 ---
 
 # Post to X (Twitter)
 
-Post content, images, videos, and long-form articles to X using real Chrome browser (bypasses anti-bot detection).
+Posts text, images, videos, and long-form articles to X via real Chrome browser (bypasses anti-bot detection).
 
 ## Script Directory
 
@@ -27,11 +27,41 @@ Post content, images, videos, and long-form articles to X using real Chrome brow
 | `scripts/copy-to-clipboard.ts` | Copy content to clipboard |
 | `scripts/paste-from-clipboard.ts` | Send real paste keystroke |
 
+## Preferences (EXTEND.md)
+
+Use Bash to check EXTEND.md existence (priority order):
+
+```bash
+# Check project-level first
+test -f .baoyu-skills/baoyu-post-to-x/EXTEND.md && echo "project"
+
+# Then user-level (cross-platform: $HOME works on macOS/Linux/WSL)
+test -f "$HOME/.baoyu-skills/baoyu-post-to-x/EXTEND.md" && echo "user"
+```
+
+┌──────────────────────────────────────────────────┬───────────────────┐
+│                       Path                       │     Location      │
+├──────────────────────────────────────────────────┼───────────────────┤
+│ .baoyu-skills/baoyu-post-to-x/EXTEND.md          │ Project directory │
+├──────────────────────────────────────────────────┼───────────────────┤
+│ $HOME/.baoyu-skills/baoyu-post-to-x/EXTEND.md    │ User home         │
+└──────────────────────────────────────────────────┴───────────────────┘
+
+┌───────────┬───────────────────────────────────────────────────────────────────────────┐
+│  Result   │                                  Action                                   │
+├───────────┼───────────────────────────────────────────────────────────────────────────┤
+│ Found     │ Read, parse, apply settings                                               │
+├───────────┼───────────────────────────────────────────────────────────────────────────┤
+│ Not found │ Use defaults                                                              │
+└───────────┴───────────────────────────────────────────────────────────────────────────┘
+
+**EXTEND.md Supports**: Default Chrome profile | Auto-submit preference
+
 ## Prerequisites
 
-- Google Chrome or Chromium installed
-- `bun` installed (for running scripts)
-- First run: log in to X in the opened browser window
+- Google Chrome or Chromium
+- `bun` runtime
+- First run: log in to X manually (session saved)
 
 ## References
 
@@ -45,72 +75,57 @@ Post content, images, videos, and long-form articles to X using real Chrome brow
 Text + up to 4 images.
 
 ```bash
-# Preview mode (doesn't post)
-npx -y bun ${SKILL_DIR}/scripts/x-browser.ts "Hello from Claude!" --image ./screenshot.png
-
-# Actually post
-npx -y bun ${SKILL_DIR}/scripts/x-browser.ts "Hello!" --image ./photo.png --submit
+npx -y bun ${SKILL_DIR}/scripts/x-browser.ts "Hello!" --image ./photo.png          # Preview
+npx -y bun ${SKILL_DIR}/scripts/x-browser.ts "Hello!" --image ./photo.png --submit  # Post
 ```
-
-> **Note**: `${SKILL_DIR}` represents this skill's installation directory. Agent replaces with actual path at runtime.
 
 **Parameters**:
 | Parameter | Description |
 |-----------|-------------|
-| `<text>` | Post content (positional argument) |
-| `--image <path>` | Image file path (can be repeated, max 4) |
-| `--submit` | Actually post (default: preview only) |
-| `--profile <dir>` | Custom Chrome profile directory |
+| `<text>` | Post content (positional) |
+| `--image <path>` | Image file (repeatable, max 4) |
+| `--submit` | Post (default: preview) |
+| `--profile <dir>` | Custom Chrome profile |
 
 ---
 
 ## Video Posts
 
-Text + video file (MP4, MOV, WebM).
+Text + video file.
 
 ```bash
-# Preview mode (doesn't post)
-npx -y bun ${SKILL_DIR}/scripts/x-video.ts "Check out this video!" --video ./clip.mp4
-
-# Actually post
-npx -y bun ${SKILL_DIR}/scripts/x-video.ts "Amazing content" --video ./demo.mp4 --submit
+npx -y bun ${SKILL_DIR}/scripts/x-video.ts "Check this out!" --video ./clip.mp4          # Preview
+npx -y bun ${SKILL_DIR}/scripts/x-video.ts "Amazing content" --video ./demo.mp4 --submit  # Post
 ```
 
 **Parameters**:
 | Parameter | Description |
 |-----------|-------------|
-| `<text>` | Post content (positional argument) |
-| `--video <path>` | Video file path (required) |
-| `--submit` | Actually post (default: preview only) |
-| `--profile <dir>` | Custom Chrome profile directory |
+| `<text>` | Post content (positional) |
+| `--video <path>` | Video file (MP4, MOV, WebM) |
+| `--submit` | Post (default: preview) |
+| `--profile <dir>` | Custom Chrome profile |
 
-**Video Limits**:
-- Regular accounts: 140 seconds max
-- X Premium: up to 60 minutes
-- Supported formats: MP4, MOV, WebM
-- Processing time: 30-60 seconds depending on file size
+**Limits**: Regular 140s max, Premium 60min. Processing: 30-60s.
 
 ---
 
 ## Quote Tweets
 
-Quote an existing tweet with your comment - a way to share content while giving credit to the original creator.
+Quote an existing tweet with comment.
 
 ```bash
-# Preview mode (doesn't post)
-npx -y bun ${SKILL_DIR}/scripts/x-quote.ts https://x.com/user/status/123456789 "Great insight!"
-
-# Actually post
-npx -y bun ${SKILL_DIR}/scripts/x-quote.ts https://x.com/user/status/123456789 "I agree!" --submit
+npx -y bun ${SKILL_DIR}/scripts/x-quote.ts https://x.com/user/status/123 "Great insight!"          # Preview
+npx -y bun ${SKILL_DIR}/scripts/x-quote.ts https://x.com/user/status/123 "I agree!" --submit       # Post
 ```
 
 **Parameters**:
 | Parameter | Description |
 |-----------|-------------|
-| `<tweet-url>` | URL of the tweet to quote (positional argument) |
-| `<comment>` | Your comment text (positional argument, optional) |
-| `--submit` | Actually post (default: preview only) |
-| `--profile <dir>` | Custom Chrome profile directory |
+| `<tweet-url>` | URL to quote (positional) |
+| `<comment>` | Comment text (positional, optional) |
+| `--submit` | Post (default: preview) |
+| `--profile <dir>` | Custom Chrome profile |
 
 ---
 
@@ -119,47 +134,29 @@ npx -y bun ${SKILL_DIR}/scripts/x-quote.ts https://x.com/user/status/123456789 "
 Long-form Markdown articles (requires X Premium).
 
 ```bash
-# Preview mode
-npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md
-
-# With cover image
-npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md --cover ./cover.jpg
-
-# Publish
-npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md --submit
+npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md                        # Preview
+npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md --cover ./cover.jpg    # With cover
+npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md --submit               # Publish
 ```
 
 **Parameters**:
 | Parameter | Description |
 |-----------|-------------|
-| `<markdown>` | Markdown file path (positional argument) |
-| `--cover <path>` | Cover image path |
-| `--title <text>` | Override article title |
-| `--submit` | Actually publish (default: preview only) |
+| `<markdown>` | Markdown file (positional) |
+| `--cover <path>` | Cover image |
+| `--title <text>` | Override title |
+| `--submit` | Publish (default: preview) |
 
-**Frontmatter** (optional):
-```yaml
----
-title: My Article Title
-cover_image: /path/to/cover.jpg
----
-```
+**Frontmatter**: `title`, `cover_image` supported in YAML front matter.
 
 ---
 
 ## Notes
 
-- First run requires manual login (session is saved)
-- Always preview before using `--submit`
-- Browser closes automatically after operation
-- Supports macOS, Linux, and Windows
+- First run: manual login required (session persists)
+- Always preview before `--submit`
+- Cross-platform: macOS, Linux, Windows
 
 ## Extension Support
 
-Custom configurations via EXTEND.md.
-
-**Check paths** (priority order):
-1. `.baoyu-skills/baoyu-post-to-x/EXTEND.md` (project)
-2. `~/.baoyu-skills/baoyu-post-to-x/EXTEND.md` (user)
-
-If found, load before workflow. Extension content overrides defaults.
+Custom configurations via EXTEND.md. See **Preferences** section for paths and supported options.

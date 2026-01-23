@@ -1,98 +1,68 @@
 ---
 name: baoyu-image-gen
-description: AI SDK-based image generation using official OpenAI and Google APIs. Supports text-to-image, reference images, aspect ratios, and quality presets.
+description: Generates images using official OpenAI and Google APIs via AI SDK. Supports text-to-image, reference images, aspect ratios, and quality presets. Use when user asks to "generate image with API", "use official API for images", "create image with OpenAI/Google", or needs API-based generation instead of browser-based.
 ---
 
 # Image Generation (AI SDK)
 
-Official API-based image generation via AI SDK. Supports OpenAI (DALL-E, GPT Image) and Google (Imagen, Gemini multimodal).
+Official API-based image generation. Supports OpenAI and Google providers.
 
 ## Script Directory
 
-**Important**: All scripts are located in the `scripts/` subdirectory of this skill.
+**Agent Execution**:
+1. `SKILL_DIR` = this SKILL.md file's directory
+2. Script path = `${SKILL_DIR}/scripts/main.ts`
 
-**Agent Execution Instructions**:
-1. Determine this SKILL.md file's directory path as `SKILL_DIR`
-2. Script path = `${SKILL_DIR}/scripts/<script-name>.ts`
-3. Replace all `${SKILL_DIR}` in this document with the actual path
+## Preferences (EXTEND.md)
 
-**Script Reference**:
-| Script | Purpose |
-|--------|---------|
-| `scripts/main.ts` | CLI entry point for image generation |
-
-## Quick Start
+Use Bash to check EXTEND.md existence (priority order):
 
 ```bash
-# Basic generation (auto-detect provider)
+# Check project-level first
+test -f .baoyu-skills/baoyu-image-gen/EXTEND.md && echo "project"
+
+# Then user-level (cross-platform: $HOME works on macOS/Linux/WSL)
+test -f "$HOME/.baoyu-skills/baoyu-image-gen/EXTEND.md" && echo "user"
+```
+
+┌──────────────────────────────────────────────────┬───────────────────┐
+│                       Path                       │     Location      │
+├──────────────────────────────────────────────────┼───────────────────┤
+│ .baoyu-skills/baoyu-image-gen/EXTEND.md          │ Project directory │
+├──────────────────────────────────────────────────┼───────────────────┤
+│ $HOME/.baoyu-skills/baoyu-image-gen/EXTEND.md    │ User home         │
+└──────────────────────────────────────────────────┴───────────────────┘
+
+┌───────────┬───────────────────────────────────────────────────────────────────────────┐
+│  Result   │                                  Action                                   │
+├───────────┼───────────────────────────────────────────────────────────────────────────┤
+│ Found     │ Read, parse, apply settings                                               │
+├───────────┼───────────────────────────────────────────────────────────────────────────┤
+│ Not found │ Use defaults                                                              │
+└───────────┴───────────────────────────────────────────────────────────────────────────┘
+
+**EXTEND.md Supports**: Default provider | Default quality | Default aspect ratio
+
+## Usage
+
+```bash
+# Basic
 npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "A cat" --image cat.png
 
 # With aspect ratio
-npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "A landscape" --image landscape.png --ar 16:9
+npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "A landscape" --image out.png --ar 16:9
 
-# High quality (2k)
-npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "A cat" --image cat.png --quality 2k
-
-# Specific provider
-npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "A cat" --image cat.png --provider openai
+# High quality
+npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "A cat" --image out.png --quality 2k
 
 # From prompt files
 npx -y bun ${SKILL_DIR}/scripts/main.ts --promptfiles system.md content.md --image out.png
 
 # With reference images (Google multimodal only)
 npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "Make blue" --image out.png --ref source.png
-```
 
-## Commands
-
-### Basic Image Generation
-
-```bash
-# Generate with prompt
-npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "A sunset over mountains" --image sunset.png
-
-# Shorthand
-npx -y bun ${SKILL_DIR}/scripts/main.ts -p "A cute robot" --image robot.png
-```
-
-### Aspect Ratios
-
-```bash
-# Common ratios: 1:1, 16:9, 9:16, 4:3, 3:4, 2.35:1
-npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "A portrait" --image portrait.png --ar 3:4
-
-# Or specify exact size
-npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "Banner" --image banner.png --size 1792x1024
-```
-
-### Reference Images (Google Multimodal)
-
-```bash
-# Image editing with reference
-npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "Make it blue" --image blue.png --ref original.png
-
-# Multiple references
-npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "Combine these styles" --image out.png --ref a.png b.png
-```
-
-### Quality Presets
-
-```bash
-# Normal quality (default)
-npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "A cat" --image cat.png --quality normal
-
-# High quality (2k resolution)
-npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "A cat" --image cat.png --quality 2k
-```
-
-### Output Formats
-
-```bash
-# Plain output (prints saved path)
-npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "A cat" --image cat.png
-
-# JSON output
-npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "A cat" --image cat.png --json
+# Specific provider
+npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "A cat" --image out.png --provider openai
 ```
 
 ## Options
@@ -110,110 +80,47 @@ npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "A cat" --image cat.png --json
 | `--ref <files...>` | Reference images (Google multimodal only) |
 | `--n <count>` | Number of images |
 | `--json` | JSON output |
-| `--help`, `-h` | Show help |
 
 ## Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `OPENAI_API_KEY` | OpenAI API key | - |
-| `GOOGLE_API_KEY` | Google API key | - |
-| `OPENAI_IMAGE_MODEL` | OpenAI model | `gpt-image-1.5` |
-| `GOOGLE_IMAGE_MODEL` | Google model | `gemini-3-pro-image-preview` |
-| `OPENAI_BASE_URL` | Custom OpenAI endpoint | - |
-| `GOOGLE_BASE_URL` | Custom Google endpoint | - |
+| Variable | Description |
+|----------|-------------|
+| `OPENAI_API_KEY` | OpenAI API key |
+| `GOOGLE_API_KEY` | Google API key |
+| `OPENAI_IMAGE_MODEL` | OpenAI model override |
+| `GOOGLE_IMAGE_MODEL` | Google model override |
+| `OPENAI_BASE_URL` | Custom OpenAI endpoint |
+| `GOOGLE_BASE_URL` | Custom Google endpoint |
 
-**Load Priority**: CLI args > `process.env` > `<cwd>/.baoyu-skills/.env` > `~/.baoyu-skills/.env`
+**Load Priority**: CLI args > env vars > `<cwd>/.baoyu-skills/.env` > `~/.baoyu-skills/.env`
 
-## Provider & Model Strategy
+## Provider Selection
 
-### Auto-Selection
-
-1. If `--provider` specified → use it
-2. If only one API key available → use that provider
-3. If both available → default to Google (multimodal LLMs more versatile)
-
-### API Selection by Model Type
-
-| Model Category | API Function | Example Models |
-|----------------|--------------|----------------|
-| Google Multimodal | `generateText` | `gemini-2.0-flash-exp-image-generation` |
-| Google Imagen | `experimental_generateImage` | `imagen-3.0-generate-002` |
-| OpenAI | `experimental_generateImage` | `gpt-image-1`, `dall-e-3` |
-
-### Available Models
-
-**Google**:
-- `gemini-3-pro-image-preview` - Default, multimodal generation
-- `gemini-2.0-flash-exp-image-generation` - Gemini 2.0 Flash
-- `imagen-3.0-generate-002` - Imagen 3
-
-**OpenAI**:
-- `gpt-image-1.5` - Default, GPT Image 1.5
-- `gpt-image-1` - GPT Image 1
-- `dall-e-3` - DALL-E 3
+1. `--provider` specified → use it
+2. Only one API key available → use that provider
+3. Both available → default to Google
 
 ## Quality Presets
 
-| Preset | OpenAI | Google | Use Case |
-|--------|--------|--------|----------|
-| `normal` | 1024x1024 | Default | Covers, illustrations |
-| `2k` | 2048x2048 | "2048px" in prompt | Infographics, slides |
+| Preset | Resolution | Use Case |
+|--------|------------|----------|
+| `normal` | ~1024px | Covers, illustrations |
+| `2k` | ~2048px | Infographics, slides |
 
-## Aspect Ratio Handling
+## Aspect Ratios
 
-- **Multimodal LLMs**: Embedded in prompt (e.g., `"... aspect ratio 16:9"`)
-- **Image-only models**: Uses `aspectRatio` or `size` parameter
-- **Common ratios**: 1:1, 16:9, 9:16, 4:3, 3:4, 2.35:1
+Supported: `1:1`, `16:9`, `9:16`, `4:3`, `3:4`, `2.35:1`
 
-## Examples
-
-### Generate Cover Image
-
-```bash
-npx -y bun ${SKILL_DIR}/scripts/main.ts \
-  --prompt "A minimalist tech illustration with blue gradients" \
-  --image cover.png --ar 2.35:1 --quality 2k
-```
-
-### Generate Social Media Post
-
-```bash
-npx -y bun ${SKILL_DIR}/scripts/main.ts \
-  --prompt "Instagram post about coffee" \
-  --image post.png --ar 1:1
-```
-
-### Edit Image with Reference
-
-```bash
-npx -y bun ${SKILL_DIR}/scripts/main.ts \
-  --prompt "Change the background to sunset" \
-  --image edited.png --ref original.png --provider google
-```
-
-### Batch Generation from Prompt File
-
-```bash
-# Create prompt file with detailed instructions
-npx -y bun ${SKILL_DIR}/scripts/main.ts \
-  --promptfiles style-guide.md scene-description.md \
-  --image scene.png
-```
+- Multimodal models: embedded in prompt
+- Image-only models: uses `aspectRatio` or `size` parameter
 
 ## Error Handling
 
-- **Missing API key**: Clear error with setup instructions
-- **Generation failure**: Auto-retry once, then error
-- **Invalid aspect ratio**: Warning, proceed with default
-- **Reference images with image-only model**: Warning, ignore refs
+- Missing API key → error with setup instructions
+- Generation failure → auto-retry once
+- Invalid aspect ratio → warning, proceed with default
+- Reference images with non-multimodal model → warning, ignore refs
 
 ## Extension Support
 
-Custom configurations via EXTEND.md.
-
-**Check paths** (priority order):
-1. `.baoyu-skills/baoyu-image-gen/EXTEND.md` (project)
-2. `~/.baoyu-skills/baoyu-image-gen/EXTEND.md` (user)
-
-If found, load before workflow. Extension content overrides defaults.
+Custom configurations via EXTEND.md. See **Preferences** section for paths and supported options.

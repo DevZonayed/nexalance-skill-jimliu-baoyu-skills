@@ -78,6 +78,20 @@ npx -y bun skills/baoyu-danger-gemini-web/scripts/main.ts --promptfiles system.m
 
 `.claude-plugin/marketplace.json` defines plugin metadata and skill paths. Version follows semver.
 
+## Skill Loading Rules
+
+**IMPORTANT**: When working in this project, follow these rules:
+
+| Rule | Description |
+|------|-------------|
+| **Load project skills first** | MUST load all skills from `skills/` directory in current project. Project skills take priority over system/user-level skills with same name. |
+| **Default image generation** | When image generation is needed, use `skills/baoyu-image-gen/SKILL.md` by default (unless user specifies otherwise). |
+
+**Loading Priority** (highest → lowest):
+1. Current project `skills/` directory
+2. User-level skills (`$HOME/.baoyu-skills/`)
+3. System-level skills
+
 ## Release Process
 
 **IMPORTANT**: When user requests release/发布/push, ALWAYS use `/release-skills` workflow.
@@ -91,6 +105,22 @@ npx -y bun skills/baoyu-danger-gemini-web/scripts/main.ts --promptfiles system.m
 ## Adding New Skills
 
 **IMPORTANT**: All skills MUST use `baoyu-` prefix to avoid conflicts when users import this plugin.
+
+**REQUIRED READING**: Before creating a new skill, read the official [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices).
+
+### Key Requirements from Official Best Practices
+
+| Requirement | Details |
+|-------------|---------|
+| **Concise is key** | Claude is smart—only add context it doesn't have. Challenge each token. |
+| **name field** | Max 64 chars, lowercase letters/numbers/hyphens only, no "anthropic"/"claude" |
+| **description field** | Max 1024 chars, non-empty, MUST be third person, include what + when to use |
+| **SKILL.md body** | Keep under 500 lines; use separate files for additional content |
+| **Naming convention** | Gerund form preferred (e.g., `processing-pdfs`), but `baoyu-` prefix required here |
+| **References** | Keep one level deep from SKILL.md; avoid nested references |
+| **No time-sensitive info** | Avoid dates/versions that become outdated |
+
+### Steps
 
 1. Create `skills/baoyu-<name>/SKILL.md` with YAML front matter
    - Directory name: `baoyu-<name>`
@@ -119,6 +149,21 @@ npx -y bun skills/baoyu-danger-gemini-web/scripts/main.ts --promptfiles system.m
 - `description`: Brief description of the category
 - `skills`: Array with the skill path
 
+### Writing Effective Descriptions
+
+**MUST write in third person** (not "I can help you" or "You can use this"):
+
+```yaml
+# Good
+description: Generates Xiaohongshu infographic series from content. Use when user asks for "小红书图片", "XHS images", or "RedNote infographics".
+
+# Bad
+description: I can help you create Xiaohongshu images
+description: You can use this to generate XHS content
+```
+
+Include both **what** the skill does and **when** to use it (triggers/keywords).
+
 ### Script Directory Template
 
 Every SKILL.md with scripts MUST include this section after Usage:
@@ -142,6 +187,26 @@ Every SKILL.md with scripts MUST include this section after Usage:
 
 When referencing scripts in workflow sections, use `${SKILL_DIR}/scripts/<name>.ts` so agents can resolve the correct path.
 
+### Progressive Disclosure
+
+For skills with extensive content, use separate reference files:
+
+```
+skills/baoyu-example/
+├── SKILL.md              # Main instructions (<500 lines)
+├── references/
+│   ├── styles.md         # Style definitions (loaded as needed)
+│   └── examples.md       # Usage examples (loaded as needed)
+└── scripts/
+    └── main.ts           # Executable script
+```
+
+In SKILL.md, link to reference files (one level deep only):
+```markdown
+**Available styles**: See [references/styles.md](references/styles.md)
+**Examples**: See [references/examples.md](references/examples.md)
+```
+
 ## Code Style
 
 - TypeScript throughout, no comments
@@ -155,9 +220,11 @@ Skills that require image generation MUST delegate to available image generation
 
 ### Image Generation Skill Selection
 
-1. Check available image generation skills in `skills/` directory
-2. Read each skill's SKILL.md to understand parameters and capabilities
-3. If multiple image generation skills available, ask user to choose preferred skill
+**Default**: Use `skills/baoyu-image-gen/SKILL.md` (unless user specifies otherwise).
+
+1. Read `skills/baoyu-image-gen/SKILL.md` for parameters and capabilities
+2. If user explicitly requests a different skill, check `skills/` directory for alternatives
+3. Only ask user to choose when they haven't specified and multiple viable options exist
 
 ### Generation Flow Template
 
@@ -298,18 +365,66 @@ READMEs use 3-column tables for style previews:
 
 ## Extension Support
 
-Every SKILL.md MUST include an Extension Support section at the end:
+Every SKILL.md MUST include two parts for extension support:
+
+### 1. Load Preferences Section (in Step 1 or as "Preferences" section)
+
+For skills with workflows, add as Step 1.1. For utility skills, add as "Preferences (EXTEND.md)" section before Usage:
+
+```markdown
+**1.1 Load Preferences (EXTEND.md)**
+
+Use Bash to check EXTEND.md existence (priority order):
+
+\`\`\`bash
+# Check project-level first
+test -f .baoyu-skills/<skill-name>/EXTEND.md && echo "project"
+
+# Then user-level (cross-platform: $HOME works on macOS/Linux/WSL)
+test -f "$HOME/.baoyu-skills/<skill-name>/EXTEND.md" && echo "user"
+\`\`\`
+
+┌────────────────────────────────────────────┬───────────────────┐
+│                    Path                    │     Location      │
+├────────────────────────────────────────────┼───────────────────┤
+│ .baoyu-skills/<skill-name>/EXTEND.md       │ Project directory │
+├────────────────────────────────────────────┼───────────────────┤
+│ $HOME/.baoyu-skills/<skill-name>/EXTEND.md │ User home         │
+└────────────────────────────────────────────┴───────────────────┘
+
+┌───────────┬───────────────────────────────────────────────────────────────────────────┐
+│  Result   │                                  Action                                   │
+├───────────┼───────────────────────────────────────────────────────────────────────────┤
+│ Found     │ Read, parse, display summary                                              │
+├───────────┼───────────────────────────────────────────────────────────────────────────┤
+│ Not found │ Ask user with AskUserQuestion (see references/config/first-time-setup.md) │
+└───────────┴───────────────────────────────────────────────────────────────────────────┘
+
+**EXTEND.md Supports**: [List supported configuration options for this skill]
+
+Schema: `references/config/preferences-schema.md`
+```
+
+### 2. Extension Support Section (at the end)
+
+Simplified section that references the preferences section:
 
 ```markdown
 ## Extension Support
 
-Custom styles and configurations via EXTEND.md.
-
-**Check paths** (priority order):
-1. `.baoyu-skills/<skill-name>/EXTEND.md` (project)
-2. `~/.baoyu-skills/<skill-name>/EXTEND.md` (user)
-
-If found, load before Step 1. Extension content overrides defaults.
+Custom configurations via EXTEND.md. See **Step 1.1** for paths and supported options.
 ```
 
-Replace `<skill-name>` with the actual skill name (e.g., `baoyu-cover-image`).
+Or for utility skills without workflow steps:
+
+```markdown
+## Extension Support
+
+Custom configurations via EXTEND.md. See **Preferences** section for paths and supported options.
+```
+
+**Notes**:
+- Replace `<skill-name>` with actual skill name (e.g., `baoyu-cover-image`)
+- Use `$HOME` instead of `~` for cross-platform compatibility (macOS/Linux/WSL)
+- Use `test -f` Bash command for explicit file existence check
+- ASCII tables for clear visual formatting
