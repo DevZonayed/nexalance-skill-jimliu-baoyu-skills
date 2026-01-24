@@ -2,6 +2,14 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.21.2 - 2026-01-24
+
+### 新功能
+- `baoyu-image-gen`：添加并行生成文档，推荐使用 4 个并发 subagent 进行批量操作。
+
+### 文档
+- `release-skills`：新增按 skill/module 分组提交流程和发布前用户确认步骤。
+
 ## 1.21.1 - 2026-01-24
 
 ### 文档

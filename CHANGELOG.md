@@ -2,6 +2,14 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.21.2 - 2026-01-24
+
+### Features
+- `baoyu-image-gen`: adds parallel generation documentation with recommended 4 concurrent subagents for batch operations.
+
+### Documentation
+- `release-skills`: adds skill/module grouping workflow and user confirmation step before release.
+
 ## 1.21.1 - 2026-01-24
 
 ### Documentation
