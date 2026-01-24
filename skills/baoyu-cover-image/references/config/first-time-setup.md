@@ -93,7 +93,19 @@ options:
     description: "Square, social media friendly"
 ```
 
-### Question 5: Save Location
+### Question 5: Quick Mode
+
+```
+header: "Quick"
+question: "Enable quick mode by default?"
+options:
+  - label: "No (Recommended)"
+    description: "Confirm dimension choices each time"
+  - label: "Yes"
+    description: "Skip confirmation, use auto-selection"
+```
+
+### Question 6: Save Location
 
 ```
 header: "Save"
@@ -123,7 +135,7 @@ options:
 
 ```yaml
 ---
-version: 1
+version: 2
 watermark:
   enabled: [true/false]
   content: "[user input or empty]"
@@ -131,11 +143,24 @@ watermark:
   opacity: 0.7
 preferred_type: [selected type or null]
 preferred_style: [selected style or null]
+preferred_text: title-only
+preferred_mood: balanced
 default_aspect: [2.35:1/16:9/1:1]
+quick_mode: [true/false]
 language: null
 custom_styles: []
 ---
 ```
+
+## New Fields in v2
+
+| Field | Default | Description |
+|-------|---------|-------------|
+| `preferred_text` | title-only | Text density (none, title-only, title-subtitle, text-rich) |
+| `preferred_mood` | balanced | Mood intensity (subtle, balanced, bold) |
+| `quick_mode` | false | Skip confirmation step when true |
+
+Note: Text and Mood preferences use sensible defaults (title-only, balanced) and don't require setup questions. Users can modify these in EXTEND.md directly.
 
 ## Modifying Preferences Later
 

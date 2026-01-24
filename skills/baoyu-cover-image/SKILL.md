@@ -1,23 +1,24 @@
 ---
 name: baoyu-cover-image
-description: Generates article cover images with 20 hand-drawn styles and auto-style selection. Supports cinematic (2.35:1), widescreen (16:9), and square (1:1) aspects. Use when user asks to "generate cover image", "create article cover", "make cover", or mentions "封面图".
+description: Generates article cover images with 4 dimensions (type, style, text, mood) and 20 hand-drawn styles. Supports cinematic (2.35:1), widescreen (16:9), and square (1:1) aspects. Use when user asks to "generate cover image", "create article cover", "make cover", or mentions "封面图".
 ---
 
 # Cover Image Generator
 
-Generate elegant cover images for articles with multiple style options.
+Generate elegant cover images for articles with 4-dimensional customization.
 
 ## Usage
 
 ```bash
-# Auto-select style and aspect based on content
+# Auto-select all dimensions based on content
 /baoyu-cover-image path/to/article.md
 
-# Specify style
-/baoyu-cover-image article.md --style blueprint
+# Quick mode: skip confirmation, use auto-selection
+/baoyu-cover-image article.md --quick
 
-# Specify aspect ratio
-/baoyu-cover-image article.md --aspect 16:9
+# Specify dimensions
+/baoyu-cover-image article.md --type conceptual --style blueprint
+/baoyu-cover-image article.md --text title-subtitle --mood bold
 
 # Visual only (no title text)
 /baoyu-cover-image article.md --no-title
@@ -27,7 +28,7 @@ Generate elegant cover images for articles with multiple style options.
 [paste content]
 
 # Direct input with options
-/baoyu-cover-image --style notion --aspect 1:1
+/baoyu-cover-image --style notion --aspect 1:1 --quick
 [paste content]
 ```
 
@@ -35,20 +36,25 @@ Generate elegant cover images for articles with multiple style options.
 
 | Option | Description |
 |--------|-------------|
-| `--type <name>` | Cover type (see Type Gallery) |
+| `--type <name>` | Cover type: hero, conceptual, typography, metaphor, scene, minimal |
 | `--style <name>` | Cover style (see Style Gallery) |
+| `--text <level>` | Text density: none, title-only, title-subtitle, text-rich |
+| `--mood <level>` | Emotional intensity: subtle, balanced, bold |
 | `--aspect <ratio>` | 2.35:1 (default), 16:9, 1:1 |
 | `--lang <code>` | Title language (en, zh, ja, etc.) |
-| `--no-title` | Visual only, no title text |
+| `--no-title` | Alias for `--text none` |
+| `--quick` | Skip confirmation, use auto-selection for missing dimensions |
 
-## Two Dimensions
+## Four Dimensions
 
-| Dimension | Controls | Examples |
-|-----------|----------|----------|
-| **Type** | Visual composition, information structure | hero, conceptual, typography, metaphor, scene, minimal |
-| **Style** | Visual aesthetics, colors, mood | elegant, blueprint, notion, warm, minimal, watercolor |
+| Dimension | Controls | Values | Default |
+|-----------|----------|--------|---------|
+| **Type** | Visual composition, information structure | hero, conceptual, typography, metaphor, scene, minimal | auto |
+| **Style** | Visual aesthetics, colors, technique | 20 built-in styles | auto |
+| **Text** | Text density, information hierarchy | none, title-only, title-subtitle, text-rich | title-only |
+| **Mood** | Emotional intensity, visual weight | subtle, balanced, bold | balanced |
 
-Type × Style can be freely combined. Example: `--type conceptual --style blueprint` creates technical concept visualization with schematic aesthetics.
+Dimensions can be freely combined. Example: `--type conceptual --style blueprint --text title-only --mood subtle` creates a calm technical concept visualization.
 
 ## Type Gallery
 
@@ -101,19 +107,6 @@ When `--type` is omitted, select based on content signals:
 
 Style definitions: [references/styles/](references/styles/)
 
-## Type × Style Compatibility
-
-| | elegant | blueprint | notion | warm | minimal | watercolor | bold-editorial | dark-atmospheric |
-|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| hero | ✓✓ | ✓ | ✓ | ✓✓ | ✓ | ✓✓ | ✓✓ | ✓✓ |
-| conceptual | ✓✓ | ✓✓ | ✓✓ | ✓ | ✓✓ | ✗ | ✓ | ✓ |
-| typography | ✓✓ | ✓ | ✓✓ | ✓ | ✓✓ | ✓ | ✓✓ | ✓✓ |
-| metaphor | ✓✓ | ✗ | ✓ | ✓✓ | ✓ | ✓✓ | ✓ | ✓ |
-| scene | ✓ | ✗ | ✗ | ✓✓ | ✓ | ✓✓ | ✓ | ✓✓ |
-| minimal | ✓✓ | ✓ | ✓✓ | ✓ | ✓✓ | ✓ | ✗ | ✓ |
-
-✓✓ = highly recommended | ✓ = compatible | ✗ = not recommended
-
 ## Auto Style Selection
 
 When `--style` is omitted, select based on content signals:
@@ -139,6 +132,89 @@ When `--style` is omitted, select based on content signals:
 | History, exploration | `vintage` |
 | Lifestyle, travel | `watercolor` |
 | Business, professional | `elegant` |
+
+## Text Dimension
+
+| Value | Title | Subtitle | Tags | Use Case |
+|-------|:-----:|:--------:|:----:|----------|
+| `none` | - | - | - | Pure visual, no text |
+| `title-only` | ✓ (≤8字) | - | - | Simple headline (default) |
+| `title-subtitle` | ✓ | ✓ (≤15字) | - | Title + supporting context |
+| `text-rich` | ✓ | ✓ | ✓ (2-4) | Information-dense |
+
+Full guide: [references/dimensions/text.md](references/dimensions/text.md)
+
+## Auto Text Selection
+
+When `--text` is omitted, select based on content signals:
+
+| Signals | Text Level |
+|---------|------------|
+| Visual-only, photography, abstract, art | `none` |
+| Article, blog, standard cover | `title-only` |
+| Series, tutorial, technical with context | `title-subtitle` |
+| Announcement, features, multiple points, infographic | `text-rich` |
+
+Default: `title-only`
+
+## Mood Dimension
+
+| Value | Contrast | Saturation | Weight | Use Case |
+|-------|:--------:|:----------:|:------:|----------|
+| `subtle` | Low | Muted | Light | Corporate, thought leadership |
+| `balanced` | Medium | Normal | Medium | General articles (default) |
+| `bold` | High | Vivid | Heavy | Announcements, promotions |
+
+Full guide: [references/dimensions/mood.md](references/dimensions/mood.md)
+
+## Auto Mood Selection
+
+When `--mood` is omitted, select based on content signals:
+
+| Signals | Mood Level |
+|---------|------------|
+| Professional, corporate, thought leadership, academic, luxury | `subtle` |
+| General, educational, standard, blog, documentation | `balanced` |
+| Launch, announcement, promotion, event, gaming, entertainment | `bold` |
+
+Default: `balanced`
+
+## Compatibility Matrices
+
+### Type × Style
+
+| | elegant | blueprint | notion | warm | minimal | watercolor | bold-editorial | dark-atmospheric |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| hero | ✓✓ | ✓ | ✓ | ✓✓ | ✓ | ✓✓ | ✓✓ | ✓✓ |
+| conceptual | ✓✓ | ✓✓ | ✓✓ | ✓ | ✓✓ | ✗ | ✓ | ✓ |
+| typography | ✓✓ | ✓ | ✓✓ | ✓ | ✓✓ | ✓ | ✓✓ | ✓✓ |
+| metaphor | ✓✓ | ✗ | ✓ | ✓✓ | ✓ | ✓✓ | ✓ | ✓ |
+| scene | ✓ | ✗ | ✗ | ✓✓ | ✓ | ✓✓ | ✓ | ✓✓ |
+| minimal | ✓✓ | ✓ | ✓✓ | ✓ | ✓✓ | ✓ | ✗ | ✓ |
+
+### Type × Text
+
+| | none | title-only | title-subtitle | text-rich |
+|---|:---:|:---:|:---:|:---:|
+| hero | ✓ | ✓✓ | ✓✓ | ✓ |
+| conceptual | ✓✓ | ✓✓ | ✓ | ✓ |
+| typography | ✗ | ✓ | ✓✓ | ✓✓ |
+| metaphor | ✓✓ | ✓ | ✓ | ✗ |
+| scene | ✓✓ | ✓ | ✓ | ✗ |
+| minimal | ✓✓ | ✓✓ | ✓ | ✗ |
+
+### Type × Mood
+
+| | subtle | balanced | bold |
+|---|:---:|:---:|:---:|
+| hero | ✓ | ✓✓ | ✓✓ |
+| conceptual | ✓✓ | ✓✓ | ✓ |
+| typography | ✓ | ✓✓ | ✓✓ |
+| metaphor | ✓✓ | ✓✓ | ✓ |
+| scene | ✓✓ | ✓✓ | ✓ |
+| minimal | ✓✓ | ✓✓ | ✗ |
+
+✓✓ = highly recommended | ✓ = compatible | ✗ = not recommended
 
 ## File Structure
 
@@ -175,7 +251,7 @@ Copy and track progress:
 Cover Image Progress:
 - [ ] Step 0: Check preferences (EXTEND.md) ⚠️ REQUIRED if not found
 - [ ] Step 1: Analyze content
-- [ ] Step 2: Confirm options (type + style + aspect) ⚠️ REQUIRED
+- [ ] Step 2: Confirm options (4 dimensions) ⚠️ REQUIRED unless --quick or all specified
 - [ ] Step 3: Create prompt
 - [ ] Step 4: Generate image
 - [ ] Step 5: Completion report
@@ -184,7 +260,9 @@ Cover Image Progress:
 ### Flow
 
 ```
-Input → [Step 0: Preferences/Setup] → Analyze → [Confirm: Type + Style + Aspect] → Prompt → Generate → Complete
+Input → [Step 0: Preferences/Setup] → Analyze → [Confirm: 4 Dimensions] → Prompt → Generate → Complete
+                                                      ↓
+                                              (skip if --quick or all dimensions specified)
 ```
 
 ### Step 0: Load Preferences (EXTEND.md) ⚠️
@@ -226,7 +304,10 @@ Preferences loaded from [project/user]:
 • Watermark: [enabled/disabled] [content if enabled]
 • Type: [preferred_type or "auto"]
 • Style: [preferred_style or "auto"]
+• Text: [preferred_text or "title-only"]
+• Mood: [preferred_mood or "balanced"]
 • Aspect: [default_aspect]
+• Quick mode: [enabled/disabled]
 • Language: [language or "auto"]
 ```
 
@@ -284,7 +365,18 @@ options:
     description: "Square, social media friendly"
 ```
 
-**Q5: Save Location**
+**Q5: Quick Mode**
+```yaml
+header: "Quick"
+question: "Enable quick mode by default?"
+options:
+  - label: "No (Recommended)"
+    description: "Confirm dimension choices each time"
+  - label: "Yes"
+    description: "Skip confirmation, use auto-selection"
+```
+
+**Q6: Save Location**
 ```yaml
 header: "Save"
 question: "Where to save preferences?"
@@ -299,7 +391,7 @@ options:
 
 Full setup details: `references/config/first-time-setup.md`
 
-**EXTEND.md Supports**: Watermark | Preferred type | Preferred style | Default aspect ratio | Custom style definitions | Language preference
+**EXTEND.md Supports**: Watermark | Preferred type | Preferred style | Preferred text | Preferred mood | Default aspect ratio | Quick mode | Custom style definitions | Language preference
 
 Schema: `references/config/preferences-schema.md`
 
@@ -323,7 +415,30 @@ Read source content, save it if needed, and perform analysis.
 
 ### Step 2: Confirm Options ⚠️
 
-**Purpose**: Validate type, style and aspect ratio. **Do NOT skip.**
+**Purpose**: Validate all 4 dimensions. **Skip if `--quick` flag OR all 4 dimensions specified via CLI.**
+
+**Skip Conditions**:
+| Condition | Behavior |
+|-----------|----------|
+| `--quick` flag | Auto-select missing dimensions, skip to Step 3 |
+| All 4 dimensions specified | Use specified values, skip to Step 3 |
+| `quick_mode: true` in EXTEND.md | Auto-select missing dimensions, skip to Step 3 |
+| Otherwise | Show confirmation (current behavior) |
+
+**Quick Mode Output** (when skipping confirmation):
+
+```
+Quick Mode: Auto-selected dimensions
+• Type: [type] ([reason])
+• Style: [style] ([reason])
+• Text: [text] ([reason])
+• Mood: [mood] ([reason])
+• Aspect: [aspect]
+
+Generating...
+```
+
+**Confirmation Flow** (when NOT skipping):
 
 **Language**: Auto-determined (user's input language > saved preference > source language). No need to ask.
 
@@ -364,7 +479,41 @@ options:
     description: "[reason]"
 ```
 
-**Question 3: Aspect Ratio** (if not specified via `--aspect`)
+**Question 3: Text** (if not specified via `--text`)
+- Based on selected Type, show compatible text levels (✓✓ first from compatibility matrix)
+
+```yaml
+header: "Text"
+question: "Text density level?"
+multiSelect: false
+options:
+  - label: "title-only (Recommended)"
+    description: "Simple headline, ≤8 characters"
+  - label: "none"
+    description: "Pure visual, no text elements"
+  - label: "title-subtitle"
+    description: "Title + supporting context"
+  - label: "text-rich"
+    description: "Title + subtitle + keyword tags"
+```
+
+**Question 4: Mood** (if not specified via `--mood`)
+- Based on content analysis, show recommended mood
+
+```yaml
+header: "Mood"
+question: "Emotional intensity?"
+multiSelect: false
+options:
+  - label: "balanced (Recommended)"
+    description: "Medium contrast and saturation, versatile"
+  - label: "subtle"
+    description: "Low contrast, muted colors, calm"
+  - label: "bold"
+    description: "High contrast, vivid colors, dynamic"
+```
+
+**Question 5: Aspect Ratio** (if not specified via `--aspect`)
 
 ```yaml
 header: "Aspect"
@@ -379,34 +528,60 @@ options:
     description: "Square, social media friendly"
 ```
 
-**After response**: Proceed to Step 3 with confirmed type + style + aspect ratio.
+**After response**: Proceed to Step 3 with confirmed dimensions.
 
 ### Step 3: Create Prompt
 
 Save to `prompts/cover.md`:
 
 ```markdown
-Cover theme: [2-3 words]
+# Content Context
+Article title: [full original title from source]
+Content summary: [2-3 sentence summary of key points and themes]
+Keywords: [5-8 key terms extracted from content]
+
+# Visual Design
+Cover theme: [2-3 words visual interpretation]
 Type: [confirmed type]
 Style: [confirmed style]
+Text level: [confirmed text level]
+Mood: [confirmed mood]
 Aspect ratio: [confirmed ratio]
-Title text: [max 8 chars, or "none" if --no-title]
 Language: [confirmed language]
 
+# Text Elements
+[Based on text level:]
+- none: "No text elements"
+- title-only: "Title: [max 8 chars headline]"
+- title-subtitle: "Title: [headline] / Subtitle: [max 15 chars context]"
+- text-rich: "Title: [headline] / Subtitle: [context] / Tags: [2-4 keywords]"
+
+# Mood Application
+[Based on mood level:]
+- subtle: "Use low contrast, muted colors, light visual weight, calm aesthetic"
+- balanced: "Use medium contrast, normal saturation, balanced visual weight"
+- bold: "Use high contrast, vivid saturated colors, heavy visual weight, dynamic energy"
+
+# Composition
 Type composition:
 - [Type-specific layout and structure]
 
 Visual composition:
-- Main visual: [type + style appropriate metaphor]
+- Main visual: [metaphor derived from content meaning]
 - Layout: [positioning based on type and aspect ratio]
-- Decorative: [style elements]
+- Decorative: [style elements that reinforce content theme]
 
-Color scheme: [primary, background, accent from style]
+Color scheme: [primary, background, accent from style, adjusted by mood]
 Type notes: [key characteristics from type definition]
 Style notes: [key characteristics from style definition]
 
 [Watermark section if enabled]
 ```
+
+**Content-Driven Design**:
+- Article title and summary inform the visual metaphor choice
+- Keywords guide decorative elements and symbols
+- The skill controls visual style; the content drives meaning
 
 **Type-Specific Composition**:
 
@@ -419,7 +594,7 @@ Style notes: [key characteristics from style definition]
 | `scene` | Atmospheric environment, narrative elements, mood-setting lighting and colors |
 | `minimal` | Single focal element, generous whitespace (60%+), essential shapes only |
 
-**Title guidelines** (if included):
+**Title guidelines** (when text level includes title):
 - Max 8 characters, punchy headline
 - Use hooks: numbers, questions, contrasts
 - Match confirmed language
@@ -434,6 +609,10 @@ be legible but not distracting from the main content.
 Reference: `references/config/watermark-guide.md`
 
 ### Step 4: Generate Image
+
+**Backup Existing Cover** (if regenerating):
+If `cover.png` already exists in the output directory:
+- Rename to `cover-backup-YYYYMMDD-HHMMSS.png`
 
 **Image Generation Skill Selection**:
 1. Check available image generation skills
@@ -453,8 +632,10 @@ Cover Generated!
 Topic: [topic]
 Type: [type name]
 Style: [style name]
+Text: [text level]
+Mood: [mood level]
 Aspect: [ratio]
-Title: [title or "visual only"]
+Title: [title text or "visual only"]
 Language: [lang]
 Watermark: [enabled/disabled]
 Location: [directory path]
@@ -463,28 +644,38 @@ Files:
 ✓ source-{slug}.{ext}
 ✓ prompts/cover.md
 ✓ cover.png
+[✓ cover-backup-{timestamp}.png (if regenerated)]
 ```
 
 ## Image Modification
 
 | Action | Steps |
 |--------|-------|
-| **Regenerate** | Update prompt → Regenerate with same settings |
-| **Change type** | Confirm new type → Update prompt → Regenerate |
-| **Change style** | Confirm new style → Update prompt → Regenerate |
-| **Change aspect** | Confirm new aspect → Update prompt → Regenerate |
+| **Regenerate** | Backup existing → Update prompt → Regenerate with same settings |
+| **Change type** | Backup existing → Confirm new type → Update prompt → Regenerate |
+| **Change style** | Backup existing → Confirm new style → Update prompt → Regenerate |
+| **Change text** | Backup existing → Confirm new text level → Update prompt → Regenerate |
+| **Change mood** | Backup existing → Confirm new mood → Update prompt → Regenerate |
+| **Change aspect** | Backup existing → Confirm new aspect → Update prompt → Regenerate |
+
+All modifications automatically backup the existing `cover.png` before regenerating.
 
 ## Notes
 
 - Cover must be readable at small preview sizes
 - Visual metaphors > literal representations
 - Title: max 8 chars, readable, impactful
-- **Two confirmation points**: Step 0 (first-time setup if no EXTEND.md) + Step 2 (options) - do NOT skip
+- **Two confirmation points**: Step 0 (first-time setup if no EXTEND.md) + Step 2 (options) - can skip Step 2 with `--quick`
 - Use confirmed language for title text
 - Maintain watermark consistency if enabled
-- Check Type × Style compatibility matrix when selecting combinations
+- Check compatibility matrices when selecting combinations
+- `--no-title` is preserved as alias for `--text none`
 
 ## References
+
+**Dimensions**:
+- `references/dimensions/text.md` - Text density dimension
+- `references/dimensions/mood.md` - Mood intensity dimension
 
 **Styles**: `references/styles/<name>.md` - Style definitions
 

@@ -2,6 +2,16 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.20.0 - 2026-01-24
+
+### Features
+- `baoyu-cover-image`: upgrades from Type × Style two-dimension system to **4-dimension system**—adds `--text` dimension (none, title-only, title-subtitle, text-rich) for text density control and `--mood` dimension (subtle, balanced, bold) for emotional intensity. New `--quick` flag skips confirmation and uses auto-selection.
+
+### Documentation
+- `baoyu-cover-image`: adds dimension reference files—`references/dimensions/text.md` (text density levels) and `references/dimensions/mood.md` (mood intensity levels).
+- `baoyu-cover-image`: updates base-prompt, first-time-setup, and preferences-schema to support new 4-dimension system with v2 schema.
+- `README.md`, `README.zh.md`: updates baoyu-cover-image documentation to reflect new 4-dimension system with `--text`, `--mood`, and `--quick` options.
+
 ## 1.19.0 - 2026-01-24
 
 ### Features

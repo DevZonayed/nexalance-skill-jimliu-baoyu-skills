@@ -2,6 +2,16 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.20.0 - 2026-01-24
+
+### 新功能
+- `baoyu-cover-image`：从类型 × 风格二维系统升级为**四维系统**——新增 `--text` 维度（none 无文字、title-only 仅标题、title-subtitle 标题+副标题、text-rich 丰富文字）控制文字密度，新增 `--mood` 维度（subtle 低调、balanced 平衡、bold 醒目）控制情感强度。新增 `--quick` 标志跳过确认，直接使用自动选择。
+
+### 文档
+- `baoyu-cover-image`：新增维度参考文件——`references/dimensions/text.md`（文字密度级别）和 `references/dimensions/mood.md`（氛围强度级别）。
+- `baoyu-cover-image`：更新 base-prompt、first-time-setup 和 preferences-schema 以支持新的四维系统及 v2 配置模式。
+- `README.md`、`README.zh.md`：更新 baoyu-cover-image 文档，反映新的四维系统及 `--text`、`--mood`、`--quick` 选项。
+
 ## 1.19.0 - 2026-01-24
 
 ### 新功能

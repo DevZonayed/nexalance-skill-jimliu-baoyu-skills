@@ -245,24 +245,31 @@ Generate professional infographics with 20 layout types and 17 visual styles. An
 
 #### baoyu-cover-image
 
-Generate cover images for articles with Type × Style two-dimension system.
+Generate cover images for articles with 4 dimensions: Type × Style × Text × Mood.
 
 ```bash
-# Auto-select type and style based on content
+# Auto-select all dimensions based on content
 /baoyu-cover-image path/to/article.md
 
-# Specify type and/or style
+# Quick mode: skip confirmation, use auto-selection
+/baoyu-cover-image path/to/article.md --quick
+
+# Specify dimensions
 /baoyu-cover-image path/to/article.md --type conceptual --style blueprint
-/baoyu-cover-image path/to/article.md --style warm
+/baoyu-cover-image path/to/article.md --text title-subtitle --mood bold
 
 # Specify aspect ratio (default: 2.35:1)
 /baoyu-cover-image path/to/article.md --aspect 16:9
 
-# Without title text
+# Visual only (no title text)
 /baoyu-cover-image path/to/article.md --no-title
 ```
 
-Available types: `hero`, `conceptual`, `typography`, `metaphor`, `scene`, `minimal`
+**Four Dimensions**:
+- **Type**: `hero`, `conceptual`, `typography`, `metaphor`, `scene`, `minimal`
+- **Style**: 20 built-in styles (see previews below)
+- **Text**: `none`, `title-only` (default), `title-subtitle`, `text-rich`
+- **Mood**: `subtle`, `balanced` (default), `bold`
 
 Available styles: `elegant` (default), `blueprint`, `bold-editorial`, `chalkboard`, `dark-atmospheric`, `editorial-infographic`, `fantasy-animation`, `flat-doodle`, `intuition-machine`, `minimal`, `nature`, `notion`, `pixel-art`, `playful`, `retro`, `sketch-notes`, `vector-illustration`, `vintage`, `warm`, `watercolor`
 

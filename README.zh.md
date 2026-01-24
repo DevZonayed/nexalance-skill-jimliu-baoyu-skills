@@ -245,24 +245,31 @@ npx skills add jimliu/baoyu-skills
 
 #### baoyu-cover-image
 
-为文章生成封面图，支持类型 × 风格二维系统。
+为文章生成封面图，支持四维定制系统：类型 × 风格 × 文字 × 氛围。
 
 ```bash
-# 根据内容自动选择类型和风格
+# 根据内容自动选择所有维度
 /baoyu-cover-image path/to/article.md
 
-# 指定类型和/或风格
+# 快速模式：跳过确认，使用自动选择
+/baoyu-cover-image path/to/article.md --quick
+
+# 指定维度
 /baoyu-cover-image path/to/article.md --type conceptual --style blueprint
-/baoyu-cover-image path/to/article.md --style warm
+/baoyu-cover-image path/to/article.md --text title-subtitle --mood bold
 
 # 指定宽高比（默认：2.35:1）
 /baoyu-cover-image path/to/article.md --aspect 16:9
 
-# 不包含标题文字
+# 纯视觉（不含标题文字）
 /baoyu-cover-image path/to/article.md --no-title
 ```
 
-可用类型：`hero`、`conceptual`、`typography`、`metaphor`、`scene`、`minimal`
+**四个维度**：
+- **类型 (Type)**：`hero`、`conceptual`、`typography`、`metaphor`、`scene`、`minimal`
+- **风格 (Style)**：20 种内置风格（见下方预览）
+- **文字 (Text)**：`none`、`title-only`（默认）、`title-subtitle`、`text-rich`
+- **氛围 (Mood)**：`subtle`、`balanced`（默认）、`bold`
 
 可用风格：`elegant`（默认）、`blueprint`、`bold-editorial`、`chalkboard`、`dark-atmospheric`、`editorial-infographic`、`fantasy-animation`、`flat-doodle`、`intuition-machine`、`minimal`、`nature`、`notion`、`pixel-art`、`playful`、`retro`、`sketch-notes`、`vector-illustration`、`vintage`、`warm`、`watercolor`
 

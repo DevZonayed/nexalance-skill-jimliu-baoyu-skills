@@ -9,7 +9,7 @@ description: EXTEND.md YAML schema for baoyu-cover-image user preferences
 
 ```yaml
 ---
-version: 1
+version: 2
 
 watermark:
   enabled: false
@@ -21,7 +21,13 @@ preferred_type: null      # hero|conceptual|typography|metaphor|scene|minimal or
 
 preferred_style: null     # Built-in style name or null for auto-select
 
+preferred_text: title-only  # none|title-only|title-subtitle|text-rich
+
+preferred_mood: balanced    # subtle|balanced|bold
+
 default_aspect: "2.35:1"  # 2.35:1|16:9|1:1
+
+quick_mode: false         # Skip confirmation when true
 
 language: null            # zh|en|ja|ko|auto (null = auto-detect)
 
@@ -42,14 +48,17 @@ custom_styles:
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
-| `version` | int | 1 | Schema version |
+| `version` | int | 2 | Schema version |
 | `watermark.enabled` | bool | false | Enable watermark |
 | `watermark.content` | string | "" | Watermark text (@username or custom) |
 | `watermark.position` | enum | bottom-right | Position on image |
 | `watermark.opacity` | float | 0.7 | Transparency (0.1-1.0) |
 | `preferred_type` | string | null | Type name or null for auto |
 | `preferred_style` | string | null | Style name or null for auto |
+| `preferred_text` | string | title-only | Text density level |
+| `preferred_mood` | string | balanced | Mood intensity level |
 | `default_aspect` | string | "2.35:1" | Default aspect ratio |
+| `quick_mode` | bool | false | Skip confirmation step |
 | `language` | string | null | Output language (null = auto-detect) |
 | `custom_styles` | array | [] | User-defined styles |
 
@@ -63,6 +72,23 @@ custom_styles:
 | `metaphor` | Visual metaphor, concrete expressing abstract |
 | `scene` | Atmospheric scene, narrative feel |
 | `minimal` | Minimalist composition, generous whitespace |
+
+## Text Options
+
+| Value | Description |
+|-------|-------------|
+| `none` | Pure visual, no text elements |
+| `title-only` | Single headline (≤8 characters) |
+| `title-subtitle` | Title + subtitle (≤15 characters) |
+| `text-rich` | Title + subtitle + keyword tags (2-4) |
+
+## Mood Options
+
+| Value | Description |
+|-------|-------------|
+| `subtle` | Low contrast, muted colors, calm aesthetic |
+| `balanced` | Medium contrast, normal saturation, versatile |
+| `bold` | High contrast, vivid colors, dynamic energy |
 
 ## Position Options
 
@@ -98,12 +124,15 @@ custom_styles:
 
 ```yaml
 ---
-version: 1
+version: 2
 watermark:
   enabled: true
   content: "@myhandle"
 preferred_type: null
 preferred_style: elegant
+preferred_text: title-only
+preferred_mood: balanced
+quick_mode: false
 ---
 ```
 
@@ -111,7 +140,7 @@ preferred_style: elegant
 
 ```yaml
 ---
-version: 1
+version: 2
 watermark:
   enabled: true
   content: "myblog.com"
@@ -122,7 +151,13 @@ preferred_type: conceptual
 
 preferred_style: blueprint
 
+preferred_text: title-subtitle
+
+preferred_mood: subtle
+
 default_aspect: "16:9"
+
+quick_mode: true
 
 language: en
 
@@ -138,3 +173,16 @@ custom_styles:
     best_for: "SaaS, enterprise, technical"
 ---
 ```
+
+## Migration from v1
+
+When loading v1 schema, auto-upgrade:
+
+| v1 Field | v2 Field | Default Value |
+|----------|----------|---------------|
+| (missing) | `version` | 2 |
+| (missing) | `preferred_text` | title-only |
+| (missing) | `preferred_mood` | balanced |
+| (missing) | `quick_mode` | false |
+
+v1 `--no-title` flag maps to `preferred_text: none`.
