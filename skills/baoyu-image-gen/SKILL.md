@@ -1,6 +1,6 @@
 ---
 name: baoyu-image-gen
-description: Generates images using official OpenAI and Google APIs via AI SDK. Supports text-to-image, reference images, aspect ratios, and quality presets. Use when user asks to "generate image with API", "use official API for images", "create image with OpenAI/Google", or needs API-based generation instead of browser-based.
+description: AI image generation with OpenAI and Google APIs. Supports text-to-image, reference images, aspect ratios, and parallel generation (recommended 4 concurrent subagents). Use when user asks to generate, create, or draw images.
 ---
 
 # Image Generation (AI SDK)
@@ -117,6 +117,25 @@ Supported: `1:1`, `16:9`, `9:16`, `4:3`, `3:4`, `2.35:1`
 - Google multimodal: uses `imageConfig.aspectRatio`
 - Google Imagen: uses `aspectRatio` parameter
 - OpenAI: maps to closest supported size
+
+## Parallel Generation
+
+Supports concurrent image generation via background subagents for batch operations.
+
+| Setting | Value |
+|---------|-------|
+| Recommended concurrency | 4 subagents |
+| Max concurrency | 8 subagents |
+| Use case | Batch generation (slides, comics, infographics) |
+
+**Agent Implementation**:
+```
+# Launch multiple generations in parallel using Task tool
+# Each Task runs as background subagent with run_in_background=true
+# Collect results via TaskOutput when all complete
+```
+
+**Best Practice**: When generating 4+ images, spawn background subagents (recommended 4 concurrent) instead of sequential execution.
 
 ## Error Handling
 
