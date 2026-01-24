@@ -15,7 +15,6 @@ watermark:
   enabled: false
   content: ""
   position: bottom-right  # bottom-right|bottom-left|bottom-center|top-right
-  opacity: 0.7            # 0.1-1.0
 
 preferred_style:
   name: null              # Built-in or custom style name
@@ -46,7 +45,6 @@ custom_styles:
 | `watermark.enabled` | bool | false | Enable watermark |
 | `watermark.content` | string | "" | Watermark text (@username or custom) |
 | `watermark.position` | enum | bottom-right | Position on image |
-| `watermark.opacity` | float | 0.7 | Transparency (0.1-1.0) |
 | `preferred_style.name` | string | null | Style name or null |
 | `preferred_style.description` | string | "" | Custom notes/override |
 | `preferred_layout` | string | null | Layout preference or null |
@@ -97,7 +95,6 @@ watermark:
   enabled: true
   content: "@myxhsaccount"
   position: bottom-right
-  opacity: 0.5
 
 preferred_style:
   name: notion

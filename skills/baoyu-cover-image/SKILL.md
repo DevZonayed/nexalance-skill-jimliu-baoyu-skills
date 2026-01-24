@@ -615,9 +615,8 @@ Style notes: [key characteristics from style definition]
 **Watermark Application** (if enabled in preferences):
 Add to prompt:
 ```
-Include a subtle watermark "[content]" positioned at [position]
-with approximately [opacity*100]% visibility. The watermark should
-be legible but not distracting from the main content.
+Include a subtle watermark "[content]" positioned at [position].
+The watermark should be legible but not distracting from the main content.
 ```
 Reference: `references/config/watermark-guide.md`
 

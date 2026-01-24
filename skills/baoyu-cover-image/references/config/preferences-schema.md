@@ -15,7 +15,6 @@ watermark:
   enabled: false
   content: ""
   position: bottom-right  # bottom-right|bottom-left|bottom-center|top-right
-  opacity: 0.7            # 0.1-1.0
 
 preferred_type: null      # hero|conceptual|typography|metaphor|scene|minimal or null for auto-select
 
@@ -52,7 +51,6 @@ custom_styles:
 | `watermark.enabled` | bool | false | Enable watermark |
 | `watermark.content` | string | "" | Watermark text (@username or custom) |
 | `watermark.position` | enum | bottom-right | Position on image |
-| `watermark.opacity` | float | 0.7 | Transparency (0.1-1.0) |
 | `preferred_type` | string | null | Type name or null for auto |
 | `preferred_style` | string | null | Style name or null for auto |
 | `preferred_text` | string | title-only | Text density level |
@@ -145,7 +143,6 @@ watermark:
   enabled: true
   content: "myblog.com"
   position: bottom-right
-  opacity: 0.5
 
 preferred_type: conceptual
 

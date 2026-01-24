@@ -230,7 +230,7 @@ Check available skills. If multiple, ask user.
 
 **5.3 Apply Watermark** (if enabled)
 
-Add: `Include a subtle watermark "[content]" at [position] with [opacity*100]% visibility.`
+Add: `Include a subtle watermark "[content]" at [position].`
 
 **5.4 Generate**
 

@@ -28,15 +28,6 @@ description: Watermark configuration guide for baoyu-xhs-images
 | `bottom-center` | Centered designs | Text-heavy bottom area |
 | `top-right` | Bottom-heavy content | Title/header in top-right |
 
-## Opacity Examples
-
-| Opacity | Visual Effect | Use Case |
-|---------|---------------|----------|
-| 0.3 | Very subtle, barely visible | Clean aesthetic priority |
-| 0.5 | Balanced, noticeable but not distracting | Default recommendation |
-| 0.7 | Clearly visible | Brand recognition priority |
-| 0.9 | Strong presence | Anti-copy protection |
-
 ## Content Format
 
 | Format | Example | Style |
@@ -51,23 +42,21 @@ description: Watermark configuration guide for baoyu-xhs-images
 1. **Consistency**: Use same watermark across all images in series
 2. **Legibility**: Ensure watermark readable on both light/dark areas
 3. **Size**: Keep subtle - should not distract from content
-4. **Contrast**: Opacity may need adjustment per image background
 
 ## Prompt Integration
 
 When watermark is enabled, add to image generation prompt:
 
 ```
-Include a subtle watermark "[content]" positioned at [position]
-with approximately [opacity*100]% visibility. The watermark should
-be legible but not distracting from the main content.
+Include a subtle watermark "[content]" positioned at [position].
+The watermark should be legible but not distracting from the main content.
 ```
 
 ## Common Issues
 
 | Issue | Solution |
 |-------|----------|
-| Watermark invisible | Increase opacity or adjust position |
-| Watermark too prominent | Decrease opacity (0.3-0.5) |
+| Watermark invisible | Adjust position or check contrast |
+| Watermark too prominent | Change position or reduce size |
 | Watermark overlaps content | Change position |
 | Inconsistent across images | Use session ID for consistency |
