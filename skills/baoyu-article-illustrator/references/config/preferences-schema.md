@@ -23,6 +23,8 @@ preferred_style:
 
 language: null            # zh|en|ja|ko|auto
 
+default_output_dir: null  # same-dir|illustrations-subdir|independent
+
 custom_styles:
   - name: my-style
     description: "Style description"
@@ -48,6 +50,7 @@ custom_styles:
 | `preferred_style.name` | string | null | Style name or null |
 | `preferred_style.description` | string | "" | Custom notes/override |
 | `language` | string | null | Output language (null = auto-detect) |
+| `default_output_dir` | enum | null | Output directory preference (null = ask each time) |
 | `custom_styles` | array | [] | User-defined styles |
 
 ## Position Options
@@ -58,6 +61,14 @@ custom_styles:
 | `bottom-left` | Lower left corner |
 | `bottom-center` | Bottom center |
 | `top-right` | Upper right corner |
+
+## Output Directory Options
+
+| Value | Description |
+|-------|-------------|
+| `same-dir` | Same directory as article |
+| `illustrations-subdir` | `{article-dir}/illustrations/` subdirectory |
+| `independent` | `illustrations/{topic-slug}/` in working directory |
 
 ## Custom Style Fields
 
