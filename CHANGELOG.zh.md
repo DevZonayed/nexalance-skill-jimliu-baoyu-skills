@@ -2,6 +2,14 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.18.3 - 2026-01-23
+
+### 文档
+- `baoyu-comic`：改进角色参考处理流程，新增明确的 Strategy A/B 选择逻辑——Strategy A 使用 `--ref` 参数（适用于支持该参数的技能），Strategy B 将角色描述嵌入提示词（适用于不支持的技能）。包含两种方法的具体代码示例。
+
+### 修复
+- `baoyu-image-gen`：从多模态模型列表中移除不支持的 Gemini 模型（`gemini-2.0-flash-exp-image-generation`、`gemini-2.5-flash-preview-native-audio-dialog`）。
+
 ## 1.18.2 - 2026-01-23
 
 ### 重构

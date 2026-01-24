@@ -380,9 +380,50 @@ With confirmed storyboard + art style + tone + aspect ratio:
 
 **5.2 Generate Comic Pages**:
 
+**CRITICAL: Character Reference is MANDATORY** for visual consistency across all pages.
+
+**Before generating any page**:
+1. Read the image generation skill's SKILL.md
+2. Check if it supports reference image input (`--ref`, `--reference`, etc.)
+3. Choose the appropriate strategy below
+
+**Character Reference Strategy**:
+
+| Skill Capability | Strategy | Action |
+|------------------|----------|--------|
+| Supports `--ref` | **Strategy A** | Pass `characters/characters.png` with EVERY page |
+| Does NOT support `--ref` | **Strategy B** | Prepend character descriptions to EVERY prompt |
+
+**Strategy A: Using `--ref` parameter** (e.g., baoyu-image-gen)
+
+```bash
+# Each page generation MUST include --ref
+npx -y bun ${SKILL_DIR}/../baoyu-image-gen/scripts/main.ts \
+  --promptfiles prompts/01-page-xxx.md \
+  --image 01-page-xxx.png \
+  --ar 3:4 \
+  --ref characters/characters.png
+```
+
+**Strategy B: Embedding character descriptions in prompt**
+
+When skill does NOT support reference images, create combined prompt files:
+
+```markdown
+# prompts/01-page-xxx.md (with embedded character reference)
+
+## Character Reference (maintain consistency)
+[Copy relevant sections from characters/characters.md here]
+- 大雄: Japanese boy, round glasses, yellow shirt, navy shorts...
+- 哆啦A梦: Round blue robot cat, white belly, red nose, golden bell...
+
+## Page Content
+[Original page prompt here]
+```
+
 **For each page (cover + pages)**:
-1. Save prompt to `prompts/NN-{cover|page}-[slug].md` (in user's preferred language)
-2. Generate image using confirmed art style and tone guidelines
+1. Save prompt to `prompts/NN-{cover|page}-[slug].md`
+2. Generate image using Strategy A or B (based on skill capability)
 3. Report progress after each generation
 
 **Watermark Application** (if enabled in preferences):
@@ -394,22 +435,6 @@ be legible but not distracting from the comic panels and storytelling.
 Ensure watermark does not overlap speech bubbles or key action.
 ```
 Reference: `references/config/watermark-guide.md`
-
-**Image Generation Skill Selection**:
-- Check available image generation skills
-- If multiple skills available, ask user preference
-
-**Character Reference Handling** (IMPORTANT for visual consistency):
-
-1. Read the selected image generation skill's SKILL.md
-2. Check if it supports reference image input (look for parameters like `--ref`, `--reference`, `--image-ref`, etc.)
-
-| Skill Support | Action |
-|---------------|--------|
-| **Supports reference image** | Pass `characters/characters.png` using the skill's reference parameter |
-| **Does NOT support reference image** | Prepend `characters/characters.md` content to each page prompt |
-
-Always verify the exact parameter name from the skill's documentation before calling.
 
 **Session Management**:
 If image generation skill supports `--sessionId`:

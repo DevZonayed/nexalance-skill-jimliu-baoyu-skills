@@ -2,6 +2,14 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.18.3 - 2026-01-23
+
+### Documentation
+- `baoyu-comic`: improves character reference handling with explicit Strategy A/B selection—Strategy A uses `--ref` parameter for skills that support it, Strategy B embeds character descriptions in prompts for skills that don't. Includes concrete code examples for both approaches.
+
+### Fixes
+- `baoyu-image-gen`: removes unsupported Gemini models (`gemini-2.0-flash-exp-image-generation`, `gemini-2.5-flash-preview-native-audio-dialog`) from multimodal model list.
+
 ## 1.18.2 - 2026-01-23
 
 ### Refactor
