@@ -2,6 +2,11 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.21.3 - 2026-01-24
+
+### 重构
+- `baoyu-article-illustrator`：简化 SKILL.md，提取内容至引用文件——新增 `references/usage.md` 用于命令语法，`references/prompt-construction.md` 用于提示词模板。工作流从 5 步重组为 6 步，新增 Pre-check 预检阶段。新增 `default_output_dir` 偏好设置选项。
+
 ## 1.21.2 - 2026-01-24
 
 ### 新功能
