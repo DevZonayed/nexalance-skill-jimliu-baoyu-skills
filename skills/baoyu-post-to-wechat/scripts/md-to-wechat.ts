@@ -101,7 +101,10 @@ function parseFrontmatter(content: string): { frontmatter: Record<string, string
     const colonIdx = line.indexOf(':');
     if (colonIdx > 0) {
       const key = line.slice(0, colonIdx).trim();
-      const value = line.slice(colonIdx + 1).trim();
+      let value = line.slice(colonIdx + 1).trim();
+      if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+        value = value.slice(1, -1);
+      }
       frontmatter[key] = value;
     }
   }
@@ -109,21 +112,36 @@ function parseFrontmatter(content: string): { frontmatter: Record<string, string
   return { frontmatter, body: match[2]! };
 }
 
-export async function convertMarkdown(markdownPath: string, theme = 'default'): Promise<ParsedResult> {
+export async function convertMarkdown(markdownPath: string, options?: { title?: string; theme?: string }): Promise<ParsedResult> {
   const baseDir = path.dirname(markdownPath);
   const content = fs.readFileSync(markdownPath, 'utf-8');
+  const theme = options?.theme ?? 'default';
 
   const { frontmatter, body } = parseFrontmatter(content);
 
-  let title = frontmatter.title || path.basename(markdownPath, path.extname(markdownPath));
+  let title = options?.title ?? frontmatter.title ?? '';
+  if (!title) {
+    const h1Match = body.match(/^#\s+(.+)$/m);
+    if (h1Match) title = h1Match[1]!;
+  }
+  if (!title) title = path.basename(markdownPath, path.extname(markdownPath));
   const author = frontmatter.author || '';
   let summary = frontmatter.description || frontmatter.summary || '';
 
   if (!summary) {
-    const paragraphs = body.split('\n\n').filter(p => p.trim() && !p.startsWith('#'));
-    for (const para of paragraphs) {
-      const cleanText = para
-        .replace(/[#*`_\[\]]/g, '')
+    const lines = body.split('\n');
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed) continue;
+      if (trimmed.startsWith('#')) continue;
+      if (trimmed.startsWith('![')) continue;
+      if (trimmed.startsWith('>')) continue;
+      if (trimmed.startsWith('-') || trimmed.startsWith('*')) continue;
+      if (/^\d+\./.test(trimmed)) continue;
+
+      const cleanText = trimmed
+        .replace(/\*\*(.+?)\*\*/g, '$1')
+        .replace(/\*(.+?)\*/g, '$1')
         .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
         .replace(/`([^`]+)`/g, '$1');
 
@@ -149,14 +167,11 @@ export async function convertMarkdown(markdownPath: string, theme = 'default'): 
   const tempMdPath = path.join(tempDir, 'temp-article.md');
   await writeFile(tempMdPath, modifiedMarkdown, 'utf-8');
 
-  // 使用 fileURLToPath 来正确处理 Windows 路径
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
   const renderScript = path.join(__dirname, 'md', 'render.ts');
 
   console.error(`[md-to-wechat] Rendering markdown with theme: ${theme}`);
-  console.error(`[md-to-wechat] Script dir: ${__dirname}`);
-  console.error(`[md-to-wechat] Render script: ${renderScript}`);
 
   const result = spawnSync('npx', ['-y', 'bun', renderScript, tempMdPath, '--theme', theme], {
     stdio: ['inherit', 'pipe', 'pipe'],
@@ -196,7 +211,7 @@ function printUsage(): never {
   console.log(`Convert Markdown to WeChat-ready HTML with image placeholders
 
 Usage:
-  npx -y bun md-to-wechat-fixed.ts <markdown_file> [options]
+  npx -y bun md-to-wechat.ts <markdown_file> [options]
 
 Options:
   --title <title>     Override title
@@ -217,8 +232,8 @@ Output JSON format:
 }
 
 Example:
-  npx -y bun md-to-wechat-fixed.ts article.md
-  npx -y bun md-to-wechat-fixed.ts article.md --theme grace
+  npx -y bun md-to-wechat.ts article.md
+  npx -y bun md-to-wechat.ts article.md --theme grace
 `);
   process.exit(0);
 }
@@ -230,15 +245,16 @@ async function main(): Promise<void> {
   }
 
   let markdownPath: string | undefined;
-  let theme = 'default';
+  let title: string | undefined;
+  let theme: string | undefined;
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i]!;
     if (arg === '--title' && args[i + 1]) {
-      args[i + 1]; // skip value
+      title = args[++i];
     } else if (arg === '--theme' && args[i + 1]) {
-      theme = args[++i]!;
-    } else if (!arg.startsWith('--')) {
+      theme = args[++i];
+    } else if (!arg.startsWith('-')) {
       markdownPath = arg;
     }
   }
@@ -253,7 +269,7 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
-  const result = await convertMarkdown(markdownPath, theme);
+  const result = await convertMarkdown(markdownPath, { title, theme });
   console.log(JSON.stringify(result, null, 2));
 }
 

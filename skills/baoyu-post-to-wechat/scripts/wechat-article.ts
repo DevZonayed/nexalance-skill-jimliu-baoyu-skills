@@ -111,8 +111,7 @@ async function copyHtmlFromBrowser(cdp: CdpConnection, htmlFilePath: string): Pr
   await sleep(300);
 
   console.log('[wechat] Copying with CDP keyboard event...');
-  // 使用 CDP 发送 Ctrl+C (更可靠，不依赖系统工具)
-  const modifiers = process.platform === 'darwin' ? 4 : 2; // 4=Cmd, 2=Ctrl
+  const modifiers = process.platform === 'darwin' ? 4 : 2;
   await cdp.send('Input.dispatchKeyEvent', {
     type: 'keyDown',
     key: 'c',
@@ -136,8 +135,7 @@ async function copyHtmlFromBrowser(cdp: CdpConnection, htmlFilePath: string): Pr
 
 async function pasteFromClipboardInEditor(session: ChromeSession): Promise<void> {
   console.log('[wechat] Pasting with CDP keyboard event...');
-  // 使用 CDP 发送 Ctrl+V (更可靠，不依赖系统工具)
-  const modifiers = process.platform === 'darwin' ? 4 : 2; // 4=Cmd, 2=Ctrl
+  const modifiers = process.platform === 'darwin' ? 4 : 2;
   await session.cdp.send('Input.dispatchKeyEvent', {
     type: 'keyDown',
     key: 'v',
@@ -159,7 +157,7 @@ async function pasteFromClipboardInEditor(session: ChromeSession): Promise<void>
 async function parseMarkdownWithPlaceholders(markdownPath: string, theme?: string): Promise<{ title: string; author: string; summary: string; htmlPath: string; contentImages: ImageInfo[] }> {
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
-  const mdToWechatScript = path.join(__dirname, 'md-to-wechat-fixed.ts');
+  const mdToWechatScript = path.join(__dirname, 'md-to-wechat.ts');
   const args = ['-y', 'bun', mdToWechatScript, markdownPath];
   if (theme) args.push('--theme', theme);
 
@@ -325,7 +323,6 @@ export async function postArticle(options: ArticleOptions): Promise<void> {
     await clickElement(session, '.ProseMirror');
     await sleep(1000);
 
-    // 再次点击确保焦点
     console.log('[wechat] Ensuring editor focus...');
     await clickElement(session, '.ProseMirror');
     await sleep(500);
@@ -409,7 +406,7 @@ function printUsage(): never {
   console.log(`Post article to WeChat Official Account
 
 Usage:
-  npx -y bun wechat-article-fixed.ts [options]
+  npx -y bun wechat-article.ts [options]
 
 Options:
   --title <text>     Article title (auto-extracted from markdown)
@@ -424,10 +421,10 @@ Options:
   --profile <dir>    Chrome profile directory
 
 Examples:
-  npx -y bun wechat-article-fixed.ts --markdown article.md
-  npx -y bun wechat-article-fixed.ts --markdown article.md --theme grace --submit
-  npx -y bun wechat-article-fixed.ts --title "标题" --content "内容" --image img.png
-  npx -y bun wechat-article-fixed.ts --title "标题" --html article.html --submit
+  npx -y bun wechat-article.ts --markdown article.md
+  npx -y bun wechat-article.ts --markdown article.md --theme grace --submit
+  npx -y bun wechat-article.ts --title "标题" --content "内容" --image img.png
+  npx -y bun wechat-article.ts --title "标题" --html article.html --submit
 
 Markdown mode:
   Images in markdown are converted to placeholders. After pasting HTML,
