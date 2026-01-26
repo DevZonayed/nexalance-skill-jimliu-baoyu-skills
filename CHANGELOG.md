@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.23.0 - 2026-01-26
+
+### Refactor
+- `baoyu-cover-image`: replaces 20 fixed styles with 5-dimension system (Type × Palette × Rendering × Text × Mood). 9 color palettes × 6 rendering styles = 54 combinations. Adds style presets for backward compatibility, v2→v3 schema migration, and new reference structure (`palettes/`, `renderings/`, `workflow/`).
+
 ## 1.22.0 - 2026-01-25
 
 ### Features
