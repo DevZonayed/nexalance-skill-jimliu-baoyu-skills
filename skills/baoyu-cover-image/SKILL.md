@@ -218,10 +218,17 @@ Default: `balanced`
 
 ## File Structure
 
-Each session creates an independent directory named by content slug:
+Output directory depends on `default_output_dir` preference:
+
+| Preference | Output Path |
+|------------|-------------|
+| `same-dir` | `{article-dir}/` |
+| `imgs-subdir` | `{article-dir}/imgs/` |
+| `independent` (default) | `cover-image/{topic-slug}/` |
+| Pasted content | `cover-image/{topic-slug}/` (always) |
 
 ```
-cover-image/{topic-slug}/
+<output-dir>/
 ├── source-{slug}.{ext}    # Source files (text, images, etc.)
 ├── prompts/cover.md       # Generation prompt
 └── cover.png              # Output image
@@ -250,7 +257,7 @@ Copy and track progress:
 ```
 Cover Image Progress:
 - [ ] Step 0: Check preferences (EXTEND.md) ⚠️ REQUIRED if not found
-- [ ] Step 1: Analyze content
+- [ ] Step 1: Analyze content + determine output directory ⚠️ MUST ask if not configured
 - [ ] Step 2: Confirm options (4 dimensions) ⚠️ REQUIRED unless --quick or all specified
 - [ ] Step 3: Create prompt
 - [ ] Step 4: Generate image
@@ -260,9 +267,9 @@ Cover Image Progress:
 ### Flow
 
 ```
-Input → [Step 0: Preferences/Setup] → Analyze → [Confirm: 4 Dimensions] → Prompt → Generate → Complete
-                                                      ↓
-                                              (skip if --quick or all dimensions specified)
+Input → [Step 0: Preferences/Setup] → Analyze → [Output Dir ⚠️] → [Confirm: 4 Dimensions] → Prompt → Generate → Complete
+                                                                          ↓
+                                                                  (skip if --quick or all specified)
 ```
 
 ### Step 0: Load Preferences (EXTEND.md) ⚠️
@@ -307,6 +314,7 @@ Preferences loaded from [project/user]:
 • Text: [preferred_text or "title-only"]
 • Mood: [preferred_mood or "balanced"]
 • Aspect: [default_aspect]
+• Output: [default_output_dir or "not set — will ask in Step 1.5"]
 • Quick mode: [enabled/disabled]
 • Language: [language or "auto"]
 ```
@@ -369,7 +377,20 @@ options:
 
 Note: More ratios (4:3, 3:2) available during generation. This sets the default recommendation.
 
-**Q5: Quick Mode**
+**Q5: Default Output Directory**
+```yaml
+header: "Output"
+question: "Default output directory for cover images?"
+options:
+  - label: "Independent (Recommended)"
+    description: "cover-image/{topic-slug}/ - separate from article"
+  - label: "Same directory"
+    description: "{article-dir}/ - alongside the article file"
+  - label: "imgs subdirectory"
+    description: "{article-dir}/imgs/ - images folder near article"
+```
+
+**Q6: Quick Mode**
 ```yaml
 header: "Quick"
 question: "Enable quick mode by default?"
@@ -380,7 +401,7 @@ options:
     description: "Skip confirmation, use auto-selection"
 ```
 
-**Q6: Save Location**
+**Q7: Save Location**
 ```yaml
 header: "Save"
 question: "Where to save preferences?"
@@ -395,7 +416,7 @@ options:
 
 Full setup details: `references/config/first-time-setup.md`
 
-**EXTEND.md Supports**: Watermark | Preferred type | Preferred style | Preferred text | Preferred mood | Default aspect ratio | Quick mode | Custom style definitions | Language preference
+**EXTEND.md Supports**: Watermark | Preferred type | Preferred style | Preferred text | Preferred mood | Default aspect ratio | Default output directory | Quick mode | Custom style definitions | Language preference
 
 Schema: `references/config/preferences-schema.md`
 
@@ -416,6 +437,30 @@ Read source content, save it if needed, and perform analysis.
    - Detect source content language
    - Note user's input language (from conversation)
    - Compare with language preference in EXTEND.md
+
+**1.5 Determine Output Directory** ⚠️
+
+**MUST ask user when `default_output_dir` is not set in EXTEND.md and input is a file path.**
+
+| Input | Behavior |
+|-------|----------|
+| File path + preference set | Use configured `default_output_dir` |
+| File path + **no preference** | ⚠️ **MUST** ask with AskUserQuestion ↓ |
+| Pasted content | `cover-image/{topic-slug}/` (always independent) |
+
+`default_output_dir` preference values:
+
+| Preference Value | Output Path |
+|------------------|-------------|
+| `same-dir` | `{article-dir}/` |
+| `imgs-subdir` | `{article-dir}/imgs/` |
+| `independent` | `cover-image/{topic-slug}/` |
+
+**AskUserQuestion** (when no preference, file path input only):
+- `{article-dir}/imgs/` - Images subdirectory near article
+- `{article-dir}/` - Same directory as article
+- `cover-image/{topic-slug}/` - Independent directory
+- Save as default - Remember this choice for future runs
 
 ### Step 2: Confirm Options ⚠️
 
