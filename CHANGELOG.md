@@ -25,7 +25,7 @@ English | [中文](./CHANGELOG.zh.md)
 ## 1.21.4 - 2026-01-25
 
 ### Fixes
-- `baoyu-post-to-wechat`: adds Windows compatibility—uses `fileURLToPath` for correct path resolution, replaces system-dependent copy/paste tools (osascript/xdotool) with CDP keyboard events for cross-platform support.
+- `baoyu-post-to-wechat`: adds Windows compatibility—uses `fileURLToPath` for correct path resolution, replaces system-dependent copy/paste tools (osascript/xdotool) with CDP keyboard events for cross-platform support (by @JadeLiang003).
 - `baoyu-post-to-wechat`: fixes regressions from Windows compatibility PR—corrects broken `-fixed` filename references, restores frontmatter quote stripping, restores `--title` CLI parameter, fixes summary extraction to skip headings/quotes/lists, fixes argument parsing for single-dash flags, removes debug logs.
 - `baoyu-article-illustrator`, `baoyu-cover-image`, `baoyu-xhs-images`: removes opacity option from watermark configuration.
 
@@ -175,7 +175,7 @@ English | [中文](./CHANGELOG.zh.md)
 ## 1.14.0 - 2026-01-22
 
 ### Fixes
-- `baoyu-post-to-x`: improves video ready detection for more reliable video posting.
+- `baoyu-post-to-x`: improves video ready detection for more reliable video posting (by @fkysly).
 
 ### Documentation
 - `baoyu-slide-deck`: comprehensive SKILL.md enhancement—adds slide count guidance (recommended 8-25, max 30), audience guidelines table with audience-specific principles, style selection principles with content-type recommendations, layout selection tips with common mistakes to avoid, visual hierarchy principles, content density guidelines (McKinsey-style high-density principles), color selection guide, typography principles with font recommendations (English and Chinese fonts with multilingual pairing), and visual elements reference (backgrounds, typography treatments, geometric accents).
@@ -189,6 +189,9 @@ English | [中文](./CHANGELOG.zh.md)
 - `baoyu-xhs-images`: updates style recommendations—replaces `tech` references with `notion` and `chalkboard` for technical and educational content.
 
 ## 1.12.0 - 2026-01-21
+
+### Features
+- `baoyu-post-to-x`: adds quote tweet support (by @threehotpot-bot).
 
 ### Refactor
 - `baoyu-post-to-x`: extracts shared utilities to `x-utils.ts`—consolidates Chrome detection, CDP connection, clipboard operations, and helper functions from `x-article.ts`, `x-browser.ts`, `x-quote.ts`, and `x-video.ts` into a single reusable module.
@@ -205,7 +208,7 @@ English | [中文](./CHANGELOG.zh.md)
 ## 1.10.0 - 2026-01-21
 
 ### Features
-- `baoyu-post-to-x`: adds video posting support—new `x-video.ts` script for posting text with video files (MP4, MOV, WebM). Supports preview mode and handles video processing timeouts.
+- `baoyu-post-to-x`: adds video posting support—new `x-video.ts` script for posting text with video files (MP4, MOV, WebM). Supports preview mode and handles video processing timeouts (by @fkysly).
 
 ## 1.9.0 - 2026-01-20
 
@@ -261,7 +264,7 @@ English | [中文](./CHANGELOG.zh.md)
 ## 1.4.1 - 2026-01-18
 
 ### Fixes
-- `baoyu-post-to-x`: supports multi-language UI selectors for X Articles (contributed by [@ianchenx](https://github.com/ianchenx)).
+- `baoyu-post-to-x`: supports multi-language UI selectors for X Articles (by @ianchenx).
 
 ## 1.4.0 - 2026-01-18
 

@@ -25,7 +25,7 @@
 ## 1.21.4 - 2026-01-25
 
 ### 修复
-- `baoyu-post-to-wechat`：新增 Windows 兼容性——使用 `fileURLToPath` 正确解析路径，将系统依赖的复制粘贴工具（osascript/xdotool）替换为 CDP 键盘事件，实现跨平台支持。
+- `baoyu-post-to-wechat`：新增 Windows 兼容性——使用 `fileURLToPath` 正确解析路径，将系统依赖的复制粘贴工具（osascript/xdotool）替换为 CDP 键盘事件，实现跨平台支持 (by @JadeLiang003)。
 - `baoyu-post-to-wechat`：修复 Windows 兼容性 PR 引入的回退问题——修正错误的 `-fixed` 文件名引用、恢复 frontmatter 引号剥离、恢复 `--title` CLI 参数、修复摘要提取逻辑以正确跳过标题/引用/列表、修复单横线参数解析、移除调试日志。
 - `baoyu-article-illustrator`、`baoyu-cover-image`、`baoyu-xhs-images`：移除水印配置中的透明度选项。
 
@@ -175,7 +175,7 @@
 ## 1.14.0 - 2026-01-22
 
 ### 修复
-- `baoyu-post-to-x`：改进视频就绪检测，提升视频发布稳定性。
+- `baoyu-post-to-x`：改进视频就绪检测，提升视频发布稳定性 (by @fkysly)。
 
 ### 文档
 - `baoyu-slide-deck`：SKILL.md 全面增强——新增幻灯片数量指南（推荐 8-25 张，最多 30 张）、受众指南表格及各受众特定原则、风格选择原则与内容类型推荐、布局选择技巧与常见错误提示、视觉层次原则、内容密度指南（麦肯锡风格高密度原则）、配色选择指南、字体排版原则与字体推荐（中英文字体及多语言搭配方案）、视觉元素参考（背景处理、字体处理、几何装饰）。
@@ -189,6 +189,9 @@
 - `baoyu-xhs-images`：更新风格推荐——将 `tech` 风格引用替换为 `notion` 和 `chalkboard`，用于技术和教育内容。
 
 ## 1.12.0 - 2026-01-21
+
+### 新功能
+- `baoyu-post-to-x`：新增引用推文（Quote Tweet）支持 (by @threehotpot-bot)。
 
 ### 重构
 - `baoyu-post-to-x`：提取公共工具函数到 `x-utils.ts`——将 `x-article.ts`、`x-browser.ts`、`x-quote.ts`、`x-video.ts` 中重复的 Chrome 检测、CDP 连接、剪贴板操作等功能整合为统一的可复用模块。
@@ -205,7 +208,7 @@
 ## 1.10.0 - 2026-01-21
 
 ### 新功能
-- `baoyu-post-to-x`：新增视频发布支持——新增 `x-video.ts` 脚本，支持发布带视频的推文（MP4、MOV、WebM 格式）。支持预览模式，自动处理视频上传等待。
+- `baoyu-post-to-x`：新增视频发布支持——新增 `x-video.ts` 脚本，支持发布带视频的推文（MP4、MOV、WebM 格式）。支持预览模式，自动处理视频上传等待 (by @fkysly)。
 
 ## 1.9.0 - 2026-01-20
 
@@ -261,7 +264,7 @@
 ## 1.4.1 - 2026-01-18
 
 ### 修复
-- `baoyu-post-to-x`：支持 X Articles 多语言 UI 选择器（感谢 [@ianchenx](https://github.com/ianchenx) 贡献）。
+- `baoyu-post-to-x`：支持 X Articles 多语言 UI 选择器 (by @ianchenx)。
 
 ## 1.4.0 - 2026-01-18
 
