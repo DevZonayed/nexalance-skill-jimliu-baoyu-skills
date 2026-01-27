@@ -2,6 +2,18 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.24.0 - 2026-01-27
+
+### 新功能
+- `baoyu-post-to-wechat`：复用已打开的 Chrome 浏览器，无需关闭所有窗口 (by @AliceLJY)。
+
+### 修复
+- `baoyu-post-to-wechat`：改进标题提取，支持 h1/h2 标题；新增摘要自动填充和粘贴/输入后内容验证；支持 HTML meta 标签属性顺序灵活匹配。
+
+### 文档
+- `release-skills`：在发布流程中新增第三方贡献者署名规则。
+- 补全历史 changelog 中缺失的第三方贡献者署名。
+
 ## 1.23.1 - 2026-01-27
 
 ### 修复

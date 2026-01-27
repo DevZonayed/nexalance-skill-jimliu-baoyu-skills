@@ -2,6 +2,18 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.24.0 - 2026-01-27
+
+### Features
+- `baoyu-post-to-wechat`: reuse existing Chrome browser instead of requiring all windows closed (by @AliceLJY).
+
+### Fixes
+- `baoyu-post-to-wechat`: improves title extraction to support h1/h2 headings; adds summary auto-fill and content verification after paste/type; supports flexible HTML meta tag attribute ordering.
+
+### Documentation
+- `release-skills`: adds third-party contributor attribution rules to changelog workflow.
+- Backfills missing third-party contributor attributions across historical changelog entries.
+
 ## 1.23.1 - 2026-01-27
 
 ### Fixes
