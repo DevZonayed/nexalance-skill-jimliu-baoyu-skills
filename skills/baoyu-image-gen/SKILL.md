@@ -1,6 +1,6 @@
 ---
 name: baoyu-image-gen
-description: AI image generation with OpenAI, Google and DashScope APIs. Supports text-to-image, reference images, aspect ratios, and parallel generation (recommended 4 concurrent subagents). Use when user asks to generate, create, or draw images.
+description: AI image generation with OpenAI, Google and DashScope APIs. Supports text-to-image, reference images, aspect ratios. Sequential by default; parallel generation available on request. Use when user asks to generate, create, or draw images.
 ---
 
 # Image Generation (AI SDK)
@@ -124,24 +124,31 @@ Supported: `1:1`, `16:9`, `9:16`, `4:3`, `3:4`, `2.35:1`
 - Google Imagen: uses `aspectRatio` parameter
 - OpenAI: maps to closest supported size
 
-## Parallel Generation
+## Generation Mode
 
-Supports concurrent image generation via background subagents for batch operations.
+**Default**: Sequential generation (one image at a time). This ensures stable output and easier debugging.
+
+**Parallel Generation**: Only use when user explicitly requests parallel/concurrent generation.
+
+| Mode | When to Use |
+|------|-------------|
+| Sequential (default) | Normal usage, single images, small batches |
+| Parallel | User explicitly requests, large batches (10+) |
+
+**Parallel Settings** (when requested):
 
 | Setting | Value |
 |---------|-------|
 | Recommended concurrency | 4 subagents |
 | Max concurrency | 8 subagents |
-| Use case | Batch generation (slides, comics, infographics) |
+| Use case | Large batch generation when user requests parallel |
 
-**Agent Implementation**:
+**Agent Implementation** (parallel mode only):
 ```
 # Launch multiple generations in parallel using Task tool
 # Each Task runs as background subagent with run_in_background=true
 # Collect results via TaskOutput when all complete
 ```
-
-**Best Practice**: When generating 4+ images, spawn background subagents (recommended 4 concurrent) instead of sequential execution.
 
 ## Error Handling
 
