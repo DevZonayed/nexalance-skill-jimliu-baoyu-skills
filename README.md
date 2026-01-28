@@ -543,7 +543,7 @@ AI-powered generation backends.
 
 #### baoyu-image-gen
 
-AI SDK-based image generation using official OpenAI and Google APIs. Supports text-to-image, reference images, aspect ratios, and quality presets.
+AI SDK-based image generation using official OpenAI, Google and DashScope (Aliyun Tongyi Wanxiang) APIs. Supports text-to-image, reference images, aspect ratios, and quality presets.
 
 ```bash
 # Basic generation (auto-detect provider)
@@ -558,6 +558,9 @@ AI SDK-based image generation using official OpenAI and Google APIs. Supports te
 # Specific provider
 /baoyu-image-gen --prompt "A cat" --image cat.png --provider openai
 
+# DashScope (Aliyun Tongyi Wanxiang)
+/baoyu-image-gen --prompt "一只可爱的猫" --image cat.png --provider dashscope
+
 # With reference images (Google multimodal only)
 /baoyu-image-gen --prompt "Make it blue" --image out.png --ref source.png
 ```
@@ -568,7 +571,7 @@ AI SDK-based image generation using official OpenAI and Google APIs. Supports te
 | `--prompt`, `-p` | Prompt text |
 | `--promptfiles` | Read prompt from files (concatenated) |
 | `--image` | Output image path (required) |
-| `--provider` | `google` or `openai` (default: google) |
+| `--provider` | `google`, `openai` or `dashscope` (default: google) |
 | `--model`, `-m` | Model ID |
 | `--ar` | Aspect ratio (e.g., `16:9`, `1:1`, `4:3`) |
 | `--size` | Size (e.g., `1024x1024`) |
@@ -580,15 +583,18 @@ AI SDK-based image generation using official OpenAI and Google APIs. Supports te
 |----------|-------------|---------|
 | `OPENAI_API_KEY` | OpenAI API key | - |
 | `GOOGLE_API_KEY` | Google API key | - |
+| `DASHSCOPE_API_KEY` | DashScope API key (Aliyun) | - |
 | `OPENAI_IMAGE_MODEL` | OpenAI model | `gpt-image-1.5` |
 | `GOOGLE_IMAGE_MODEL` | Google model | `gemini-3-pro-image-preview` |
+| `DASHSCOPE_IMAGE_MODEL` | DashScope model | `z-image-turbo` |
 | `OPENAI_BASE_URL` | Custom OpenAI endpoint | - |
 | `GOOGLE_BASE_URL` | Custom Google endpoint | - |
+| `DASHSCOPE_BASE_URL` | Custom DashScope endpoint | - |
 
 **Provider Auto-Selection**:
 1. If `--provider` specified → use it
 2. If only one API key available → use that provider
-3. If both available → default to Google
+3. If multiple available → default to Google
 
 #### baoyu-danger-gemini-web
 
@@ -699,6 +705,11 @@ OPENAI_IMAGE_MODEL=gpt-image-1.5
 GOOGLE_API_KEY=xxx
 GOOGLE_IMAGE_MODEL=gemini-3-pro-image-preview
 # GOOGLE_BASE_URL=https://generativelanguage.googleapis.com/v1beta
+
+# DashScope (Aliyun Tongyi Wanxiang)
+DASHSCOPE_API_KEY=sk-xxx
+DASHSCOPE_IMAGE_MODEL=z-image-turbo
+# DASHSCOPE_BASE_URL=https://dashscope.aliyuncs.com/api/v1
 EOF
 ```
 
