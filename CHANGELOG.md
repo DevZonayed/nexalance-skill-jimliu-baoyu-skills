@@ -2,6 +2,14 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.24.1 - 2026-01-28
+
+### Features
+- `baoyu-image-gen`: add Aliyun Tongyi Wanxiang (DashScope) text-to-image model support (by @JianJang2017).
+
+### Documentation
+- Add Aliyun text-to-image model configuration to README.
+
 ## 1.24.0 - 2026-01-27
 
 ### Features
