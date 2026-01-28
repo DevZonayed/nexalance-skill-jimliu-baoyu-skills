@@ -403,9 +403,11 @@ Files:
 
 | Action | Steps |
 |--------|-------|
-| **Edit** | Update prompt → Regenerate with same session ID |
+| **Edit** | **Update prompt file FIRST** → Regenerate with same session ID |
 | **Add** | Specify position → Create prompt → Generate → Renumber subsequent files (NN+1) → Update outline |
 | **Delete** | Remove files → Renumber subsequent (NN-1) → Update outline |
+
+**IMPORTANT**: When updating images, ALWAYS update the prompt file (`prompts/NN-{type}-[slug].md`) FIRST before regenerating. This ensures changes are documented and reproducible.
 
 ## Content Breakdown Principles
 

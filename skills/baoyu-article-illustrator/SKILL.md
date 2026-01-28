@@ -303,9 +303,14 @@ illustrations/{topic-slug}/
 
 | Action | Steps |
 |--------|-------|
-| **Edit** | Update prompt → Regenerate → Update reference |
+| **Edit** | **Update prompt file FIRST** → Regenerate → Update reference |
 | **Add** | Identify position → Create prompt → Generate → Update outline → Insert |
 | **Delete** | Delete files → Remove reference → Update outline |
+
+**IMPORTANT**: When updating illustrations, ALWAYS update the prompt file (`prompts/illustration-{slug}.md`) FIRST before regenerating. This ensures:
+1. Changes are documented and reproducible
+2. The prompt reflects the new requirements
+3. Future regeneration uses the correct prompt
 
 ## References
 

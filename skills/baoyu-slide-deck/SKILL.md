@@ -626,15 +626,17 @@ Flow:
 
 | Action | Command | Manual Steps |
 |--------|---------|--------------|
-| **Edit** | `--regenerate N` | Update prompt → Regenerate image → Regenerate PDF |
+| **Edit** | `--regenerate N` | **Update prompt file FIRST** → Regenerate image → Regenerate PDF |
 | **Add** | Manual | Create prompt → Generate image → Renumber subsequent → Update outline → Regenerate PDF |
 | **Delete** | Manual | Remove files → Renumber subsequent → Update outline → Regenerate PDF |
 
 ### Edit Single Slide
 
-1. Update prompt in `prompts/NN-slide-{slug}.md`
+1. **Update prompt file FIRST** in `prompts/NN-slide-{slug}.md`
 2. Run: `/baoyu-slide-deck <dir> --regenerate N`
 3. Or manually regenerate image + PDF
+
+**IMPORTANT**: When updating slides, ALWAYS update the prompt file (`prompts/NN-slide-{slug}.md`) FIRST before regenerating. This ensures changes are documented and reproducible.
 
 ### Add New Slide
 

@@ -258,8 +258,10 @@ Files:
 
 | Action | Steps |
 |--------|-------|
-| **Regenerate** | Backup existing → Update prompt → Regenerate with same settings |
-| **Change dimension** | Backup existing → Confirm new value → Update prompt → Regenerate |
+| **Regenerate** | Backup existing → **Update prompt file FIRST** → Regenerate with same settings |
+| **Change dimension** | Backup existing → Confirm new value → **Update prompt file FIRST** → Regenerate |
+
+**IMPORTANT**: When regenerating, ALWAYS update the prompt file (`prompts/cover.md`) FIRST before regenerating. This ensures changes are documented and reproducible.
 
 All modifications automatically backup existing `cover.png` before regenerating.
 

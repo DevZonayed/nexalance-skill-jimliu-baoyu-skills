@@ -259,6 +259,16 @@ Schema: [references/config/preferences-schema.md](references/config/preferences-
 - [config/first-time-setup.md](references/config/first-time-setup.md) - First-time setup
 - [config/watermark-guide.md](references/config/watermark-guide.md) - Watermark configuration
 
+## Page Modification
+
+| Action | Steps |
+|--------|-------|
+| **Edit** | **Update prompt file FIRST** → `--regenerate N` → Regenerate PDF |
+| **Add** | Create prompt at position → Generate with character ref → Renumber subsequent → Update storyboard → Regenerate PDF |
+| **Delete** | Remove files → Renumber subsequent → Update storyboard → Regenerate PDF |
+
+**IMPORTANT**: When updating pages, ALWAYS update the prompt file (`prompts/NN-{cover|page}-[slug].md`) FIRST before regenerating. This ensures changes are documented and reproducible.
+
 ## Notes
 
 - Image generation: 10-30 seconds per page
