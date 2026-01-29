@@ -43,7 +43,9 @@
       "skills": [
         "./skills/baoyu-danger-x-to-markdown",
         "./skills/baoyu-compress-image",
-        "./skills/baoyu-url-to-markdown"
+        "./skills/baoyu-url-to-markdown",
+        "./skills/baoyu-format-markdown",
+        "./skills/baoyu-markdown-to-html"
       ]
     }
   ]

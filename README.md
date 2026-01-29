@@ -55,7 +55,7 @@ Simply tell Claude Code:
 |--------|-------------|--------|
 | **content-skills** | Content generation and publishing | [xhs-images](#baoyu-xhs-images), [infographic](#baoyu-infographic), [cover-image](#baoyu-cover-image), [slide-deck](#baoyu-slide-deck), [comic](#baoyu-comic), [article-illustrator](#baoyu-article-illustrator), [post-to-x](#baoyu-post-to-x), [post-to-wechat](#baoyu-post-to-wechat) |
 | **ai-generation-skills** | AI-powered generation backends | [image-gen](#baoyu-image-gen), [danger-gemini-web](#baoyu-danger-gemini-web) |
-| **utility-skills** | Utility tools for content processing | [url-to-markdown](#baoyu-url-to-markdown), [danger-x-to-markdown](#baoyu-danger-x-to-markdown), [compress-image](#baoyu-compress-image) |
+| **utility-skills** | Utility tools for content processing | [url-to-markdown](#baoyu-url-to-markdown), [danger-x-to-markdown](#baoyu-danger-x-to-markdown), [compress-image](#baoyu-compress-image), [format-markdown](#baoyu-format-markdown) |
 
 ## Update Skills
 
@@ -677,6 +677,43 @@ Compress images to reduce file size while maintaining quality.
 /baoyu-compress-image path/to/image.png
 /baoyu-compress-image path/to/images/ --quality 80
 ```
+
+#### baoyu-format-markdown
+
+Format plain text or markdown files with proper frontmatter, titles, summaries, headings, bold, lists, and code blocks.
+
+```bash
+# Format a markdown file
+/baoyu-format-markdown path/to/article.md
+
+# Format with specific output
+/baoyu-format-markdown path/to/draft.md
+```
+
+**Workflow**:
+1. Read source file and analyze content structure
+2. Check/create YAML frontmatter (title, slug, summary, featureImage)
+3. Handle title: use existing, extract from H1, or generate candidates
+4. Apply formatting: headings, bold, lists, code blocks, quotes
+5. Save to `{filename}-formatted.md`
+6. Run typography script: ASCII→fullwidth quotes, CJK spacing, autocorrect
+
+**Frontmatter Fields**:
+| Field | Processing |
+|-------|------------|
+| `title` | Use existing, extract H1, or generate candidates |
+| `slug` | Infer from file path or generate from title |
+| `summary` | Generate engaging summary (100-150 chars) |
+| `featureImage` | Check for `imgs/cover.png` in same directory |
+
+**Formatting Rules**:
+| Element | Format |
+|---------|--------|
+| Titles | `#`, `##`, `###` hierarchy |
+| Key points | `**bold**` |
+| Parallel items | `-` unordered or `1.` ordered lists |
+| Code/commands | `` `inline` `` or ` ```block``` ` |
+| Quotes | `>` blockquote |
 
 ## Environment Configuration
 

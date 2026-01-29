@@ -55,7 +55,7 @@ npx skills add jimliu/baoyu-skills
 |------|------|----------|
 | **content-skills** | 内容生成和发布 | [xhs-images](#baoyu-xhs-images), [infographic](#baoyu-infographic), [cover-image](#baoyu-cover-image), [slide-deck](#baoyu-slide-deck), [comic](#baoyu-comic), [article-illustrator](#baoyu-article-illustrator), [post-to-x](#baoyu-post-to-x), [post-to-wechat](#baoyu-post-to-wechat) |
 | **ai-generation-skills** | AI 生成后端 | [image-gen](#baoyu-image-gen), [danger-gemini-web](#baoyu-danger-gemini-web) |
-| **utility-skills** | 内容处理工具 | [url-to-markdown](#baoyu-url-to-markdown), [danger-x-to-markdown](#baoyu-danger-x-to-markdown), [compress-image](#baoyu-compress-image) |
+| **utility-skills** | 内容处理工具 | [url-to-markdown](#baoyu-url-to-markdown), [danger-x-to-markdown](#baoyu-danger-x-to-markdown), [compress-image](#baoyu-compress-image), [format-markdown](#baoyu-format-markdown) |
 
 ## 更新技能
 
@@ -677,6 +677,43 @@ AI 驱动的生成后端。
 /baoyu-compress-image path/to/image.png
 /baoyu-compress-image path/to/images/ --quality 80
 ```
+
+#### baoyu-format-markdown
+
+格式化纯文本或 Markdown 文件，添加 frontmatter、标题、摘要、层级标题、加粗、列表和代码块。
+
+```bash
+# 格式化 markdown 文件
+/baoyu-format-markdown path/to/article.md
+
+# 格式化指定文件
+/baoyu-format-markdown path/to/draft.md
+```
+
+**工作流程**：
+1. 读取源文件并分析内容结构
+2. 检查/创建 YAML frontmatter（title、slug、summary、featureImage）
+3. 处理标题：使用现有标题、提取 H1 或生成候选标题
+4. 应用格式：层级标题、加粗、列表、代码块、引用
+5. 保存为 `{文件名}-formatted.md`
+6. 运行排版脚本：半角引号→全角引号、中英文空格、autocorrect
+
+**Frontmatter 字段**：
+| 字段 | 处理方式 |
+|------|----------|
+| `title` | 使用现有、提取 H1 或生成候选 |
+| `slug` | 从文件路径推断或根据标题生成 |
+| `summary` | 生成吸引人的摘要（100-150 字） |
+| `featureImage` | 检查同目录下 `imgs/cover.png` |
+
+**格式化规则**：
+| 元素 | 格式 |
+|------|------|
+| 标题 | `#`、`##`、`###` 层级 |
+| 重点内容 | `**加粗**` |
+| 并列要点 | `-` 无序列表或 `1.` 有序列表 |
+| 代码/命令 | `` `行内` `` 或 ` ```代码块``` ` |
+| 引用 | `>` 引用块 |
 
 ## 环境配置
 
