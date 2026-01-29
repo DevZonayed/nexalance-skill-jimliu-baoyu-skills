@@ -24,11 +24,17 @@ import {
   highlightAndFormatCode,
 } from "./utils/languages.js";
 
-type ThemeName = "default" | "grace" | "simple";
+type ThemeName = string;
 
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const THEME_DIR = path.resolve(SCRIPT_DIR, "themes");
-const THEME_NAMES: ThemeName[] = ["default", "grace", "simple"];
+const EXTERNAL_THEME_CONFIG_PATH =
+  process.env.MD_THEME_CONFIG_PATH
+  || "/Users/jimliu/GitHub/md/packages/shared/src/configs/theme.ts";
+const EXTERNAL_THEME_DIR =
+  process.env.MD_THEME_DIR
+  || path.resolve(path.dirname(EXTERNAL_THEME_CONFIG_PATH), "theme-css");
+const FALLBACK_THEMES: ThemeName[] = ["default", "grace", "simple"];
 
 const DEFAULT_STYLE = {
   primaryColor: "#0F4C81",
@@ -44,6 +50,57 @@ Object.entries(COMMON_LANGUAGES).forEach(([name, lang]) => {
 });
 
 export { hljs };
+
+function stripOutputScope(cssContent: string): string {
+  let css = cssContent;
+  css = css.replace(/#output\s*\{/g, "body {");
+  css = css.replace(/#output\s+/g, "");
+  css = css.replace(/^#output\s*/gm, "");
+  return css;
+}
+
+function discoverThemesFromDir(dir: string): string[] {
+  if (!fs.existsSync(dir)) {
+    return [];
+  }
+  return fs
+    .readdirSync(dir)
+    .filter((name) => name.endsWith(".css"))
+    .map((name) => name.replace(/\.css$/i, ""))
+    .filter((name) => name.toLowerCase() !== "base");
+}
+
+function readThemeNamesFromConfig(configPath: string): string[] {
+  if (!fs.existsSync(configPath)) {
+    return [];
+  }
+  const content = fs.readFileSync(configPath, "utf-8");
+  const match = content.match(/themeOptionsMap\s*=\s*\{([\s\S]*?)\n\}/);
+  if (!match) {
+    return [];
+  }
+  return Array.from(match[1].matchAll(/^\s*([a-zA-Z0-9_-]+)\s*:/gm)).map(
+    (item) => item[1]!
+  );
+}
+
+function resolveThemeNames(): ThemeName[] {
+  const localThemes = discoverThemesFromDir(THEME_DIR);
+  const externalThemes = discoverThemesFromDir(EXTERNAL_THEME_DIR);
+  const configThemes = readThemeNamesFromConfig(EXTERNAL_THEME_CONFIG_PATH);
+  const combined = new Set<ThemeName>([
+    ...localThemes,
+    ...externalThemes,
+    ...configThemes,
+  ]);
+  const resolved = Array.from(combined).filter((name) =>
+    fs.existsSync(path.join(THEME_DIR, `${name}.css`))
+    || fs.existsSync(path.join(EXTERNAL_THEME_DIR, `${name}.css`))
+  );
+  return resolved.length ? resolved : FALLBACK_THEMES;
+}
+
+const THEME_NAMES: ThemeName[] = resolveThemeNames();
 
 marked.setOptions({
   breaks: true,
@@ -542,15 +599,31 @@ function loadThemeCss(theme: ThemeName): {
   baseCss: string;
   themeCss: string;
 } {
-  const basePath = path.join(THEME_DIR, "base.css");
-  const themePath = path.join(THEME_DIR, `${theme}.css`);
+  const basePathCandidates = [
+    path.join(THEME_DIR, "base.css"),
+    path.join(EXTERNAL_THEME_DIR, "base.css"),
+  ];
+  const themePathCandidates = [
+    path.join(THEME_DIR, `${theme}.css`),
+    path.join(EXTERNAL_THEME_DIR, `${theme}.css`),
+  ];
+  const basePath = basePathCandidates.find((candidate) =>
+    fs.existsSync(candidate)
+  );
+  const themePath = themePathCandidates.find((candidate) =>
+    fs.existsSync(candidate)
+  );
 
-  if (!fs.existsSync(basePath)) {
-    throw new Error(`Missing base CSS: ${basePath}`);
+  if (!basePath) {
+    throw new Error(
+      `Missing base CSS. Checked: ${basePathCandidates.join(", ")}`
+    );
   }
 
-  if (!fs.existsSync(themePath)) {
-    throw new Error(`Missing theme CSS: ${themePath}`);
+  if (!themePath) {
+    throw new Error(
+      `Missing theme CSS for "${theme}". Checked: ${themePathCandidates.join(", ")}`
+    );
   }
 
   return {
@@ -584,6 +657,10 @@ body {
   return [variables, baseCss, themeCss].join("\n\n");
 }
 
+function normalizeThemeCss(css: string): string {
+  return stripOutputScope(css);
+}
+
 function buildHtmlDocument(title: string, css: string, html: string): string {
   return [
     "<!doctype html>",
@@ -603,7 +680,65 @@ function buildHtmlDocument(title: string, css: string, html: string): string {
   ].join("\n");
 }
 
-function main(): void {
+async function inlineCss(html: string): Promise<string> {
+  try {
+    const { default: juice } = await import("juice");
+    return juice(html, {
+      inlinePseudoElements: true,
+      preserveImportant: true,
+      resolveCSSVariables: false,
+    });
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : String(error);
+    throw new Error(
+      `Missing dependency "juice" for CSS inlining. Install it first (e.g. "bun add juice" or "npm add juice"). Original error: ${detail}`
+    );
+  }
+}
+
+function normalizeCssText(cssText: string): string {
+  return cssText
+    .replace(/var\(--md-primary-color\)/g, DEFAULT_STYLE.primaryColor)
+    .replace(/var\(--md-font-family\)/g, DEFAULT_STYLE.fontFamily)
+    .replace(/var\(--md-font-size\)/g, DEFAULT_STYLE.fontSize)
+    .replace(/var\(--blockquote-background\)/g, DEFAULT_STYLE.blockquoteBackground)
+    .replace(/hsl\(var\(--foreground\)\)/g, "#3f3f3f")
+    .replace(/--md-primary-color:\s*[^;"']+;?/g, "")
+    .replace(/--md-font-family:\s*[^;"']+;?/g, "")
+    .replace(/--md-font-size:\s*[^;"']+;?/g, "")
+    .replace(/--blockquote-background:\s*[^;"']+;?/g, "")
+    .replace(/--foreground:\s*[^;"']+;?/g, "");
+}
+
+function normalizeInlineCss(html: string): string {
+  let output = html;
+  output = output.replace(
+    /<style([^>]*)>([\s\S]*?)<\/style>/gi,
+    (_match, attrs: string, cssText: string) =>
+      `<style${attrs}>${normalizeCssText(cssText)}</style>`
+  );
+  output = output.replace(
+    /style="([^"]*)"/gi,
+    (_match, cssText: string) => `style="${normalizeCssText(cssText)}"`
+  );
+  output = output.replace(
+    /style='([^']*)'/gi,
+    (_match, cssText: string) => `style='${normalizeCssText(cssText)}'`
+  );
+  return output;
+}
+
+function modifyHtmlStructure(htmlString: string): string {
+  let output = htmlString;
+  const pattern =
+    /<li([^>]*)>([\s\S]*?)(<ul[\s\S]*?<\/ul>|<ol[\s\S]*?<\/ol>)<\/li>/i;
+  while (pattern.test(output)) {
+    output = output.replace(pattern, "<li$1>$2</li>$3");
+  }
+  return output;
+}
+
+async function main(): Promise<void> {
   const options = parseArgs(process.argv.slice(2));
   if (!options) {
     printUsage();
@@ -624,7 +759,7 @@ function main(): void {
   );
 
   const { baseCss, themeCss } = loadThemeCss(options.theme);
-  const css = buildCss(baseCss, themeCss);
+  const css = normalizeThemeCss(buildCss(baseCss, themeCss));
   const markdown = fs.readFileSync(inputPath, "utf-8");
 
   const renderer = initRenderer({});
@@ -636,6 +771,8 @@ function main(): void {
 
   const title = path.basename(outputPath, ".html");
   const html = buildHtmlDocument(title, css, content);
+  const inlinedHtml = normalizeInlineCss(await inlineCss(html));
+  const finalHtml = modifyHtmlStructure(inlinedHtml);
 
   let backupPath = "";
   if (fs.existsSync(outputPath)) {
@@ -643,7 +780,7 @@ function main(): void {
     fs.renameSync(outputPath, backupPath);
   }
 
-  fs.writeFileSync(outputPath, html, "utf-8");
+  fs.writeFileSync(outputPath, finalHtml, "utf-8");
 
   if (backupPath) {
     console.log(`Backup created: ${backupPath}`);
@@ -651,4 +788,7 @@ function main(): void {
   console.log(`HTML written: ${outputPath}`);
 }
 
-main();
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
