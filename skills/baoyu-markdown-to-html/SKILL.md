@@ -47,6 +47,27 @@ test -f "$HOME/.baoyu-skills/baoyu-markdown-to-html/EXTEND.md" && echo "user"
 
 ## Workflow
 
+### Step 0: Pre-check (Chinese Content)
+
+**Condition**: Only execute if input file contains Chinese text.
+
+**Detection**:
+1. Read input markdown file
+2. Check if content contains CJK characters (Chinese/Japanese/Korean)
+3. If no CJK content → skip to Step 1
+
+**Format Suggestion**:
+
+If CJK content detected AND `baoyu-format-markdown` skill is available:
+
+Use `AskUserQuestion` to ask whether to format first. Formatting can fix:
+- Bold markers with punctuation inside causing `**` parse failures
+- CJK/English spacing issues
+
+**If user agrees**: Invoke `baoyu-format-markdown` skill to format the file, then use formatted file as input.
+
+**If user declines**: Continue with original file.
+
 ### Step 1: Confirm Theme
 
 Before converting, use AskUserQuestion to confirm the theme (unless user already specified):
