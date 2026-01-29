@@ -2,6 +2,14 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.25.4 - 2026-01-29
+
+### 修复
+- `baoyu-markdown-to-html`：生成带 `data-local-path` 属性的 `<img>` 标签，而非纯文本占位符。
+- `baoyu-post-to-wechat`：修复 API 发布时从 `data-local-path` 属性读取图片路径；修复发布 HTML 文件时从对应 `.md` 的 frontmatter 提取标题和封面图。
+- `baoyu-post-to-wechat`：修复命令行参数解析，正确跳过未知参数；新增 `--summary` 参数支持。
+- `baoyu-post-to-wechat`：修复浏览器发布模式，粘贴前将 `<img>` 标签转换回文本占位符。
+
 ## 1.25.3 - 2026-01-28
 
 ### 新功能

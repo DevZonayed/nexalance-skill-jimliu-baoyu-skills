@@ -2,6 +2,14 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.25.4 - 2026-01-29
+
+### Fixes
+- `baoyu-markdown-to-html`: generate proper `<img>` tags with `data-local-path` attribute instead of text placeholders.
+- `baoyu-post-to-wechat`: fix API publishing to read image paths from `data-local-path` attribute; fix title/cover extraction from corresponding `.md` frontmatter when publishing HTML files.
+- `baoyu-post-to-wechat`: fix CLI argument parsing to handle unknown parameters gracefully; add `--summary` parameter support.
+- `baoyu-post-to-wechat`: fix browser publishing to convert `<img>` tags back to text placeholders before paste.
+
 ## 1.25.3 - 2026-01-28
 
 ### Features

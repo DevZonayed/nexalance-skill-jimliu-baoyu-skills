@@ -115,7 +115,7 @@ async function sendPaste(cdp?: CdpConnection, sessionId?: string): Promise<void>
   }
 }
 
-async function copyHtmlFromBrowser(cdp: CdpConnection, htmlFilePath: string): Promise<void> {
+async function copyHtmlFromBrowser(cdp: CdpConnection, htmlFilePath: string, contentImages: ImageInfo[] = []): Promise<void> {
   const absolutePath = path.isAbsolute(htmlFilePath) ? htmlFilePath : path.resolve(process.cwd(), htmlFilePath);
   const fileUrl = `file://${absolutePath}`;
 
@@ -127,6 +127,28 @@ async function copyHtmlFromBrowser(cdp: CdpConnection, htmlFilePath: string): Pr
   await cdp.send('Page.enable', {}, { sessionId });
   await cdp.send('Runtime.enable', {}, { sessionId });
   await sleep(2000);
+
+  if (contentImages.length > 0) {
+    console.log('[wechat] Replacing img tags with placeholders for browser paste...');
+    const replacements = contentImages.map(img => ({ placeholder: img.placeholder, localPath: img.localPath }));
+    await cdp.send<{ result: { value: unknown } }>('Runtime.evaluate', {
+      expression: `
+        (function() {
+          const replacements = ${JSON.stringify(replacements)};
+          for (const r of replacements) {
+            const imgs = document.querySelectorAll('img[src="' + r.placeholder + '"], img[data-local-path="' + r.localPath + '"]');
+            for (const img of imgs) {
+              const text = document.createTextNode(r.placeholder);
+              img.parentNode.replaceChild(text, img);
+            }
+          }
+          return true;
+        })()
+      `,
+      returnByValue: true,
+    }, { sessionId });
+    await sleep(500);
+  }
 
   console.log('[wechat] Selecting #output content...');
   await cdp.send<{ result: { value: unknown } }>('Runtime.evaluate', {
@@ -176,7 +198,7 @@ async function parseMarkdownWithPlaceholders(markdownPath: string, theme?: strin
   return JSON.parse(output);
 }
 
-function parseHtmlMeta(htmlPath: string): { title: string; author: string; summary: string } {
+function parseHtmlMeta(htmlPath: string): { title: string; author: string; summary: string; contentImages: ImageInfo[] } {
   const content = fs.readFileSync(htmlPath, 'utf-8');
 
   let title = '';
@@ -203,7 +225,45 @@ function parseHtmlMeta(htmlPath: string): { title: string; author: string; summa
     }
   }
 
-  return { title, author, summary };
+  const mdPath = htmlPath.replace(/\.html$/i, '.md');
+  if (fs.existsSync(mdPath)) {
+    const mdContent = fs.readFileSync(mdPath, 'utf-8');
+    const fmMatch = mdContent.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+    if (fmMatch) {
+      const lines = fmMatch[1]!.split('\n');
+      for (const line of lines) {
+        const colonIdx = line.indexOf(':');
+        if (colonIdx > 0) {
+          const key = line.slice(0, colonIdx).trim();
+          let value = line.slice(colonIdx + 1).trim();
+          if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+            value = value.slice(1, -1);
+          }
+          if (key === 'title' && !title) title = value;
+          if (key === 'author' && !author) author = value;
+          if ((key === 'description' || key === 'summary') && !summary) summary = value;
+        }
+      }
+    }
+  }
+
+  const contentImages: ImageInfo[] = [];
+  const imgRegex = /<img[^>]*\ssrc=["']([^"']+)["'][^>]*>/gi;
+  const matches = [...content.matchAll(imgRegex)];
+  for (const match of matches) {
+    const [fullTag, src] = match;
+    if (!src || src.startsWith('http')) continue;
+    const localPathMatch = fullTag.match(/data-local-path=["']([^"']+)["']/);
+    if (localPathMatch) {
+      contentImages.push({
+        placeholder: src,
+        localPath: localPathMatch[1]!,
+        originalPath: src,
+      });
+    }
+  }
+
+  return { title, author, summary, contentImages };
 }
 
 async function selectAndReplacePlaceholder(session: ChromeSession, placeholder: string): Promise<boolean> {
@@ -273,9 +333,13 @@ export async function postArticle(options: ArticleOptions): Promise<void> {
     effectiveAuthor = effectiveAuthor || meta.author;
     effectiveSummary = effectiveSummary || meta.summary;
     effectiveHtmlFile = htmlFile;
+    if (meta.contentImages.length > 0) {
+      contentImages = meta.contentImages;
+    }
     console.log(`[wechat] Title: ${effectiveTitle || '(empty)'}`);
     console.log(`[wechat] Author: ${effectiveAuthor || '(empty)'}`);
     console.log(`[wechat] Summary: ${effectiveSummary || '(empty)'}`);
+    console.log(`[wechat] Found ${contentImages.length} images to insert`);
   }
 
   if (effectiveTitle && effectiveTitle.length > 64) throw new Error(`Title too long: ${effectiveTitle.length} chars (max 64)`);
@@ -416,7 +480,7 @@ export async function postArticle(options: ArticleOptions): Promise<void> {
 
     if (effectiveHtmlFile && fs.existsSync(effectiveHtmlFile)) {
       console.log(`[wechat] Copying HTML content from: ${effectiveHtmlFile}`);
-      await copyHtmlFromBrowser(cdp, effectiveHtmlFile);
+      await copyHtmlFromBrowser(cdp, effectiveHtmlFile, contentImages);
       await sleep(500);
       console.log('[wechat] Pasting into editor...');
       await pasteFromClipboardInEditor(session);

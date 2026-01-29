@@ -177,7 +177,7 @@ async function uploadImagesInHtml(
   accessToken: string,
   baseDir: string
 ): Promise<{ html: string; firstMediaId: string }> {
-  const imgRegex = /<img[^>]+src=["']([^"']+)["'][^>]*>/gi;
+  const imgRegex = /<img[^>]*\ssrc=["']([^"']+)["'][^>]*>/gi;
   const matches = [...html.matchAll(imgRegex)];
 
   if (matches.length === 0) {
@@ -188,7 +188,7 @@ async function uploadImagesInHtml(
   let updatedHtml = html;
 
   for (const match of matches) {
-    const [, src] = match;
+    const [fullTag, src] = match;
     if (!src) continue;
 
     if (src.startsWith("https://mmbiz.qpic.cn")) {
@@ -198,15 +198,21 @@ async function uploadImagesInHtml(
       continue;
     }
 
-    console.error(`[wechat-api] Uploading image: ${src}`);
+    const localPathMatch = fullTag.match(/data-local-path=["']([^"']+)["']/);
+    const imagePath = localPathMatch ? localPathMatch[1]! : src;
+
+    console.error(`[wechat-api] Uploading image: ${imagePath}`);
     try {
-      const resp = await uploadImage(src, accessToken, baseDir);
-      updatedHtml = updatedHtml.replace(src, resp.url);
+      const resp = await uploadImage(imagePath, accessToken, baseDir);
+      const newTag = fullTag
+        .replace(/\ssrc=["'][^"']+["']/, ` src="${resp.url}"`)
+        .replace(/\sdata-local-path=["'][^"']+["']/, "");
+      updatedHtml = updatedHtml.replace(fullTag, newTag);
       if (!firstMediaId) {
         firstMediaId = resp.media_id;
       }
     } catch (err) {
-      console.error(`[wechat-api] Failed to upload ${src}:`, err);
+      console.error(`[wechat-api] Failed to upload ${imagePath}:`, err);
     }
   }
 
@@ -310,6 +316,7 @@ Arguments:
 
 Options:
   --title <title>     Override title
+  --summary <text>    Article summary (for future use)
   --theme <name>      Theme name for markdown (default, grace, simple). Default: default
   --cover <path>      Cover image path (local or URL)
   --dry-run           Parse and render only, don't publish
@@ -337,6 +344,7 @@ interface CliArgs {
   filePath: string;
   isHtml: boolean;
   title?: string;
+  summary?: string;
   theme: string;
   cover?: string;
   dryRun: boolean;
@@ -358,12 +366,16 @@ function parseArgs(argv: string[]): CliArgs {
     const arg = argv[i]!;
     if (arg === "--title" && argv[i + 1]) {
       args.title = argv[++i];
+    } else if (arg === "--summary" && argv[i + 1]) {
+      args.summary = argv[++i];
     } else if (arg === "--theme" && argv[i + 1]) {
       args.theme = argv[++i]!;
     } else if (arg === "--cover" && argv[i + 1]) {
       args.cover = argv[++i];
     } else if (arg === "--dry-run") {
       args.dryRun = true;
+    } else if (arg.startsWith("--") && argv[i + 1] && !argv[i + 1]!.startsWith("-")) {
+      i++;
     } else if (!arg.startsWith("-")) {
       args.filePath = arg;
     }
@@ -405,6 +417,15 @@ async function main(): Promise<void> {
   if (args.isHtml) {
     htmlPath = filePath;
     htmlContent = extractHtmlContent(htmlPath);
+    const mdPath = filePath.replace(/\.html$/i, ".md");
+    if (fs.existsSync(mdPath)) {
+      const mdContent = fs.readFileSync(mdPath, "utf-8");
+      const parsed = parseFrontmatter(mdContent);
+      frontmatter = parsed.frontmatter;
+      if (!title && frontmatter.title) {
+        title = frontmatter.title;
+      }
+    }
     if (!title) {
       title = extractHtmlTitle(fs.readFileSync(htmlPath, "utf-8"));
     }

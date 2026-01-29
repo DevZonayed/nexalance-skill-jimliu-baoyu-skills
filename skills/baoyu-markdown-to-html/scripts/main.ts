@@ -214,7 +214,6 @@ export async function convertMarkdown(markdownPath: string, options?: { title?: 
   }
 
   fs.copyFileSync(tempHtmlPath, finalHtmlPath);
-  console.error(`[markdown-to-html] HTML saved to: ${finalHtmlPath}`);
 
   const contentImages: ImageInfo[] = [];
   for (const img of images) {
@@ -225,6 +224,15 @@ export async function convertMarkdown(markdownPath: string, options?: { title?: 
       originalPath: img.src,
     });
   }
+
+  let htmlContent = fs.readFileSync(finalHtmlPath, 'utf-8');
+  for (const img of contentImages) {
+    const imgTag = `<img src="${img.placeholder}" data-local-path="${img.localPath}" style="display: block; width: 100%; margin: 1.5em auto;">`;
+    htmlContent = htmlContent.replace(img.placeholder, imgTag);
+  }
+  fs.writeFileSync(finalHtmlPath, htmlContent, 'utf-8');
+
+  console.error(`[markdown-to-html] HTML saved to: ${finalHtmlPath}`);
 
   return {
     title,
