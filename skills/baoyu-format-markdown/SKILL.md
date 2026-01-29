@@ -58,6 +58,55 @@ Claude performs content analysis and formatting (Steps 1-6), then runs the scrip
 
 Read the user-specified markdown or plain text file.
 
+### Step 1.5: Detect Content Type & Confirm
+
+**Content Type Detection:**
+
+| Indicator | Classification |
+|-----------|----------------|
+| Has `---` YAML frontmatter | Markdown |
+| Has `#`, `##`, `###` headings | Markdown |
+| Has `**bold**`, `*italic*` | Markdown |
+| Has `- ` or `1. ` lists | Markdown |
+| Has ``` code blocks | Markdown |
+| Has `> ` blockquotes | Markdown |
+| None of above | Plain text |
+
+**Decision Flow:**
+
+┌─────────────────┬────────────────────────────────────────────────┐
+│  Content Type   │                     Action                     │
+├─────────────────┼────────────────────────────────────────────────┤
+│ Plain text      │ Proceed to Step 2 (format to markdown)         │
+├─────────────────┼────────────────────────────────────────────────┤
+│ Markdown        │ Use AskUserQuestion to confirm optimization    │
+└─────────────────┴────────────────────────────────────────────────┘
+
+**If Markdown detected, ask user:**
+
+```
+Detected existing markdown formatting. What would you like to do?
+
+1. Optimize formatting (Recommended)
+   - Add/improve frontmatter, headings, bold, lists
+   - Run typography script (spacing, emphasis fixes)
+   - Output: {filename}-formatted.md
+
+2. Keep original formatting
+   - Preserve existing markdown structure
+   - Run typography script (spacing, emphasis fixes)
+   - Output: {filename}-formatted.md
+
+3. Typography fixes only
+   - Run typography script on original file in-place
+   - No copy created, modifies original file directly
+```
+
+**Based on user choice:**
+- **Optimize**: Continue to Step 2-8 (full workflow)
+- **Keep original**: Skip Steps 2-5, copy file → Step 6-8 (run script on copy)
+- **Typography only**: Skip Steps 2-6, run Step 7 on original file directly
+
 ### Step 2: Analyze Content Structure
 
 Identify:
@@ -137,6 +186,10 @@ Save as `{original-filename}-formatted.md`
 Examples:
 - `final.md` → `final-formatted.md`
 - `draft-v1.md` → `draft-v1-formatted.md`
+
+**If user chose "Keep original formatting" (from Step 1.5):**
+- Copy original file to `{filename}-formatted.md` without modifications
+- Proceed to Step 7 for typography fixes only
 
 **Backup existing file:**
 
