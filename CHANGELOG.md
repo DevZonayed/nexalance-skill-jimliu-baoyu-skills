@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.25.3 - 2026-01-28
+
+### Features
+- `baoyu-format-markdown`: add content type detection with user confirmation for markdown files; add CJK punctuation handling to move paired punctuation outside emphasis markers.
+
 ## 1.25.2 - 2026-01-28
 
 ### Documentation
