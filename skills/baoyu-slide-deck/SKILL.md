@@ -226,6 +226,7 @@ Schema: `references/config/preferences-schema.md`
 **1.2 Analyze Content**
 
 1. Save source content (if pasted, save as `source.md`)
+   - **Backup rule**: If `source.md` exists, rename to `source-backup-YYYYMMDD-HHMMSS.md`
 2. Follow `references/analysis-framework.md` for content analysis
 3. Analyze content signals for style recommendations
 4. Detect source language
@@ -483,6 +484,7 @@ options:
    - Add slide-specific content
    - If `Layout:` specified, include layout guidance from `references/layouts.md`
 3. Save to `prompts/` directory
+   - **Backup rule**: If prompt file exists, rename to `prompts/NN-slide-{slug}-backup-YYYYMMDD-HHMMSS.md`
 
 **After generation**:
 - If `--prompts-only`, stop here and output prompt summary
@@ -539,7 +541,9 @@ options:
 **Standard flow**:
 1. Select available image generation skill
 2. Generate session ID: `slides-{topic-slug}-{timestamp}`
-3. Generate each slide sequentially with same session ID
+3. For each slide:
+   - **Backup rule**: If image file exists, rename to `NN-slide-{slug}-backup-YYYYMMDD-HHMMSS.png`
+   - Generate image sequentially with same session ID
 4. Report progress: "Generated X/N" (in user's language)
 5. Auto-retry once on failure before reporting error
 
