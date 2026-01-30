@@ -153,10 +153,12 @@ Schema: `references/config/preferences-schema.md`
 **1.2 Analyze Content → `analysis.md`**
 
 1. Save source content (file path or paste → `source.md`)
+   - **Backup rule**: If `source.md` exists, rename to `source-backup-YYYYMMDD-HHMMSS.md`
 2. Analyze: topic, data type, complexity, tone, audience
 3. Detect source language and user language
 4. Extract design instructions from user input
 5. Save analysis
+   - **Backup rule**: If `analysis.md` exists, rename to `analysis-backup-YYYYMMDD-HHMMSS.md`
 
 See `references/analysis-framework.md` for detailed format.
 
@@ -189,6 +191,8 @@ Present all options in single confirmation:
 
 ### Step 5: Generate Prompt → `prompts/infographic.md`
 
+**Backup rule**: If `prompts/infographic.md` exists, rename to `prompts/infographic-backup-YYYYMMDD-HHMMSS.md`
+
 Combine:
 1. Layout definition from `references/layouts/<layout>.md`
 2. Style definition from `references/styles/<style>.md`
@@ -199,8 +203,10 @@ Combine:
 ### Step 6: Generate Image
 
 1. Select available image generation skill (ask user if multiple)
-2. Call with prompt file and output path
-3. On failure, auto-retry once
+2. **Check for existing file**: Before generating, check if `infographic.png` exists
+   - If exists: Rename to `infographic-backup-YYYYMMDD-HHMMSS.png`
+3. Call with prompt file and output path
+4. On failure, auto-retry once
 
 ### Step 7: Output Summary
 
