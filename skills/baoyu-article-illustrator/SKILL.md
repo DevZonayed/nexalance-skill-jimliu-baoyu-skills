@@ -78,6 +78,8 @@ Progress:
 | File path | Ask user (1.2) | → 1.2 |
 | Pasted content | `illustrations/{topic-slug}/` | → 1.4 |
 
+**Backup rule for pasted content**: If `source.md` exists in target directory, rename to `source-backup-YYYYMMDD-HHMMSS.md` before saving.
+
 **1.2 Determine Output Directory** (file path input only)
 
 Check `default_output_dir` in preferences:
@@ -236,6 +238,7 @@ image_count: 4
 **5.1 Create Prompts**
 
 Follow [references/prompt-construction.md](references/prompt-construction.md). Save to `prompts/illustration-{slug}.md`.
+- **Backup rule**: If prompt file exists, rename to `prompts/illustration-{slug}-backup-YYYYMMDD-HHMMSS.md`
 
 **5.2 Select Generation Skill**
 
@@ -247,7 +250,9 @@ Add: `Include a subtle watermark "[content]" at [position].`
 
 **5.4 Generate**
 
-1. Generate sequentially
+1. For each illustration:
+   - **Backup rule**: If image file exists, rename to `NN-{type}-{slug}-backup-YYYYMMDD-HHMMSS.png`
+   - Generate image
 2. After each: "Generated X/N"
 3. On failure: retry once, then log and continue
 
