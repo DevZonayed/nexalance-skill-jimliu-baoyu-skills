@@ -13,8 +13,7 @@ Scripts in `scripts/` subdirectory. Replace `${SKILL_DIR}` with this SKILL.md's 
 
 | Script | Purpose |
 |--------|---------|
-| `scripts/main.ts` | Main entry point with CLI options |
-| `scripts/cjk-emphasis.ts` | Fix CJK emphasis/bold punctuation issues |
+| `scripts/main.ts` | Main entry point with CLI options (uses remark-cjk-friendly for CJK emphasis) |
 | `scripts/quotes.ts` | Replace ASCII quotes with fullwidth quotes |
 | `scripts/autocorrect.ts` | Add CJK/English spacing via autocorrect |
 

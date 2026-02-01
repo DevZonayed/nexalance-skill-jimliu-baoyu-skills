@@ -1,17 +1,12 @@
 import { readFileSync, writeFileSync } from "fs";
 import { unified } from "unified";
 import remarkParse from "remark-parse";
+import remarkCjkFriendly from "remark-cjk-friendly";
 import remarkGfm from "remark-gfm";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkStringify from "remark-stringify";
 import { visit } from "unist-util-visit";
 import YAML from "yaml";
-import {
-  fixCjkEmphasisSpacing,
-  CJK_CLOSING_PUNCT_RE,
-  CJK_OPENING_PUNCT_RE,
-  CJK_CHAR_RE,
-} from "./cjk-emphasis";
 import { replaceQuotes } from "./quotes";
 import { applyAutocorrect } from "./autocorrect";
 
@@ -36,6 +31,12 @@ const DEFAULT_OPTIONS: Required<FormatOptions> = {
   emphasis: true,
 };
 
+function decodeHtmlEntities(text: string): string {
+  return text.replace(/&#x([0-9A-Fa-f]+);/g, (_, hex) =>
+    String.fromCodePoint(parseInt(hex, 16))
+  );
+}
+
 function formatFrontmatter(value: string): string | null {
   try {
     const doc = YAML.parseDocument(value);
@@ -49,12 +50,9 @@ function formatMarkdownContent(
   content: string,
   options: Required<FormatOptions>
 ): string {
-  if (options.emphasis) {
-    content = fixCjkEmphasisSpacing(content);
-  }
-
   const processor = unified()
     .use(remarkParse)
+    .use(options.emphasis ? remarkCjkFriendly : [])
     .use(remarkGfm)
     .use(remarkFrontmatter, ["yaml"])
     .use(remarkStringify, {
@@ -63,7 +61,7 @@ function formatMarkdownContent(
 
   const tree = processor.parse(content);
 
-  visit(tree, (node, _index, parent) => {
+  visit(tree, (node) => {
     if (node.type === "text" && options.quotes) {
       const textNode = node as { value: string };
       textNode.value = replaceQuotes(textNode.value);
@@ -77,54 +75,11 @@ function formatMarkdownContent(
       }
       return;
     }
-    if (
-      options.emphasis &&
-      (node.type === "strong" ||
-        node.type === "emphasis" ||
-        node.type === "delete") &&
-      parent
-    ) {
-      const siblings = (parent as { children: typeof node[] }).children;
-      const idx = siblings.indexOf(node);
-      const children = (node as { children: typeof node[] }).children;
-      if (!children || children.length === 0) return;
-
-      const lastChild = children[children.length - 1];
-      if (lastChild.type === "text") {
-        const lastText = (lastChild as { value: string }).value;
-        if (
-          CJK_CLOSING_PUNCT_RE.test(lastText.slice(-1)) &&
-          idx + 1 < siblings.length
-        ) {
-          const nextSib = siblings[idx + 1];
-          if (nextSib.type === "text") {
-            const nextText = (nextSib as { value: string }).value;
-            if (CJK_CHAR_RE.test(nextText.charAt(0))) {
-              (nextSib as { value: string }).value = " " + nextText;
-            }
-          }
-        }
-      }
-
-      const firstChild = children[0];
-      if (firstChild.type === "text") {
-        const firstText = (firstChild as { value: string }).value;
-        if (CJK_OPENING_PUNCT_RE.test(firstText) && idx > 0) {
-          const prevSib = siblings[idx - 1];
-          if (prevSib.type === "text") {
-            const prevText = (prevSib as { value: string }).value;
-            if (CJK_CHAR_RE.test(prevText.charAt(prevText.length - 1))) {
-              (prevSib as { value: string }).value = prevText + " ";
-            }
-          }
-        }
-      }
-    }
   });
 
   let result = processor.stringify(tree);
   if (options.emphasis) {
-    result = fixCjkEmphasisSpacing(result);
+    result = decodeHtmlEntities(result);
   }
   return result;
 }
