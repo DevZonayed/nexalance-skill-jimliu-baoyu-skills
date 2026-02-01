@@ -184,10 +184,15 @@ Recommend 3-5 layout×style combinations based on:
 
 ### Step 4: Confirm Options
 
-Present all options in single confirmation:
-1. **Combination** (always): 3+ options with rationale
-2. **Aspect** (always): landscape/portrait/square
-3. **Language** (only if source ≠ user language): which language for text
+Use **single AskUserQuestion call** with multiple questions to confirm all options together:
+
+| Question | When | Options |
+|----------|------|---------|
+| **Combination** | Always | 3+ layout×style combos with rationale |
+| **Aspect** | Always | landscape (16:9), portrait (9:16), square (1:1) |
+| **Language** | Only if source ≠ user language | Language for text content |
+
+**Important**: Do NOT split into separate AskUserQuestion calls. Combine all applicable questions into one call.
 
 ### Step 5: Generate Prompt → `prompts/infographic.md`
 
