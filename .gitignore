@@ -157,3 +157,5 @@ comic/
 *.iws
 *.iml
 *.ipr
+
+.claude/skills/baoyu-skill-evolution
