@@ -2,6 +2,17 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.28.0 - 2026-02-01
+
+### 新功能
+- `baoyu-cover-image`：新增参考图片支持（`--ref` 参数），支持 direct/style/palette 三种用法；新增视觉元素库，按主题分类图标词汇。
+- `baoyu-article-illustrator`：新增参考图片支持，支持 direct/style/palette 三种用法。
+- `baoyu-post-to-wechat`：新增 `newspic` 图文消息类型支持。
+
+### 重构
+- `baoyu-cover-image`、`baoyu-article-illustrator`、`baoyu-comic`、`baoyu-xhs-images`：强化首次设置为阻塞操作，必须在其他工作流步骤之前完成。
+- `baoyu-cover-image`：移除标题字符数限制，使用原始来源标题。
+
 ## 1.26.1 - 2026-01-29
 
 ### 新功能

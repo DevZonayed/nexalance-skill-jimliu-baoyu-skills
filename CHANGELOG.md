@@ -2,6 +2,17 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.28.0 - 2026-02-01
+
+### Features
+- `baoyu-cover-image`: add reference image support (`--ref` parameter) with direct/style/palette usage types; add visual elements library with icon vocabulary by topic.
+- `baoyu-article-illustrator`: add reference image support with direct/style/palette usage types.
+- `baoyu-post-to-wechat`: add `newspic` article type for image-text posts.
+
+### Refactor
+- `baoyu-cover-image`, `baoyu-article-illustrator`, `baoyu-comic`, `baoyu-xhs-images`: enforce first-time setup as blocking operation before any other workflow steps.
+- `baoyu-cover-image`: remove character limits from titles, use original source titles.
+
 ## 1.26.1 - 2026-01-29
 
 ### Features
