@@ -273,22 +273,31 @@ async function selectAndReplacePlaceholder(session: ChromeSession, placeholder: 
         const editor = document.querySelector('.ProseMirror');
         if (!editor) return false;
 
+        const placeholder = ${JSON.stringify(placeholder)};
         const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT, null, false);
         let node;
 
         while ((node = walker.nextNode())) {
           const text = node.textContent || '';
-          const idx = text.indexOf(${JSON.stringify(placeholder)});
-          if (idx !== -1) {
-            node.parentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          let searchStart = 0;
+          let idx;
+          // Search for exact match (not prefix of longer placeholder like XIMGPH_1 in XIMGPH_10)
+          while ((idx = text.indexOf(placeholder, searchStart)) !== -1) {
+            const afterIdx = idx + placeholder.length;
+            const charAfter = text[afterIdx];
+            // Exact match if next char is not a digit
+            if (charAfter === undefined || !/\\d/.test(charAfter)) {
+              node.parentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-            const range = document.createRange();
-            range.setStart(node, idx);
-            range.setEnd(node, idx + ${placeholder.length});
-            const sel = window.getSelection();
-            sel.removeAllRanges();
-            sel.addRange(range);
-            return true;
+              const range = document.createRange();
+              range.setStart(node, idx);
+              range.setEnd(node, idx + placeholder.length);
+              const sel = window.getSelection();
+              sel.removeAllRanges();
+              sel.addRange(range);
+              return true;
+            }
+            searchStart = afterIdx;
           }
         }
         return false;
