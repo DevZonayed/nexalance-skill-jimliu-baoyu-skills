@@ -61,6 +61,25 @@ interface ArticleOptions {
   chromePath?: string;
 }
 
+async function findExistingDebugPort(profileDir: string): Promise<number | null> {
+  const portFile = path.join(profileDir, 'DevToolsActivePort');
+  if (!fs.existsSync(portFile)) return null;
+
+  try {
+    const content = fs.readFileSync(portFile, 'utf-8').trim();
+    if (!content) return null;
+    const [portLine] = content.split(/\r?\n/);
+    const port = Number(portLine);
+    if (!Number.isFinite(port) || port <= 0) return null;
+
+    // Verify the port is actually active.
+    await waitForChromeDebugPort(port, 1500, { includeLastError: true });
+    return port;
+  } catch {
+    return null;
+  }
+}
+
 export async function publishArticle(options: ArticleOptions): Promise<void> {
   const { markdownPath, submit = false, profileDir = getDefaultProfileDir() } = options;
 
@@ -83,28 +102,33 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
   if (!chromePath) throw new Error('Chrome not found');
 
   await mkdir(profileDir, { recursive: true });
-  const port = await getFreePort();
+  const existingPort = await findExistingDebugPort(profileDir);
+  const port = existingPort ?? await getFreePort();
 
-  console.log(`[x-article] Launching Chrome...`);
-  const chrome = spawn(chromePath, [
-    `--remote-debugging-port=${port}`,
-    `--user-data-dir=${profileDir}`,
-    '--no-first-run',
-    '--no-default-browser-check',
-    '--disable-blink-features=AutomationControlled',
-    '--start-maximized',
-    X_ARTICLES_URL,
-  ], { stdio: 'ignore' });
+  if (existingPort) {
+    console.log(`[x-article] Reusing existing Chrome instance on port ${port}`);
+  } else {
+    console.log(`[x-article] Launching Chrome...`);
+    spawn(chromePath, [
+      `--remote-debugging-port=${port}`,
+      `--user-data-dir=${profileDir}`,
+      '--no-first-run',
+      '--no-default-browser-check',
+      '--disable-blink-features=AutomationControlled',
+      '--start-maximized',
+      X_ARTICLES_URL,
+    ], { stdio: 'ignore' });
+  }
 
   let cdp: CdpConnection | null = null;
 
   try {
-    const wsUrl = await waitForChromeDebugPort(port, 30_000);
+    const wsUrl = await waitForChromeDebugPort(port, 30_000, { includeLastError: true });
     cdp = await CdpConnection.connect(wsUrl, 30_000, { defaultTimeoutMs: 30_000 });
 
     // Get page target
     const targets = await cdp.send<{ targetInfos: Array<{ targetId: string; url: string; type: string }> }>('Target.getTargets');
-    let pageTarget = targets.targetInfos.find((t) => t.type === 'page' && t.url.includes('x.com'));
+    let pageTarget = targets.targetInfos.find((t) => t.type === 'page' && t.url.startsWith(X_ARTICLES_URL));
 
     if (!pageTarget) {
       const { targetId } = await cdp.send<{ targetId: string }>('Target.createTarget', { url: X_ARTICLES_URL });
@@ -409,15 +433,23 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
 
       console.log('[x-article] Checking for placeholders in content...');
       for (const img of parsed.contentImages) {
-        if (editorContent.result.value.includes(img.placeholder)) {
+        // Use regex for exact match (not followed by digit, e.g., XIMGPH_1 should not match XIMGPH_10)
+        const regex = new RegExp(img.placeholder + '(?!\\d)');
+        if (regex.test(editorContent.result.value)) {
           console.log(`[x-article] Found: ${img.placeholder}`);
         } else {
           console.log(`[x-article] NOT found: ${img.placeholder}`);
         }
       }
 
-      // Process images in sequential order (1, 2, 3, ...)
-      const sortedImages = [...parsed.contentImages].sort((a, b) => a.blockIndex - b.blockIndex);
+      // Process images in XIMGPH order (1, 2, 3, ...) regardless of blockIndex
+      const getPlaceholderIndex = (placeholder: string): number => {
+        const match = placeholder.match(/XIMGPH_(\d+)/);
+        return match ? Number(match[1]) : Number.POSITIVE_INFINITY;
+      };
+      const sortedImages = [...parsed.contentImages].sort(
+        (a, b) => getPlaceholderIndex(a.placeholder) - getPlaceholderIndex(b.placeholder),
+      );
 
       for (let i = 0; i < sortedImages.length; i++) {
         const img = sortedImages[i]!;
@@ -440,22 +472,30 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
 
                 while ((node = walker.nextNode())) {
                   const text = node.textContent || '';
-                  const idx = text.indexOf(placeholder);
-                  if (idx !== -1) {
-                    // Found the placeholder - scroll to it first
-                    const parentElement = node.parentElement;
-                    if (parentElement) {
-                      parentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
+                  let searchStart = 0;
+                  let idx;
+                  // Search for exact match (not prefix of longer placeholder like XIMGPH_1 in XIMGPH_10)
+                  while ((idx = text.indexOf(placeholder, searchStart)) !== -1) {
+                    const afterIdx = idx + placeholder.length;
+                    const charAfter = text[afterIdx];
+                    // Exact match if next char is not a digit (XIMGPH_1 should not match XIMGPH_10)
+                    if (charAfter === undefined || !/\\d/.test(charAfter)) {
+                      // Found exact placeholder - scroll to it first
+                      const parentElement = node.parentElement;
+                      if (parentElement) {
+                        parentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      }
 
-                    // Select it
-                    const range = document.createRange();
-                    range.setStart(node, idx);
-                    range.setEnd(node, idx + placeholder.length);
-                    const sel = window.getSelection();
-                    sel.removeAllRanges();
-                    sel.addRange(range);
-                    return true;
+                      // Select it
+                      const range = document.createRange();
+                      range.setStart(node, idx);
+                      range.setEnd(node, idx + placeholder.length);
+                      const sel = window.getSelection();
+                      sel.removeAllRanges();
+                      sel.addRange(range);
+                      return true;
+                    }
+                    searchStart = afterIdx;
                   }
                 }
                 return false;
@@ -505,31 +545,54 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
         // Wait for clipboard to be fully ready
         await sleep(1000);
 
-        // Delete placeholder by pressing Backspace (more reliable than Enter for replacing selection)
+        // Delete placeholder using execCommand (more reliable than keyboard events for DraftJS)
         console.log(`[x-article] Deleting placeholder...`);
-        await cdp.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Backspace', code: 'Backspace', windowsVirtualKeyCode: 8 }, { sessionId });
-        await cdp.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Backspace', code: 'Backspace', windowsVirtualKeyCode: 8 }, { sessionId });
+        const deleteResult = await cdp.send<{ result: { value: boolean } }>('Runtime.evaluate', {
+          expression: `(() => {
+            const sel = window.getSelection();
+            if (!sel || sel.isCollapsed) return false;
+            // Try execCommand delete first
+            if (document.execCommand('delete', false)) return true;
+            // Fallback: replace selection with empty using insertText
+            document.execCommand('insertText', false, '');
+            return true;
+          })()`,
+          returnByValue: true,
+        }, { sessionId });
 
-        // Wait and verify placeholder is deleted
         await sleep(500);
 
-        // Check that placeholder is no longer in editor
+        // Check that placeholder is no longer in editor (exact match, not substring)
         const afterDelete = await cdp.send<{ result: { value: boolean } }>('Runtime.evaluate', {
           expression: `(() => {
             const editor = document.querySelector('.DraftEditor-editorContainer [data-contents="true"]');
             if (!editor) return true;
-            return !editor.innerText.includes(${JSON.stringify(img.placeholder)});
+            const text = editor.innerText;
+            const placeholder = ${JSON.stringify(img.placeholder)};
+            // Use regex to find exact match (not followed by digit)
+            const regex = new RegExp(placeholder + '(?!\\\\d)');
+            return !regex.test(text);
           })()`,
           returnByValue: true,
         }, { sessionId });
 
         if (!afterDelete.result.value) {
-          console.warn(`[x-article] Placeholder may not have been deleted, trying again...`);
-          // Try selecting and deleting again
+          console.warn(`[x-article] Placeholder may not have been deleted, trying dispatchEvent...`);
+          // Try selecting and deleting with InputEvent
           await selectPlaceholder(1);
           await sleep(300);
-          await cdp.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Backspace', code: 'Backspace', windowsVirtualKeyCode: 8 }, { sessionId });
-          await cdp.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Backspace', code: 'Backspace', windowsVirtualKeyCode: 8 }, { sessionId });
+          await cdp.send('Runtime.evaluate', {
+            expression: `(() => {
+              const editor = document.querySelector('.DraftEditor-editorContainer [contenteditable="true"]');
+              if (!editor) return;
+              editor.focus();
+              // Dispatch beforeinput and input events for deletion
+              const beforeEvent = new InputEvent('beforeinput', { inputType: 'deleteContentBackward', bubbles: true, cancelable: true });
+              editor.dispatchEvent(beforeEvent);
+              const inputEvent = new InputEvent('input', { inputType: 'deleteContentBackward', bubbles: true });
+              editor.dispatchEvent(inputEvent);
+            })()`,
+          }, { sessionId });
           await sleep(500);
         }
 
