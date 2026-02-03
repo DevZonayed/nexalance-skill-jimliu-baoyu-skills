@@ -2,6 +2,14 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.28.4 - 2026-02-03
+
+### 新功能
+- `baoyu-markdown-to-html`：从 YAML frontmatter 生成 author 和 description meta 标签；自动去除 frontmatter 值两端的引号（支持中英文引号）。
+
+### 修复
+- `baoyu-post-to-wechat`：移除图片粘贴后产生的多余空行；修复摘要填充时机，改为内容粘贴后填写（避免被覆盖）。
+
 ## 1.28.3 - 2026-02-03
 
 ### 修复

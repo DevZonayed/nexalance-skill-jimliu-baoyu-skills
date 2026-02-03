@@ -2,6 +2,14 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.28.4 - 2026-02-03
+
+### Features
+- `baoyu-markdown-to-html`: add author and description meta tags to generated HTML from YAML frontmatter; strip quotes from frontmatter values (supports both English and Chinese quotation marks).
+
+### Fixes
+- `baoyu-post-to-wechat`: remove extra empty lines after image paste; fix summary field timing to fill after content paste (prevents being overwritten).
+
 ## 1.28.3 - 2026-02-03
 
 ### Fixes
