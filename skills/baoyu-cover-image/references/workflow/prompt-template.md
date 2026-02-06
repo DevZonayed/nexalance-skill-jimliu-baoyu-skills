@@ -26,6 +26,7 @@ Cover theme: [2-3 words visual interpretation]
 Type: [confirmed type]
 Palette: [confirmed palette]
 Rendering: [confirmed rendering]
+Font: [confirmed font]
 Text level: [confirmed text level]
 Mood: [confirmed mood]
 Aspect ratio: [confirmed ratio]
@@ -43,6 +44,13 @@ Language: [confirmed language]
 - subtle: "Use low contrast, muted colors, light visual weight, calm aesthetic"
 - balanced: "Use medium contrast, normal saturation, balanced visual weight"
 - bold: "Use high contrast, vivid saturated colors, heavy visual weight, dynamic energy"
+
+# Font Application
+[Based on font style:]
+- clean: "Use clean geometric sans-serif typography. Modern, minimal letterforms."
+- handwritten: "Use warm hand-lettered typography with organic brush strokes. Friendly, personal feel."
+- serif: "Use elegant serif typography with refined letterforms. Classic, editorial character."
+- display: "Use bold decorative display typography. Heavy, expressive headlines."
 
 # Composition
 Type composition:

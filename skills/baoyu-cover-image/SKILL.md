@@ -50,6 +50,7 @@ Generate elegant cover images for articles with 5-dimensional customization.
 | `--style <name>` | Preset shorthand (expands to palette + rendering, see [Style Presets](references/style-presets.md)) |
 | `--text <level>` | Text density: none, title-only, title-subtitle, text-rich |
 | `--mood <level>` | Emotional intensity: subtle, balanced, bold |
+| `--font <name>` | Font style: clean, handwritten, serif, display |
 | `--aspect <ratio>` | 16:9 (default), 2.35:1, 4:3, 3:2, 1:1, 3:4 |
 | `--lang <code>` | Title language (en, zh, ja, etc.) |
 | `--no-title` | Alias for `--text none` |
@@ -65,6 +66,7 @@ Generate elegant cover images for articles with 5-dimensional customization.
 | **Rendering** | Line quality, texture, depth, element style | flat-vector, hand-drawn, painterly, digital, pixel, chalk | auto |
 | **Text** | Text density, information hierarchy | none, title-only, title-subtitle, text-rich | title-only |
 | **Mood** | Emotional intensity, visual weight | subtle, balanced, bold | balanced |
+| **Font** | Typography style, character feel | clean, handwritten, serif, display | clean |
 
 Dimensions can be freely combined. Auto-selection rules: [references/auto-selection.md](references/auto-selection.md)
 
@@ -127,6 +129,17 @@ Rendering definitions: [references/renderings/](references/renderings/)
 
 Full guides: [references/dimensions/text.md](references/dimensions/text.md) | [references/dimensions/mood.md](references/dimensions/mood.md)
 
+## Font Gallery
+
+| Font | Description | Best For |
+|------|-------------|----------|
+| `clean` | Modern geometric sans-serif | Tech, professional, minimal |
+| `handwritten` | Warm hand-lettered style | Personal, friendly, lifestyle |
+| `serif` | Classic elegant typography | Editorial, academic, luxury |
+| `display` | Bold decorative headlines | Announcements, entertainment |
+
+Full guide: [references/dimensions/font.md](references/dimensions/font.md)
+
 ## Style Presets & Compatibility
 
 - **Style Presets**: `--style X` expands to palette + rendering. See [references/style-presets.md](references/style-presets.md)
@@ -175,7 +188,7 @@ Cover Image Progress:
     - [ ] File path given → saved to refs/ ✓
     - [ ] No path → asked user OR extracted verbally
   - [ ] 1.2 Output directory determined
-- [ ] Step 2: Confirm options (5 dimensions) ⚠️ REQUIRED unless --quick or all specified
+- [ ] Step 2: Confirm options (6 dimensions) ⚠️ REQUIRED unless --quick or all specified
 - [ ] Step 3: Create prompt
   - [ ] References in prompt ONLY if files exist in refs/
   - [ ] Extracted style/palette appended to prompt body (if no file)
@@ -196,7 +209,7 @@ Input → [Step 0: Preferences] ─┬─ Found → Continue
                                                                                       │
         ┌───────────────────────────────────────────────────────────────────────────┘
         ↓
-Analyze + Save Refs → [Output Dir ⚠️] → [Confirm: 5 Dimensions] → Prompt → Generate → Complete
+Analyze + Save Refs → [Output Dir ⚠️] → [Confirm: 6 Dimensions] → Prompt → Generate → Complete
                                                  ↓
                                         (skip if --quick or all specified)
 ```
@@ -233,7 +246,7 @@ Preferences loaded from [project/user]:
 • Quick mode: [enabled/disabled] | Language: [value or "auto"]
 ```
 
-**EXTEND.md Supports**: Watermark | Preferred type | Preferred palette | Preferred rendering | Preferred text | Preferred mood | Default aspect ratio | Default output directory | Quick mode | Custom palette definitions | Language preference
+**EXTEND.md Supports**: Watermark | Preferred type | Preferred palette | Preferred rendering | Preferred text | Preferred mood | Preferred font | Default aspect ratio | Default output directory | Quick mode | Custom palette definitions | Language preference
 
 Schema: [references/config/preferences-schema.md](references/config/preferences-schema.md)
 
@@ -326,14 +339,14 @@ For each reference image:
 
 ### Step 2: Confirm Options ⚠️
 
-Validate all 5 dimensions + aspect ratio. Full confirmation flow: [references/workflow/confirm-options.md](references/workflow/confirm-options.md)
+Validate all 6 dimensions + aspect ratio. Full confirmation flow: [references/workflow/confirm-options.md](references/workflow/confirm-options.md)
 
 **Skip Conditions**:
 
 | Condition | Skipped | Still Asked |
 |-----------|---------|-------------|
-| `--quick` or `quick_mode: true` | 5 dimensions | Aspect ratio (unless `--aspect`) |
-| All 5 + `--aspect` specified | All | None |
+| `--quick` or `quick_mode: true` | 6 dimensions | Aspect ratio (unless `--aspect`) |
+| All 6 + `--aspect` specified | All | None |
 
 ### Step 3: Create Prompt
 
@@ -431,7 +444,7 @@ Cover Generated!
 
 Topic: [topic]
 Type: [type] | Palette: [palette] | Rendering: [rendering]
-Text: [text] | Mood: [mood] | Aspect: [ratio]
+Text: [text] | Mood: [mood] | Font: [font] | Aspect: [ratio]
 Title: [title text or "visual only"]
 Language: [lang] | Watermark: [enabled/disabled]
 References: [N images (direct/style/palette) or "extracted style" or "none"]
@@ -463,7 +476,7 @@ All modifications automatically backup existing `cover.png` before regenerating.
 - Cover must be readable at small preview sizes
 - Visual metaphors > literal representations
 - Title: readable, impactful
-- Two confirmation points: Step 0 (first-time setup) + Step 2 (options) - skip Step 2 with `--quick`
+- Two confirmation points: Step 0 (first-time setup) + Step 2 (6 dimensions) - skip Step 2 with `--quick`
 - Use confirmed language for title text
 - Maintain watermark consistency if enabled
 - Check compatibility matrices when selecting combinations
@@ -485,7 +498,7 @@ All modifications automatically backup existing `cover.png` before regenerating.
 
 ## References
 
-**Dimensions**: [text.md](references/dimensions/text.md) | [mood.md](references/dimensions/mood.md)
+**Dimensions**: [text.md](references/dimensions/text.md) | [mood.md](references/dimensions/mood.md) | [font.md](references/dimensions/font.md)
 **Palettes**: [references/palettes/](references/palettes/)
 **Renderings**: [references/renderings/](references/renderings/)
 **Auto-Selection**: [references/auto-selection.md](references/auto-selection.md)
