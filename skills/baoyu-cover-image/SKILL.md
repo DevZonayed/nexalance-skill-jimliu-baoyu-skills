@@ -317,16 +317,23 @@ Reference Style Extracted (no file):
 - Identify visual metaphors
 - Detect content type
 
-**1.3 Reference Image Analysis** (if provided in Step 1.0)
+**1.3 Reference Image Deep Analysis** ⚠️ CRITICAL (if provided in Step 1.0)
 
-For each reference image:
+References are high-priority inputs. Perform deep visual analysis to extract **specific, concrete, reproducible** elements — not vague summaries.
 
-| Analysis | Description |
-|----------|-------------|
-| Visual characteristics | Style, colors, composition |
-| Content/subject | What the reference depicts |
-| Style match | Which type/palette/rendering align |
-| Usage recommendation | `direct` / `style` / `palette` |
+For each reference image, extract ALL of the following:
+
+| Analysis | Description | Example (good vs bad) |
+|----------|-------------|----------------------|
+| **Brand elements** | Logos, wordmarks, specific typography treatments | Good: "Logo uses vertical parallel lines for 'm'" / Bad: "Has a logo" |
+| **Signature patterns** | Unique decorative motifs, textures, geometric patterns | Good: "Woven intersecting curves forming diamond grid" / Bad: "Has patterns" |
+| **Color palette** | Exact hex values or close approximations for key colors | Good: "#2D4A3E dark teal, #F5F0E0 cream" / Bad: "Dark and light colors" |
+| **Layout structure** | Specific spatial arrangement, banner placement, zone splits | Good: "Bottom 30% dark banner with branding" / Bad: "Has a banner" |
+| **Typography** | Font style, weight, spacing, case, positioning | Good: "Uppercase, wide letter-spacing, handwritten ep number" / Bad: "Has text" |
+| **Content/subject** | What the reference depicts | Factual description |
+| **Usage recommendation** | `direct` / `style` / `palette` | Based on analysis |
+
+**Output format**: List each element as a bullet point that can be directly copy-pasted into a prompt as a mandatory instruction.
 
 **1.4 Language Detection**
 - Detect source language
@@ -380,9 +387,14 @@ references:
 
 | Situation | Frontmatter | Body |
 |-----------|-------------|------|
-| Reference file saved to `refs/` | Add to `references` ✓ | Brief style note |
+| Reference file saved to `refs/` | Add to `references` ✓ | **Detailed mandatory style instructions** (see below) |
 | Style extracted verbally (no file) | Omit `references` | Full style description |
 | File in frontmatter but doesn't exist | ERROR - fix or remove | — |
+
+⚠️ **"Brief style note" is NOT sufficient.** When references are provided, the prompt body MUST contain a dedicated `# Reference Style — MUST INCORPORATE` section with:
+1. Per-reference breakdown of **specific visual elements** extracted in Step 1.3
+2. Each element prefixed with "MUST" or "REQUIRED"
+3. An **integration approach** describing exactly how reference elements should be composed into the cover layout (e.g., "Use a split layout: illustration area 65% + dark branded banner 35%")
 
 ### Step 4: Generate Image
 
@@ -421,8 +433,8 @@ references:
 
 | Skill Supports `--ref` | Action |
 |------------------------|--------|
-| Yes (e.g., baoyu-image-gen with Google) | Pass reference images via `--ref` |
-| No | Convert to text description, append to prompt |
+| Yes (e.g., baoyu-image-gen with Google/OpenAI) | Pass reference images via `--ref` |
+| No | If usage is `direct`, switch to a ref-capable backend (baoyu-image-gen + Google multimodal or OpenAI GPT Image edits). If unavailable, convert to text description and remove direct refs |
 
 **Verification**: Before generating, confirm reference processing:
 ```
@@ -434,7 +446,7 @@ Reference Processing:
 **4.4 Generate**
 
 1. Call selected skill with prompt file path, output path (`cover.png`), aspect ratio
-2. If references with `direct` usage AND skill supports `--ref`: include `--ref` parameter
+2. If references with `direct` usage: use ref-capable backend and include `--ref` (recommend `baoyu-image-gen --provider google --model gemini-3-pro-image-preview` or `--provider openai --model gpt-image-1.5`)
 3. On failure: auto-retry once before reporting error
 
 ### Step 5: Completion Report
@@ -482,6 +494,15 @@ All modifications automatically backup existing `cover.png` before regenerating.
 - Check compatibility matrices when selecting combinations
 - `--no-title` is alias for `--text none`
 - `--style` presets are backward-compatible; explicit `--palette`/`--rendering` override preset values
+
+### Reference Image Priority ⚠️
+
+When user provides reference images, they are **HIGH PRIORITY** and MUST strongly influence the generated cover:
+
+- **References override defaults**: If reference images conflict with preferred palette/rendering, the reference visual identity takes precedence in the prompt
+- **Concrete > abstract**: Extract specific, reproducible visual elements (exact patterns, logo treatments, color hex values, layout structures) — not vague descriptions like "clean style"
+- **Mandatory language**: Use "MUST", "REQUIRED", "CRITICAL" in the prompt for reference elements — generic "follow the style" is insufficient for image generation models
+- **Visible in output**: After generation, verify that reference elements are actually present in the cover. If not, strengthen the prompt and regenerate
 
 ### Composition Principles
 
