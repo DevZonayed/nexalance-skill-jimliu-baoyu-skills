@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.30.2 - 2026-02-06
+
+### Refactor
+- `baoyu-cover-image`: optimize SKILL.md from 532 to 233 lines (56% reduction); extract reference image handling to `references/workflow/reference-images.md`; condense galleries to value-only tables with links.
+
 ## 1.30.1 - 2026-02-06
 
 ### Features

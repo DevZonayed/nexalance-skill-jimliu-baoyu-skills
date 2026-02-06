@@ -2,6 +2,11 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.30.2 - 2026-02-06
+
+### 重构
+- `baoyu-cover-image`：优化 SKILL.md 从 532 行精简至 233 行（减少 56%）；将参考图片处理流程提取到 `references/workflow/reference-images.md`；画廊改为纯值表格并链接到详细参考文件。
+
 ## 1.30.1 - 2026-02-06
 
 ### 新功能
