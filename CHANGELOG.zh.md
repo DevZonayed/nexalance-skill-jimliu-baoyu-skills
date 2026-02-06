@@ -2,6 +2,11 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.30.0 - 2026-02-06
+
+### 新功能
+- `baoyu-cover-image`：新增字体维度，支持 4 种字体风格（clean、handwritten、serif、display）；包含自动选择规则、兼容性矩阵和 `warm-flat` 风格预设。
+
 ## 1.29.0 - 2026-02-06
 
 ### 新功能

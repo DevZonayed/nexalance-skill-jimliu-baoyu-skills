@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.30.0 - 2026-02-06
+
+### Features
+- `baoyu-cover-image`: add font dimension with 4 typography styles (clean, handwritten, serif, display); includes auto-selection rules, compatibility matrix, and `warm-flat` style preset.
+
 ## 1.29.0 - 2026-02-06
 
 ### Features
