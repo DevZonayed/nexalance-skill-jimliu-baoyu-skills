@@ -2,6 +2,15 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.30.1 - 2026-02-06
+
+### Features
+- `baoyu-image-gen`: add OpenAI GPT Image edits support for reference images (`--ref`); auto-select Google or OpenAI when ref provided.
+
+### Fixes
+- `baoyu-image-gen`: change ref-related warnings to explicit errors with fix hints; add reference image validation.
+- `baoyu-cover-image`: enhance reference image analysis with deep extraction template; require MUST INCORPORATE section for concrete visual elements.
+
 ## 1.30.0 - 2026-02-06
 
 ### Features

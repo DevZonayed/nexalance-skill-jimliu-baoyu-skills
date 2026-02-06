@@ -2,6 +2,15 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.30.1 - 2026-02-06
+
+### 新功能
+- `baoyu-image-gen`：新增 OpenAI GPT Image edits 支持参考图片（`--ref`）；提供 ref 时自动选择 Google 或 OpenAI。
+
+### 修复
+- `baoyu-image-gen`：将 ref 相关警告改为明确错误提示；新增参考图片验证。
+- `baoyu-cover-image`：增强参考图片分析，使用深度提取模板；要求 MUST INCORPORATE 章节以包含具体可复现的视觉元素。
+
 ## 1.30.0 - 2026-02-06
 
 ### 新功能
