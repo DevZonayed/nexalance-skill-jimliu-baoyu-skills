@@ -2,6 +2,15 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.29.0 - 2026-02-06
+
+### 新功能
+- `baoyu-image-gen`：新增 EXTEND.md 配置支持，补充配置 schema 文档并在脚本运行时读取偏好设置 (by @kingdomad)。
+
+### 修复
+- `baoyu-post-to-wechat`：修复公众号文章发布时标题和有序列表编号重复问题 (by @NantesCheval)。
+- `baoyu-url-to-markdown`：将正则转换升级为多策略正文抽取 + Turndown 转换，提升 Substack 类页面的噪声过滤能力。
+
 ## 1.28.4 - 2026-02-03
 
 ### 新功能

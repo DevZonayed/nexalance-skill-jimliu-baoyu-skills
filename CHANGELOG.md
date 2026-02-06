@@ -2,6 +2,15 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.29.0 - 2026-02-06
+
+### Features
+- `baoyu-image-gen`: add EXTEND.md configuration support, including schema documentation and runtime preference loading in scripts (by @kingdomad).
+
+### Fixes
+- `baoyu-post-to-wechat`: fix duplicated title and ordered-list numbering in WeChat article publishing (by @NantesCheval).
+- `baoyu-url-to-markdown`: replace regex-only conversion with multi-strategy content extraction and Turndown conversion; improve noise filtering for Substack-style pages.
+
 ## 1.28.4 - 2026-02-03
 
 ### Features
