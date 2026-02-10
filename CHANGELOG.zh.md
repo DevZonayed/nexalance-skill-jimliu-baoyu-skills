@@ -2,6 +2,12 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.31.2 - 2026-02-10
+
+### 修复
+- `baoyu-post-to-wechat`：修复 Windows 上 PowerShell 剪贴板复制失败的问题（`param()`/`-Path` 与 `-Command` 参数不兼容）。
+- `baoyu-post-to-x`：修复 Windows 上 PowerShell 剪贴板复制（同上）；修复 `getScriptDir()` 在 Windows 上返回无效路径（`/C:/...` 前缀）。
+
 ## 1.31.1 - 2026-02-10
 
 ### 新功能
