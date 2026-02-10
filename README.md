@@ -519,12 +519,12 @@ Post content and articles to X (Twitter). Supports regular posts with images and
 
 Post content to WeChat Official Account (微信公众号). Two modes available:
 
-**Image-Text (图文)** - Multiple images with short title/content:
+**Image-Text (贴图)** - Multiple images with short title/content:
 
 ```bash
-/baoyu-post-to-wechat 图文 --markdown article.md --images ./photos/
-/baoyu-post-to-wechat 图文 --markdown article.md --image img1.png --image img2.png --image img3.png
-/baoyu-post-to-wechat 图文 --title "标题" --content "内容" --image img1.png --submit
+/baoyu-post-to-wechat 贴图 --markdown article.md --images ./photos/
+/baoyu-post-to-wechat 贴图 --markdown article.md --image img1.png --image img2.png --image img3.png
+/baoyu-post-to-wechat 贴图 --title "标题" --content "内容" --image img1.png --submit
 ```
 
 **Article (文章)** - Full markdown/HTML with rich formatting:

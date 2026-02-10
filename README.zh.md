@@ -519,12 +519,12 @@ npx skills add jimliu/baoyu-skills
 
 发布内容到微信公众号，支持两种模式：
 
-**图文模式** - 多图配短标题和正文：
+**贴图模式** - 多图配短标题和正文：
 
 ```bash
-/baoyu-post-to-wechat 图文 --markdown article.md --images ./photos/
-/baoyu-post-to-wechat 图文 --markdown article.md --image img1.png --image img2.png --image img3.png
-/baoyu-post-to-wechat 图文 --title "标题" --content "内容" --image img1.png --submit
+/baoyu-post-to-wechat 贴图 --markdown article.md --images ./photos/
+/baoyu-post-to-wechat 贴图 --markdown article.md --image img1.png --image img2.png --image img3.png
+/baoyu-post-to-wechat 贴图 --title "标题" --content "内容" --image img1.png --submit
 ```
 
 **文章模式** - 完整 markdown/HTML 富文本格式：
