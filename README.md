@@ -681,6 +681,9 @@ Converts X (Twitter) content to markdown format. Supports tweet threads and X Ar
 
 # JSON output
 /baoyu-danger-x-to-markdown https://x.com/username/status/123456 --json
+
+# Download media (images/videos) to local files
+/baoyu-danger-x-to-markdown https://x.com/username/status/123456 --download-media
 ```
 
 **Supported URLs:**
@@ -713,7 +716,7 @@ Format plain text or markdown files with proper frontmatter, titles, summaries, 
 
 **Workflow**:
 1. Read source file and analyze content structure
-2. Check/create YAML frontmatter (title, slug, summary, featureImage)
+2. Check/create YAML frontmatter (title, slug, summary, coverImage)
 3. Handle title: use existing, extract from H1, or generate candidates
 4. Apply formatting: headings, bold, lists, code blocks, quotes
 5. Save to `{filename}-formatted.md`
@@ -725,7 +728,7 @@ Format plain text or markdown files with proper frontmatter, titles, summaries, 
 | `title` | Use existing, extract H1, or generate candidates |
 | `slug` | Infer from file path or generate from title |
 | `summary` | Generate engaging summary (100-150 chars) |
-| `featureImage` | Check for `imgs/cover.png` in same directory |
+| `coverImage` | Check for `imgs/cover.png` in same directory |
 
 **Formatting Rules**:
 | Element | Format |
