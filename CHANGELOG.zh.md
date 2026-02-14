@@ -2,6 +2,12 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.33.0 - 2026-02-13
+
+### 新功能
+- `baoyu-post-to-x`：新增环境预检脚本（`check-paste-permissions.ts`）；新增 Chrome 调试端口冲突的故障排查说明；将固定等待替换为图片上传轮询验证（最长 15 秒）。
+- `baoyu-post-to-wechat`：新增环境预检脚本（`check-permissions.ts`），检查 Chrome、配置文件隔离、Bun、辅助功能、剪贴板、粘贴按键和 API 凭据。
+
 ## 1.32.0 - 2026-02-12
 
 ### 新功能

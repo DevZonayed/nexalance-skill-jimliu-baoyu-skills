@@ -2,6 +2,12 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.33.0 - 2026-02-13
+
+### Features
+- `baoyu-post-to-x`: add pre-flight environment check script (`check-paste-permissions.ts`); add troubleshooting section for Chrome debug port conflicts; replace fixed sleep with image upload verification polling up to 15s.
+- `baoyu-post-to-wechat`: add pre-flight environment check script (`check-permissions.ts`) covering Chrome, profile isolation, Bun, Accessibility, clipboard, paste keystroke, API credentials.
+
 ## 1.32.0 - 2026-02-12
 
 ### Features
