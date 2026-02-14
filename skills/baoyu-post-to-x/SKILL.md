@@ -56,7 +56,7 @@ test -f "$HOME/.baoyu-skills/baoyu-post-to-x/EXTEND.md" && echo "user"
 │ Not found │ Use defaults                                                              │
 └───────────┴───────────────────────────────────────────────────────────────────────────┘
 
-**EXTEND.md Supports**: Default Chrome profile | Auto-submit preference
+**EXTEND.md Supports**: Default Chrome profile
 
 ## Prerequisites
 
@@ -98,8 +98,7 @@ Checks: Chrome, profile isolation, Bun, Accessibility, clipboard, paste keystrok
 Text + up to 4 images.
 
 ```bash
-npx -y bun ${SKILL_DIR}/scripts/x-browser.ts "Hello!" --image ./photo.png          # Preview
-npx -y bun ${SKILL_DIR}/scripts/x-browser.ts "Hello!" --image ./photo.png --submit  # Post
+npx -y bun ${SKILL_DIR}/scripts/x-browser.ts "Hello!" --image ./photo.png
 ```
 
 **Parameters**:
@@ -107,8 +106,9 @@ npx -y bun ${SKILL_DIR}/scripts/x-browser.ts "Hello!" --image ./photo.png --subm
 |-----------|-------------|
 | `<text>` | Post content (positional) |
 | `--image <path>` | Image file (repeatable, max 4) |
-| `--submit` | Post (default: preview) |
 | `--profile <dir>` | Custom Chrome profile |
+
+**Note**: Script opens browser with content filled in. User reviews and publishes manually.
 
 ---
 
@@ -117,8 +117,7 @@ npx -y bun ${SKILL_DIR}/scripts/x-browser.ts "Hello!" --image ./photo.png --subm
 Text + video file.
 
 ```bash
-npx -y bun ${SKILL_DIR}/scripts/x-video.ts "Check this out!" --video ./clip.mp4          # Preview
-npx -y bun ${SKILL_DIR}/scripts/x-video.ts "Amazing content" --video ./demo.mp4 --submit  # Post
+npx -y bun ${SKILL_DIR}/scripts/x-video.ts "Check this out!" --video ./clip.mp4
 ```
 
 **Parameters**:
@@ -126,8 +125,9 @@ npx -y bun ${SKILL_DIR}/scripts/x-video.ts "Amazing content" --video ./demo.mp4 
 |-----------|-------------|
 | `<text>` | Post content (positional) |
 | `--video <path>` | Video file (MP4, MOV, WebM) |
-| `--submit` | Post (default: preview) |
 | `--profile <dir>` | Custom Chrome profile |
+
+**Note**: Script opens browser with content filled in. User reviews and publishes manually.
 
 **Limits**: Regular 140s max, Premium 60min. Processing: 30-60s.
 
@@ -138,8 +138,7 @@ npx -y bun ${SKILL_DIR}/scripts/x-video.ts "Amazing content" --video ./demo.mp4 
 Quote an existing tweet with comment.
 
 ```bash
-npx -y bun ${SKILL_DIR}/scripts/x-quote.ts https://x.com/user/status/123 "Great insight!"          # Preview
-npx -y bun ${SKILL_DIR}/scripts/x-quote.ts https://x.com/user/status/123 "I agree!" --submit       # Post
+npx -y bun ${SKILL_DIR}/scripts/x-quote.ts https://x.com/user/status/123 "Great insight!"
 ```
 
 **Parameters**:
@@ -147,8 +146,9 @@ npx -y bun ${SKILL_DIR}/scripts/x-quote.ts https://x.com/user/status/123 "I agre
 |-----------|-------------|
 | `<tweet-url>` | URL to quote (positional) |
 | `<comment>` | Comment text (positional, optional) |
-| `--submit` | Post (default: preview) |
 | `--profile <dir>` | Custom Chrome profile |
+
+**Note**: Script opens browser with content filled in. User reviews and publishes manually.
 
 ---
 
@@ -157,9 +157,8 @@ npx -y bun ${SKILL_DIR}/scripts/x-quote.ts https://x.com/user/status/123 "I agre
 Long-form Markdown articles (requires X Premium).
 
 ```bash
-npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md                        # Preview
-npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md --cover ./cover.jpg    # With cover
-npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md --submit               # Publish
+npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md
+npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md --cover ./cover.jpg
 ```
 
 **Parameters**:
@@ -168,9 +167,10 @@ npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md --submit               #
 | `<markdown>` | Markdown file (positional) |
 | `--cover <path>` | Cover image |
 | `--title <text>` | Override title |
-| `--submit` | Publish (default: preview) |
 
 **Frontmatter**: `title`, `cover_image` supported in YAML front matter.
+
+**Note**: Script opens browser with article filled in. User reviews and publishes manually.
 
 ---
 
@@ -189,7 +189,7 @@ pkill -f "Chrome.*remote-debugging-port" 2>/dev/null; pkill -f "Chromium.*remote
 ## Notes
 
 - First run: manual login required (session persists)
-- Always preview before `--submit`
+- All scripts only fill content into the browser, user must review and publish manually
 - Cross-platform: macOS, Linux, Windows
 
 ## Extension Support
