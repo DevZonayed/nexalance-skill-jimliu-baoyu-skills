@@ -18,6 +18,7 @@ description: Posts content to WeChat Official Account (微信公众号) via API 
 | `scripts/wechat-browser.ts` | Image-text posts (图文) |
 | `scripts/wechat-article.ts` | Article posting via browser (文章) |
 | `scripts/wechat-api.ts` | Article posting via API (文章) |
+| `scripts/check-permissions.ts` | Verify environment & permissions |
 
 ## Preferences (EXTEND.md)
 
@@ -75,6 +76,29 @@ chrome_profile_path: /path/to/chrome/profile
 2. Frontmatter
 3. EXTEND.md
 4. Skill defaults
+
+## Pre-flight Check (Optional)
+
+Before first use, suggest running the environment check. User can skip if they prefer.
+
+```bash
+npx -y bun ${SKILL_DIR}/scripts/check-permissions.ts
+```
+
+Checks: Chrome, profile isolation, Bun, Accessibility, clipboard, paste keystroke, API credentials, Chrome conflicts.
+
+**If any check fails**, provide fix guidance per item:
+
+| Check | Fix |
+|-------|-----|
+| Chrome | Install Chrome or set `WECHAT_BROWSER_CHROME_PATH` env var |
+| Profile dir | Ensure `~/.local/share/wechat-browser-profile` is writable |
+| Bun runtime | `curl -fsSL https://bun.sh/install \| bash` |
+| Accessibility (macOS) | System Settings → Privacy & Security → Accessibility → enable terminal app |
+| Clipboard copy | Ensure Swift/AppKit available (macOS Xcode CLI tools: `xcode-select --install`) |
+| Paste keystroke (macOS) | Same as Accessibility fix above |
+| Paste keystroke (Linux) | Install `xdotool` (X11) or `ydotool` (Wayland) |
+| API credentials | Follow guided setup in Step 5, or manually set in `.baoyu-skills/.env` |
 
 ## Image-Text Posting (图文)
 
