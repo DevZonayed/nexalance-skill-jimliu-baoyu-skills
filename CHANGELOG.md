@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.34.1 - 2026-02-20
+
+### Fixes
+- `baoyu-post-to-wechat`: fix upload progress check crashing on second iteration (by @LyInfi)
+
 ## 1.34.0 - 2026-02-17
 
 ### Features
