@@ -2,6 +2,15 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.36.0 - 2026-02-27
+
+### Features
+- `baoyu-image-gen`: add `gemini-3.1-flash-image-preview` model support for Google multimodal image generation
+- `baoyu-image-gen`: improve first-time setup with blocking preferences flow and guided configuration
+
+### Fixes
+- `baoyu-image-gen`: use curl fallback for Google API when HTTP proxy is detected (by @liye71023326)
+
 ## 1.35.0 - 2026-02-24
 
 ### Features

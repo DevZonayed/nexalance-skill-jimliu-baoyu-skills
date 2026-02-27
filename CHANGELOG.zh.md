@@ -2,6 +2,15 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.36.0 - 2026-02-27
+
+### 新功能
+- `baoyu-image-gen`：新增 `gemini-3.1-flash-image-preview` Google 多模态图片生成模型支持
+- `baoyu-image-gen`：优化首次使用引导流程，支持阻塞式偏好配置
+
+### 修复
+- `baoyu-image-gen`：检测到 HTTP 代理时自动回退使用 curl 调用 Google API (by @liye71023326)
+
 ## 1.35.0 - 2026-02-24
 
 ### 新功能
