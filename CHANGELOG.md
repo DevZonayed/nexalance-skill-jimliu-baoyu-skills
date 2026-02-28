@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.42.1 - 2026-02-28
+
+### Features
+- `baoyu-markdown-to-html`: modularize render.ts into cli, constants, extend-config, html-builder, renderer, themes, and types modules; bundle code highlighting themes locally
+
 ## 1.42.0 - 2026-02-28
 
 ### Features

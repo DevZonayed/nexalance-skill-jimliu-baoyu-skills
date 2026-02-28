@@ -2,6 +2,11 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.42.1 - 2026-02-28
+
+### 新功能
+- `baoyu-markdown-to-html`：将 render.ts 拆分为 cli、constants、extend-config、html-builder、renderer、themes、types 模块；本地打包代码高亮主题
+
 ## 1.42.0 - 2026-02-28
 
 ### 新功能
