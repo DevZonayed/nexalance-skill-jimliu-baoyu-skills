@@ -2,6 +2,13 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.37.0 - 2026-02-27
+
+### Features
+- `baoyu-danger-x-to-markdown`: add inline link rendering for X article content, mapping LINK/MEDIA entities to markdown links
+- `baoyu-danger-x-to-markdown`: use content-based slug in output directory path for meaningful folder names
+- `baoyu-danger-x-to-markdown`: add atomic media queue for blocks without direct media references
+
 ## 1.36.0 - 2026-02-27
 
 ### Features

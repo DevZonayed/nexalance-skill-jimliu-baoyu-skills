@@ -2,6 +2,13 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.37.0 - 2026-02-27
+
+### 新功能
+- `baoyu-danger-x-to-markdown`：支持 X 文章内联链接渲染，将 LINK/MEDIA 实体映射为 Markdown 链接
+- `baoyu-danger-x-to-markdown`：输出目录使用基于内容的 slug，生成更有意义的文件夹名称
+- `baoyu-danger-x-to-markdown`：新增 atomic 媒体队列，支持无直接媒体引用的区块
+
 ## 1.36.0 - 2026-02-27
 
 ### 新功能
