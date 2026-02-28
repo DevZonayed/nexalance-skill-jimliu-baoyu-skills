@@ -2,6 +2,12 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.40.0 - 2026-02-28
+
+### 新功能
+- `baoyu-image-gen`：支持 OpenAI Chat Completions 端点生成图片 (by @zhao-newname)
+- `baoyu-markdown-to-html`：新增 CLI 自定义选项（--color、--font-family、--font-size、--code-theme、--mac-code-block、--line-number、--cite、--count、--legend）及 EXTEND.md 配置支持
+
 ## 1.39.0 - 2026-02-28
 
 ### 新功能

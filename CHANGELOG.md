@@ -2,6 +2,12 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.40.0 - 2026-02-28
+
+### Features
+- `baoyu-image-gen`: support OpenAI chat completions endpoint for image generation (by @zhao-newname)
+- `baoyu-markdown-to-html`: add CLI customization options (--color, --font-family, --font-size, --code-theme, --mac-code-block, --line-number, --cite, --count, --legend) and EXTEND.md config support
+
 ## 1.39.0 - 2026-02-28
 
 ### Features
