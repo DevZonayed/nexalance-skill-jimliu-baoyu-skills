@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.39.0 - 2026-02-28
+
+### Features
+- `baoyu-markdown-to-html`: add red theme (traditional calligraphy style with red-gold palette and serif typography) and orange theme (warm modern style with rounded corners and relaxed line height)
+
 ## 1.38.0 - 2026-02-28
 
 ### Features
