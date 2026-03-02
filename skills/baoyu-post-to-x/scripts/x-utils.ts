@@ -1,4 +1,4 @@
-import { spawnSync } from 'node:child_process';
+import { execSync, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import net from 'node:net';
 import os from 'node:os';
@@ -69,10 +69,22 @@ export function findChromeExecutable(candidates: PlatformCandidates): string | u
   return undefined;
 }
 
+let _wslHome: string | null | undefined;
+function getWslWindowsHome(): string | null {
+  if (_wslHome !== undefined) return _wslHome;
+  if (!process.env.WSL_DISTRO_NAME) { _wslHome = null; return null; }
+  try {
+    const raw = execSync('cmd.exe /C "echo %USERPROFILE%"', { encoding: 'utf-8', timeout: 5000 }).trim().replace(/\r/g, '');
+    _wslHome = execSync(`wslpath -u "${raw}"`, { encoding: 'utf-8', timeout: 5000 }).trim() || null;
+  } catch { _wslHome = null; }
+  return _wslHome;
+}
+
 export function getDefaultProfileDir(): string {
   const override = process.env.X_BROWSER_PROFILE_DIR?.trim();
   if (override) return path.resolve(override);
-  const base = process.env.XDG_DATA_HOME || path.join(os.homedir(), '.local', 'share');
+  const home = getWslWindowsHome() ?? os.homedir();
+  const base = process.env.XDG_DATA_HOME || path.join(home, '.local', 'share');
   return path.join(base, 'x-browser-profile');
 }
 
