@@ -2,6 +2,14 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.43.1 - 2026-03-02
+
+### Features
+- `baoyu-post-to-x`: auto-detect WSL environment and resolve Chrome profile to Windows-native path for stable login persistence
+- `baoyu-post-to-wechat`: auto-detect WSL environment and resolve Chrome profile to Windows-native path for stable login persistence
+- `baoyu-danger-gemini-web`: WSL auto-detection for Chrome profile path; add `GEMINI_WEB_DEBUG_PORT` env var for fixed debug port
+- `baoyu-danger-x-to-markdown`: WSL auto-detection for Chrome profile path; add `X_DEBUG_PORT` env var for fixed debug port
+
 ## 1.43.0 - 2026-03-02
 
 ### Features

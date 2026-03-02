@@ -2,6 +2,14 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.43.1 - 2026-03-02
+
+### 新功能
+- `baoyu-post-to-x`：自动检测 WSL 环境，将 Chrome profile 路径解析为 Windows 本地路径，解决登录态丢失问题
+- `baoyu-post-to-wechat`：自动检测 WSL 环境，将 Chrome profile 路径解析为 Windows 本地路径，解决登录态丢失问题
+- `baoyu-danger-gemini-web`：WSL 自动检测 Chrome profile 路径；新增 `GEMINI_WEB_DEBUG_PORT` 环境变量支持固定调试端口
+- `baoyu-danger-x-to-markdown`：WSL 自动检测 Chrome profile 路径；新增 `X_DEBUG_PORT` 环境变量支持固定调试端口
+
 ## 1.43.0 - 2026-03-02
 
 ### 新功能
