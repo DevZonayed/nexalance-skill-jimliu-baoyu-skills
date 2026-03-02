@@ -2,6 +2,12 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.43.0 - 2026-03-02
+
+### Features
+- `baoyu-post-to-wechat`: support env var overrides for browser debug port (`WECHAT_BROWSER_DEBUG_PORT`) and profile directory (`WECHAT_BROWSER_PROFILE_DIR`)
+- `baoyu-post-to-x`: support env var overrides for browser debug port (`X_BROWSER_DEBUG_PORT`) and profile directory (`X_BROWSER_PROFILE_DIR`)
+
 ## 1.42.3 - 2026-03-02
 
 ### Fixes

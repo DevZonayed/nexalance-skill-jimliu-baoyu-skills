@@ -2,6 +2,12 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.43.0 - 2026-03-02
+
+### 新功能
+- `baoyu-post-to-wechat`：支持通过环境变量覆盖浏览器调试端口（`WECHAT_BROWSER_DEBUG_PORT`）和配置目录（`WECHAT_BROWSER_PROFILE_DIR`）
+- `baoyu-post-to-x`：支持通过环境变量覆盖浏览器调试端口（`X_BROWSER_DEBUG_PORT`）和配置目录（`X_BROWSER_PROFILE_DIR`）
+
 ## 1.42.3 - 2026-03-02
 
 ### 修复
