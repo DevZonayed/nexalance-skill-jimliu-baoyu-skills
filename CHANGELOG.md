@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.42.3 - 2026-03-02
+
+### Fixes
+- `baoyu-image-gen`: use standard size presets for DashScope aspect ratio mapping instead of free-form calculation
+
 ## 1.42.2 - 2026-03-01
 
 ### Features
