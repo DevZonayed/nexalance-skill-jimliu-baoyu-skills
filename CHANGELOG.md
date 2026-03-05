@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.43.2 - 2026-03-05
+
+### Refactor
+- `baoyu-url-to-markdown`: replace custom HTML extraction (linkedom + Readability + Turndown) with defuddle library for cleaner content extraction and markdown conversion
+
 ## 1.43.1 - 2026-03-02
 
 ### Features

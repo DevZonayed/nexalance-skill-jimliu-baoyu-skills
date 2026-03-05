@@ -2,6 +2,11 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.43.2 - 2026-03-05
+
+### 重构
+- `baoyu-url-to-markdown`：使用 defuddle 库替换自定义 HTML 提取逻辑（linkedom + Readability + Turndown），简化内容提取和 Markdown 转换
+
 ## 1.43.1 - 2026-03-02
 
 ### 新功能
