@@ -11,7 +11,7 @@ description: Posts content to WeChat Official Account (微信公众号) via API 
 
 ## Script Directory
 
-**Agent Execution**: Determine this SKILL.md directory as `SKILL_DIR`, then use `${SKILL_DIR}/scripts/<name>.ts`.
+**Agent Execution**: Determine this SKILL.md directory as `SKILL_DIR`, then use `${SKILL_DIR}/scripts/<name>.ts`. Resolve `${BUN_X}` runtime: if `bun` installed → `bun`; if `npx` available → `npx -y bun`; else suggest installing bun.
 
 | Script | Purpose |
 |--------|---------|
@@ -88,7 +88,7 @@ chrome_profile_path: /path/to/chrome/profile
 Before first use, suggest running the environment check. User can skip if they prefer.
 
 ```bash
-npx -y bun ${SKILL_DIR}/scripts/check-permissions.ts
+${BUN_X} ${SKILL_DIR}/scripts/check-permissions.ts
 ```
 
 Checks: Chrome, profile isolation, Bun, Accessibility, clipboard, paste keystroke, API credentials, Chrome conflicts.
@@ -111,8 +111,8 @@ Checks: Chrome, profile isolation, Bun, Accessibility, clipboard, paste keystrok
 For short posts with multiple images (up to 9):
 
 ```bash
-npx -y bun ${SKILL_DIR}/scripts/wechat-browser.ts --markdown article.md --images ./images/
-npx -y bun ${SKILL_DIR}/scripts/wechat-browser.ts --title "标题" --content "内容" --image img.png --submit
+${BUN_X} ${SKILL_DIR}/scripts/wechat-browser.ts --markdown article.md --images ./images/
+${BUN_X} ${SKILL_DIR}/scripts/wechat-browser.ts --title "标题" --content "内容" --image img.png --submit
 ```
 
 See [references/image-text-posting.md](references/image-text-posting.md) for details.
@@ -247,7 +247,7 @@ WECHAT_APP_SECRET=<user_input>
 **API method** (accepts `.md` or `.html`):
 
 ```bash
-npx -y bun ${SKILL_DIR}/scripts/wechat-api.ts <file> --theme <theme> [--color <color>] [--title <title>] [--summary <summary>] [--author <author>] [--cover <cover_path>]
+${BUN_X} ${SKILL_DIR}/scripts/wechat-api.ts <file> --theme <theme> [--color <color>] [--title <title>] [--summary <summary>] [--author <author>] [--cover <cover_path>]
 ```
 
 **CRITICAL**: Always include `--theme` parameter. Never omit it, even if using `default`. Only include `--color` if explicitly set by user or EXTEND.md.
@@ -266,8 +266,8 @@ If script parameters do not expose the two comment fields, still ensure final AP
 **Browser method** (accepts `--markdown` or `--html`):
 
 ```bash
-npx -y bun ${SKILL_DIR}/scripts/wechat-article.ts --markdown <markdown_file> --theme <theme> [--color <color>]
-npx -y bun ${SKILL_DIR}/scripts/wechat-article.ts --html <html_file>
+${BUN_X} ${SKILL_DIR}/scripts/wechat-article.ts --markdown <markdown_file> --theme <theme> [--color <color>]
+${BUN_X} ${SKILL_DIR}/scripts/wechat-article.ts --html <html_file>
 ```
 
 ### Step 5: Completion Report

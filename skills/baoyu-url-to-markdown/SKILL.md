@@ -14,7 +14,8 @@ Fetches any URL via Chrome CDP and converts HTML to clean markdown.
 **Agent Execution Instructions**:
 1. Determine this SKILL.md file's directory path as `SKILL_DIR`
 2. Script path = `${SKILL_DIR}/scripts/<script-name>.ts`
-3. Replace all `${SKILL_DIR}` in this document with the actual path
+3. Resolve `${BUN_X}` runtime: if `bun` installed → `bun`; if `npx` available → `npx -y bun`; else suggest installing bun
+4. Replace all `${SKILL_DIR}` and `${BUN_X}` in this document with actual values
 
 **Script Reference**:
 | Script | Purpose |
@@ -98,16 +99,16 @@ Full reference: [references/config/first-time-setup.md](references/config/first-
 
 ```bash
 # Auto mode (default) - capture when page loads
-npx -y bun ${SKILL_DIR}/scripts/main.ts <url>
+${BUN_X} ${SKILL_DIR}/scripts/main.ts <url>
 
 # Wait mode - wait for user signal before capture
-npx -y bun ${SKILL_DIR}/scripts/main.ts <url> --wait
+${BUN_X} ${SKILL_DIR}/scripts/main.ts <url> --wait
 
 # Save to specific file
-npx -y bun ${SKILL_DIR}/scripts/main.ts <url> -o output.md
+${BUN_X} ${SKILL_DIR}/scripts/main.ts <url> -o output.md
 
 # Download images and videos to local directories
-npx -y bun ${SKILL_DIR}/scripts/main.ts <url> --download-media
+${BUN_X} ${SKILL_DIR}/scripts/main.ts <url> --download-media
 ```
 
 ## Options

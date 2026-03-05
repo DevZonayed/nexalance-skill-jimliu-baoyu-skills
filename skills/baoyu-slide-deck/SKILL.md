@@ -24,6 +24,7 @@ Transform content into professional slide deck images.
 **Agent Execution Instructions**:
 1. Determine this SKILL.md file's directory path as `SKILL_DIR`
 2. Script path = `${SKILL_DIR}/scripts/<script-name>.ts`
+3. Resolve `${BUN_X}` runtime: if `bun` installed → `bun`; if `npx` available → `npx -y bun`; else suggest installing bun
 
 | Script | Purpose |
 |--------|---------|
@@ -550,8 +551,8 @@ options:
 ### Step 8: Merge to PPTX and PDF
 
 ```bash
-npx -y bun ${SKILL_DIR}/scripts/merge-to-pptx.ts <slide-deck-dir>
-npx -y bun ${SKILL_DIR}/scripts/merge-to-pdf.ts <slide-deck-dir>
+${BUN_X} ${SKILL_DIR}/scripts/merge-to-pptx.ts <slide-deck-dir>
+${BUN_X} ${SKILL_DIR}/scripts/merge-to-pdf.ts <slide-deck-dir>
 ```
 
 ### Step 9: Output Summary

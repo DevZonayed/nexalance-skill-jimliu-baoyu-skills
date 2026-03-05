@@ -9,7 +9,7 @@ Compresses images using best available tool (sips → cwebp → ImageMagick → 
 
 ## Script Directory
 
-Scripts in `scripts/` subdirectory. Replace `${SKILL_DIR}` with this SKILL.md's directory path.
+Scripts in `scripts/` subdirectory. `${SKILL_DIR}` = this SKILL.md's directory path. Resolve `${BUN_X}` runtime: if `bun` installed → `bun`; if `npx` available → `npx -y bun`; else suggest installing bun. Replace `${SKILL_DIR}` and `${BUN_X}` with actual values.
 
 | Script | Purpose |
 |--------|---------|
@@ -48,7 +48,7 @@ test -f "$HOME/.baoyu-skills/baoyu-compress-image/EXTEND.md" && echo "user"
 ## Usage
 
 ```bash
-npx -y bun ${SKILL_DIR}/scripts/main.ts <input> [options]
+${BUN_X} ${SKILL_DIR}/scripts/main.ts <input> [options]
 ```
 
 ## Options
@@ -67,16 +67,16 @@ npx -y bun ${SKILL_DIR}/scripts/main.ts <input> [options]
 
 ```bash
 # Single file → WebP (replaces original)
-npx -y bun ${SKILL_DIR}/scripts/main.ts image.png
+${BUN_X} ${SKILL_DIR}/scripts/main.ts image.png
 
 # Keep PNG format
-npx -y bun ${SKILL_DIR}/scripts/main.ts image.png -f png --keep
+${BUN_X} ${SKILL_DIR}/scripts/main.ts image.png -f png --keep
 
 # Directory recursive
-npx -y bun ${SKILL_DIR}/scripts/main.ts ./images/ -r -q 75
+${BUN_X} ${SKILL_DIR}/scripts/main.ts ./images/ -r -q 75
 
 # JSON output
-npx -y bun ${SKILL_DIR}/scripts/main.ts image.png --json
+${BUN_X} ${SKILL_DIR}/scripts/main.ts image.png --json
 ```
 
 **Output**:

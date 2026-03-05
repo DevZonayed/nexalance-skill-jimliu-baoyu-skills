@@ -9,7 +9,7 @@ Transforms plain text or markdown files into well-structured markdown with prope
 
 ## Script Directory
 
-Scripts in `scripts/` subdirectory. Replace `${SKILL_DIR}` with this SKILL.md's directory path.
+Scripts in `scripts/` subdirectory. `${SKILL_DIR}` = this SKILL.md's directory path. Resolve `${BUN_X}` runtime: if `bun` installed → `bun`; if `npx` available → `npx -y bun`; else suggest installing bun. Replace `${SKILL_DIR}` and `${BUN_X}` with actual values.
 
 | Script | Purpose |
 |--------|---------|
@@ -210,7 +210,7 @@ Example:
 After saving, **must** run the formatting script:
 
 ```bash
-npx -y bun ${SKILL_DIR}/scripts/main.ts {output-file-path} [options]
+${BUN_X} ${SKILL_DIR}/scripts/main.ts {output-file-path} [options]
 ```
 
 **Script Options:**
@@ -229,16 +229,16 @@ npx -y bun ${SKILL_DIR}/scripts/main.ts {output-file-path} [options]
 
 ```bash
 # Default: spacing + emphasis enabled, quotes disabled
-npx -y bun ${SKILL_DIR}/scripts/main.ts article.md
+${BUN_X} ${SKILL_DIR}/scripts/main.ts article.md
 
 # Enable all features including quote replacement
-npx -y bun ${SKILL_DIR}/scripts/main.ts article.md --quotes
+${BUN_X} ${SKILL_DIR}/scripts/main.ts article.md --quotes
 
 # Only fix emphasis issues, skip spacing
-npx -y bun ${SKILL_DIR}/scripts/main.ts article.md --no-spacing
+${BUN_X} ${SKILL_DIR}/scripts/main.ts article.md --no-spacing
 
 # Disable all processing except frontmatter formatting
-npx -y bun ${SKILL_DIR}/scripts/main.ts article.md --no-spacing --no-emphasis
+${BUN_X} ${SKILL_DIR}/scripts/main.ts article.md --no-spacing --no-emphasis
 ```
 
 **Script performs (based on options):**

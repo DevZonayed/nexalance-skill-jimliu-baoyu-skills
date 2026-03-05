@@ -9,7 +9,7 @@ Converts Markdown files to beautifully styled HTML with inline CSS, optimized fo
 
 ## Script Directory
 
-**Agent Execution**: Determine this SKILL.md directory as `SKILL_DIR`, then use `${SKILL_DIR}/scripts/<name>.ts`.
+**Agent Execution**: Determine this SKILL.md directory as `SKILL_DIR`. Resolve `${BUN_X}` runtime: if `bun` installed → `bun`; if `npx` available → `npx -y bun`; else suggest installing bun. Replace `${SKILL_DIR}` and `${BUN_X}` with actual values.
 
 | Script | Purpose |
 |--------|---------|
@@ -97,7 +97,7 @@ test -f "$HOME/.baoyu-skills/baoyu-post-to-wechat/EXTEND.md" && grep -o 'default
 ### Step 2: Convert
 
 ```bash
-npx -y bun ${SKILL_DIR}/scripts/main.ts <markdown_file> --theme <theme>
+${BUN_X} ${SKILL_DIR}/scripts/main.ts <markdown_file> --theme <theme>
 ```
 
 ### Step 3: Report Result
@@ -107,7 +107,7 @@ Display the output path from JSON result. If backup was created, mention it.
 ## Usage
 
 ```bash
-npx -y bun ${SKILL_DIR}/scripts/main.ts <markdown_file> [options]
+${BUN_X} ${SKILL_DIR}/scripts/main.ts <markdown_file> [options]
 ```
 
 **Options:**
@@ -144,19 +144,19 @@ npx -y bun ${SKILL_DIR}/scripts/main.ts <markdown_file> [options]
 
 ```bash
 # Basic conversion (uses default theme, removes first heading)
-npx -y bun ${SKILL_DIR}/scripts/main.ts article.md
+${BUN_X} ${SKILL_DIR}/scripts/main.ts article.md
 
 # With specific theme
-npx -y bun ${SKILL_DIR}/scripts/main.ts article.md --theme grace
+${BUN_X} ${SKILL_DIR}/scripts/main.ts article.md --theme grace
 
 # Theme with custom color
-npx -y bun ${SKILL_DIR}/scripts/main.ts article.md --theme modern --color red
+${BUN_X} ${SKILL_DIR}/scripts/main.ts article.md --theme modern --color red
 
 # Keep the first heading in content
-npx -y bun ${SKILL_DIR}/scripts/main.ts article.md --keep-title
+${BUN_X} ${SKILL_DIR}/scripts/main.ts article.md --keep-title
 
 # Override title
-npx -y bun ${SKILL_DIR}/scripts/main.ts article.md --title "My Article"
+${BUN_X} ${SKILL_DIR}/scripts/main.ts article.md --title "My Article"
 ```
 
 ## Output

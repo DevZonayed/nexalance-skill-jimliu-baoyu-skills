@@ -6,13 +6,13 @@ Post markdown articles to WeChat Official Account with full formatting support.
 
 ```bash
 # Post markdown article
-npx -y bun ./scripts/wechat-article.ts --markdown article.md
+${BUN_X} ./scripts/wechat-article.ts --markdown article.md
 
 # With theme
-npx -y bun ./scripts/wechat-article.ts --markdown article.md --theme grace
+${BUN_X} ./scripts/wechat-article.ts --markdown article.md --theme grace
 
 # With explicit options
-npx -y bun ./scripts/wechat-article.ts --markdown article.md --author "作者名" --summary "摘要"
+${BUN_X} ./scripts/wechat-article.ts --markdown article.md --author "作者名" --summary "摘要"
 ```
 
 ## Parameters

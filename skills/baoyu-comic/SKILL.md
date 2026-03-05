@@ -107,6 +107,7 @@ Details: [references/auto-selection.md](references/auto-selection.md)
 1. Determine this SKILL.md file's directory path as `SKILL_DIR`
 2. Script path = `${SKILL_DIR}/scripts/<script-name>.ts`
 3. Replace all `${SKILL_DIR}` in this document with the actual path
+4. Resolve `${BUN_X}` runtime: if `bun` installed → `bun`; if `npx` available → `npx -y bun`; else suggest installing bun
 
 **Script Reference**:
 | Script | Purpose |
@@ -209,7 +210,7 @@ Analyze → [Check Existing?] → [Confirm: Style + Reviews] → Storyboard → 
 - **Backup rule**: If `characters/characters.png` exists, rename to `characters/characters-backup-YYYYMMDD-HHMMSS.png`
 ```bash
 # Use Reference Sheet Prompt from characters/characters.md
-npx -y bun ${SKILL_DIR}/../baoyu-image-gen/scripts/main.ts \
+${BUN_X} ${SKILL_DIR}/../baoyu-image-gen/scripts/main.ts \
   --promptfiles characters/characters.md \
   --image characters/characters.png --ar 4:3
 ```
@@ -233,7 +234,7 @@ Compress to reduce token usage when used as reference image:
 
 ```bash
 # Example: ALWAYS include --ref for consistency
-npx -y bun ${SKILL_DIR}/../baoyu-image-gen/scripts/main.ts \
+${BUN_X} ${SKILL_DIR}/../baoyu-image-gen/scripts/main.ts \
   --promptfiles prompts/01-page-xxx.md \
   --image 01-page-xxx.png --ar 3:4 \
   --ref characters/characters.png

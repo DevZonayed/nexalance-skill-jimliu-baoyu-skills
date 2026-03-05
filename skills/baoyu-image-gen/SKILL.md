@@ -12,6 +12,7 @@ Official API-based image generation. Supports OpenAI, Google, DashScope (阿里�
 **Agent Execution**:
 1. `SKILL_DIR` = this SKILL.md file's directory
 2. Script path = `${SKILL_DIR}/scripts/main.ts`
+3. Resolve `${BUN_X}` runtime: if `bun` installed → `bun`; if `npx` available → `npx -y bun`; else suggest installing bun
 
 ## Step 0: Load Preferences ⛔ BLOCKING
 
@@ -44,34 +45,34 @@ Schema: `references/config/preferences-schema.md`
 
 ```bash
 # Basic
-npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "A cat" --image cat.png
+${BUN_X} ${SKILL_DIR}/scripts/main.ts --prompt "A cat" --image cat.png
 
 # With aspect ratio
-npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "A landscape" --image out.png --ar 16:9
+${BUN_X} ${SKILL_DIR}/scripts/main.ts --prompt "A landscape" --image out.png --ar 16:9
 
 # High quality
-npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "A cat" --image out.png --quality 2k
+${BUN_X} ${SKILL_DIR}/scripts/main.ts --prompt "A cat" --image out.png --quality 2k
 
 # From prompt files
-npx -y bun ${SKILL_DIR}/scripts/main.ts --promptfiles system.md content.md --image out.png
+${BUN_X} ${SKILL_DIR}/scripts/main.ts --promptfiles system.md content.md --image out.png
 
 # With reference images (Google multimodal or OpenAI edits)
-npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "Make blue" --image out.png --ref source.png
+${BUN_X} ${SKILL_DIR}/scripts/main.ts --prompt "Make blue" --image out.png --ref source.png
 
 # With reference images (explicit provider/model)
-npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "Make blue" --image out.png --provider google --model gemini-3-pro-image-preview --ref source.png
+${BUN_X} ${SKILL_DIR}/scripts/main.ts --prompt "Make blue" --image out.png --provider google --model gemini-3-pro-image-preview --ref source.png
 
 # Specific provider
-npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "A cat" --image out.png --provider openai
+${BUN_X} ${SKILL_DIR}/scripts/main.ts --prompt "A cat" --image out.png --provider openai
 
 # DashScope (阿里通义万象)
-npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "一只可爱的猫" --image out.png --provider dashscope
+${BUN_X} ${SKILL_DIR}/scripts/main.ts --prompt "一只可爱的猫" --image out.png --provider dashscope
 
 # Replicate (google/nano-banana-pro)
-npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "A cat" --image out.png --provider replicate
+${BUN_X} ${SKILL_DIR}/scripts/main.ts --prompt "A cat" --image out.png --provider replicate
 
 # Replicate with specific model
-npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "A cat" --image out.png --provider replicate --model google/nano-banana
+${BUN_X} ${SKILL_DIR}/scripts/main.ts --prompt "A cat" --image out.png --provider replicate --model google/nano-banana
 ```
 
 ## Options
@@ -136,10 +137,10 @@ Examples:
 
 ```bash
 # Use Replicate default model
-npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "A cat" --image out.png --provider replicate
+${BUN_X} ${SKILL_DIR}/scripts/main.ts --prompt "A cat" --image out.png --provider replicate
 
 # Override model explicitly
-npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "A cat" --image out.png --provider replicate --model google/nano-banana
+${BUN_X} ${SKILL_DIR}/scripts/main.ts --prompt "A cat" --image out.png --provider replicate --model google/nano-banana
 ```
 
 ## Provider Selection

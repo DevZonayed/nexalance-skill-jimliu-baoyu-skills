@@ -15,6 +15,7 @@ Posts text, images, videos, and long-form articles to X via real Chrome browser 
 1. Determine this SKILL.md file's directory path as `SKILL_DIR`
 2. Script path = `${SKILL_DIR}/scripts/<script-name>.ts`
 3. Replace all `${SKILL_DIR}` in this document with the actual path
+4. Resolve `${BUN_X}` runtime: if `bun` installed → `bun`; if `npx` available → `npx -y bun`; else suggest installing bun
 
 **Script Reference**:
 | Script | Purpose |
@@ -69,7 +70,7 @@ test -f "$HOME/.baoyu-skills/baoyu-post-to-x/EXTEND.md" && echo "user"
 Before first use, suggest running the environment check. User can skip if they prefer.
 
 ```bash
-npx -y bun ${SKILL_DIR}/scripts/check-paste-permissions.ts
+${BUN_X} ${SKILL_DIR}/scripts/check-paste-permissions.ts
 ```
 
 Checks: Chrome, profile isolation, Bun, Accessibility, clipboard, paste keystroke, Chrome conflicts.
@@ -98,7 +99,7 @@ Checks: Chrome, profile isolation, Bun, Accessibility, clipboard, paste keystrok
 Text + up to 4 images.
 
 ```bash
-npx -y bun ${SKILL_DIR}/scripts/x-browser.ts "Hello!" --image ./photo.png
+${BUN_X} ${SKILL_DIR}/scripts/x-browser.ts "Hello!" --image ./photo.png
 ```
 
 **Parameters**:
@@ -117,7 +118,7 @@ npx -y bun ${SKILL_DIR}/scripts/x-browser.ts "Hello!" --image ./photo.png
 Text + video file.
 
 ```bash
-npx -y bun ${SKILL_DIR}/scripts/x-video.ts "Check this out!" --video ./clip.mp4
+${BUN_X} ${SKILL_DIR}/scripts/x-video.ts "Check this out!" --video ./clip.mp4
 ```
 
 **Parameters**:
@@ -138,7 +139,7 @@ npx -y bun ${SKILL_DIR}/scripts/x-video.ts "Check this out!" --video ./clip.mp4
 Quote an existing tweet with comment.
 
 ```bash
-npx -y bun ${SKILL_DIR}/scripts/x-quote.ts https://x.com/user/status/123 "Great insight!"
+${BUN_X} ${SKILL_DIR}/scripts/x-quote.ts https://x.com/user/status/123 "Great insight!"
 ```
 
 **Parameters**:
@@ -157,8 +158,8 @@ npx -y bun ${SKILL_DIR}/scripts/x-quote.ts https://x.com/user/status/123 "Great 
 Long-form Markdown articles (requires X Premium).
 
 ```bash
-npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md
-npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md --cover ./cover.jpg
+${BUN_X} ${SKILL_DIR}/scripts/x-article.ts article.md
+${BUN_X} ${SKILL_DIR}/scripts/x-article.ts article.md --cover ./cover.jpg
 ```
 
 **Parameters**:

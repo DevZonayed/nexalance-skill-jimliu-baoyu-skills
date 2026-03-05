@@ -14,7 +14,8 @@ Text/image generation via Gemini Web API. Supports reference images and multi-tu
 **Agent Execution Instructions**:
 1. Determine this SKILL.md file's directory path as `SKILL_DIR`
 2. Script path = `${SKILL_DIR}/scripts/<script-name>.ts`
-3. Replace all `${SKILL_DIR}` in this document with the actual path
+3. Resolve `${BUN_X}` runtime: if `bun` installed → `bun`; if `npx` available → `npx -y bun`; else suggest installing bun
+4. Replace all `${SKILL_DIR}` and `${BUN_X}` in this document with actual values
 
 **Script Reference**:
 | Script | Purpose |
@@ -75,23 +76,23 @@ test -f "$HOME/.baoyu-skills/baoyu-danger-gemini-web/EXTEND.md" && echo "user"
 
 ```bash
 # Text generation
-npx -y bun ${SKILL_DIR}/scripts/main.ts "Your prompt"
-npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "Your prompt" --model gemini-3-flash
+${BUN_X} ${SKILL_DIR}/scripts/main.ts "Your prompt"
+${BUN_X} ${SKILL_DIR}/scripts/main.ts --prompt "Your prompt" --model gemini-3-flash
 
 # Image generation
-npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "A cute cat" --image cat.png
-npx -y bun ${SKILL_DIR}/scripts/main.ts --promptfiles system.md content.md --image out.png
+${BUN_X} ${SKILL_DIR}/scripts/main.ts --prompt "A cute cat" --image cat.png
+${BUN_X} ${SKILL_DIR}/scripts/main.ts --promptfiles system.md content.md --image out.png
 
 # Vision input (reference images)
-npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "Describe this" --reference image.png
-npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "Create variation" --reference a.png --image out.png
+${BUN_X} ${SKILL_DIR}/scripts/main.ts --prompt "Describe this" --reference image.png
+${BUN_X} ${SKILL_DIR}/scripts/main.ts --prompt "Create variation" --reference a.png --image out.png
 
 # Multi-turn conversation
-npx -y bun ${SKILL_DIR}/scripts/main.ts "Remember: 42" --sessionId session-abc
-npx -y bun ${SKILL_DIR}/scripts/main.ts "What number?" --sessionId session-abc
+${BUN_X} ${SKILL_DIR}/scripts/main.ts "Remember: 42" --sessionId session-abc
+${BUN_X} ${SKILL_DIR}/scripts/main.ts "What number?" --sessionId session-abc
 
 # JSON output
-npx -y bun ${SKILL_DIR}/scripts/main.ts "Hello" --json
+${BUN_X} ${SKILL_DIR}/scripts/main.ts "Hello" --json
 ```
 
 ## Options

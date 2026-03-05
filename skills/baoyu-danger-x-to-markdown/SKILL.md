@@ -16,6 +16,7 @@ Scripts located in `scripts/` subdirectory.
 **Path Resolution**:
 1. `SKILL_DIR` = this SKILL.md's directory
 2. Script path = `${SKILL_DIR}/scripts/main.ts`
+3. Resolve `${BUN_X}` runtime: if `bun` installed → `bun`; if `npx` available → `npx -y bun`; else suggest installing bun
 
 ## Consent Requirement
 
@@ -135,10 +136,10 @@ Full reference: [references/config/first-time-setup.md](references/config/first-
 ## Usage
 
 ```bash
-npx -y bun ${SKILL_DIR}/scripts/main.ts <url>
-npx -y bun ${SKILL_DIR}/scripts/main.ts <url> -o output.md
-npx -y bun ${SKILL_DIR}/scripts/main.ts <url> --download-media
-npx -y bun ${SKILL_DIR}/scripts/main.ts <url> --json
+${BUN_X} ${SKILL_DIR}/scripts/main.ts <url>
+${BUN_X} ${SKILL_DIR}/scripts/main.ts <url> -o output.md
+${BUN_X} ${SKILL_DIR}/scripts/main.ts <url> --download-media
+${BUN_X} ${SKILL_DIR}/scripts/main.ts <url> --json
 ```
 
 ## Options
