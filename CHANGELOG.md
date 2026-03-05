@@ -2,6 +2,12 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.45.1 - 2026-03-05
+
+### Refactor
+- Replace hardcoded `npx -y bun` with `${BUN_X}` runtime variable across all skills — prefers native `bun`, falls back to `npx -y bun`
+- Add Runtime Detection section to CLAUDE.md and Script Directory instructions in all SKILL.md files
+
 ## 1.45.0 - 2026-03-05
 
 ### Features
