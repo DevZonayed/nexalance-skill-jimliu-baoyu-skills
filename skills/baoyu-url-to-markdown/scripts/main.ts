@@ -4,7 +4,7 @@ import path from "node:path";
 import process from "node:process";
 
 import { CdpConnection, getFreePort, launchChrome, waitForChromeDebugPort, waitForNetworkIdle, waitForPageLoad, autoScroll, evaluateScript, killChrome } from "./cdp.js";
-import { cleanupAndExtractScript, htmlToMarkdown, createMarkdownDocument, type PageMetadata, type ConversionResult } from "./html-to-markdown.js";
+import { absolutizeUrlsScript, extractContent, createMarkdownDocument, type ConversionResult } from "./html-to-markdown.js";
 import { resolveUrlToMarkdownDataDir } from "./paths.js";
 import { DEFAULT_TIMEOUT_MS, CDP_CONNECT_TIMEOUT_MS, NETWORK_IDLE_TIMEOUT_MS, POST_LOAD_DELAY_MS, SCROLL_STEP_WAIT_MS, SCROLL_MAX_STEPS } from "./constants.js";
 
@@ -117,21 +117,11 @@ async function captureUrl(args: Args): Promise<ConversionResult> {
     }
 
     console.log("Capturing page content...");
-    const extracted = await evaluateScript<{ title: string; description?: string; author?: string; published?: string; html: string }>(
-      cdp, sessionId, cleanupAndExtractScript, args.timeout
+    const { html } = await evaluateScript<{ html: string }>(
+      cdp, sessionId, absolutizeUrlsScript, args.timeout
     );
 
-    const metadata: PageMetadata = {
-      url: args.url,
-      title: extracted.title || "",
-      description: extracted.description,
-      author: extracted.author,
-      published: extracted.published,
-      captured_at: new Date().toISOString()
-    };
-
-    const markdown = htmlToMarkdown(extracted.html);
-    return { metadata, markdown };
+    return await extractContent(html, args.url);
   } finally {
     if (cdp) {
       try { await cdp.send("Browser.close", {}, { timeoutMs: 5_000 }); } catch {}
