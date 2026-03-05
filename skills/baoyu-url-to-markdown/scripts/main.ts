@@ -25,6 +25,7 @@ async function fileExists(filePath: string): Promise<boolean> {
 interface Args {
   url: string;
   output?: string;
+  outputDir?: string;
   wait: boolean;
   timeout: number;
   downloadMedia: boolean;
@@ -40,6 +41,8 @@ function parseArgs(argv: string[]): Args {
       args.output = argv[++i];
     } else if (arg === "--timeout" || arg === "-t") {
       args.timeout = parseInt(argv[++i], 10) || DEFAULT_TIMEOUT_MS;
+    } else if (arg === "--output-dir") {
+      args.outputDir = argv[++i];
     } else if (arg === "--download-media") {
       args.downloadMedia = true;
     } else if (!arg.startsWith("-") && !args.url) {
@@ -66,10 +69,10 @@ function formatTimestamp(): string {
   return `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
 }
 
-async function generateOutputPath(url: string, title: string): Promise<string> {
+async function generateOutputPath(url: string, title: string, outputDir?: string): Promise<string> {
   const domain = new URL(url).hostname.replace(/^www\./, "");
   const slug = generateSlug(title, url);
-  const dataDir = resolveUrlToMarkdownDataDir();
+  const dataDir = outputDir ? path.resolve(outputDir) : resolveUrlToMarkdownDataDir();
   const basePath = path.join(dataDir, domain, `${slug}.md`);
 
   if (!(await fileExists(basePath))) {
@@ -149,11 +152,19 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
+  if (args.output) {
+    const stat = await import("node:fs").then(fs => fs.statSync(args.output!, { throwIfNoEntry: false }));
+    if (stat?.isDirectory()) {
+      console.error(`Error: -o path is a directory, not a file: ${args.output}`);
+      process.exit(1);
+    }
+  }
+
   console.log(`Fetching: ${args.url}`);
   console.log(`Mode: ${args.wait ? "wait" : "auto"}`);
 
   const result = await captureUrl(args);
-  const outputPath = args.output || await generateOutputPath(args.url, result.metadata.title);
+  const outputPath = args.output || await generateOutputPath(args.url, result.metadata.title, args.outputDir);
   const outputDir = path.dirname(outputPath);
   await mkdir(outputDir, { recursive: true });
 

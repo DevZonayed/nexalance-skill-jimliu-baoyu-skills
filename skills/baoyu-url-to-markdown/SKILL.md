@@ -82,8 +82,14 @@ Full reference: [references/config/first-time-setup.md](references/config/first-
 | `download_media` | `ask` | `ask` / `1` / `0` | `ask` = prompt each time, `1` = always download, `0` = never |
 | `default_output_dir` | empty | path or empty | Default output directory (empty = `./url-to-markdown/`) |
 
+**EXTEND.md → CLI mapping**:
+| EXTEND.md key | CLI argument | Notes |
+|---------------|-------------|-------|
+| `download_media: 1` | `--download-media` | |
+| `default_output_dir: ./posts/` | `--output-dir ./posts/` | Directory path. Do NOT pass to `-o` (which expects a file path) |
+
 **Value priority**:
-1. CLI arguments (`--download-media`, `-o`)
+1. CLI arguments (`--download-media`, `-o`, `--output-dir`)
 2. EXTEND.md
 3. Skill defaults
 
@@ -107,6 +113,9 @@ ${BUN_X} ${SKILL_DIR}/scripts/main.ts <url> --wait
 # Save to specific file
 ${BUN_X} ${SKILL_DIR}/scripts/main.ts <url> -o output.md
 
+# Save to a custom output directory (auto-generates filename)
+${BUN_X} ${SKILL_DIR}/scripts/main.ts <url> --output-dir ./posts/
+
 # Download images and videos to local directories
 ${BUN_X} ${SKILL_DIR}/scripts/main.ts <url> --download-media
 ```
@@ -116,7 +125,8 @@ ${BUN_X} ${SKILL_DIR}/scripts/main.ts <url> --download-media
 | Option | Description |
 |--------|-------------|
 | `<url>` | URL to fetch |
-| `-o <path>` | Output file path (default: auto-generated) |
+| `-o <path>` | Output file path — must be a **file** path, not directory (default: auto-generated) |
+| `--output-dir <dir>` | Base output directory — auto-generates `{dir}/{domain}/{slug}.md` (default: `./url-to-markdown/`) |
 | `--wait` | Wait for user signal before capturing |
 | `--timeout <ms>` | Page load timeout (default: 30000) |
 | `--download-media` | Download image/video assets to local `imgs/` and `videos/`, and rewrite markdown links to local relative paths |
@@ -139,9 +149,8 @@ YAML front matter with `url`, `title`, `description`, `author`, `published`, `ca
 
 ## Output Directory
 
-```
-url-to-markdown/<domain>/<slug>.md
-```
+Default: `url-to-markdown/<domain>/<slug>.md`
+With `--output-dir ./posts/`: `./posts/<domain>/<slug>.md`
 
 - `<slug>`: From page title or URL path (kebab-case, 2-6 words)
 - Conflict resolution: Append timestamp `<slug>-YYYYMMDD-HHMMSS.md`
