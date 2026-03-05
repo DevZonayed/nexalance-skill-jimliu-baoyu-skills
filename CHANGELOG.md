@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.46.0 - 2026-03-05
+
+### Features
+- Add `--output-dir` option to url-to-markdown for custom output directory with auto-generated filenames
+
 ## 1.45.1 - 2026-03-05
 
 ### Refactor
