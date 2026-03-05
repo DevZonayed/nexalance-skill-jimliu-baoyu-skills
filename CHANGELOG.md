@@ -2,6 +2,12 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.45.0 - 2026-03-05
+
+### Features
+- `baoyu-post-to-x`: add post-composition verification for X Articles — automatically checks remaining placeholders and image count after all images are inserted
+- `baoyu-post-to-x`: increase CDP timeout to 60s and add 3s DOM stabilization delay between image insertions for long articles
+
 ## 1.44.0 - 2026-03-05
 
 ### Features
