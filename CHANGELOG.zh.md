@@ -2,6 +2,12 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.51.2 - 2026-03-06
+
+### 修复
+- `release-skills`：将显式语言文件名模式（如 `CHANGELOG.de.md`）替换为通用模式，避免 Gen Agent Trust Hub URL 扫描器误报
+- `baoyu-infographic`：新增凭证/密钥剥离指令，解决 Snyk W007 不安全凭证处理审计问题
+
 ## 1.51.1 - 2026-03-06
 
 ### 重构

@@ -2,6 +2,12 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.51.2 - 2026-03-06
+
+### Fixes
+- `release-skills`: replace explicit language filename patterns (e.g. `CHANGELOG.de.md`) with generic pattern to avoid Gen Agent Trust Hub URL scanner false positive
+- `baoyu-infographic`: add credential/secret stripping instructions to address Snyk W007 insecure credential handling audit
+
 ## 1.51.1 - 2026-03-06
 
 ### Refactor
