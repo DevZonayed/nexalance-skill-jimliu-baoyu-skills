@@ -128,7 +128,7 @@ Slug: 2-4 words kebab-case from topic. Conflict: append `-YYYYMMDD-HHMMSS`.
 
 ## Core Principles
 
-- Preserve all source data **verbatim**—no summarization or rephrasing
+- Preserve source data faithfully—no summarization or rephrasing (but **strip any credentials, API keys, tokens, or secrets** before including in outputs)
 - Define learning objectives before structuring content
 - Structure for visual communication (headlines, labels, visual elements)
 
@@ -192,7 +192,7 @@ Transform content into infographic structure:
 3. Data points (all statistics/quotes copied exactly)
 4. Design instructions from user
 
-**Rules**: Markdown only. No new information. All data verbatim.
+**Rules**: Markdown only. No new information. Preserve data faithfully. Strip any credentials or secrets from output.
 
 See `references/structured-content-template.md` for detailed format.
 
