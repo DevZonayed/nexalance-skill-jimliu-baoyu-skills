@@ -131,17 +131,12 @@ Save to `03-draft.md` in the output directory.
 
 For chunked content, the subagent produces this draft (merged from chunk translations). For non-chunked content, the main agent produces it directly.
 
-Translate the full content following `02-prompt.md`:
+Translate the full content following `02-prompt.md`. Apply all **Translation principles** from SKILL.md Step 4, plus these step-specific guidelines:
 
 - Use the terminology decisions from Step 1 consistently
 - Match the identified tone and register
-- Break complex sentences into natural target-language patterns; restructure freely when the source sentence order doesn't work in the target language
-- Interpret figurative language by meaning: translate what the author means, not the literal image, following the metaphor mapping from Step 1
-- Preserve the emotional tone and connotations of word choices, not just their dictionary meanings
-- Preserve all formatting and structure
-- First occurrence of technical terms: translated term (original in parentheses)
-- Add translator's notes for comprehension challenges identified in Step 1: use parentheses with a plain-language explanation, e.g., `译文（English original，通俗解释）`
-- Only annotate where genuinely needed — do not over-explain obvious terms
+- Follow the metaphor mapping from Step 1 for figurative language handling
+- Add translator's notes for comprehension challenges identified in Step 1
 
 ## Step 4: Critical Review
 

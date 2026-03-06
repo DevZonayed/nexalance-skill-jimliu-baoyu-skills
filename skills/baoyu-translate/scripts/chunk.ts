@@ -118,6 +118,10 @@ if (cur.length > 0) chunks.push({ blocks: cur, words: curWords })
 const dir = outputDir ? join(outputDir, "chunks") : join(dirname(file), "chunks")
 mkdirSync(dir, { recursive: true })
 
+if (frontmatter) {
+  writeFileSync(join(dir, "frontmatter.md"), frontmatter)
+}
+
 chunks.forEach((chunk, i) => {
   const num = String(i + 1).padStart(2, "0")
   const out = join(dir, `chunk-${num}.md`)

@@ -1,6 +1,6 @@
 ---
 name: baoyu-translate
-description: Translates articles and documents between languages with three modes - quick (direct), normal (analyze then translate), and refined (analyze, translate, review, polish). Supports custom glossaries and terminology consistency via EXTEND.md. Use when user asks to "translate", "翻译", "精翻", "translate article", "translate to Chinese/English", or needs any document translation. Also triggers for "refined translation", "精细翻译", "proofread translation", or "快速翻译".
+description: Translates articles and documents between languages with three modes - quick (direct), normal (analyze then translate), and refined (analyze, translate, review, polish). Supports custom glossaries and terminology consistency via EXTEND.md. Use when user asks to "translate", "翻译", "精翻", "translate article", "translate to Chinese/English", "改成中文", "改成英文", "convert to Chinese", "localize", "本地化", or needs any document translation. Also triggers for "refined translation", "精细翻译", "proofread translation", "快速翻译", "快翻", "这篇文章翻译一下", or when a URL or file is provided with translation intent.
 ---
 
 # Translator
@@ -84,7 +84,7 @@ All configurable values in one place. EXTEND.md overrides these; CLI flags overr
 **Upgrade prompt**: After normal mode completes, display:
 > Translation saved. To further review and polish, reply "继续润色" or "refine".
 
-If user responds, continue with review → polish steps (same as refined mode Steps 3-4) on the existing output.
+If user responds, continue with review → polish steps (same as refined mode Steps 4-6 in refined-workflow.md) on the existing output.
 
 ## Usage
 
@@ -122,49 +122,25 @@ Custom audience descriptions are also accepted, e.g., `--audience "AI感兴趣�
 
 ### Step 2: Materialize Source & Create Output Directory
 
-If the input is not a file, save it as one first. Then create an output subdirectory next to the source file.
+Materialize source (file as-is, inline text/URL → save to `translate/{slug}.md`), then create output directory: `{source-dir}/{source-basename}-{target-lang}/`. Detect source language if `--from` not specified.
 
-**2.1 Materialize source**
+Full details: [references/workflow-mechanics.md](references/workflow-mechanics.md)
 
-| Input Type | Action |
-|------------|--------|
-| File | Use as-is (no copy needed) |
-| Inline text | Save to `translate/{slug}.md` |
-| URL | Fetch content, save to `translate/{slug}.md` |
-
-`{slug}`: 2-4 word kebab-case slug derived from content topic.
-
-**2.2 Create output directory**
-
-Create a subdirectory next to the source file: `{source-dir}/{source-basename}-{target-lang}/`
-
-Examples:
-- `posts/article.md` → `posts/article-zh/`
-- `translate/ai-future.md` → `translate/ai-future-zh/`
-
-**Conflict resolution**: If the output directory already exists, rename the existing one to `{name}.backup-YYYYMMDD-HHMMSS/` before creating the new one. Never overwrite existing results.
-
-**2.3 Output directory contents**
-
-All intermediate and final files go into this directory:
+**Output directory contents** (all intermediate and final files go here):
 
 | File | Mode | Description |
 |------|------|-------------|
 | `translation.md` | All | Final translation (always this name) |
 | `01-analysis.md` | Normal, Refined | Content analysis (domain, tone, terminology) |
-| `02-prompt.md` | Normal, Refined | Assembled translation prompt (used by subagent or inline) |
+| `02-prompt.md` | Normal, Refined | Assembled translation prompt |
 | `03-draft.md` | Refined | Initial draft before review |
-| `04-critique.md` | Refined | Critical review findings (diagnosis only, no rewriting) |
+| `04-critique.md` | Refined | Critical review findings (diagnosis only) |
 | `05-revision.md` | Refined | Revised translation based on critique |
 | `chunks/` | Chunked | Source chunks + translated chunks |
-| `chunks/chunk-01.md` | Chunked | Source chunk |
-| `chunks/chunk-01-draft.md` | Chunked | Translated chunk |
-
-Detect source language if `--from` not specified.
 
 ### Step 3: Assess Content Length
 
-Quick mode does not chunk — translate directly regardless of length. If content exceeds model context limits, suggest the user switch to normal or refined mode.
+Quick mode does not chunk — translate directly regardless of length. Before translating, estimate word count. If content exceeds chunk threshold (default 4000 words), proactively warn: "This article is ~{N} words. Quick mode translates in one pass without chunking — for long content, `--mode normal` produces better results with terminology consistency." Then proceed if user doesn't switch.
 
 For normal and refined modes:
 
@@ -192,7 +168,7 @@ Before translating chunks:
    - Terminology consistency is guaranteed by the shared `02-prompt.md` (glossary + comprehension challenges from analysis)
    - If no chunks (content under threshold): spawn one subagent for the entire source file
    - If Agent tool is unavailable, translate chunks sequentially inline using `02-prompt.md`
-6. **Merge**: Once all subagents complete, combine translated chunks in order, prepend frontmatter if present → save as `03-draft.md` (refined) or `translation.md` (normal)
+6. **Merge**: Once all subagents complete, combine translated chunks in order. If `chunks/frontmatter.md` exists, prepend it. Save as `03-draft.md` (refined) or `translation.md` (normal)
 7. All intermediate files (source chunks + translated chunks) are preserved in `chunks/`
 
 **After chunked draft is merged**, return control to main agent for critical review, revision, and polish (Step 4).
