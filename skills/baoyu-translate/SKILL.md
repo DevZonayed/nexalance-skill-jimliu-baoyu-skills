@@ -202,10 +202,13 @@ Before translating chunks:
 **Translation principles** (apply to all modes):
 
 - **Accuracy first**: Facts, data, and logic must match the original exactly
-- **Natural flow**: Use idiomatic target language word order; break long sentences into shorter ones
+- **Meaning over words**: Translate what the author means, not just what the words say. When a literal translation sounds unnatural or fails to convey the intended effect, restructure freely to express the same meaning in idiomatic target language
+- **Figurative language**: Interpret metaphors, idioms, and figurative expressions by their intended meaning rather than translating them word-for-word. When a source-language image does not carry the same connotation in the target language, replace it with a natural expression that conveys the same idea and emotional effect
+- **Emotional fidelity**: Preserve the emotional connotations of word choices, not just their dictionary meanings. Words that carry subjective feelings (e.g., "alarming", "haunting") should be rendered to evoke the same response in target-language readers
+- **Natural flow**: Use idiomatic target language word order and sentence patterns; break or restructure sentences freely when the source structure doesn't work naturally in the target language
 - **Terminology**: Use standard translations; annotate with original term in parentheses on first occurrence
 - **Preserve format**: Keep all markdown formatting (headings, bold, italic, images, links, code blocks)
-- **Respect original**: Maintain original structure and meaning; do not add, remove, or editorialize
+- **Respect original**: Maintain original meaning and intent; do not add, remove, or editorialize — but sentence structure and imagery may be adapted freely to serve the meaning
 - **Translator's notes**: For terms, concepts, or cultural references that target readers may not understand — due to jargon, cultural gaps, or domain-specific knowledge — add a concise explanatory note in parentheses immediately after the term. The note should explain *what it means* in plain language, not just provide the English original. Format: `译文（English original，通俗解释）`. Calibrate annotation depth to the target audience: general readers need more notes than technical readers. Only add notes where genuinely needed; do not over-annotate obvious terms.
 
 #### Quick Mode
@@ -214,7 +217,7 @@ Translate directly → save to `translation.md`.
 
 #### Normal Mode
 
-1. **Analyze** → `01-analysis.md` (domain, tone, audience, terminology, reader comprehension challenges)
+1. **Analyze** → `01-analysis.md` (domain, tone, audience, terminology, reader comprehension challenges, figurative language & metaphor mapping)
 2. **Assemble prompt** → `02-prompt.md` (translation instructions with inlined context)
 3. **Translate** (following `02-prompt.md`) → `translation.md`
 
@@ -229,7 +232,7 @@ Full workflow for publication quality. See [references/refined-workflow.md](refe
 The subagent (if used in Step 3.1) only handles the initial draft. All subsequent steps (critical review, revision, polish) are handled by the main agent, which may delegate to subagents at its discretion.
 
 Steps and saved files (all in output directory):
-1. **Analyze** → `01-analysis.md` (domain, tone, terminology, reader comprehension challenges)
+1. **Analyze** → `01-analysis.md` (domain, tone, terminology, reader comprehension challenges, figurative language & metaphor mapping)
 2. **Assemble prompt** → `02-prompt.md` (translation instructions with inlined context)
 3. **Draft** → `03-draft.md` (initial translation with translator's notes; from subagent if chunked)
 4. **Critical review** → `04-critique.md` (diagnosis only: accuracy, Europeanized language, strategy execution, expression issues)

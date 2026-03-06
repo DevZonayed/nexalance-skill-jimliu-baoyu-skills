@@ -63,10 +63,26 @@ For each identified challenge, note:
 2. Why it may confuse target readers
 3. A concise plain-language explanation to use as a translator's note
 
-### 1.7 Translation Challenges
+### 1.7 Figurative Language & Metaphor Mapping
 
+Identify all metaphors, similes, idioms, and figurative expressions in the source. For each:
+
+1. **Original expression**: The exact phrase
+2. **Intended meaning**: What the author is actually communicating (the idea behind the image)
+3. **Literal translation risk**: Would a word-for-word translation sound unnatural, lose the connotation, or confuse target readers?
+4. **Target-language approach**: One of:
+   - **Interpret**: Discard the source image entirely, express the intended meaning directly in natural target language
+   - **Substitute**: Replace with a target-language idiom or image that conveys the same idea and emotional effect
+   - **Retain**: Keep the original image if it works equally well in the target language
+
+Also flag:
+- **Emotional connotations carried by word choice**: Words like "alarming" that convey subjective feeling, not just objective description — note the emotional effect to preserve
+- **Implied meanings**: Sentences where the surface meaning is simple but the implication is richer — note what the author really means so the translator can convey the full intent
+
+### 1.8 Structural & Creative Challenges
+
+- Complex sentence patterns (long subordinate clauses, nested modifiers, participial phrases) that need restructuring for natural target-language flow
 - Structural challenges (wordplay, ambiguity, puns that don't translate)
-- Passages where literal translation would lose meaning
 - Content where the author's voice or humor requires creative adaptation
 
 **Save `01-analysis.md`** with:
@@ -95,8 +111,12 @@ Implicit assumptions: [unstated premises]
 - [term/passage] → [why confusing] → [proposed note]
 - ...
 
-## Translation Challenges
-[structural issues, creative adaptation needs]
+## Figurative Language & Metaphor Mapping
+- [original expression] → [intended meaning] → [approach: interpret/substitute/retain] → [suggested rendering]
+- ...
+
+## Structural & Creative Challenges
+[sentence restructuring needs, wordplay, creative adaptation needs]
 ```
 
 ## Step 2: Assemble Translation Prompt
@@ -115,7 +135,9 @@ Translate the full content following `02-prompt.md`:
 
 - Use the terminology decisions from Step 1 consistently
 - Match the identified tone and register
-- Break complex sentences into natural target-language patterns
+- Break complex sentences into natural target-language patterns; restructure freely when the source sentence order doesn't work in the target language
+- Interpret figurative language by meaning: translate what the author means, not the literal image, following the metaphor mapping from Step 1
+- Preserve the emotional tone and connotations of word choices, not just their dictionary meanings
 - Preserve all formatting and structure
 - First occurrence of technical terms: translated term (original in parentheses)
 - Add translator's notes for comprehension challenges identified in Step 1: use parentheses with a plain-language explanation, e.g., `译文（English original，通俗解释）`
