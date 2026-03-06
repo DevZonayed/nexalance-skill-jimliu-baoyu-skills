@@ -2,6 +2,12 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.48.0 - 2026-03-05
+
+### Features
+- `baoyu-translate`: add `--output-dir` option to chunk.ts — chunks now write to the translation output directory instead of the source file directory
+- `baoyu-translate`: improve refined workflow — split Review into Critical Review + Revision (5→6 steps), add Europeanized language diagnosis for CJK targets
+
 ## 1.47.0 - 2026-03-05
 
 ### Features
