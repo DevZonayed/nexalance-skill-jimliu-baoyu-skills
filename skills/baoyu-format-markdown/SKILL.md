@@ -51,7 +51,14 @@ if (Test-Path "$HOME/.baoyu-skills/baoyu-format-markdown/EXTEND.md") { "user" }
 │ Not found │ Use defaults                                                              │
 └───────────┴───────────────────────────────────────────────────────────────────────────┘
 
-**EXTEND.md Supports**: Default formatting options | Summary length preferences
+**EXTEND.md Supports**:
+
+| Setting | Values | Default | Description |
+|---------|--------|---------|-------------|
+| `auto_select` | `true`/`false` | `false` | Skip both title and summary selection, auto-pick best |
+| `auto_select_title` | `true`/`false` | `false` | Skip title selection only |
+| `auto_select_summary` | `true`/`false` | `false` | Skip summary selection only |
+| Other | — | — | Default formatting options, typography preferences |
 
 ## Usage
 
@@ -148,22 +155,62 @@ The analysis file serves as the blueprint for Step 3. Use this format:
 - [list any obvious typos with corrections, or "None found"]
 ```
 
-### Step 3: Check/Create Frontmatter & Title
+### Step 3: Check/Create Frontmatter, Title & Summary
 
 Check for YAML frontmatter (`---` block). Create if missing.
 
 | Field | Processing |
 |-------|------------|
-| `title` | If frontmatter has `title` → use it. If first line is H1 → extract to frontmatter, remove H1 from body. If neither → generate 3 candidates, ask user to pick. |
+| `title` | See **Title Generation** below |
 | `slug` | Infer from file path or generate from title |
-| `summary` | Generate engaging summary (100-150 characters) |
+| `summary` | See **Summary Generation** below |
 | `coverImage` | Check if `imgs/cover.png` exists in same directory; if so, use relative path |
 
-**Title principles:**
-- Concise, max 20 characters
-- Captures core message
+**Title Generation:**
+
+Generate 3 candidate titles with different angles/styles. Present to user for selection:
+
+```
+Pick a title:
+
+1. [Title A] — [angle/style note]
+2. [Title B] — [angle/style note]
+3. [Title C] — [angle/style note]
+
+Enter number, or type a custom title:
+```
+
+Title principles:
 - Engaging, sparks reading interest
+- Captures core message or most compelling angle
 - Accurate, avoids clickbait
+- Vary angles: e.g. story-driven, conclusion-driven, question-driven
+
+If frontmatter already has `title`, skip selection and use it. If first line is H1, extract to frontmatter as default title but still offer alternatives.
+
+**Summary Generation:**
+
+Generate 3 candidate summaries with different focuses. Present to user for selection:
+
+```
+Pick a summary:
+
+1. [Summary A] — [focus note]
+2. [Summary B] — [focus note]
+3. [Summary C] — [focus note]
+
+Enter number, or type a custom summary:
+```
+
+Summary principles:
+- 80-150 characters, precise and information-rich
+- Convey article's core value, not just topic
+- Vary focuses: e.g. problem-driven, result-driven, insight-driven
+- Avoid generic descriptions like "本文介绍了..."
+
+If frontmatter already has `summary`, skip selection and use it.
+
+**EXTEND.md skip behavior:** If `auto_select: true` is set in EXTEND.md, skip title and summary selection — generate the best candidate directly without asking. User can also set `auto_select_title: true` or `auto_select_summary: true` independently.
 
 Once title is in frontmatter, body should NOT have H1 (avoid duplication).
 
