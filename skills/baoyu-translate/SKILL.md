@@ -13,7 +13,7 @@ Scripts in `scripts/` subdirectory. `${SKILL_DIR}` = this SKILL.md's directory p
 
 | Script | Purpose |
 |--------|---------|
-| `scripts/chunk.ts` | Split markdown into chunks by AST blocks (sections, headings, paragraphs), with line/word fallback for oversized blocks |
+| `scripts/chunk.ts` | Split markdown into chunks by AST blocks (sections, headings, paragraphs), with line/word fallback for oversized blocks. Use `--output-dir <dir>` to write chunks into `<dir>/chunks/` instead of `<source-dir>/chunks/` |
 
 ## Preferences (EXTEND.md)
 
@@ -154,7 +154,8 @@ All intermediate and final files go into this directory:
 | `01-analysis.md` | Normal, Refined | Content analysis (domain, tone, terminology) |
 | `02-prompt.md` | Normal, Refined | Assembled translation prompt (used by subagent or inline) |
 | `03-draft.md` | Refined | Initial draft before review |
-| `04-review.md` | Refined | Reviewed version with fixes |
+| `04-critique.md` | Refined | Critical review findings (diagnosis only, no rewriting) |
+| `05-revision.md` | Refined | Revised translation based on critique |
 | `chunks/` | Chunked | Source chunks + translated chunks |
 | `chunks/chunk-01.md` | Chunked | Source chunk |
 | `chunks/chunk-01-draft.md` | Chunked | Translated chunk |
@@ -178,7 +179,7 @@ Before translating chunks:
 
 1. **Extract terminology**: Scan entire document for proper nouns, technical terms, recurring phrases
 2. **Build session glossary**: Merge extracted terms with loaded glossaries, establish consistent translations
-3. **Split into chunks**: Use `${BUN_X} ${SKILL_DIR}/scripts/chunk.ts <file> [--max-words <chunk_max_words>]`
+3. **Split into chunks**: Use `${BUN_X} ${SKILL_DIR}/scripts/chunk.ts <file> [--max-words <chunk_max_words>] [--output-dir <output-dir>]`
    - Parses markdown AST (headings, paragraphs, lists, code blocks, tables, etc.)
    - Splits at markdown block boundaries to preserve structure
    - If a single block exceeds the threshold, falls back to line splitting, then word splitting
@@ -194,7 +195,7 @@ Before translating chunks:
 6. **Merge**: Once all subagents complete, combine translated chunks in order, prepend frontmatter if present → save as `03-draft.md` (refined) or `translation.md` (normal)
 7. All intermediate files (source chunks + translated chunks) are preserved in `chunks/`
 
-**After chunked draft is merged**, return control to main agent for review and polish (Step 4).
+**After chunked draft is merged**, return control to main agent for critical review, revision, and polish (Step 4).
 
 ### Step 4: Translate & Refine
 
@@ -219,20 +220,21 @@ Translate directly → save to `translation.md`.
 
 After completion, prompt user: "Translation saved. To further review and polish, reply **继续润色** or **refine**."
 
-If user continues, proceed with review → polish (same as refined mode Steps 3-4 below), saving `03-draft.md` (rename current `translation.md`), `04-review.md`, and updated `translation.md`.
+If user continues, proceed with critical review → revision → polish (same as refined mode Steps 4-6 below), saving `03-draft.md` (rename current `translation.md`), `04-critique.md`, `05-revision.md`, and updated `translation.md`.
 
 #### Refined Mode
 
 Full workflow for publication quality. See [references/refined-workflow.md](references/refined-workflow.md) for detailed guidelines per step.
 
-The subagent (if used in Step 3.1) only handles the initial draft. All subsequent steps are handled by the main agent, which may delegate to subagents at its discretion.
+The subagent (if used in Step 3.1) only handles the initial draft. All subsequent steps (critical review, revision, polish) are handled by the main agent, which may delegate to subagents at its discretion.
 
 Steps and saved files (all in output directory):
 1. **Analyze** → `01-analysis.md` (domain, tone, terminology, reader comprehension challenges)
 2. **Assemble prompt** → `02-prompt.md` (translation instructions with inlined context)
 3. **Draft** → `03-draft.md` (initial translation with translator's notes; from subagent if chunked)
-4. **Review** → `04-review.md` (accuracy, naturalness, terminology fixes)
-5. **Polish** → `translation.md` (final publication-quality translation)
+4. **Critical review** → `04-critique.md` (diagnosis only: accuracy, Europeanized language, strategy execution, expression issues)
+5. **Revision** → `05-revision.md` (apply all critique findings to produce revised translation)
+6. **Polish** → `translation.md` (final publication-quality translation)
 
 Each step reads the previous step's file and builds on it.
 

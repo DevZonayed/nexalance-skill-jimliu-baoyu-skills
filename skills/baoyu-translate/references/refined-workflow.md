@@ -4,8 +4,8 @@ This file provides detailed guidelines for each workflow step. Steps are shared 
 
 - **Quick**: Translate only (no steps from this file)
 - **Normal**: Step 1 (Analysis) → Translate
-- **Refined**: Step 1 (Analysis) → Step 2 (Draft) → Step 3 (Review) → Step 4 (Polish)
-- **Normal → Upgrade**: After normal mode, user can continue with Step 3 → Step 4
+- **Refined**: Step 1 (Analysis) → Step 2 (Draft) → Step 3 (Review) → Step 4 (Revision) → Step 5 (Polish)
+- **Normal → Upgrade**: After normal mode, user can continue with Step 3 → Step 4 → Step 5
 
 All intermediate results are saved as files in the output directory.
 
@@ -121,54 +121,109 @@ Translate the full content following `02-prompt.md`:
 - Add translator's notes for comprehension challenges identified in Step 1: use parentheses with a plain-language explanation, e.g., `译文（English original，通俗解释）`
 - Only annotate where genuinely needed — do not over-explain obvious terms
 
-## Step 4: Review
+## Step 4: Critical Review
 
-The main agent reviews the draft. Save reviewed version to `04-review.md`.
+The main agent critically reviews the draft against the source. Save review findings to `04-critique.md`. This step produces **diagnosis only** — no rewriting yet.
 
-Systematically review against these criteria:
-
-### Accuracy Check
-- Compare each paragraph against the original
+### 4.1 Accuracy & Completeness
+- Compare each paragraph against the original, sentence by sentence
 - Verify all facts, numbers, dates, and proper nouns
-- Ensure no content was accidentally added, removed, or altered
+- Flag any content accidentally added, removed, or altered
 - Check that technical terms match glossary consistently throughout
+- Verify no paragraphs or sections were skipped
 
-### Naturalness Check
-- Read the translation as if it were original content (not a translation)
-- Flag sentences that sound like "translationese" — awkward word order, calques, unnatural phrasing
-- Check paragraph transitions and logical flow
-- Verify sentence length feels natural for target language
+### 4.2 Europeanized Language Diagnosis (for CJK targets)
+- **Unnecessary connectives**: Overuse of 因此/然而/此外/另外 where context already implies the relationship
+- **Passive voice abuse**: Excessive 被/由/受到 where active voice is more natural
+- **Noun pile-up**: Long modifier chains that should be broken into shorter clauses
+- **Cleft sentences**: Unnatural "是...的" structures calqued from English "It is...that"
+- **Over-nominalization**: Abstract nouns where verbs or adjectives would be more natural (e.g., "进行了讨论" → "讨论了")
+- **Awkward pronouns**: Overuse of 他/她/它/我们/你 where they can be omitted
 
-### Terminology Consistency
-- Verify each glossary term is translated the same way throughout
-- Check proper nouns are handled consistently (transliterated vs. kept in original)
-- Verify annotations appear on first occurrence only
+### 4.3 Strategy Execution
+- Were the translation strategies from `02-prompt.md` actually followed?
+- Did the translator apply the tone and register identified in analysis?
+- Were comprehension challenges from `01-analysis.md` addressed with appropriate notes?
+- Were glossary terms used consistently?
 
-### Cultural Adaptation & Translator's Notes
-- Are cultural references explained where needed?
+### 4.4 Expression & Logic
+- Flag sentences that read like "translationese" — unnatural word order, calques, stiff phrasing
+- Check logical flow between sentences and paragraphs
+- Identify where sentence restructuring would improve readability
+- Note where the target language idiom was missed (e.g., English metaphor translated literally instead of finding a target-language equivalent)
+
+### 4.5 Translator's Notes Quality
+- Are notes accurate, concise, and genuinely helpful?
+- Identify missed comprehension challenges that need notes
+- Flag over-annotations on terms obvious to the target audience
+- Check that cultural references are explained where needed
+
+### 4.6 Cultural Adaptation
 - Do metaphors and idioms work in the target language?
 - Are any references potentially confusing or offensive in the target culture?
-- Check translator's notes: are they accurate, concise, and genuinely helpful?
-- Identify any missed comprehension challenges that should have notes
-- Remove over-annotations on terms that are obvious to the target audience
+- Could any passage be misinterpreted due to cultural context differences?
 
-## Step 5: Polish
+**Save `04-critique.md`** with:
+```
+## Accuracy & Completeness
+- [issue]: [location] — [description]
+- ...
+
+## Europeanized Language Issues
+- [issue type]: [example from draft] → [suggested fix]
+- ...
+
+## Strategy Execution
+- [strategy]: [followed/missed] — [details]
+- ...
+
+## Expression & Logic
+- [location]: [problem] → [suggestion]
+- ...
+
+## Translator's Notes
+- [add/remove/revise]: [term] — [reason]
+- ...
+
+## Cultural Adaptation
+- [issue]: [description] — [suggestion]
+- ...
+
+## Summary
+[Overall assessment: X critical issues, Y improvements, Z minor suggestions]
+```
+
+## Step 5: Revision
+
+Apply all findings from `04-critique.md` to produce a revised translation. Save to `05-revision.md`.
+
+The revision reads `03-draft.md` (the original draft) and `04-critique.md` (the review findings), and may also refer back to the source text and `01-analysis.md`:
+
+- Fix all accuracy issues identified in the critique
+- Rewrite Europeanized expressions into natural target-language patterns
+- Apply missed translation strategies
+- Restructure stiff or awkward sentences for fluency
+- Add, remove, or revise translator's notes per critique recommendations
+- Improve transitions between paragraphs
+- Adapt cultural references as suggested
+
+## Step 6: Polish
 
 Save final version to `translation.md`.
 
-Final pass addressing all issues from the review:
+Final pass on `05-revision.md` for publication quality:
 
-- Fix all accuracy issues found in review
-- Rewrite unnatural sentences for fluency
-- Improve transitions between paragraphs
-- Ensure the translation reads as engaging, native-quality content
-- Verify formatting is preserved correctly
+- Read the entire translation as a standalone piece — does it flow as native content?
+- Smooth any remaining rough transitions between paragraphs
+- Ensure the narrative voice is consistent throughout
 - For storytelling-style content: ensure the narrative flow draws readers in
-- Final consistency check on terminology
+- Final consistency check on terminology across the full text
+- Verify formatting is preserved correctly (headings, bold, links, code blocks)
+- Remove any remaining traces of translationese
 
 ## Subagent Responsibility
 
-Each subagent (one per chunk) is responsible **only** for producing the initial draft of its chunk (Step 3). The main agent assembles the shared prompt (Step 2), spawns all subagents in parallel, then takes over for review (Step 4) and polish (Step 5). The main agent may delegate review or polish to subagents at its own discretion.
+Each subagent (one per chunk) is responsible **only** for producing the initial draft of its chunk (Step 3). The main agent assembles the shared prompt (Step 2), spawns all subagents in parallel, then takes over for critical review (Step 4), revision (Step 5), and polish (Step 6). The main agent may delegate revision or polish to subagents at its own discretion.
 
 ## Chunked Refined Translation
 
@@ -178,8 +233,9 @@ When content exceeds the chunk threshold (see Defaults in SKILL.md) and uses ref
 2. Main agent assembles translation prompt → `02-prompt.md`
 3. Split into chunks → `chunks/`
 4. Spawn one subagent per chunk in parallel (each reads `02-prompt.md` for shared context) → merge all results into `03-draft.md`
-5. Main agent reviews the merged draft → `04-review.md`
-6. Main agent polishes → `translation.md`
+5. Main agent critically reviews the merged draft → `04-critique.md`
+6. Main agent revises based on critique → `05-revision.md`
+7. Main agent polishes → `translation.md`
 7. Final cross-chunk consistency check:
    - Check terminology consistency across chunk boundaries
    - Verify narrative flow between chunks

@@ -10,6 +10,7 @@ import type { Root, Content } from "mdast"
 const args = process.argv.slice(2)
 const file = args.find(a => !a.startsWith("--"))
 const maxWords = parseInt(args[args.indexOf("--max-words") + 1] || "5000")
+const outputDir = args.indexOf("--output-dir") !== -1 ? args[args.indexOf("--output-dir") + 1] : ""
 
 if (!file) {
   console.error("Usage: chunk.ts <file> [--max-words 5000]")
@@ -114,7 +115,7 @@ for (const b of blocks) {
 }
 if (cur.length > 0) chunks.push({ blocks: cur, words: curWords })
 
-const dir = join(dirname(file), "chunks")
+const dir = outputDir ? join(outputDir, "chunks") : join(dirname(file), "chunks")
 mkdirSync(dir, { recursive: true })
 
 chunks.forEach((chunk, i) => {
