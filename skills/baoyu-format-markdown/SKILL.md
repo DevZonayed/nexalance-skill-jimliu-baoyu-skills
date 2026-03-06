@@ -5,7 +5,9 @@ description: Formats plain text or markdown files with frontmatter, titles, summ
 
 # Markdown Formatter
 
-Transforms plain text or markdown files into well-structured markdown with proper frontmatter, formatting, and typography.
+Transforms plain text or markdown into well-structured, reader-friendly markdown. The goal is to help readers quickly grasp key points, highlights, and structure — without changing any original content.
+
+**Core principle**: Only adjust formatting and fix obvious typos. Never add, delete, or rewrite content.
 
 ## Script Directory
 
@@ -53,37 +55,20 @@ if (Test-Path "$HOME/.baoyu-skills/baoyu-format-markdown/EXTEND.md") { "user" }
 
 ## Usage
 
-Claude performs content analysis and formatting (Steps 1-6), then runs the script for typography fixes (Step 7).
+The workflow has two phases: **Analyze** (understand the content) then **Format** (apply formatting). Claude performs content analysis and formatting (Steps 1-5), then runs the script for typography fixes (Step 6).
 
 ## Workflow
 
-### Step 1: Read Source File
+### Step 1: Read & Detect Content Type
 
-Read the user-specified markdown or plain text file.
-
-### Step 1.5: Detect Content Type & Confirm
-
-**Content Type Detection:**
+Read the user-specified file, then detect content type:
 
 | Indicator | Classification |
 |-----------|----------------|
 | Has `---` YAML frontmatter | Markdown |
 | Has `#`, `##`, `###` headings | Markdown |
-| Has `**bold**`, `*italic*` | Markdown |
-| Has `- ` or `1. ` lists | Markdown |
-| Has ``` code blocks | Markdown |
-| Has `> ` blockquotes | Markdown |
+| Has `**bold**`, `*italic*`, lists, code blocks, blockquotes | Markdown |
 | None of above | Plain text |
-
-**Decision Flow:**
-
-┌─────────────────┬────────────────────────────────────────────────┐
-│  Content Type   │                     Action                     │
-├─────────────────┼────────────────────────────────────────────────┤
-│ Plain text      │ Proceed to Step 2 (format to markdown)         │
-├─────────────────┼────────────────────────────────────────────────┤
-│ Markdown        │ Use AskUserQuestion to confirm optimization    │
-└─────────────────┴────────────────────────────────────────────────┘
 
 **If Markdown detected, ask user:**
 
@@ -91,13 +76,13 @@ Read the user-specified markdown or plain text file.
 Detected existing markdown formatting. What would you like to do?
 
 1. Optimize formatting (Recommended)
-   - Add/improve frontmatter, headings, bold, lists
+   - Analyze content, improve headings, bold, lists for readability
    - Run typography script (spacing, emphasis fixes)
    - Output: {filename}-formatted.md
 
 2. Keep original formatting
    - Preserve existing markdown structure
-   - Run typography script (spacing, emphasis fixes)
+   - Run typography script only
    - Output: {filename}-formatted.md
 
 3. Typography fixes only
@@ -106,54 +91,73 @@ Detected existing markdown formatting. What would you like to do?
 ```
 
 **Based on user choice:**
-- **Optimize**: Continue to Step 2-8 (full workflow)
-- **Keep original**: Skip Steps 2-5, copy file → Step 6-8 (run script on copy)
-- **Typography only**: Skip Steps 2-6, run Step 7 on original file directly
+- **Optimize**: Continue to Step 2 (full workflow)
+- **Keep original**: Skip to Step 5, copy file then run Step 6
+- **Typography only**: Skip to Step 6, run on original file directly
 
-### Step 2: Analyze Content Structure
+### Step 2: Analyze Content (Reader's Perspective)
 
-Identify:
-- Existing title (H1 `#`)
-- Paragraph separations
-- Keywords suitable for **bold**
-- Parallel content convertible to lists
-- Code snippets
-- Quotations
+Read the entire content carefully. Think from a reader's perspective: what would help them quickly understand and remember the key information?
 
-### Step 3: Check/Create Frontmatter
+Produce an analysis covering these dimensions:
+
+**2.1 Highlights & Key Insights**
+- Core arguments or conclusions the author makes
+- Surprising facts, data points, or counterintuitive claims
+- Memorable quotes or well-phrased sentences (golden quotes)
+
+**2.2 Structure Assessment**
+- Does the content have a clear logical flow? What is it?
+- Are there natural section boundaries that lack headings?
+- Are there long walls of text that could benefit from visual breaks?
+
+**2.3 Reader-Important Information**
+- Actionable advice or takeaways
+- Definitions, explanations of key concepts
+- Lists or enumerations buried in prose
+- Comparisons or contrasts that would be clearer as tables
+
+**2.4 Formatting Issues**
+- Missing or inconsistent heading hierarchy
+- Paragraphs that mix multiple topics
+- Parallel items written as prose instead of lists
+- Code, commands, or technical terms not marked as code
+- Obvious typos or formatting errors
+
+**Save analysis to file**: `{original-filename}-analysis.md`
+
+The analysis file serves as the blueprint for Step 3. Use this format:
+
+```markdown
+# Content Analysis: {filename}
+
+## Highlights & Key Insights
+- [list findings]
+
+## Structure Assessment
+- Current flow: [describe]
+- Suggested sections: [list heading candidates with brief rationale]
+
+## Reader-Important Information
+- [list actionable items, key concepts, buried lists, potential tables]
+
+## Formatting Issues
+- [list specific issues with location references]
+
+## Typos Found
+- [list any obvious typos with corrections, or "None found"]
+```
+
+### Step 3: Check/Create Frontmatter & Title
 
 Check for YAML frontmatter (`---` block). Create if missing.
 
-**Meta field handling:**
-
 | Field | Processing |
 |-------|------------|
-| `title` | See Step 4 |
-| `slug` | Infer from file path (e.g., `posts/2026/01/10/vibe-coding/` → `vibe-coding`) or generate from title |
+| `title` | If frontmatter has `title` → use it. If first line is H1 → extract to frontmatter, remove H1 from body. If neither → generate 3 candidates, ask user to pick. |
+| `slug` | Infer from file path or generate from title |
 | `summary` | Generate engaging summary (100-150 characters) |
-| `coverImage` | Check if `imgs/cover.png` exists in same directory; if so, use relative path (also accepted: `featureImage`) |
-
-### Step 4: Title Handling
-
-**Logic:**
-1. If frontmatter already has `title` → use it, no H1 in body
-2. If first line is H1 → extract to frontmatter `title`, remove H1 from body
-3. If neither exists → generate candidate titles
-
-**Title generation flow:**
-
-1. Generate 3 candidate titles based on content
-2. Use `AskUserQuestion` tool:
-
-```
-Select a title:
-
-1. [Title A] (Recommended)
-2. [Title B]
-3. [Title C]
-```
-
-3. If no selection within a few seconds, use recommended (option 1)
+| `coverImage` | Check if `imgs/cover.png` exists in same directory; if so, use relative path |
 
 **Title principles:**
 - Concise, max 20 characters
@@ -161,57 +165,54 @@ Select a title:
 - Engaging, sparks reading interest
 - Accurate, avoids clickbait
 
-**Important:** Once title is in frontmatter, body should NOT have H1 (avoid duplication)
+Once title is in frontmatter, body should NOT have H1 (avoid duplication).
 
-### Step 5: Format Processing
+### Step 4: Format Content
 
-**Formatting rules:**
+Apply formatting guided by the Step 2 analysis. The goal is making the content scannable and the key points impossible to miss.
 
-| Element | Format |
-|---------|--------|
-| Titles | Use `#`, `##`, `###` hierarchy |
-| Key points | Use `**bold**` |
-| Parallel items | Convert to `-` unordered or `1.` ordered lists |
-| Code/commands | Use `` `inline` `` or ` ```block``` ` |
-| Quotes/sayings | Use `>` blockquote |
-| Separators | Use `---` where appropriate |
+**Formatting toolkit:**
 
-**Formatting principles:**
-- Preserve original content and viewpoints
-- Add formatting only, do not modify text
-- Formatting serves readability
-- Avoid over-formatting
+| Element | When to use | Format |
+|---------|-------------|--------|
+| Headings | Natural topic boundaries, section breaks | `##`, `###` hierarchy |
+| Bold | Key conclusions, important terms, core takeaways | `**bold**` |
+| Unordered lists | Parallel items, feature lists, examples | `- item` |
+| Ordered lists | Sequential steps, ranked items, procedures | `1. item` |
+| Tables | Comparisons, structured data, option matrices | Markdown table |
+| Code | Commands, file paths, technical terms, variable names | `` `inline` `` or fenced blocks |
+| Blockquotes | Notable quotes, important warnings, cited text | `> quote` |
+| Separators | Major topic transitions | `---` |
 
-### Step 6: Save Formatted File
+**Formatting principles — what NOT to do:**
+- Do NOT add sentences, explanations, or commentary
+- Do NOT delete or shorten any content
+- Do NOT rephrase or rewrite the author's words
+- Do NOT add headings that editorialize (e.g., "Amazing Discovery" — use neutral descriptive headings)
+- Do NOT over-format: not every sentence needs bold, not every paragraph needs a heading
+
+**Formatting principles — what TO do:**
+- Preserve the author's voice, tone, and every word
+- Use bold sparingly for genuinely important points
+- Extract parallel items from prose into lists only when the structure is clearly there
+- Add headings where the topic genuinely shifts
+- Fix obvious typos (based on Step 2 findings)
+
+### Step 5: Save Formatted File
 
 Save as `{original-filename}-formatted.md`
 
-Examples:
-- `final.md` → `final-formatted.md`
-- `draft-v1.md` → `draft-v1-formatted.md`
-
-**If user chose "Keep original formatting" (from Step 1.5):**
-- Copy original file to `{filename}-formatted.md` without modifications
-- Proceed to Step 7 for typography fixes only
-
 **Backup existing file:**
 
-If `{filename}-formatted.md` already exists, backup before overwriting:
-
 ```bash
-# Check if formatted file exists
 if [ -f "{filename}-formatted.md" ]; then
-  # Backup with timestamp
   mv "{filename}-formatted.md" "{filename}-formatted.backup-$(date +%Y%m%d-%H%M%S).md"
 fi
 ```
 
-Example:
-- `final-formatted.md` exists → backup to `final-formatted.backup-20260128-143052.md`
+### Step 6: Execute Typography Script
 
-### Step 7: Execute Text Formatting Script
-
-After saving, **must** run the formatting script:
+Run the formatting script on the output file:
 
 ```bash
 ${BUN_X} ${SKILL_DIR}/scripts/main.ts {output-file-path} [options]
@@ -227,7 +228,6 @@ ${BUN_X} ${SKILL_DIR}/scripts/main.ts {output-file-path} [options]
 | `--no-spacing` | | Do not add CJK/English spacing | |
 | `--emphasis` | `-e` | Fix CJK emphasis punctuation issues | true |
 | `--no-emphasis` | | Do not fix CJK emphasis issues | |
-| `--help` | `-h` | Show help message | |
 
 **Examples:**
 
@@ -240,62 +240,54 @@ ${BUN_X} ${SKILL_DIR}/scripts/main.ts article.md --quotes
 
 # Only fix emphasis issues, skip spacing
 ${BUN_X} ${SKILL_DIR}/scripts/main.ts article.md --no-spacing
-
-# Disable all processing except frontmatter formatting
-${BUN_X} ${SKILL_DIR}/scripts/main.ts article.md --no-spacing --no-emphasis
 ```
 
 **Script performs (based on options):**
 1. Fix CJK emphasis/bold punctuation issues (default: enabled)
 2. Add CJK/English mixed text spacing via autocorrect (default: enabled)
-3. Replace ASCII quotes `"..."` with fullwidth quotes `"..."` (default: disabled)
+3. Replace ASCII quotes with fullwidth quotes (default: disabled)
 4. Format frontmatter YAML (always enabled)
 
-### Step 8: Display Results
+### Step 7: Completion Report
+
+Display a report summarizing all changes made:
 
 ```
-**Formatting complete**
+**Formatting Complete**
 
-File: posts/2026/01/09/example/final-formatted.md
+**Files:**
+- Analysis: {filename}-analysis.md
+- Formatted: {filename}-formatted.md
 
-Changes:
-- Added title: [title content]
-- Added X bold markers
-- Added X lists
-- Added X code blocks
+**Content Analysis Summary:**
+- Highlights found: X key insights
+- Golden quotes: X memorable sentences
+- Formatting issues fixed: X items
+
+**Changes Applied:**
+- Frontmatter: [added/updated] (title, slug, summary)
+- Headings added: X (##: N, ###: N)
+- Bold markers added: X
+- Lists created: X (from prose → list conversion)
+- Tables created: X
+- Code markers added: X
+- Blockquotes added: X
+- Typos fixed: X [list each: "原文" → "修正"]
+
+**Typography Script:**
+- CJK spacing: [applied/skipped]
+- Emphasis fixes: [applied/skipped]
+- Quote replacement: [applied/skipped]
 ```
 
-## Formatting Example
-
-**Before:**
-```
-This is plain text. First point is efficiency improvement. Second point is cost reduction. Third point is experience optimization. Use npm install to install dependencies.
-```
-
-**After:**
-```markdown
----
-title: Three Core Advantages
-slug: three-core-advantages
-summary: Discover the three key benefits that drive success in modern projects.
----
-
-This is plain text.
-
-**Main advantages:**
-- Efficiency improvement
-- Cost reduction
-- Experience optimization
-
-Use `npm install` to install dependencies.
-```
+Adjust the report to reflect actual changes — omit categories where no changes were made.
 
 ## Notes
 
 - Preserve original writing style and tone
 - Specify correct language for code blocks (e.g., `python`, `javascript`)
 - Maintain CJK/English spacing standards
-- Do not add content not present in original
+- The analysis file is a working document — it helps maintain consistency between what was identified and what was formatted
 
 ## Extension Support
 
