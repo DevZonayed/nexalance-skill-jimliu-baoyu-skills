@@ -1,11 +1,14 @@
 import fs from 'node:fs';
 import { mkdir, writeFile } from 'node:fs/promises';
 import https from 'node:https';
-import http from 'node:http';
 import os from 'node:os';
 import path from 'node:path';
 import process from 'node:process';
 import { createHash } from 'node:crypto';
+
+import frontMatter from 'front-matter';
+import hljs from 'highlight.js/lib/common';
+import { Lexer, Marked, type RendererObject, type Tokens } from 'marked';
 
 interface ImageInfo {
   placeholder: string;
@@ -28,35 +31,55 @@ interface ParsedMarkdown {
 type FrontmatterFields = Record<string, unknown>;
 
 function parseFrontmatter(content: string): { frontmatter: FrontmatterFields; body: string } {
-  const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
-  if (!match) return { frontmatter: {}, body: content };
-
-  const fields: FrontmatterFields = {};
-  for (const line of match[1]!.split('\n')) {
-    const kv = line.match(/^(\w[\w_]*)\s*:\s*(.+)$/);
-    if (kv) {
-      let val = kv[2]!.trim();
-      if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
-        val = val.slice(1, -1);
-      }
-      fields[kv[1]!] = val;
-    }
+  try {
+    const parsed = frontMatter<FrontmatterFields>(content);
+    return {
+      frontmatter: parsed.attributes ?? {},
+      body: parsed.body,
+    };
+  } catch {
+    return { frontmatter: {}, body: content };
   }
-
-  return { frontmatter: fields, body: match[2]! };
 }
 
-function pickFirstString(fm: FrontmatterFields, keys: string[]): string | undefined {
-  for (const key of keys) {
-    const v = fm[key];
-    if (typeof v === 'string' && v.trim()) return v.trim();
+function stripWrappingQuotes(value: string): string {
+  if (!value) return value;
+  const doubleQuoted = value.startsWith('"') && value.endsWith('"');
+  const singleQuoted = value.startsWith("'") && value.endsWith("'");
+  const cjkDoubleQuoted = value.startsWith('\u201c') && value.endsWith('\u201d');
+  const cjkSingleQuoted = value.startsWith('\u2018') && value.endsWith('\u2019');
+  if (doubleQuoted || singleQuoted || cjkDoubleQuoted || cjkSingleQuoted) {
+    return value.slice(1, -1).trim();
+  }
+  return value.trim();
+}
+
+function toFrontmatterString(value: unknown): string | undefined {
+  if (typeof value === 'string') {
+    return stripWrappingQuotes(value);
+  }
+  if (typeof value === 'number' || typeof value === 'boolean') {
+    return String(value);
   }
   return undefined;
 }
 
-function extractTitleFromBody(body: string): string {
-  const match = body.match(/^#\s+(.+)$/m);
-  return match ? match[1]!.trim() : '';
+function pickFirstString(frontmatter: FrontmatterFields, keys: string[]): string | undefined {
+  for (const key of keys) {
+    const value = toFrontmatterString(frontmatter[key]);
+    if (value) return value;
+  }
+  return undefined;
+}
+
+function extractTitleFromMarkdown(markdown: string): string {
+  const tokens = Lexer.lex(markdown, { gfm: true, breaks: true });
+  for (const token of tokens) {
+    if (token.type === 'heading' && token.depth === 1) {
+      return stripWrappingQuotes(token.text);
+    }
+  }
+  return '';
 }
 
 function extractSummaryFromBody(body: string, maxLen: number): string {
@@ -66,33 +89,53 @@ function extractSummaryFromBody(body: string, maxLen: number): string {
   return firstParagraph.slice(0, maxLen - 1) + '\u2026';
 }
 
-function downloadFile(url: string, destPath: string): Promise<void> {
+function downloadFile(url: string, destPath: string, maxRedirects = 5): Promise<void> {
   return new Promise((resolve, reject) => {
-    const protocol = url.startsWith('https') ? https : http;
+    if (!url.startsWith('https://')) {
+      reject(new Error(`Refusing non-HTTPS download: ${url}`));
+      return;
+    }
+    if (maxRedirects <= 0) {
+      reject(new Error('Too many redirects'));
+      return;
+    }
     const file = fs.createWriteStream(destPath);
 
-    const request = protocol.get(url, { headers: { 'User-Agent': 'Mozilla/5.0' } }, (response) => {
+    const request = https.get(url, { headers: { 'User-Agent': 'Mozilla/5.0' } }, (response) => {
       if (response.statusCode === 301 || response.statusCode === 302) {
         const redirectUrl = response.headers.location;
         if (redirectUrl) {
           file.close();
           fs.unlinkSync(destPath);
-          downloadFile(redirectUrl, destPath).then(resolve).catch(reject);
+          downloadFile(redirectUrl, destPath, maxRedirects - 1).then(resolve).catch(reject);
           return;
         }
       }
+
       if (response.statusCode !== 200) {
         file.close();
         fs.unlinkSync(destPath);
         reject(new Error(`Failed to download: ${response.statusCode}`));
         return;
       }
+
       response.pipe(file);
-      file.on('finish', () => { file.close(); resolve(); });
+      file.on('finish', () => {
+        file.close();
+        resolve();
+      });
     });
 
-    request.on('error', (err) => { file.close(); fs.unlink(destPath, () => {}); reject(err); });
-    request.setTimeout(30000, () => { request.destroy(); reject(new Error('Download timeout')); });
+    request.on('error', (err) => {
+      file.close();
+      fs.unlink(destPath, () => {});
+      reject(err);
+    });
+
+    request.setTimeout(30000, () => {
+      request.destroy();
+      reject(new Error('Download timeout'));
+    });
   });
 }
 
@@ -124,115 +167,137 @@ function resolveLocalWithFallback(resolved: string): string {
 }
 
 async function resolveImagePath(imagePath: string, baseDir: string, tempDir: string): Promise<string> {
-  if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+  if (imagePath.startsWith('http://')) {
+    console.error(`[md-to-html] Skipping non-HTTPS image: ${imagePath}`);
+    return '';
+  }
+  if (imagePath.startsWith('https://')) {
     const hash = createHash('md5').update(imagePath).digest('hex').slice(0, 8);
     const ext = getImageExtension(imagePath);
     const localPath = path.join(tempDir, `remote_${hash}.${ext}`);
+
     if (!fs.existsSync(localPath)) {
       console.error(`[md-to-html] Downloading: ${imagePath}`);
       await downloadFile(imagePath, localPath);
     }
     return localPath;
   }
+
   const resolved = path.isAbsolute(imagePath) ? imagePath : path.resolve(baseDir, imagePath);
   return resolveLocalWithFallback(resolved);
 }
 
 function escapeHtml(text: string): string {
-  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
-function markdownToHtml(body: string, imageCallback: (src: string, alt: string) => string): { html: string; totalBlocks: number } {
-  const lines = body.split('\n');
-  const htmlParts: string[] = [];
-  let blockCount = 0;
-  let inCodeBlock = false;
-  let codeLines: string[] = [];
-  let codeLang = '';
+function highlightCode(code: string, lang: string): string {
+  try {
+    if (lang && hljs.getLanguage(lang)) {
+      return hljs.highlight(code, { language: lang, ignoreIllegals: true }).value;
+    }
+    return hljs.highlightAuto(code).value;
+  } catch {
+    return escapeHtml(code);
+  }
+}
 
-  for (const line of lines) {
-    if (line.startsWith('```')) {
-      if (!inCodeBlock) {
-        inCodeBlock = true;
-        codeLang = line.slice(3).trim();
-        codeLines = [];
-      } else {
-        inCodeBlock = false;
-        htmlParts.push(`<pre><code class="language-${escapeHtml(codeLang)}">${escapeHtml(codeLines.join('\n'))}</code></pre>`);
-        blockCount++;
+const EMPTY_PARAGRAPH = '<p></p>';
+
+function convertMarkdownToHtml(markdown: string, imageCallback: (src: string, alt: string) => string): { html: string; totalBlocks: number } {
+  const blockTokens = Lexer.lex(markdown, { gfm: true, breaks: true });
+
+  const renderer: RendererObject = {
+    heading({ depth, tokens }: Tokens.Heading): string {
+      if (depth === 1) {
+        return '';
       }
-      continue;
-    }
+      return `<h2>${this.parser.parseInline(tokens)}</h2>`;
+    },
 
-    if (inCodeBlock) {
-      codeLines.push(line);
-      continue;
-    }
+    paragraph({ tokens }: Tokens.Paragraph): string {
+      const text = this.parser.parseInline(tokens).trim();
+      if (!text) return '';
+      return `<p>${text}</p>`;
+    },
 
-    // H1 (skip, used as title)
-    if (line.match(/^#\s+/)) continue;
+    blockquote({ tokens }: Tokens.Blockquote): string {
+      return `<blockquote>${this.parser.parse(tokens)}</blockquote>`;
+    },
 
-    // H2-H6
-    const headingMatch = line.match(/^(#{2,6})\s+(.+)$/);
-    if (headingMatch) {
-      const level = headingMatch[1]!.length;
-      htmlParts.push(`<h${level}>${processInline(headingMatch[2]!)}</h${level}>`);
-      blockCount++;
-      continue;
-    }
+    code({ text, lang = '' }: Tokens.Code): string {
+      const language = lang.split(/\s+/)[0]!.toLowerCase();
+      const source = text.replace(/\n$/, '');
+      const highlighted = highlightCode(source, language).replace(/\n/g, '<br>');
+      const label = language ? `<strong>[${escapeHtml(language)}]</strong><br>` : '';
+      return `<blockquote>${label}${highlighted}</blockquote>`;
+    },
 
-    // Image
-    const imgMatch = line.match(/^!\[([^\]]*)\]\(([^)]+)\)\s*$/);
-    if (imgMatch) {
-      htmlParts.push(imageCallback(imgMatch[2]!, imgMatch[1]!));
-      blockCount++;
-      continue;
-    }
+    image({ href, text }: Tokens.Image): string {
+      if (!href) return '';
+      return imageCallback(href, text ?? '');
+    },
 
-    // Blockquote
-    if (line.startsWith('> ')) {
-      htmlParts.push(`<blockquote><p>${processInline(line.slice(2))}</p></blockquote>`);
-      blockCount++;
-      continue;
-    }
+    link({ href, title, tokens, text }: Tokens.Link): string {
+      const label = tokens?.length ? this.parser.parseInline(tokens) : escapeHtml(text || href || '');
+      if (!href) return label;
 
-    // Unordered list
-    if (line.match(/^[-*]\s+/)) {
-      htmlParts.push(`<li>${processInline(line.replace(/^[-*]\s+/, ''))}</li>`);
-      blockCount++;
-      continue;
-    }
+      const titleAttr = title ? ` title="${escapeHtml(title)}"` : '';
+      return `<a href="${escapeHtml(href)}"${titleAttr} rel="noopener noreferrer nofollow">${label}</a>`;
+    },
+  };
 
-    // Ordered list
-    if (line.match(/^\d+\.\s+/)) {
-      htmlParts.push(`<li>${processInline(line.replace(/^\d+\.\s+/, ''))}</li>`);
-      blockCount++;
-      continue;
-    }
+  const parser = new Marked({
+    gfm: true,
+    breaks: true,
+  });
+  parser.use({ renderer });
 
-    // Horizontal rule
-    if (line.match(/^[-*]{3,}$/)) {
-      htmlParts.push('<hr>');
-      continue;
-    }
-
-    // Empty line
-    if (!line.trim()) continue;
-
-    // Paragraph
-    htmlParts.push(`<p>${processInline(line)}</p>`);
-    blockCount++;
+  const rendered = parser.parse(markdown);
+  if (typeof rendered !== 'string') {
+    throw new Error('Unexpected async markdown parse result');
   }
 
-  return { html: htmlParts.join('\n'), totalBlocks: blockCount };
-}
+  const totalBlocks = blockTokens.filter((token) => {
+    if (token.type === 'space') return false;
+    if (token.type === 'heading' && token.depth === 1) return false;
+    return true;
+  }).length;
 
-function processInline(text: string): string {
-  return text
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/`(.+?)`/g, '<code>$1</code>')
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+  const blocks = rendered
+    .replace(/(<\/(?:p|h[1-6]|blockquote|ol|ul|hr|pre)>)/gi, '$1\n')
+    .split('\n')
+    .filter((l) => l.trim());
+
+  const spaced: string[] = [];
+  const nestTags = ['ol', 'ul', 'blockquote'];
+  let depth = 0;
+  for (let i = 0; i < blocks.length; i++) {
+    const block = blocks[i]!;
+    const opens = (block.match(new RegExp(`<(${nestTags.join('|')})[\\s>]`, 'gi')) || []).length;
+    const closes = (block.match(new RegExp(`</(${nestTags.join('|')})>`, 'gi')) || []).length;
+
+    spaced.push(block);
+    depth += opens - closes;
+
+    if (depth <= 0 && i < blocks.length - 1) {
+      const lastIsEmpty = spaced.length > 0 && spaced[spaced.length - 1] === EMPTY_PARAGRAPH;
+      if (!lastIsEmpty) {
+        spaced.push(EMPTY_PARAGRAPH);
+      }
+    }
+    if (depth < 0) depth = 0;
+  }
+
+  return {
+    html: spaced.join('\n'),
+    totalBlocks,
+  };
 }
 
 export async function parseMarkdown(
@@ -247,39 +312,59 @@ export async function parseMarkdown(
 
   const { frontmatter, body } = parseFrontmatter(content);
 
-  let title = options?.title?.trim() || pickFirstString(frontmatter, ['title']) || '';
-  if (!title) title = extractTitleFromBody(body);
-  if (!title) title = path.basename(markdownPath, path.extname(markdownPath));
+  let title = stripWrappingQuotes(options?.title ?? '') || pickFirstString(frontmatter, ['title']) || '';
+  if (!title) {
+    title = extractTitleFromMarkdown(body);
+  }
+  if (!title) {
+    title = path.basename(markdownPath, path.extname(markdownPath));
+  }
 
   let summary = pickFirstString(frontmatter, ['summary', 'description', 'excerpt']) || '';
   if (!summary) summary = extractSummaryFromBody(body, 44);
   const shortSummary = extractSummaryFromBody(body, 44);
 
-  let coverImagePath = options?.coverImage?.trim() || pickFirstString(frontmatter, [
+  let coverImagePath = stripWrappingQuotes(options?.coverImage ?? '') || pickFirstString(frontmatter, [
     'featureImage', 'cover_image', 'coverImage', 'cover', 'image',
   ]) || null;
 
-  const images: Array<{ src: string; alt: string }> = [];
+  const images: Array<{ src: string; alt: string; blockIndex: number }> = [];
   let imageCounter = 0;
 
-  const { html, totalBlocks } = markdownToHtml(body, (src, alt) => {
+  const { html, totalBlocks } = convertMarkdownToHtml(body, (src, alt) => {
     const placeholder = `WBIMGPH_${++imageCounter}`;
-    images.push({ src, alt });
+    images.push({ src, alt, blockIndex: -1 });
     return placeholder;
   });
 
+  const htmlLines = html.split('\n');
+  for (let i = 0; i < images.length; i++) {
+    const placeholder = `WBIMGPH_${i + 1}`;
+    for (let lineIndex = 0; lineIndex < htmlLines.length; lineIndex++) {
+      const regex = new RegExp(`\\b${placeholder}\\b`);
+      if (regex.test(htmlLines[lineIndex]!)) {
+        images[i]!.blockIndex = lineIndex;
+        break;
+      }
+    }
+  }
+
   const contentImages: ImageInfo[] = [];
+
   for (let i = 0; i < images.length; i++) {
     const img = images[i]!;
     const localPath = await resolveImagePath(img.src, baseDir, tempDir);
+
     contentImages.push({
       placeholder: `WBIMGPH_${i + 1}`,
       localPath,
       originalPath: img.src,
       alt: img.alt,
-      blockIndex: i,
+      blockIndex: img.blockIndex,
     });
   }
+
+  const finalHtml = html.replace(/\n{3,}/g, '\n\n').trim();
 
   let resolvedCoverImage: string | null = null;
   if (coverImagePath) {
@@ -292,7 +377,7 @@ export async function parseMarkdown(
     shortSummary,
     coverImage: resolvedCoverImage,
     contentImages,
-    html: html.replace(/\n{3,}/g, '\n\n').trim(),
+    html: finalHtml,
     totalBlocks,
   };
 }
@@ -309,6 +394,8 @@ Options:
   --title <title>       Override title
   --cover <image>       Override cover image
   --output <json|html>  Output format (default: json)
+  --html-only           Output only the HTML content
+  --save-html <path>    Save HTML to file
   --help                Show this help
 `);
     process.exit(0);
@@ -318,6 +405,8 @@ Options:
   let title: string | undefined;
   let coverImage: string | undefined;
   let outputFormat: 'json' | 'html' = 'json';
+  let htmlOnly = false;
+  let saveHtmlPath: string | undefined;
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i]!;
@@ -327,6 +416,10 @@ Options:
       coverImage = args[++i];
     } else if (arg === '--output' && args[i + 1]) {
       outputFormat = args[++i] as 'json' | 'html';
+    } else if (arg === '--html-only') {
+      htmlOnly = true;
+    } else if (arg === '--save-html' && args[i + 1]) {
+      saveHtmlPath = args[++i];
     } else if (!arg.startsWith('-')) {
       markdownPath = arg;
     }
@@ -339,7 +432,14 @@ Options:
 
   const result = await parseMarkdown(markdownPath, { title, coverImage });
 
-  if (outputFormat === 'html') {
+  if (saveHtmlPath) {
+    await writeFile(saveHtmlPath, result.html, 'utf-8');
+    console.error(`[md-to-html] HTML saved to: ${saveHtmlPath}`);
+  }
+
+  if (htmlOnly) {
+    console.log(result.html);
+  } else if (outputFormat === 'html') {
     console.log(result.html);
   } else {
     console.log(JSON.stringify(result, null, 2));

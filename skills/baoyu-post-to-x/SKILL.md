@@ -84,8 +84,8 @@ Checks: Chrome, profile isolation, Bun, Accessibility, clipboard, paste keystrok
 | Check | Fix |
 |-------|-----|
 | Chrome | Install Chrome or set `X_BROWSER_CHROME_PATH` env var |
-| Profile dir | Ensure `~/.local/share/x-browser-profile` is writable |
-| Bun runtime | `curl -fsSL https://bun.sh/install \| bash` |
+| Profile dir | Shared profile at `baoyu-skills/chrome-profile` (see CLAUDE.md Chrome Profile section) |
+| Bun runtime | `brew install oven-sh/bun/bun` (macOS) or `npm install -g bun` |
 | Accessibility (macOS) | System Settings → Privacy & Security → Accessibility → enable terminal app |
 | Clipboard copy | Ensure Swift/AppKit available (macOS Xcode CLI tools: `xcode-select --install`) |
 | Paste keystroke (macOS) | Same as Accessibility fix above |

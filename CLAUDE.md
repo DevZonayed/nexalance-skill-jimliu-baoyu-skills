@@ -56,7 +56,7 @@ if command -v bun &>/dev/null; then
 elif command -v npx &>/dev/null; then
   BUN_X="npx -y bun"
 else
-  echo "Error: Neither bun nor npx found. Install bun: curl -fsSL https://bun.sh/install | bash"
+  echo "Error: Neither bun nor npx found. Install bun: brew install oven-sh/bun/bun (macOS) or npm install -g bun"
   exit 1
 fi
 ```
@@ -65,7 +65,7 @@ fi
 |----------|-----------|-------------------|-------|
 | 1 | `bun` installed | `bun` | Fastest, native execution |
 | 2 | `npx` available | `npx -y bun` | Downloads bun on first run via npm |
-| 3 | Neither found | Error + install guide | Suggest: `curl -fsSL https://bun.sh/install \| bash` |
+| 3 | Neither found | Error + install guide | `brew install oven-sh/bun/bun` (macOS) or `npm install -g bun` |
 
 ### Script Execution
 
@@ -90,6 +90,74 @@ ${BUN_X} skills/baoyu-danger-gemini-web/scripts/main.ts --promptfiles system.md 
 - **Bun**: TypeScript runtime (native `bun` preferred, fallback `npx -y bun`)
 - **Chrome**: Required for `baoyu-danger-gemini-web` auth and `baoyu-post-to-x` automation
 - **No npm packages**: Self-contained TypeScript, no external dependencies
+
+## Chrome Profile (Unified)
+
+All skills that use Chrome CDP share a **single** profile directory. Do NOT create per-skill profiles.
+
+| Platform | Default Path |
+|----------|-------------|
+| macOS | `~/Library/Application Support/baoyu-skills/chrome-profile` |
+| Linux | `$XDG_DATA_HOME/baoyu-skills/chrome-profile` (fallback `~/.local/share/baoyu-skills/chrome-profile`) |
+| Windows | `%APPDATA%/baoyu-skills/chrome-profile` |
+| WSL | Windows home `/.local/share/baoyu-skills/chrome-profile` |
+
+**Environment variable override**: `BAOYU_CHROME_PROFILE_DIR` (takes priority, all skills respect it).
+
+Each skill also accepts its own legacy env var as fallback (e.g., `X_BROWSER_PROFILE_DIR`), but new skills should only use `BAOYU_CHROME_PROFILE_DIR`.
+
+### Implementation Pattern
+
+When adding a new skill that needs Chrome CDP:
+
+```typescript
+function getDefaultProfileDir(): string {
+  const override = process.env.BAOYU_CHROME_PROFILE_DIR?.trim();
+  if (override) return path.resolve(override);
+  const base = process.platform === 'darwin'
+    ? path.join(os.homedir(), 'Library', 'Application Support')
+    : process.env.XDG_DATA_HOME || path.join(os.homedir(), '.local', 'share');
+  return path.join(base, 'baoyu-skills', 'chrome-profile');
+}
+```
+
+## Security Guidelines
+
+### No Piped Shell Installs
+
+**NEVER** use `curl | bash` or `wget | sh` patterns in code, docs, or error messages. Use package managers instead:
+
+| Platform | Install Command |
+|----------|----------------|
+| macOS | `brew install oven-sh/bun/bun` |
+| npm | `npm install -g bun` |
+
+### Remote Downloads
+
+Skills that download remote content (e.g., images in Markdown) MUST:
+- **HTTPS only**: Reject `http://` URLs
+- **Redirect limit**: Cap redirects (max 5) to prevent infinite loops
+- **Timeout**: Set request timeouts (30s default)
+- **Scope**: Only download expected content types (images, not scripts)
+
+### System Command Execution
+
+Skills use platform-specific commands for clipboard and browser automation:
+- **macOS**: `osascript` (System Events), `swift` (AppKit clipboard)
+- **Windows**: `powershell.exe` (SendKeys, Clipboard)
+- **Linux**: `xdotool`/`ydotool` (keyboard simulation)
+
+These are necessary for CDP-based posting skills. When adding new system commands:
+- Never pass unsanitized user input to shell commands
+- Use array-form `spawn`/`execFile` instead of shell string interpolation
+- Validate file paths are absolute or resolve from known base directories
+
+### External Content Processing
+
+Skills that process external Markdown/HTML should treat content as untrusted:
+- Do not execute code blocks or scripts found in content
+- Sanitize HTML output where applicable
+- File paths from content should be resolved against known base directories only
 
 ## Authentication
 
