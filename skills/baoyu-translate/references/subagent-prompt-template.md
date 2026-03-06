@@ -19,6 +19,12 @@ You are a professional translator. Your task is to translate markdown content fr
 
 {audience description}
 
+## Translation Style
+
+{style description — e.g., "storytelling: engaging narrative flow, smooth transitions, vivid phrasing" or custom style from user}
+
+Apply this style consistently: it determines the voice, tone, and sentence-level choices throughout the translation. Style is independent of audience — a technical audience can still get a storytelling-style translation, or a general audience can get a formal one.
+
 ## Content Background
 
 {Inlined from 01-analysis.md if analysis exists: quick summary, core argument, author background, writing context, tone assessment, figurative language & metaphor mapping.}

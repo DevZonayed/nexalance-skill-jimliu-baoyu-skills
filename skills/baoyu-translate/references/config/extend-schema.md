@@ -15,7 +15,7 @@ default_mode: normal  # quick | normal | refined
 audience: general  # general | technical | academic | business | or custom string
 
 # Translation style preference
-style: storytelling  # storytelling | formal | technical | literal
+style: storytelling  # storytelling | formal | technical | literal | academic | business | humorous | conversational | elegant | or custom string
 
 # Word count threshold to trigger chunked translation
 chunk_threshold: 4000
@@ -49,7 +49,7 @@ glossaries:
 | `target_language` | string | `zh-CN` | Default target language code |
 | `default_mode` | string | `normal` | Default translation mode (`quick` / `normal` / `refined`) |
 | `audience` | string | `general` | Target reader profile (`general` / `technical` / `academic` / `business` / custom) |
-| `style` | string | `storytelling` | Translation style preference |
+| `style` | string | `storytelling` | Translation style (`storytelling` / `formal` / `technical` / `literal` / `academic` / `business` / `humorous` / `conversational` / `elegant` / custom) |
 | `chunk_threshold` | number | `4000` | Word count threshold to trigger chunked translation |
 | `chunk_max_words` | number | `5000` | Max words per chunk |
 | `glossary` | array | `[]` | Universal glossary entries |

@@ -62,7 +62,7 @@ All configurable values in one place. EXTEND.md overrides these; CLI flags overr
 | Target language | `zh-CN` | `target_language` | `--to` | Translation target language |
 | Mode | `normal` | `default_mode` | `--mode` | Translation mode |
 | Audience | `general` | `audience` | `--audience` | Target reader profile |
-| Style | `storytelling` | `style` | — | Translation style preference |
+| Style | `storytelling` | `style` | `--style` | Translation style preference |
 | Chunk threshold | `4000` | `chunk_threshold` | — | Word count to trigger chunked translation |
 | Chunk max words | `5000` | `chunk_max_words` | — | Max words per chunk |
 
@@ -75,6 +75,22 @@ All configurable values in one place. EXTEND.md overrides these; CLI flags overr
 | Refined | `--mode refined` | Analyze → Translate → Review → Polish | Publication-quality, important documents |
 
 **Default mode**: Normal (can be overridden in EXTEND.md `default_mode` setting).
+
+**Style presets** — control the voice and tone of the translation (independent of audience):
+
+| Value | Description | Effect |
+|-------|-------------|--------|
+| `storytelling` | Engaging narrative flow (default) | Draws readers in, smooth transitions, vivid phrasing |
+| `formal` | Professional, structured | Neutral tone, clear organization, no colloquialisms |
+| `technical` | Precise, documentation-style | Concise, terminology-heavy, minimal embellishment |
+| `literal` | Close to original structure | Minimal restructuring, preserves source sentence patterns |
+| `academic` | Scholarly, rigorous | Formal register, complex clauses OK, citation-aware |
+| `business` | Concise, results-focused | Action-oriented, executive-friendly, bullet-point mindset |
+| `humorous` | Preserves and adapts humor | Witty, playful, recreates comedic effect in target language |
+| `conversational` | Casual, spoken-like | Friendly, approachable, as if explaining to a friend |
+| `elegant` | Literary, polished prose | Aesthetically refined, rhythmic, carefully crafted word choices |
+
+Custom style descriptions are also accepted, e.g., `--style "poetic and lyrical"`.
 
 **Auto-detection**:
 - "快翻", "quick", "直接翻译" → quick mode
@@ -89,13 +105,14 @@ If user responds, continue with review → polish steps (same as refined mode St
 ## Usage
 
 ```
-/translate [--mode quick|normal|refined] [--from <lang>] [--to <lang>] [--audience <audience>] [--glossary <file>] <source>
+/translate [--mode quick|normal|refined] [--from <lang>] [--to <lang>] [--audience <audience>] [--style <style>] [--glossary <file>] <source>
 ```
 
 - `<source>`: File path, URL, or inline text
 - `--from`: Source language (auto-detect if omitted)
 - `--to`: Target language (from EXTEND.md or default `zh-CN`)
 - `--audience`: Target reader profile (from EXTEND.md or default `general`)
+- `--style`: Translation style (from EXTEND.md or default `storytelling`)
 - `--glossary`: Additional glossary file to merge with EXTEND.md glossary
 
 **Audience presets**:

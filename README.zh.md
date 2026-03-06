@@ -752,7 +752,30 @@ AI 驱动的生成后端。
 
 # 精翻模式 - 完整工作流，含审校与润色
 /translate article.md --mode refined --to zh-CN
+
+# 翻译 URL
+/translate https://example.com/article --to zh-CN
+
+# 指定受众
+/translate article.md --to zh-CN --audience technical
+
+# 指定风格
+/translate article.md --to zh-CN --style humorous
+
+# 附加术语表
+/translate article.md --to zh-CN --glossary my-terms.md
 ```
+
+**选项**：
+| 选项 | 说明 |
+|------|------|
+| `<source>` | 文件路径、URL 或行内文本 |
+| `--mode <mode>` | `quick`、`normal`（默认）、`refined` |
+| `--from <lang>` | 源语言（省略则自动检测） |
+| `--to <lang>` | 目标语言（默认：`zh-CN`） |
+| `--audience <type>` | 目标读者（默认：`general`） |
+| `--style <style>` | 翻译风格（默认：`storytelling`） |
+| `--glossary <file>` | 附加术语表文件 |
 
 **模式**：
 | 模式 | 步骤 | 适用场景 |
@@ -761,7 +784,40 @@ AI 驱动的生成后端。
 | 标准 | 分析 → 翻译 | 文章、博客 |
 | 精翻 | 分析 → 翻译 → 审校 → 润色 | 出版级文档 |
 
-**特性**：通过 EXTEND.md 自定义术语表、面向受众的翻译（通用/技术/学术/商务）、长文档自动分块并行翻译。
+标准模式完成后，可回复「继续润色」或「refine」继续审校润色步骤。
+
+**受众预设**：
+| 值 | 说明 |
+|----|------|
+| `general` | 普通读者（默认）— 通俗语言，更多译注 |
+| `technical` | 开发者/工程师 — 常见技术术语少加注释 |
+| `academic` | 研究者/学者 — 正式语体，精确术语 |
+| `business` | 商务人士 — 商务友好语气 |
+
+也支持自定义受众描述，如 `--audience "对 AI 感兴趣的普通读者"`。
+
+**风格预设**：
+| 值 | 说明 |
+|----|------|
+| `storytelling` | 叙事流畅（默认）— 过渡自然，表达生动 |
+| `formal` | 正式、结构化 — 中性语气，无口语化表达 |
+| `technical` | 精确、文档风格 — 简洁，术语密集 |
+| `literal` | 贴近原文结构 — 最小化重构 |
+| `academic` | 学术、严谨 — 正式语体，复杂从句可接受 |
+| `business` | 简洁、结果导向 — 行动导向，高管友好 |
+| `humorous` | 保留幽默感 — 诙谐，在目标语言中重现喜剧效果 |
+| `conversational` | 口语化、亲切 — 友好，如同朋友间解释 |
+| `elegant` | 文学性、优雅 — 精心雕琢，注重韵律美感 |
+
+也支持自定义风格描述，如 `--style "诗意而抒情"`。
+
+**特性**：
+- 通过 EXTEND.md 自定义术语表，内置英中术语表
+- 面向受众的翻译，可调节注释深度
+- 长文档（4000+ 词）自动分块并行翻译
+- 比喻和修辞按意译而非逐字翻译
+- 为文化/专业术语添加译注
+- 输出目录保留所有中间文件
 
 ## 环境配置
 

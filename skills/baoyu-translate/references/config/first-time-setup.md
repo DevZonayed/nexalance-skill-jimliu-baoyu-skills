@@ -99,14 +99,26 @@ header: "Style"
 question: "Translation style?"
 options:
   - label: "Storytelling (Recommended)"
-    description: "Engaging, narrative-like flow"
+    description: "Engaging narrative flow, smooth transitions"
   - label: "Formal"
-    description: "Professional, structured"
+    description: "Professional, structured, neutral tone"
   - label: "Technical"
-    description: "Precise, documentation-style"
+    description: "Precise, documentation-style, concise"
   - label: "Literal"
     description: "Close to original structure"
+  - label: "Academic"
+    description: "Scholarly, rigorous, formal register"
+  - label: "Business"
+    description: "Concise, results-focused, action-oriented"
+  - label: "Humorous"
+    description: "Preserves humor, witty, playful"
+  - label: "Conversational"
+    description: "Casual, friendly, spoken-like"
+  - label: "Elegant"
+    description: "Literary, polished, aesthetically refined"
 ```
+
+Note: User may type a custom style description.
 
 ### Question 5: Save Location
 
@@ -141,7 +153,7 @@ options:
 target_language: [zh-CN/zh-TW/en/ja/...]
 default_mode: [quick/normal/refined]
 audience: [general/technical/academic/business/custom]
-style: [storytelling/formal/technical/literal]
+style: [storytelling/formal/technical/literal/academic/business/humorous/conversational/elegant]
 
 # Custom glossary (optional) — add your own term translations here
 # glossary:

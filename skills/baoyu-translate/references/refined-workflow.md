@@ -246,7 +246,7 @@ Final pass on `05-revision.md` for publication quality:
 - Read the entire translation as a standalone piece — does it flow as native content?
 - Smooth any remaining rough transitions between paragraphs
 - Ensure the narrative voice is consistent throughout
-- For storytelling-style content: ensure the narrative flow draws readers in
+- Apply the selected translation style consistently: storytelling should flow like a narrative, formal should maintain neutral professionalism, humorous should land jokes naturally in the target language, etc.
 - Final scan for surviving literal metaphors or flattened emotions: any figurative expression that still reads as "translated" rather than "written" should be recast into natural target-language expression
 - Final consistency check on terminology across the full text
 - Verify formatting is preserved correctly (headings, bold, links, code blocks)

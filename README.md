@@ -741,7 +741,7 @@ Format plain text or markdown files with proper frontmatter, titles, summaries, 
 
 #### baoyu-translate
 
-Translate articles and documents between languages with three modes: quick (direct), normal (analysis-informed), and refined (full publication-quality workflow).
+Translate articles and documents between languages with three modes: quick (direct), normal (analysis-informed), and refined (full publication-quality workflow with review and polish).
 
 ```bash
 # Normal mode (default) - analyze then translate
@@ -752,7 +752,30 @@ Translate articles and documents between languages with three modes: quick (dire
 
 # Refined mode - full workflow with review and polish
 /translate article.md --mode refined --to zh-CN
+
+# Translate a URL
+/translate https://example.com/article --to zh-CN
+
+# Specify audience
+/translate article.md --to zh-CN --audience technical
+
+# Specify style
+/translate article.md --to zh-CN --style humorous
+
+# With additional glossary
+/translate article.md --to zh-CN --glossary my-terms.md
 ```
+
+**Options**:
+| Option | Description |
+|--------|-------------|
+| `<source>` | File path, URL, or inline text |
+| `--mode <mode>` | `quick`, `normal` (default), `refined` |
+| `--from <lang>` | Source language (auto-detect if omitted) |
+| `--to <lang>` | Target language (default: `zh-CN`) |
+| `--audience <type>` | Target reader profile (default: `general`) |
+| `--style <style>` | Translation style (default: `storytelling`) |
+| `--glossary <file>` | Additional glossary file |
 
 **Modes**:
 | Mode | Steps | Use Case |
@@ -761,7 +784,40 @@ Translate articles and documents between languages with three modes: quick (dire
 | Normal | Analyze → Translate | Articles, blog posts |
 | Refined | Analyze → Translate → Review → Polish | Publication-quality documents |
 
-**Features**: Custom glossaries via EXTEND.md, audience-aware translation (general/technical/academic/business), automatic chunking for long documents with parallel subagent translation.
+After normal mode completes, you can reply "继续润色" or "refine" to continue with review and polish steps.
+
+**Audience Presets**:
+| Value | Description |
+|-------|-------------|
+| `general` | General readers (default) — plain language, more translator's notes |
+| `technical` | Developers / engineers — less annotation on common tech terms |
+| `academic` | Researchers / scholars — formal register, precise terminology |
+| `business` | Business professionals — business-friendly tone |
+
+Custom audience descriptions are also accepted, e.g., `--audience "AI-interested general readers"`.
+
+**Style Presets**:
+| Value | Description |
+|-------|-------------|
+| `storytelling` | Engaging narrative flow (default) — smooth transitions, vivid phrasing |
+| `formal` | Professional, structured — neutral tone, no colloquialisms |
+| `technical` | Precise, documentation-style — concise, terminology-heavy |
+| `literal` | Close to original structure — minimal restructuring |
+| `academic` | Scholarly, rigorous — formal register, complex clauses OK |
+| `business` | Concise, results-focused — action-oriented, executive-friendly |
+| `humorous` | Preserves and adapts humor — witty, recreates comedic effect |
+| `conversational` | Casual, spoken-like — friendly, as if explaining to a friend |
+| `elegant` | Literary, polished prose — aesthetically refined, carefully crafted |
+
+Custom style descriptions are also accepted, e.g., `--style "poetic and lyrical"`.
+
+**Features**:
+- Custom glossaries via EXTEND.md with built-in EN→ZH glossary
+- Audience-aware translation with adjustable annotation depth
+- Automatic chunking for long documents (4000+ words) with parallel subagent translation
+- Figurative language interpreted by meaning, not word-for-word
+- Translator's notes for cultural/domain-specific references
+- Output directory with all intermediate files preserved
 
 ## Environment Configuration
 
