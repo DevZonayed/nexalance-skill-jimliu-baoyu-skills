@@ -17,14 +17,18 @@ Converts Markdown files to beautifully styled HTML with inline CSS, optimized fo
 
 ## Preferences (EXTEND.md)
 
-Use Bash to check EXTEND.md existence (priority order):
+Check EXTEND.md existence (priority order):
 
 ```bash
-# Check project-level first
+# macOS, Linux, WSL, Git Bash
 test -f .baoyu-skills/baoyu-markdown-to-html/EXTEND.md && echo "project"
-
-# Then user-level (cross-platform: $HOME works on macOS/Linux/WSL)
 test -f "$HOME/.baoyu-skills/baoyu-markdown-to-html/EXTEND.md" && echo "user"
+```
+
+```powershell
+# PowerShell (Windows)
+if (Test-Path .baoyu-skills/baoyu-markdown-to-html/EXTEND.md) { "project" }
+if (Test-Path "$HOME/.baoyu-skills/baoyu-markdown-to-html/EXTEND.md") { "user" }
 ```
 
 ┌──────────────────────────────────────────────────────────────┬───────────────────┐
@@ -81,6 +85,11 @@ Use `AskUserQuestion` to ask whether to format first. Formatting can fix:
 ```bash
 # Check baoyu-post-to-wechat EXTEND.md for default_theme
 test -f "$HOME/.baoyu-skills/baoyu-post-to-wechat/EXTEND.md" && grep -o 'default_theme:.*' "$HOME/.baoyu-skills/baoyu-post-to-wechat/EXTEND.md"
+```
+
+```powershell
+# PowerShell (Windows)
+if (Test-Path "$HOME/.baoyu-skills/baoyu-post-to-wechat/EXTEND.md") { Select-String -Pattern 'default_theme:.*' -Path "$HOME/.baoyu-skills/baoyu-post-to-wechat/EXTEND.md" | ForEach-Object { $_.Matches.Value } }
 ```
 
 **If theme is resolved from EXTEND.md**: Use it directly, do NOT ask the user.

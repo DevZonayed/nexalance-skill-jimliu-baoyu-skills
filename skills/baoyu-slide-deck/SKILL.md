@@ -190,14 +190,18 @@ Input → Preferences → Analyze → [Check Existing?] → Confirm (1-2 rounds)
 
 **1.1 Load Preferences (EXTEND.md)**
 
-Use Bash to check EXTEND.md existence (priority order):
+Check EXTEND.md existence (priority order):
 
 ```bash
-# Check project-level first
+# macOS, Linux, WSL, Git Bash
 test -f .baoyu-skills/baoyu-slide-deck/EXTEND.md && echo "project"
-
-# Then user-level (cross-platform: $HOME works on macOS/Linux/WSL)
 test -f "$HOME/.baoyu-skills/baoyu-slide-deck/EXTEND.md" && echo "user"
+```
+
+```powershell
+# PowerShell (Windows)
+if (Test-Path .baoyu-skills/baoyu-slide-deck/EXTEND.md) { "project" }
+if (Test-Path "$HOME/.baoyu-skills/baoyu-slide-deck/EXTEND.md") { "user" }
 ```
 
 ┌──────────────────────────────────────────────────┬───────────────────┐

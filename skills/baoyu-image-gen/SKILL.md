@@ -21,8 +21,15 @@ Official API-based image generation. Supports OpenAI, Google, DashScope (阿里�
 Check EXTEND.md existence (priority: project → user):
 
 ```bash
+# macOS, Linux, WSL, Git Bash
 test -f .baoyu-skills/baoyu-image-gen/EXTEND.md && echo "project"
 test -f "$HOME/.baoyu-skills/baoyu-image-gen/EXTEND.md" && echo "user"
+```
+
+```powershell
+# PowerShell (Windows)
+if (Test-Path .baoyu-skills/baoyu-image-gen/EXTEND.md) { "project" }
+if (Test-Path "$HOME/.baoyu-skills/baoyu-image-gen/EXTEND.md") { "user" }
 ```
 
 | Result | Action |

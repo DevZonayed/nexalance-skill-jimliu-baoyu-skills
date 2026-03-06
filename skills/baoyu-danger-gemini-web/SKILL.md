@@ -44,14 +44,18 @@ Before first use, verify user consent for reverse-engineered API usage.
 
 ## Preferences (EXTEND.md)
 
-Use Bash to check EXTEND.md existence (priority order):
+Check EXTEND.md existence (priority order):
 
 ```bash
-# Check project-level first
+# macOS, Linux, WSL, Git Bash
 test -f .baoyu-skills/baoyu-danger-gemini-web/EXTEND.md && echo "project"
-
-# Then user-level (cross-platform: $HOME works on macOS/Linux/WSL)
 test -f "$HOME/.baoyu-skills/baoyu-danger-gemini-web/EXTEND.md" && echo "user"
+```
+
+```powershell
+# PowerShell (Windows)
+if (Test-Path .baoyu-skills/baoyu-danger-gemini-web/EXTEND.md) { "project" }
+if (Test-Path "$HOME/.baoyu-skills/baoyu-danger-gemini-web/EXTEND.md") { "user" }
 ```
 
 ┌──────────────────────────────────────────────────────────┬───────────────────┐

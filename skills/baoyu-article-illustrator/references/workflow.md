@@ -86,8 +86,15 @@ Check preferences and existing state, then ask ALL needed questions in ONE AskUs
 **CRITICAL**: If EXTEND.md not found, MUST complete first-time setup before ANY other questions or steps. Do NOT proceed to reference images, do NOT ask about content, do NOT ask about type/style — ONLY complete the preferences setup first.
 
 ```bash
+# macOS, Linux, WSL, Git Bash
 test -f .baoyu-skills/baoyu-article-illustrator/EXTEND.md && echo "project"
 test -f "$HOME/.baoyu-skills/baoyu-article-illustrator/EXTEND.md" && echo "user"
+```
+
+```powershell
+# PowerShell (Windows)
+if (Test-Path .baoyu-skills/baoyu-article-illustrator/EXTEND.md) { "project" }
+if (Test-Path "$HOME/.baoyu-skills/baoyu-article-illustrator/EXTEND.md") { "user" }
 ```
 
 | Result | Action |

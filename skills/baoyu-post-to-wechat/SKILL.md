@@ -23,14 +23,18 @@ description: Posts content to WeChat Official Account (微信公众号) via API 
 
 ## Preferences (EXTEND.md)
 
-Use Bash to check EXTEND.md existence (priority order):
+Check EXTEND.md existence (priority order):
 
 ```bash
-# Check project-level first
+# macOS, Linux, WSL, Git Bash
 test -f .baoyu-skills/baoyu-post-to-wechat/EXTEND.md && echo "project"
-
-# Then user-level (cross-platform: $HOME works on macOS/Linux/WSL)
 test -f "$HOME/.baoyu-skills/baoyu-post-to-wechat/EXTEND.md" && echo "user"
+```
+
+```powershell
+# PowerShell (Windows)
+if (Test-Path .baoyu-skills/baoyu-post-to-wechat/EXTEND.md) { "project" }
+if (Test-Path "$HOME/.baoyu-skills/baoyu-post-to-wechat/EXTEND.md") { "user" }
 ```
 
 ┌────────────────────────────────────────────────────────┬───────────────────┐
@@ -180,11 +184,15 @@ mkdir -p "$(pwd)/post-to-wechat/$(date +%Y-%m-%d)"
 **If API Selected - Check Credentials**:
 
 ```bash
-# Check project-level
+# macOS, Linux, WSL, Git Bash
 test -f .baoyu-skills/.env && grep -q "WECHAT_APP_ID" .baoyu-skills/.env && echo "project"
-
-# Check user-level
 test -f "$HOME/.baoyu-skills/.env" && grep -q "WECHAT_APP_ID" "$HOME/.baoyu-skills/.env" && echo "user"
+```
+
+```powershell
+# PowerShell (Windows)
+if ((Test-Path .baoyu-skills/.env) -and (Select-String -Quiet -Pattern "WECHAT_APP_ID" .baoyu-skills/.env)) { "project" }
+if ((Test-Path "$HOME/.baoyu-skills/.env") -and (Select-String -Quiet -Pattern "WECHAT_APP_ID" "$HOME/.baoyu-skills/.env")) { "user" }
 ```
 
 **If Credentials Missing - Guide Setup**:

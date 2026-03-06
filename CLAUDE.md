@@ -399,14 +399,18 @@ For skills with workflows, add as Step 1.1. For utility skills, add as "Preferen
 ```markdown
 **1.1 Load Preferences (EXTEND.md)**
 
-Use Bash to check EXTEND.md existence (priority order):
+Check EXTEND.md existence (priority order):
 
 \`\`\`bash
-# Check project-level first
+# macOS, Linux, WSL, Git Bash
 test -f .baoyu-skills/<skill-name>/EXTEND.md && echo "project"
-
-# Then user-level (cross-platform: $HOME works on macOS/Linux/WSL)
 test -f "$HOME/.baoyu-skills/<skill-name>/EXTEND.md" && echo "user"
+\`\`\`
+
+\`\`\`powershell
+# PowerShell (Windows)
+if (Test-Path .baoyu-skills/<skill-name>/EXTEND.md) { "project" }
+if (Test-Path "$HOME/.baoyu-skills/<skill-name>/EXTEND.md") { "user" }
 \`\`\`
 
 ┌────────────────────────────────────────────┬───────────────────┐
@@ -450,6 +454,6 @@ Custom configurations via EXTEND.md. See **Preferences** section for paths and s
 
 **Notes**:
 - Replace `<skill-name>` with actual skill name (e.g., `baoyu-cover-image`)
-- Use `$HOME` instead of `~` for cross-platform compatibility (macOS/Linux/WSL)
-- Use `test -f` Bash command for explicit file existence check
+- Use `$HOME` instead of `~` for cross-platform compatibility (macOS/Linux/WSL/PowerShell)
+- Use `test -f` (Bash) or `Test-Path` (PowerShell) for explicit file existence check
 - ASCII tables for clear visual formatting
