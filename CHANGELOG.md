@@ -2,6 +2,13 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.50.0 - 2026-03-06
+
+### Features
+- `baoyu-translate`: expand translation style presets from 4 to 9 — add academic, business, humorous, conversational, and elegant styles
+- `baoyu-translate`: add `--style` CLI flag for per-invocation style override
+- `baoyu-translate`: integrate style instructions into subagent prompt template
+
 ## 1.49.0 - 2026-03-06
 
 ### Features
