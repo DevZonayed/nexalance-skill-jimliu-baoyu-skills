@@ -1,11 +1,11 @@
 ---
 name: baoyu-url-to-markdown
-description: Fetch any URL and convert to markdown using Chrome CDP. Supports two modes - auto-capture on page load, or wait for user signal (for pages requiring login). Use when user wants to save a webpage as markdown.
+description: Fetch any URL and convert to markdown using Chrome CDP. Saves the rendered HTML snapshot alongside the markdown, and automatically falls back to the pre-Defuddle HTML-to-Markdown pipeline when Defuddle fails. Supports two modes - auto-capture on page load, or wait for user signal (for pages requiring login). Use when user wants to save a webpage as markdown.
 ---
 
 # URL to Markdown
 
-Fetches any URL via Chrome CDP and converts HTML to clean markdown.
+Fetches any URL via Chrome CDP, saves the rendered HTML snapshot, and converts it to clean markdown.
 
 ## Script Directory
 
@@ -21,6 +21,7 @@ Fetches any URL via Chrome CDP and converts HTML to clean markdown.
 | Script | Purpose |
 |--------|---------|
 | `scripts/main.ts` | CLI entry point for URL fetching |
+| `scripts/html-to-markdown.ts` | Defuddle-first conversion with automatic legacy fallback |
 
 ## Preferences (EXTEND.md)
 
@@ -101,7 +102,9 @@ Full reference: [references/config/first-time-setup.md](references/config/first-
 
 - Chrome CDP for full JavaScript rendering
 - Two capture modes: auto or wait-for-user
+- Save rendered HTML as a sibling `-captured.html` file
 - Clean markdown output with metadata
+- Defuddle-first markdown conversion with automatic fallback to the pre-Defuddle extractor from git history
 - Handles login-required pages via wait mode
 - Download images and videos to local directories
 
@@ -149,12 +152,22 @@ ${BUN_X} ${SKILL_DIR}/scripts/main.ts <url> --download-media
 
 ## Output Format
 
-YAML front matter with `url`, `title`, `description`, `author`, `published`, `captured_at` fields, followed by converted markdown content.
+Each run saves two files side by side:
+
+- Markdown: YAML front matter with `url`, `title`, `description`, `author`, `published`, optional `coverImage`, and `captured_at`, followed by converted markdown content
+- HTML snapshot: `*-captured.html`, containing the rendered page HTML captured from Chrome
+
+The HTML snapshot is saved before any markdown media localization, so it stays a faithful capture of the page DOM used for conversion.
 
 ## Output Directory
 
 Default: `url-to-markdown/<domain>/<slug>.md`
 With `--output-dir ./posts/`: `./posts/<domain>/<slug>.md`
+
+HTML snapshot path uses the same basename:
+
+- `url-to-markdown/<domain>/<slug>-captured.html`
+- `./posts/<domain>/<slug>-captured.html`
 
 - `<slug>`: From page title or URL path (kebab-case, 2-6 words)
 - Conflict resolution: Append timestamp `<slug>-YYYYMMDD-HHMMSS.md`
@@ -163,6 +176,19 @@ When `--download-media` is enabled:
 - Images are saved to `imgs/` next to the markdown file
 - Videos are saved to `videos/` next to the markdown file
 - Markdown media links are rewritten to local relative paths
+
+## Conversion Fallback
+
+Conversion order:
+
+1. Try Defuddle first
+2. If Defuddle throws, cannot load, returns obviously incomplete markdown, or captures lower-quality content than the legacy pipeline, automatically fall back to the pre-Defuddle extractor
+3. The fallback path uses the older Readability/selector/Next.js-data based HTML-to-Markdown implementation recovered from git history
+
+CLI output will show:
+
+- `Converter: defuddle` when Defuddle succeeds
+- `Converter: legacy:...` plus `Fallback used: ...` when fallback was needed
 
 ## Media Download Workflow
 
@@ -193,7 +219,7 @@ Based on `download_media` setting in EXTEND.md:
 | `URL_DATA_DIR` | Custom data directory |
 | `URL_CHROME_PROFILE_DIR` | Custom Chrome profile directory |
 
-**Troubleshooting**: Chrome not found → set `URL_CHROME_PATH`. Timeout → increase `--timeout`. Complex pages → try `--wait` mode.
+**Troubleshooting**: Chrome not found → set `URL_CHROME_PATH`. Timeout → increase `--timeout`. Complex pages → try `--wait` mode. If markdown quality is poor, inspect the saved `-captured.html` and check whether the run logged a legacy fallback.
 
 ## Extension Support
 

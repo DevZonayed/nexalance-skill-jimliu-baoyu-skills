@@ -677,7 +677,7 @@ Utility tools for content processing.
 
 #### baoyu-url-to-markdown
 
-Fetch any URL via Chrome CDP and convert to clean markdown. Supports two capture modes for different scenarios.
+Fetch any URL via Chrome CDP and convert to clean markdown. Saves rendered HTML snapshot alongside the markdown, and automatically falls back to a legacy extractor when Defuddle fails.
 
 ```bash
 # Auto mode (default) - capture when page loads

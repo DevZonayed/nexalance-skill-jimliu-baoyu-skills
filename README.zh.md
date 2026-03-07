@@ -677,7 +677,7 @@ AI 驱动的生成后端。
 
 #### baoyu-url-to-markdown
 
-通过 Chrome CDP 抓取任意 URL 并转换为干净的 Markdown。支持两种抓取模式，适应不同场景。
+通过 Chrome CDP 抓取任意 URL 并转换为 Markdown。同时保存渲染后的 HTML 快照，Defuddle 失败时自动回退到旧版提取器。
 
 ```bash
 # 自动模式（默认）- 页面加载后立即抓取
