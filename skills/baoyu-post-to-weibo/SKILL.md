@@ -1,11 +1,11 @@
 ---
 name: baoyu-post-to-weibo
-description: Posts content to Weibo (微博). Supports regular posts with text and images, and headline articles (头条文章) with Markdown input via Chrome CDP. Use when user asks to "post to Weibo", "发微博", "发布微博", "publish to Weibo", "share on Weibo", "写微博", or "微博头条文章".
+description: Posts content to Weibo (微博). Supports regular posts with text, images, and videos, and headline articles (头条文章) with Markdown input via Chrome CDP. Use when user asks to "post to Weibo", "发微博", "发布微博", "publish to Weibo", "share on Weibo", "写微博", or "微博头条文章".
 ---
 
 # Post to Weibo
 
-Posts text, images, and long-form articles to Weibo via real Chrome browser (bypasses anti-bot detection).
+Posts text, images, videos, and long-form articles to Weibo via real Chrome browser (bypasses anti-bot detection).
 
 ## Script Directory
 
@@ -69,17 +69,19 @@ if (Test-Path "$HOME/.baoyu-skills/baoyu-post-to-weibo/EXTEND.md") { "user" }
 
 ## Regular Posts
 
-Text + up to 9 images. Posted on Weibo homepage.
+Text + images/videos (max 18 files total). Posted on Weibo homepage.
 
 ```bash
 ${BUN_X} ${SKILL_DIR}/scripts/weibo-post.ts "Hello Weibo!" --image ./photo.png
+${BUN_X} ${SKILL_DIR}/scripts/weibo-post.ts "Watch this" --video ./clip.mp4
 ```
 
 **Parameters**:
 | Parameter | Description |
 |-----------|-------------|
 | `<text>` | Post content (positional) |
-| `--image <path>` | Image file (repeatable, max 9) |
+| `--image <path>` | Image file (repeatable) |
+| `--video <path>` | Video file (repeatable) |
 | `--profile <dir>` | Custom Chrome profile |
 
 **Note**: Script opens browser with content filled in. User reviews and publishes manually.

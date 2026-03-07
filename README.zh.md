@@ -560,9 +560,9 @@ WECHAT_APP_SECRET=你的AppSecret
 
 #### baoyu-post-to-weibo
 
-发布内容到微博。支持带图文本发布和头条文章（长篇 Markdown）。使用真实 Chrome + CDP 绕过反自动化检测。
+发布内容到微博。支持文字、图片、视频发布和头条文章（长篇 Markdown）。使用真实 Chrome + CDP 绕过反自动化检测。
 
-**普通微博** - 文字 + 最多 9 张图片：
+**普通微博** - 文字 + 图片/视频（最多 18 个文件）：
 
 ```bash
 # 发布文字
@@ -570,6 +570,9 @@ WECHAT_APP_SECRET=你的AppSecret
 
 # 发布带图片
 /baoyu-post-to-weibo "看看这个" --image photo.png
+
+# 发布带视频
+/baoyu-post-to-weibo "看这个" --video clip.mp4
 ```
 
 **头条文章** - 长篇 Markdown 文章：

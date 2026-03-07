@@ -1,47 +1,48 @@
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import { mkdir } from 'node:fs/promises';
+import path from 'node:path';
 import process from 'node:process';
 import {
   CdpConnection,
-  copyImageToClipboard,
   findChromeExecutable,
   findExistingChromeDebugPort,
   getDefaultProfileDir,
   getFreePort,
-  pasteFromClipboard,
+  killChromeByProfile,
   sleep,
   waitForChromeDebugPort,
 } from './weibo-utils.js';
 
 const WEIBO_HOME_URL = 'https://weibo.com/';
 
+const MAX_FILES = 18;
+
 interface WeiboPostOptions {
   text?: string;
   images?: string[];
+  videos?: string[];
   timeoutMs?: number;
   profileDir?: string;
   chromePath?: string;
 }
 
 export async function postToWeibo(options: WeiboPostOptions): Promise<void> {
-  const { text, images = [], timeoutMs = 120_000, profileDir = getDefaultProfileDir() } = options;
+  const { text, images = [], videos = [], timeoutMs = 120_000, profileDir = getDefaultProfileDir() } = options;
+
+  const allFiles = [...images, ...videos];
+  if (allFiles.length > MAX_FILES) {
+    throw new Error(`Too many files: ${allFiles.length} (max ${MAX_FILES})`);
+  }
 
   await mkdir(profileDir, { recursive: true });
 
-  const existingPort = findExistingChromeDebugPort(profileDir);
-  let port: number;
+  const chromePath = options.chromePath ?? findChromeExecutable();
+  if (!chromePath) throw new Error('Chrome not found. Set WEIBO_BROWSER_CHROME_PATH env var.');
 
-  if (existingPort) {
-    console.log(`[weibo-post] Found existing Chrome on port ${existingPort}, reusing...`);
-    port = existingPort;
-  } else {
-    const chromePath = options.chromePath ?? findChromeExecutable();
-    if (!chromePath) throw new Error('Chrome not found. Set WEIBO_BROWSER_CHROME_PATH env var.');
-
-    port = await getFreePort();
+  const launchChrome = async (): Promise<number> => {
+    const port = await getFreePort();
     console.log(`[weibo-post] Launching Chrome (profile: ${profileDir})`);
-
     const chromeArgs = [
       `--remote-debugging-port=${port}`,
       `--user-data-dir=${profileDir}`,
@@ -51,13 +52,35 @@ export async function postToWeibo(options: WeiboPostOptions): Promise<void> {
       '--start-maximized',
       WEIBO_HOME_URL,
     ];
-
     if (process.platform === 'darwin') {
       const appPath = chromePath.replace(/\/Contents\/MacOS\/Google Chrome$/, '');
       spawn('open', ['-na', appPath, '--args', ...chromeArgs], { stdio: 'ignore' });
     } else {
       spawn(chromePath, chromeArgs, { stdio: 'ignore' });
     }
+    return port;
+  };
+
+  let port: number;
+  const existingPort = findExistingChromeDebugPort(profileDir);
+
+  if (existingPort) {
+    console.log(`[weibo-post] Found existing Chrome on port ${existingPort}, checking health...`);
+    try {
+      const wsUrl = await waitForChromeDebugPort(existingPort, 5_000);
+      const testCdp = await CdpConnection.connect(wsUrl, 5_000, { defaultTimeoutMs: 5_000 });
+      await testCdp.send('Target.getTargets');
+      testCdp.close();
+      console.log('[weibo-post] Existing Chrome is responsive, reusing.');
+      port = existingPort;
+    } catch {
+      console.log('[weibo-post] Existing Chrome unresponsive, restarting...');
+      killChromeByProfile(profileDir);
+      await sleep(2000);
+      port = await launchChrome();
+    }
+  } else {
+    port = await launchChrome();
   }
 
   let cdp: CdpConnection | null = null;
@@ -76,9 +99,22 @@ export async function postToWeibo(options: WeiboPostOptions): Promise<void> {
 
     const { sessionId } = await cdp.send<{ sessionId: string }>('Target.attachToTarget', { targetId: pageTarget.targetId, flatten: true });
 
+    await cdp.send('Target.activateTarget', { targetId: pageTarget.targetId });
+
     await cdp.send('Page.enable', {}, { sessionId });
     await cdp.send('Runtime.enable', {}, { sessionId });
     await cdp.send('Input.setIgnoreInputEvents', { ignore: false }, { sessionId });
+
+    const currentUrl = await cdp.send<{ result: { value: string } }>('Runtime.evaluate', {
+      expression: `window.location.href`,
+      returnByValue: true,
+    }, { sessionId });
+
+    if (!currentUrl.result.value.includes('weibo.com/') || currentUrl.result.value.includes('card.weibo.com')) {
+      console.log('[weibo-post] Navigating to Weibo home...');
+      await cdp.send('Page.navigate', { url: WEIBO_HOME_URL }, { sessionId });
+      await sleep(3000);
+    }
 
     console.log('[weibo-post] Waiting for Weibo editor...');
     await sleep(3000);
@@ -145,56 +181,45 @@ export async function postToWeibo(options: WeiboPostOptions): Promise<void> {
       }
     }
 
-    for (const imagePath of images) {
-      if (!fs.existsSync(imagePath)) {
-        console.warn(`[weibo-post] Image not found: ${imagePath}`);
-        continue;
+    if (allFiles.length > 0) {
+      const missing = allFiles.filter((f) => !fs.existsSync(f));
+      if (missing.length > 0) {
+        throw new Error(`Files not found: ${missing.join(', ')}`);
       }
 
-      console.log(`[weibo-post] Pasting image: ${imagePath}`);
+      const absolutePaths = allFiles.map((f) => path.resolve(f));
+      console.log(`[weibo-post] Uploading ${absolutePaths.length} file(s) via file input...`);
 
-      if (!copyImageToClipboard(imagePath)) {
-        console.warn(`[weibo-post] Failed to copy image to clipboard: ${imagePath}`);
-        continue;
-      }
+      await cdp.send('DOM.enable', {}, { sessionId });
 
-      await sleep(500);
+      const { root } = await cdp.send<{ root: { nodeId: number } }>('DOM.getDocument', {}, { sessionId });
 
-      await cdp.send('Runtime.evaluate', {
-        expression: `document.querySelector('#homeWrap textarea')?.focus()`,
+      const { nodeId } = await cdp.send<{ nodeId: number }>('DOM.querySelector', {
+        nodeId: root.nodeId,
+        selector: '#homeWrap input[type="file"]',
       }, { sessionId });
-      await sleep(200);
 
-      // Count images before paste
-      const imgCountBefore = await cdp.send<{ result: { value: number } }>('Runtime.evaluate', {
-        expression: `document.querySelectorAll('#homeWrap img[src^="blob:"], #homeWrap img[src^="data:"]').length`,
+      if (!nodeId || nodeId === 0) {
+        throw new Error('File input not found. Make sure the Weibo compose area is visible.');
+      }
+
+      await cdp.send('DOM.setFileInputFiles', {
+        nodeId,
+        files: absolutePaths,
+      }, { sessionId });
+
+      console.log('[weibo-post] Files set on input. Waiting for upload...');
+      await sleep(2000);
+
+      const uploadCheck = await cdp.send<{ result: { value: number } }>('Runtime.evaluate', {
+        expression: `document.querySelectorAll('#homeWrap img[src^="blob:"], #homeWrap img[src^="data:"], #homeWrap video').length`,
         returnByValue: true,
       }, { sessionId });
 
-      console.log('[weibo-post] Pasting from clipboard...');
-      pasteFromClipboard('Google Chrome', 5, 500);
-
-      // Verify image appeared
-      console.log('[weibo-post] Verifying image upload...');
-      const expectedImgCount = imgCountBefore.result.value + 1;
-      let imgUploadOk = false;
-      const imgWaitStart = Date.now();
-      while (Date.now() - imgWaitStart < 15_000) {
-        const r = await cdp!.send<{ result: { value: number } }>('Runtime.evaluate', {
-          expression: `document.querySelectorAll('#homeWrap img[src^="blob:"], #homeWrap img[src^="data:"]').length`,
-          returnByValue: true,
-        }, { sessionId });
-        if (r.result.value >= expectedImgCount) {
-          imgUploadOk = true;
-          break;
-        }
-        await sleep(1000);
-      }
-
-      if (imgUploadOk) {
-        console.log('[weibo-post] Image upload verified');
+      if (uploadCheck.result.value > 0) {
+        console.log(`[weibo-post] Upload verified (${uploadCheck.result.value} media item(s) detected)`);
       } else {
-        console.warn('[weibo-post] Image upload not detected after 15s. Check Accessibility permissions.');
+        console.warn('[weibo-post] Upload may still be in progress. Please verify in browser.');
       }
     }
 
@@ -215,14 +240,18 @@ Usage:
   npx -y bun weibo-post.ts [options] [text]
 
 Options:
-  --image <path>   Add image (can be repeated, max 9)
+  --image <path>   Add image (can be repeated)
+  --video <path>   Add video (can be repeated)
   --profile <dir>  Chrome profile directory
   --help           Show this help
+
+Max ${MAX_FILES} files total (images + videos combined).
 
 Examples:
   npx -y bun weibo-post.ts "Hello from CLI!"
   npx -y bun weibo-post.ts "Check this out" --image ./screenshot.png
   npx -y bun weibo-post.ts "Post it!" --image a.png --image b.png
+  npx -y bun weibo-post.ts "Watch this" --video ./clip.mp4
 `);
   process.exit(0);
 }
@@ -232,6 +261,7 @@ async function main(): Promise<void> {
   if (args.includes('--help') || args.includes('-h')) printUsage();
 
   const images: string[] = [];
+  const videos: string[] = [];
   let profileDir: string | undefined;
   const textParts: string[] = [];
 
@@ -239,6 +269,8 @@ async function main(): Promise<void> {
     const arg = args[i]!;
     if (arg === '--image' && args[i + 1]) {
       images.push(args[++i]!);
+    } else if (arg === '--video' && args[i + 1]) {
+      videos.push(args[++i]!);
     } else if (arg === '--profile' && args[i + 1]) {
       profileDir = args[++i];
     } else if (!arg.startsWith('-')) {
@@ -248,12 +280,12 @@ async function main(): Promise<void> {
 
   const text = textParts.join(' ').trim() || undefined;
 
-  if (!text && images.length === 0) {
-    console.error('Error: Provide text or at least one image.');
+  if (!text && images.length === 0 && videos.length === 0) {
+    console.error('Error: Provide text or at least one image/video.');
     process.exit(1);
   }
 
-  await postToWeibo({ text, images, profileDir });
+  await postToWeibo({ text, images, videos, profileDir });
 }
 
 await main().catch((err) => {

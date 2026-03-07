@@ -53,6 +53,20 @@ export function findExistingChromeDebugPort(profileDir: string): number | null {
   return null;
 }
 
+export function killChromeByProfile(profileDir: string): void {
+  try {
+    const result = spawnSync('ps', ['aux'], { encoding: 'utf-8', timeout: 5000 });
+    if (result.status !== 0 || !result.stdout) return;
+    for (const line of result.stdout.split('\n')) {
+      if (!line.includes(profileDir) || !line.includes('--remote-debugging-port=')) continue;
+      const pidMatch = line.trim().split(/\s+/)[1];
+      if (pidMatch) {
+        try { process.kill(Number(pidMatch), 'SIGTERM'); } catch {}
+      }
+    }
+  } catch {}
+}
+
 export function getDefaultProfileDir(): string {
   const override = process.env.BAOYU_CHROME_PROFILE_DIR?.trim() || process.env.WEIBO_BROWSER_PROFILE_DIR?.trim();
   if (override) return path.resolve(override);

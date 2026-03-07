@@ -560,9 +560,9 @@ To obtain credentials:
 
 #### baoyu-post-to-weibo
 
-Post content to Weibo (微博). Supports regular posts with text and images, and headline articles (头条文章) with Markdown input. Uses real Chrome with CDP to bypass anti-automation.
+Post content to Weibo (微博). Supports regular posts with text, images, and videos, and headline articles (头条文章) with Markdown input. Uses real Chrome with CDP to bypass anti-automation.
 
-**Regular Posts** - Text + up to 9 images:
+**Regular Posts** - Text + images/videos (max 18 files):
 
 ```bash
 # Post with text
@@ -570,6 +570,9 @@ Post content to Weibo (微博). Supports regular posts with text and images, and
 
 # Post with images
 /baoyu-post-to-weibo "Check this out" --image photo.png
+
+# Post with video
+/baoyu-post-to-weibo "Watch this" --video clip.mp4
 ```
 
 **Headline Articles (头条文章)** - Long-form Markdown:
