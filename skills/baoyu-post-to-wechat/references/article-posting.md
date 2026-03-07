@@ -11,6 +11,9 @@ ${BUN_X} ./scripts/wechat-article.ts --markdown article.md
 # With theme
 ${BUN_X} ./scripts/wechat-article.ts --markdown article.md --theme grace
 
+# Disable bottom citations for ordinary external links
+${BUN_X} ./scripts/wechat-article.ts --markdown article.md --no-cite
+
 # With explicit options
 ${BUN_X} ./scripts/wechat-article.ts --markdown article.md --author "作者名" --summary "摘要"
 ```
@@ -21,6 +24,7 @@ ${BUN_X} ./scripts/wechat-article.ts --markdown article.md --author "作者名" 
 |-----------|-------------|
 | `--markdown <path>` | Markdown file to convert and post |
 | `--theme <name>` | Theme: default, grace, simple, modern |
+| `--no-cite` | Keep ordinary external links inline instead of converting them to bottom citations |
 | `--title <text>` | Override title (auto-extracted from markdown) |
 | `--author <name>` | Author name |
 | `--summary <text>` | Article summary |
@@ -50,6 +54,8 @@ Regular paragraph with **bold** and *italic*.
 
 [Link text](https://example.com)
 ```
+
+Markdown mode converts ordinary external links into bottom citations by default for WeChat-friendly output. Use `--no-cite` to disable that behavior.
 
 ## Image Handling
 

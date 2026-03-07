@@ -1,6 +1,6 @@
 ---
 name: baoyu-post-to-wechat
-description: Posts content to WeChat Official Account (微信公众号) via API or Chrome CDP. Supports article posting (文章) with HTML, markdown, or plain text input, and image-text posting (贴图, formerly 图文) with multiple images. Use when user mentions "发布公众号", "post to wechat", "微信公众号", or "贴图/图文/文章".
+description: Posts content to WeChat Official Account (微信公众号) via API or Chrome CDP. Supports article posting (文章) with HTML, markdown, or plain text input, and image-text posting (贴图, formerly 图文) with multiple images. Markdown article workflows default to converting ordinary external links into bottom citations for WeChat-friendly output. Use when user mentions "发布公众号", "post to wechat", "微信公众号", or "贴图/图文/文章".
 ---
 
 # Post to WeChat Official Account
@@ -252,10 +252,15 @@ WECHAT_APP_SECRET=<user_input>
 
 **CRITICAL**: Publishing scripts handle markdown conversion internally. Do NOT pre-convert markdown to HTML — pass the original markdown file directly. This ensures the API method renders images as `<img>` tags (for API upload) while the browser method uses placeholders (for paste-and-replace workflow).
 
+**Markdown citation default**:
+- For markdown input, ordinary external links are converted to bottom citations by default.
+- Use `--no-cite` only if the user explicitly wants to keep ordinary external links inline.
+- Existing HTML input is left as-is; no extra citation conversion is applied.
+
 **API method** (accepts `.md` or `.html`):
 
 ```bash
-${BUN_X} ${SKILL_DIR}/scripts/wechat-api.ts <file> --theme <theme> [--color <color>] [--title <title>] [--summary <summary>] [--author <author>] [--cover <cover_path>]
+${BUN_X} ${SKILL_DIR}/scripts/wechat-api.ts <file> --theme <theme> [--color <color>] [--title <title>] [--summary <summary>] [--author <author>] [--cover <cover_path>] [--no-cite]
 ```
 
 **CRITICAL**: Always include `--theme` parameter. Never omit it, even if using `default`. Only include `--color` if explicitly set by user or EXTEND.md.
@@ -274,7 +279,7 @@ If script parameters do not expose the two comment fields, still ensure final AP
 **Browser method** (accepts `--markdown` or `--html`):
 
 ```bash
-${BUN_X} ${SKILL_DIR}/scripts/wechat-article.ts --markdown <markdown_file> --theme <theme> [--color <color>]
+${BUN_X} ${SKILL_DIR}/scripts/wechat-article.ts --markdown <markdown_file> --theme <theme> [--color <color>] [--no-cite]
 ${BUN_X} ${SKILL_DIR}/scripts/wechat-article.ts --html <html_file>
 ```
 
