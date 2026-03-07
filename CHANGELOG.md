@@ -2,6 +2,15 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.54.1 - 2026-03-07
+
+### Fixes
+- `baoyu-post-to-x`: keep composed posts open in Chrome so users can review and publish manually
+
+### Documentation
+- `baoyu-post-to-x`: document default post type selection and manual publishing flow
+- `README`: add Star History charts to the English and Chinese READMEs
+
 ## 1.54.0 - 2026-03-06
 
 ### Features
