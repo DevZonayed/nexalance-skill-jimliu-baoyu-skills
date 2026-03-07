@@ -1,6 +1,6 @@
 ---
 name: baoyu-markdown-to-html
-description: Converts Markdown to styled HTML with WeChat-compatible themes. Supports code highlighting, math, PlantUML, footnotes, alerts, and infographics. Use when user asks for "markdown to html", "convert md to html", "md转html", or needs styled HTML output from markdown.
+description: Converts Markdown to styled HTML with WeChat-compatible themes. Supports code highlighting, math, PlantUML, footnotes, alerts, infographics, and optional bottom citations for external links. Use when user asks for "markdown to html", "convert md to html", "md转html", "微信外链转底部引用", or needs styled HTML output from markdown.
 ---
 
 # Markdown to HTML Converter
@@ -98,15 +98,26 @@ if (Test-Path "$HOME/.baoyu-skills/baoyu-post-to-wechat/EXTEND.md") { Select-Str
 
 | Theme | Description |
 |-------|-------------|
-| `default` (Recommended) | 经典主题 - 传统排版，标题居中带底边，二级标题白字彩底 |
-| `grace` | 优雅主题 - 文字阴影，圆角卡片，精致引用块 |
-| `simple` | 简洁主题 - 现代极简风，不对称圆角，清爽留白 |
-| `modern` | 现代主题 - 大圆角、药丸形标题、宽松行距（搭配 `--color red` 还原传统红金风格） |
+| `default` (Recommended) | Classic - traditional layout, centered title with bottom border, H2 with white text on colored background |
+| `grace` | Elegant - text shadow, rounded cards, refined blockquotes |
+| `simple` | Minimal - modern minimalist, asymmetric rounded corners, clean whitespace |
+| `modern` | Modern - large radius, pill-shaped titles, relaxed line height (pair with `--color red` for traditional red-gold style) |
+
+### Step 1.5: Determine Citation Mode
+
+**Default**: Off. Do not ask by default.
+
+**Enable only if the user explicitly asks** for "微信外链转底部引用", "底部引用", "文末引用", or passes `--cite`.
+
+**Behavior when enabled**:
+- Ordinary external links are rendered with numbered superscripts and collected under a final `引用链接` section.
+- `https://mp.weixin.qq.com/...` links stay as direct links and are not moved to the bottom.
+- Bare links where link text equals URL stay inline.
 
 ### Step 2: Convert
 
 ```bash
-${BUN_X} ${SKILL_DIR}/scripts/main.ts <markdown_file> --theme <theme>
+${BUN_X} ${SKILL_DIR}/scripts/main.ts <markdown_file> --theme <theme> [--cite]
 ```
 
 ### Step 3: Report Result
@@ -128,6 +139,7 @@ ${BUN_X} ${SKILL_DIR}/scripts/main.ts <markdown_file> [options]
 | `--font-family <name>` | Font: sans, serif, serif-cjk, mono, or CSS value | theme default |
 | `--font-size <N>` | Font size: 14px, 15px, 16px, 17px, 18px | 16px |
 | `--title <title>` | Override title from frontmatter | |
+| `--cite` | Convert external links to bottom citations, append `引用链接` section | false (off) |
 | `--keep-title` | Keep the first heading in content | false (removed) |
 | `--help` | Show help | |
 
@@ -135,19 +147,19 @@ ${BUN_X} ${SKILL_DIR}/scripts/main.ts <markdown_file> [options]
 
 | Name | Hex | Label |
 |------|-----|-------|
-| blue | #0F4C81 | 经典蓝 |
-| green | #009874 | 翡翠绿 |
-| vermilion | #FA5151 | 活力橘 |
-| yellow | #FECE00 | 柠檬黄 |
-| purple | #92617E | 薰衣紫 |
-| sky | #55C9EA | 天空蓝 |
-| rose | #B76E79 | 玫瑰金 |
-| olive | #556B2F | 橄榄绿 |
-| black | #333333 | 石墨黑 |
-| gray | #A9A9A9 | 雾烟灰 |
-| pink | #FFB7C5 | 樱花粉 |
-| red | #A93226 | 中国红 |
-| orange | #D97757 | 暖橘 (modern default) |
+| blue | #0F4C81 | Classic Blue |
+| green | #009874 | Emerald Green |
+| vermilion | #FA5151 | Vibrant Vermilion |
+| yellow | #FECE00 | Lemon Yellow |
+| purple | #92617E | Lavender Purple |
+| sky | #55C9EA | Sky Blue |
+| rose | #B76E79 | Rose Gold |
+| olive | #556B2F | Olive Green |
+| black | #333333 | Graphite Black |
+| gray | #A9A9A9 | Smoke Gray |
+| pink | #FFB7C5 | Sakura Pink |
+| red | #A93226 | China Red |
+| orange | #D97757 | Warm Orange (modern default) |
 
 **Examples:**
 
@@ -160,6 +172,9 @@ ${BUN_X} ${SKILL_DIR}/scripts/main.ts article.md --theme grace
 
 # Theme with custom color
 ${BUN_X} ${SKILL_DIR}/scripts/main.ts article.md --theme modern --color red
+
+# Enable bottom citations for ordinary external links
+${BUN_X} ${SKILL_DIR}/scripts/main.ts article.md --cite
 
 # Keep the first heading in content
 ${BUN_X} ${SKILL_DIR}/scripts/main.ts article.md --keep-title
@@ -200,10 +215,10 @@ ${BUN_X} ${SKILL_DIR}/scripts/main.ts article.md --title "My Article"
 
 | Theme | Description |
 |-------|-------------|
-| `default` | 经典主题 - 传统排版，标题居中带底边，二级标题白字彩底 |
-| `grace` | 优雅主题 - 文字阴影，圆角卡片，精致引用块 (by @brzhang) |
-| `simple` | 简洁主题 - 现代极简风，不对称圆角，清爽留白 (by @okooo5km) |
-| `modern` | 现代主题 - 大圆角、药丸形标题、宽松行距（搭配 `--color red` 还原传统红金风格） |
+| `default` | Classic - traditional layout, centered title with bottom border, H2 with white text on colored background |
+| `grace` | Elegant - text shadow, rounded cards, refined blockquotes (by @brzhang) |
+| `simple` | Minimal - modern minimalist, asymmetric rounded corners, clean whitespace (by @okooo5km) |
+| `modern` | Modern - large radius, pill-shaped titles, relaxed line height (pair with `--color red` for traditional red-gold style) |
 
 ## Supported Markdown Features
 
@@ -215,7 +230,7 @@ ${BUN_X} ${SKILL_DIR}/scripts/main.ts article.md --title "My Article"
 | Inline code | `` `code` `` |
 | Tables | GitHub-flavored markdown tables |
 | Images | `![alt](src)` |
-| Links | `[text](url)` with footnote references |
+| Links | `[text](url)`; add `--cite` to move ordinary external links into bottom references |
 | Blockquotes | `> quote` |
 | Lists | `-` unordered, `1.` ordered |
 | Alerts | `> [!NOTE]`, `> [!WARNING]`, etc. |
