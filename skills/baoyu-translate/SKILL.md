@@ -41,7 +41,7 @@ if (Test-Path "$HOME/.baoyu-skills/baoyu-translate/EXTEND.md") { "user" }
 | Found | Read, parse, apply settings. On first use in session, briefly remind: "Using preferences from [path]. You can edit EXTEND.md to customize glossary, audience, etc." |
 | Not found | **MUST** run first-time setup (see below) — do NOT silently use defaults |
 
-**EXTEND.md Supports**: Default target language | Default mode | Target audience | Custom glossaries | Translation style | Chunk settings
+**EXTEND.md Supports**: Default target language | Default mode | Target audience | Custom glossaries (inline or file path) | Translation style | Chunk settings
 
 Schema: [references/config/extend-schema.md](references/config/extend-schema.md)
 
@@ -135,7 +135,7 @@ Custom audience descriptions are also accepted, e.g., `--audience "AI感兴趣�
 1.2 Load built-in glossary for the language pair if available:
 - EN→ZH: [references/glossary-en-zh.md](references/glossary-en-zh.md)
 
-1.3 Merge glossaries: EXTEND.md glossary + built-in glossary + `--glossary` file (CLI overrides all)
+1.3 Merge glossaries: EXTEND.md `glossary` (inline) + EXTEND.md `glossary_files` (external files, paths relative to EXTEND.md location) + built-in glossary + `--glossary` file (CLI overrides all)
 
 ### Step 2: Materialize Source & Create Output Directory
 
@@ -201,6 +201,7 @@ Before translating chunks:
 - **Natural flow**: Use idiomatic target language word order and sentence patterns; break or restructure sentences freely when the source structure doesn't work naturally in the target language
 - **Terminology**: Use standard translations; annotate with original term in parentheses on first occurrence
 - **Preserve format**: Keep all markdown formatting (headings, bold, italic, images, links, code blocks)
+- **Frontmatter transformation**: If the source has YAML frontmatter, preserve it in the translation with these changes: (1) Rename metadata fields that describe the *source* article — `url`→`sourceUrl`, `title`→`sourceTitle`, `description`→`sourceDescription`, `author`→`sourceAuthor`, `date`→`sourceDate`, and any similar origin-metadata fields — by adding a `source` prefix (camelCase). (2) Translate the values of text fields (title, description, etc.) and add them as new top-level fields. (3) Keep other fields (tags, categories, custom fields) as-is, translating their values where appropriate
 - **Respect original**: Maintain original meaning and intent; do not add, remove, or editorialize — but sentence structure and imagery may be adapted freely to serve the meaning
 - **Translator's notes**: For terms, concepts, or cultural references that target readers may not understand — due to jargon, cultural gaps, or domain-specific knowledge — add a concise explanatory note in parentheses immediately after the term. The note should explain *what it means* in plain language, not just provide the English original. Format: `译文（English original，通俗解释）`. Calibrate annotation depth to the target audience: general readers need more notes than technical readers. Only add notes where genuinely needed; do not over-annotate obvious terms.
 

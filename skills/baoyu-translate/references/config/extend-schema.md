@@ -25,12 +25,21 @@ chunk_max_words: 5000
 
 # Custom glossary (merged with built-in glossary)
 # CLI --glossary flag overrides these
+# Supports inline entries and/or file paths
 glossary:
   - from: "Reinforcement Learning"
     to: "强化学习"
   - from: "Transformer"
     to: "Transformer"
     note: "Keep English"
+
+# Load glossary from external file(s)
+# Supports absolute path or relative to EXTEND.md location
+# File format: markdown table with | from | to | note | columns,
+# or YAML list of {from, to, note} entries
+glossary_files:
+  - ./my-glossary.md
+  - /path/to/shared-glossary.yaml
 
 # Language-pair specific glossaries
 glossaries:
@@ -52,7 +61,8 @@ glossaries:
 | `style` | string | `storytelling` | Translation style (`storytelling` / `formal` / `technical` / `literal` / `academic` / `business` / `humorous` / `conversational` / `elegant` / custom) |
 | `chunk_threshold` | number | `4000` | Word count threshold to trigger chunked translation |
 | `chunk_max_words` | number | `5000` | Max words per chunk |
-| `glossary` | array | `[]` | Universal glossary entries |
+| `glossary` | array | `[]` | Universal glossary entries (inline) |
+| `glossary_files` | array | `[]` | External glossary file paths (absolute or relative to EXTEND.md) |
 | `glossaries` | object | `{}` | Language-pair specific glossary entries |
 
 ## Glossary Entry
@@ -63,11 +73,35 @@ glossaries:
 | `to` | yes | Target translation |
 | `note` | no | Usage note (e.g., "Keep English", "Only in tech context") |
 
+## Glossary File Format
+
+External glossary files (`glossary_files`) support two formats:
+
+**Markdown table** (`.md`):
+```markdown
+| from | to | note |
+|------|----|------|
+| Reinforcement Learning | 强化学习 | |
+| Transformer | Transformer | Keep English |
+```
+
+**YAML list** (`.yaml` / `.yml`):
+```yaml
+- from: "Reinforcement Learning"
+  to: "强化学习"
+- from: "Transformer"
+  to: "Transformer"
+  note: "Keep English"
+```
+
+Paths can be absolute or relative to the EXTEND.md file location.
+
 ## Priority
 
 1. CLI `--glossary` file entries
 2. EXTEND.md `glossaries[pair]` entries
-3. EXTEND.md `glossary` entries
-4. Built-in glossary (e.g., `references/glossary-en-zh.md`)
+3. EXTEND.md `glossary` entries (inline)
+4. EXTEND.md `glossary_files` entries (in listed order, later files override earlier)
+5. Built-in glossary (e.g., `references/glossary-en-zh.md`)
 
 Later entries override earlier ones for the same source term.
