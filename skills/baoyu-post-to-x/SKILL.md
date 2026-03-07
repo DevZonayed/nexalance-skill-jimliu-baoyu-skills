@@ -98,9 +98,13 @@ Checks: Chrome, profile isolation, Bun, Accessibility, clipboard, paste keystrok
 
 ---
 
-## Regular Posts
+## Post Type Selection
 
-Text + up to 4 images.
+Unless the user explicitly specifies the post type:
+- **Plain text** + within 10,000 characters → **Regular Post** (Premium members support up to 10,000 characters, non-Premium: 280)
+- **Markdown file** (.md) → **X Article**
+
+## Regular Posts
 
 ```bash
 ${BUN_X} ${SKILL_DIR}/scripts/x-browser.ts "Hello!" --image ./photo.png

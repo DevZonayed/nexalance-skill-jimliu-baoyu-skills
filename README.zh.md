@@ -504,6 +504,8 @@ npx skills add jimliu/baoyu-skills
 
 发布内容和文章到 X (Twitter)。支持带图片的普通帖子和 X 文章（长篇 Markdown）。使用真实 Chrome + CDP 绕过反自动化检测。
 
+纯文本输入默认按普通帖子处理，Markdown 文件默认按 X 文章处理。脚本会将内容填入浏览器，用户需手动检查并发布。
+
 ```bash
 # 发布文字
 /baoyu-post-to-x "Hello from Claude Code!"

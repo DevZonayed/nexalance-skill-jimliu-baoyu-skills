@@ -504,6 +504,8 @@ Smart article illustration skill with Type × Style two-dimension approach. Anal
 
 Post content and articles to X (Twitter). Supports regular posts with images and X Articles (long-form Markdown). Uses real Chrome with CDP to bypass anti-automation.
 
+Plain text input is treated as a regular post. Markdown files are treated as X Articles. Scripts fill content into the browser, and the user reviews and publishes manually.
+
 ```bash
 # Post with text
 /baoyu-post-to-x "Hello from Claude Code!"
