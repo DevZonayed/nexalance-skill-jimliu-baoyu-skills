@@ -1,6 +1,6 @@
 ---
 name: baoyu-xhs-images
-description: Generates Xiaohongshu (Little Red Book) infographic series with 10 visual styles and 8 layouts. Breaks content into 1-10 cartoon-style images optimized for XHS engagement. Use when user mentions "小红书图片", "XHS images", "RedNote infographics", "小红书种草", or wants social media infographics for Chinese platforms.
+description: Generates Xiaohongshu (Little Red Book) infographic series with 11 visual styles and 8 layouts. Breaks content into 1-10 cartoon-style images optimized for XHS engagement. Use when user mentions "小红书图片", "XHS images", "RedNote infographics", "小红书种草", or wants social media infographics for Chinese platforms.
 ---
 
 # Xiaohongshu Infographic Series Generator
@@ -22,6 +22,12 @@ Break down complex content into eye-catching infographic series for Xiaohongshu 
 # Combine style and layout
 /baoyu-xhs-images posts/ai-future/article.md --style notion --layout list
 
+# Use preset (style + layout shorthand)
+/baoyu-xhs-images posts/ai-future/article.md --preset knowledge-card
+
+# Preset with override
+/baoyu-xhs-images posts/ai-future/article.md --preset poster --layout quadrant
+
 # Direct content input
 /baoyu-xhs-images
 [paste content]
@@ -37,15 +43,18 @@ Break down complex content into eye-catching infographic series for Xiaohongshu 
 |--------|-------------|
 | `--style <name>` | Visual style (see Style Gallery) |
 | `--layout <name>` | Information layout (see Layout Gallery) |
+| `--preset <name>` | Style + layout shorthand (see [Style Presets](references/style-presets.md)) |
 
 ## Two Dimensions
 
 | Dimension | Controls | Options |
 |-----------|----------|---------|
-| **Style** | Visual aesthetics: colors, lines, decorations | cute, fresh, warm, bold, minimal, retro, pop, notion, chalkboard, study-notes |
+| **Style** | Visual aesthetics: colors, lines, decorations | cute, fresh, warm, bold, minimal, retro, pop, notion, chalkboard, study-notes, screen-print |
 | **Layout** | Information structure: density, arrangement | sparse, balanced, dense, list, comparison, flow, mindmap, quadrant |
 
 Style × Layout can be freely combined. Example: `--style notion --layout dense` creates an intellectual-looking knowledge card with high information density.
+
+Or use presets: `--preset knowledge-card` → style + layout in one flag. See [Style Presets](references/style-presets.md).
 
 ## Style Gallery
 
@@ -61,8 +70,63 @@ Style × Layout can be freely combined. Example: `--style notion --layout dense`
 | `notion` | Minimalist hand-drawn line art, intellectual |
 | `chalkboard` | Colorful chalk on black board, educational |
 | `study-notes` | Realistic handwritten photo style, blue pen + red annotations + yellow highlighter |
+| `screen-print` | Bold poster art, halftone textures, limited colors, symbolic storytelling |
 
 Detailed style definitions: `references/presets/<style>.md`
+
+## Preset Gallery
+
+Quick-start presets by content scenario. Use `--preset <name>` or recommend during Step 4.
+
+**Knowledge & Learning**:
+
+| Preset | Style | Layout | Best For |
+|--------|-------|--------|----------|
+| `knowledge-card` | notion | dense | 干货知识卡、概念科普 |
+| `checklist` | notion | list | 清单、排行榜、必备清单 |
+| `concept-map` | notion | mindmap | 概念图、知识脉络 |
+| `swot` | notion | quadrant | SWOT分析、四象限分类 |
+| `tutorial` | chalkboard | flow | 教程步骤、操作流程 |
+| `classroom` | chalkboard | balanced | 课堂笔记、知识讲解 |
+| `study-guide` | study-notes | dense | 学习笔记、考试重点 |
+
+**Lifestyle & Sharing**:
+
+| Preset | Style | Layout | Best For |
+|--------|-------|--------|----------|
+| `cute-share` | cute | balanced | 少女风分享、日常种草 |
+| `girly` | cute | sparse | 甜美封面、氛围感 |
+| `cozy-story` | warm | balanced | 生活故事、情感分享 |
+| `product-review` | fresh | comparison | 产品对比、测评 |
+| `nature-flow` | fresh | flow | 健康流程、自然主题 |
+
+**Impact & Opinion**:
+
+| Preset | Style | Layout | Best For |
+|--------|-------|--------|----------|
+| `warning` | bold | list | 避坑指南、重要提醒 |
+| `versus` | bold | comparison | 正反对比、强烈对照 |
+| `clean-quote` | minimal | sparse | 金句、极简封面 |
+| `pro-summary` | minimal | balanced | 专业总结、商务内容 |
+
+**Trend & Entertainment**:
+
+| Preset | Style | Layout | Best For |
+|--------|-------|--------|----------|
+| `retro-ranking` | retro | list | 复古排行、经典盘点 |
+| `throwback` | retro | balanced | 怀旧分享、老物件 |
+| `pop-facts` | pop | list | 趣味冷知识、好玩的事 |
+| `hype` | pop | sparse | 炸裂封面、惊叹分享 |
+
+**Poster & Editorial**:
+
+| Preset | Style | Layout | Best For |
+|--------|-------|--------|----------|
+| `poster` | screen-print | sparse | 海报风封面、影评书评 |
+| `editorial` | screen-print | balanced | 观点文章、文化评论 |
+| `cinematic` | screen-print | comparison | 电影对比、戏剧张力 |
+
+Full preset definitions: [references/style-presets.md](references/style-presets.md)
 
 ## Layout Gallery
 
@@ -81,18 +145,19 @@ Detailed layout definitions: `references/elements/canvas.md`
 
 ## Auto Selection
 
-| Content Signals | Style | Layout |
-|-----------------|-------|--------|
-| Beauty, fashion, cute, girl, pink | `cute` | sparse/balanced |
-| Health, nature, clean, fresh, organic | `fresh` | balanced/flow |
-| Life, story, emotion, feeling, warm | `warm` | balanced |
-| Warning, important, must, critical | `bold` | list/comparison |
-| Professional, business, elegant, simple | `minimal` | sparse/balanced |
-| Classic, vintage, old, traditional | `retro` | balanced |
-| Fun, exciting, wow, amazing | `pop` | sparse/list |
-| Knowledge, concept, productivity, SaaS | `notion` | dense/list |
-| Education, tutorial, learning, teaching, classroom | `chalkboard` | balanced/dense |
-| Notes, handwritten, study guide, knowledge, realistic, photo | `study-notes` | dense/list/mindmap |
+| Content Signals | Style | Layout | Recommended Preset |
+|-----------------|-------|--------|--------------------|
+| Beauty, fashion, cute, girl, pink | `cute` | sparse/balanced | `cute-share`, `girly` |
+| Health, nature, clean, fresh, organic | `fresh` | balanced/flow | `product-review`, `nature-flow` |
+| Life, story, emotion, feeling, warm | `warm` | balanced | `cozy-story` |
+| Warning, important, must, critical | `bold` | list/comparison | `warning`, `versus` |
+| Professional, business, elegant, simple | `minimal` | sparse/balanced | `clean-quote`, `pro-summary` |
+| Classic, vintage, old, traditional | `retro` | balanced | `throwback`, `retro-ranking` |
+| Fun, exciting, wow, amazing | `pop` | sparse/list | `hype`, `pop-facts` |
+| Knowledge, concept, productivity, SaaS | `notion` | dense/list | `knowledge-card`, `checklist` |
+| Education, tutorial, learning, teaching, classroom | `chalkboard` | balanced/dense | `tutorial`, `classroom` |
+| Notes, handwritten, study guide, knowledge, realistic, photo | `study-notes` | dense/list/mindmap | `study-guide` |
+| Movie, album, concert, poster, opinion, editorial, dramatic, cinematic | `screen-print` | sparse/comparison | `poster`, `editorial`, `cinematic` |
 
 ## Outline Strategies
 
@@ -289,7 +354,7 @@ Based on analysis + user context, create three distinct strategy variants. Each 
 |----------|----------|---------|-------------------|
 | A | `outline-strategy-a.md` | Story-driven: emotional, before/after | warm, cute, fresh |
 | B | `outline-strategy-b.md` | Information-dense: structured, factual | notion, minimal, chalkboard |
-| C | `outline-strategy-c.md` | Visual-first: atmospheric, minimal text | bold, pop, retro |
+| C | `outline-strategy-c.md` | Visual-first: atmospheric, minimal text | bold, pop, retro, screen-print |
 
 **Outline format** (YAML front matter + content):
 ```yaml
@@ -348,7 +413,8 @@ Reference: `references/workflows/outline-template.md`
 
 **Question 2: Visual Style**
 - Use strategy's recommended style (show which style)
-- Or select from: cute / fresh / warm / bold / minimal / retro / pop / notion / chalkboard
+- Or use a preset: knowledge-card / checklist / tutorial / poster / cinematic / etc. (see [Style Presets](references/style-presets.md))
+- Or select from: cute / fresh / warm / bold / minimal / retro / pop / notion / chalkboard / screen-print
 - Or type custom style description
 
 **Question 3: Visual Elements** (show after style selection)
@@ -463,6 +529,7 @@ Files:
 | notion | ✓✓ | ✓✓ | ✓✓ | ✓✓ | ✓✓ | ✓✓ | ✓✓ | ✓✓ |
 | chalkboard | ✓✓ | ✓✓ | ✓✓ | ✓✓ | ✓ | ✓✓ | ✓✓ | ✓ |
 | study-notes | ✗ | ✓ | ✓✓ | ✓✓ | ✓ | ✓ | ✓✓ | ✓ |
+| screen-print | ✓✓ | ✓✓ | ✗ | ✓ | ✓✓ | ✓ | ✗ | ✓✓ |
 
 ## References
 
@@ -476,6 +543,7 @@ Detailed templates in `references/` directory:
 
 **Presets** (Style presets):
 - `presets/<name>.md` - Element combination definitions (cute, notion, warm...)
+- `style-presets.md` - Preset shortcuts (style + layout combos)
 
 **Workflows** (Process guides):
 - `workflows/analysis-framework.md` - Content analysis framework

@@ -77,6 +77,41 @@ Load from `presets/{style}.md` and extract key elements:
 {typography_style}
 ```
 
+### Screen-Print Style Override
+
+When `style: screen-print`, replace the standard Core Principles and Text Style sections with:
+
+```
+## Core Principles
+
+- Screen print / silkscreen poster art — flat color blocks, NO gradients
+- Bold silhouettes and symbolic shapes over detailed rendering
+- Negative space as active storytelling element
+- If content involves sensitive or copyrighted figures, create stylistically similar silhouettes
+- One iconic focal point per image — conceptual, not literal
+
+## Color Rules (CRITICAL)
+
+- **2-5 FLAT COLORS MAXIMUM** — fewer colors = stronger impact
+- Choose ONE duotone pair from preset as dominant palette
+- Halftone dot patterns for tonal variation (NOT gradients)
+- Slight color layer misregistration for print authenticity
+
+## Text Style (CRITICAL)
+
+- Bold condensed sans-serif or Art Deco influenced lettering
+- Typography INTEGRATED into composition as design element
+- High contrast with background, stencil-cut quality
+- **DO NOT use delicate, thin, or handwritten fonts**
+
+## Composition
+
+- Geometric framing: circles, arches, triangles
+- Figure-ground inversion where possible (negative space forms secondary image)
+- Stencil-cut edges between color blocks, no outlines
+- Paper grain texture beneath all colors
+```
+
 ## Layout Section Assembly
 
 Load from `elements/canvas.md` and extract relevant layout:
@@ -123,7 +158,18 @@ be legible but not distracting from the main content.
 
 ## Assembly Process
 
-### Step 1: Load Preset
+### Step 0: Resolve Style Preset (if `--preset` used)
+
+If user specified `--preset`, resolve to style + layout from `references/style-presets.md`:
+
+```python
+# e.g., --preset knowledge-card → style=notion, layout=dense
+style, layout = resolve_preset(preset_name)
+```
+
+Explicit `--style`/`--layout` flags override preset values.
+
+### Step 1: Load Style Definition
 
 ```python
 preset = load_preset(style_name)  # e.g., "notion"
