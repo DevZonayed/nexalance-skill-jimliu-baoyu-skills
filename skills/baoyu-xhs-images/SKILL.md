@@ -76,7 +76,7 @@ Detailed style definitions: `references/presets/<style>.md`
 
 ## Preset Gallery
 
-Quick-start presets by content scenario. Use `--preset <name>` or recommend during Step 4.
+Quick-start presets by content scenario. Use `--preset <name>` or recommend during Step 2.
 
 **Knowledge & Learning**:
 
@@ -237,11 +237,12 @@ XHS Infographic Progress:
   - [ ] Found → load preferences → continue
   - [ ] Not found → run first-time setup → MUST complete before Step 1
 - [ ] Step 1: Analyze content → analysis.md
-- [ ] Step 2: Confirmation 1 - Content understanding ⚠️ REQUIRED
-- [ ] Step 3: Generate 3 outline + style variants
-- [ ] Step 4: Confirmation 2 - Outline & style & elements selection ⚠️ REQUIRED
-- [ ] Step 5: Generate images (sequential)
-- [ ] Step 6: Completion report
+- [ ] Step 2: Smart Confirm ⚠️ REQUIRED
+  - [ ] Path A: Quick confirm → generate recommended outline
+  - [ ] Path B: Customize → adjust then generate outline
+  - [ ] Path C: Detailed → 3 outlines → second confirm → generate outline
+- [ ] Step 3: Generate images (sequential)
+- [ ] Step 4: Completion report
 ```
 
 ### Flow
@@ -255,7 +256,11 @@ Input → [Step 0: Preferences] ─┬─ Found → Continue
                                                                                       │
         ┌───────────────────────────────────────────────────────────────────────────┘
         ↓
-Analyze → [Confirm 1] → 3 Outlines → [Confirm 2: Outline + Style + Elements] → Generate → Complete
+Analyze → [Smart Confirm] ─┬─ Quick: confirm recommended → outline.md → Generate → Complete
+                           │
+                           ├─ Customize: adjust options → outline.md → Generate → Complete
+                           │
+                           └─ Detailed: 3 outlines → [Confirm 2] → outline.md → Generate → Complete
 ```
 
 ### Step 0: Load Preferences (EXTEND.md) ⛔ BLOCKING
@@ -323,18 +328,63 @@ Read source content, save it if needed, and perform deep analysis.
    - Swipe flow design
 4. Detect source language
 5. Determine recommended image count (2-10)
-6. **Generate clarifying questions** (see Step 2)
+6. **Auto-recommend** best strategy + style + layout based on content signals
 7. **Save to `analysis.md`**
 
-### Step 2: Confirmation 1 - Content Understanding ⚠️
+### Step 2: Smart Confirm ⚠️
 
-**Purpose**: Validate understanding + collect missing info. **Do NOT skip.**
+**Purpose**: Present auto-recommended plan, let user confirm or adjust. **Do NOT skip.**
 
-**Display summary**:
-- Content type + topic identified
-- Key points extracted
-- Tone detected
-- Source images count
+**Auto-Recommendation Logic**:
+1. Use Auto Selection table to match content signals → best strategy + style + layout
+2. Infer optimal image count from content density
+3. Load style's default elements from preset
+
+**Display** (analysis summary + recommended plan):
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 内容分析
+  主题：[topic] | 类型：[content_type]
+  要点：[key points summary]
+  受众：[target audience]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎨 推荐方案（自动匹配）
+  策略：[A/B/C] [strategy name]（[reason]）
+  风格：[style] · 布局：[layout] · 预设：[preset]
+  图片：[N]张（封面+[N-2]内容+结尾）
+  元素：[background] / [decorations] / [emphasis]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**Use AskUserQuestion** with single question:
+
+| Option | Description |
+|--------|-------------|
+| 1. ✅ 确认，直接生成（推荐） | Trust auto-recommendation, proceed immediately |
+| 2. 🎛️ 自定义调整 | Modify strategy/style/layout/count in one step |
+| 3. 📋 详细模式 | Generate 3 outlines, then choose (two confirmations) |
+
+#### Path A: Quick Confirm (Option 1)
+
+Generate single outline using recommended strategy + style → save to `outline.md` → Step 3.
+
+#### Path B: Customize (Option 2)
+
+**Use AskUserQuestion** with adjustable options (leave blank = keep recommended):
+
+1. **策略风格**: Current: [strategy + style]. Options: A Story-Driven(warm) | B Information-Dense(notion) | C Visual-First(screen-print). Or specify style directly: cute/fresh/warm/bold/minimal/retro/pop/notion/chalkboard/study-notes/screen-print. Or use preset: knowledge-card / checklist / tutorial / poster / cinematic / etc.
+2. **布局**: Current: [layout]. Options: sparse | balanced | dense | list | comparison | flow | mindmap | quadrant
+3. **图片数量**: Current: [N]. Range: 2-10
+4. **补充说明**（可选）: Selling point emphasis, audience adjustment, color preference, etc.
+
+**After response**: Generate single outline with user's choices → save to `outline.md` → Step 3.
+
+#### Path C: Detailed Mode (Option 3)
+
+Full two-confirmation flow for maximum control:
+
+**Step 2a: Content Understanding**
 
 **Use AskUserQuestion** for:
 1. Core selling point (multiSelect: true)
@@ -342,13 +392,9 @@ Read source content, save it if needed, and perform deep analysis.
 3. Style preference: Authentic sharing / Professional review / Aesthetic mood / Auto
 4. Additional context (optional)
 
-**After response**: Update `analysis.md` → Step 3
+**After response**: Update `analysis.md`.
 
-### Step 3: Generate 3 Outline + Style Variants
-
-Based on analysis + user context, create three distinct strategy variants. Each variant includes both **outline structure** and **visual style recommendation**.
-
-**For each strategy**:
+**Step 2b: Generate 3 Outline Variants**
 
 | Strategy | Filename | Outline | Recommended Style |
 |----------|----------|---------|-------------------|
@@ -363,7 +409,7 @@ strategy: a  # a, b, or c
 name: Story-Driven
 style: warm  # recommended style for this strategy
 style_reason: "Warm tones enhance emotional storytelling and personal connection"
-elements:  # from style preset, can be customized in Step 4
+elements:  # from style preset, can be customized
   background: solid-pastel
   decorations: [clouds, stars-sparkles]
   emphasis: star-burst
@@ -391,50 +437,22 @@ image_count: 5
 - Each strategy MUST have different outline structure AND different recommended style
 - Adapt page count: A typically 4-6, B typically 3-5, C typically 3-4
 - Include `style_reason` explaining why this style fits the strategy
-- Consider user's style preference from Step 2
 
 Reference: `references/workflows/outline-template.md`
 
-### Step 4: Confirmation 2 - Outline & Style & Elements Selection ⚠️
-
-**Purpose**: User chooses outline strategy, confirms visual style, and customizes elements. **Do NOT skip.**
-
-**Display each strategy**:
-- Strategy name + page count + recommended style
-- Page-by-page summary (P1 → P2 → P3...)
+**Step 2c: Outline & Style Selection**
 
 **Use AskUserQuestion** with three questions:
 
-**Question 1: Outline Strategy**
-- Strategy A (Recommended if "authentic sharing")
-- Strategy B (Recommended if "professional review")
-- Strategy C (Recommended if "aesthetic mood")
-- Combine: specify pages from each
+**Q1: Outline Strategy**: A / B / C / Combine (specify pages from each)
 
-**Question 2: Visual Style**
-- Use strategy's recommended style (show which style)
-- Or use a preset: knowledge-card / checklist / tutorial / poster / cinematic / etc. (see [Style Presets](references/style-presets.md))
-- Or select from: cute / fresh / warm / bold / minimal / retro / pop / notion / chalkboard / screen-print
-- Or type custom style description
+**Q2: Visual Style**: Use recommended | Select preset | Select style | Custom description
 
-**Question 3: Visual Elements** (show after style selection)
-Display the selected style's default elements from preset, then ask:
-- Use style defaults (Recommended) - show preview: background, decorations, emphasis
-- Adjust background - options: solid-pastel / solid-saturated / gradient-linear / gradient-radial / paper-texture / grid
-- Adjust decorations - options: hearts / stars-sparkles / flowers / clouds / leaves / confetti
-- Type custom element preferences
+**Q3: Visual Elements**: Use defaults (Recommended) | Adjust background | Adjust decorations | Custom
 
-**After response**:
-- Single strategy → copy to `outline.md` with confirmed style
-- Combination → merge specified pages with confirmed style
-- Custom request → regenerate based on feedback
-- Style defaults → use preset's Element Combination as-is
-- Background adjustment → update elements.background with user choice
-- Decorations adjustment → update elements.decorations with user choice
-- Custom elements → parse user's preferences into elements fields
-- Update `outline.md` frontmatter with final style and elements
+**After response**: Save selected/merged outline to `outline.md` with confirmed style and elements → Step 3.
 
-### Step 5: Generate Images
+### Step 3: Generate Images
 
 With confirmed outline + style + layout:
 
@@ -474,12 +492,13 @@ If image generation skill supports `--sessionId`:
 2. Use same session ID for all images
 3. Combined with reference image chain, ensures maximum visual consistency
 
-### Step 6: Completion Report
+### Step 4: Completion Report
 
 ```
 Xiaohongshu Infographic Series Complete!
 
 Topic: [topic]
+Mode: [Quick / Custom / Detailed]
 Strategy: [A/B/C/Combined]
 Style: [style name]
 Layout: [layout name or "varies"]
@@ -487,10 +506,8 @@ Location: [directory path]
 Images: N total
 
 ✓ analysis.md
-✓ outline-strategy-a.md
-✓ outline-strategy-b.md
-✓ outline-strategy-c.md
-✓ outline.md (selected: [strategy])
+✓ outline.md
+✓ outline-strategy-a/b/c.md (detailed mode only)
 
 Files:
 - 01-cover-[slug].png ✓ Cover (sparse)
@@ -559,7 +576,7 @@ Detailed templates in `references/` directory:
 
 - Auto-retry once on failure | Cartoon alternatives for sensitive figures
 - Use confirmed language preference | Maintain style consistency
-- **Two confirmation points required** (Steps 2 & 4) - do not skip
+- **Smart Confirm required** (Step 2) - do not skip; detailed mode uses two sub-confirmations
 
 ## Extension Support
 
