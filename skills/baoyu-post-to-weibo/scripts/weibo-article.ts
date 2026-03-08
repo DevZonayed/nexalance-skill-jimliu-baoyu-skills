@@ -459,7 +459,7 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
                     if (charAfter === undefined || !/\\d/.test(charAfter)) {
                       const parentElement = node.parentElement;
                       if (parentElement) {
-                        parentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        parentElement.scrollIntoView({ behavior: 'instant', block: 'center' });
                       }
 
                       const range = document.createRange();
@@ -500,112 +500,56 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
           return false;
         };
 
+        // Step A: Copy image to clipboard first (slow due to Swift compilation)
+        console.log(`[weibo-article] Copying image to clipboard: ${path.basename(img.localPath)}`);
+        if (!copyImageToClipboard(img.localPath)) {
+          console.warn(`[weibo-article] Failed to copy image to clipboard`);
+          continue;
+        }
+        await sleep(500);
+
+        // Step B: Select placeholder text (paste will replace the selection)
         const selected = await selectPlaceholder(3);
         if (!selected) {
           console.warn(`[weibo-article] Skipping image - could not select placeholder: ${img.placeholder}`);
           continue;
         }
 
-        console.log(`[weibo-article] Copying image: ${path.basename(img.localPath)}`);
-
-        if (!copyImageToClipboard(img.localPath)) {
-          console.warn(`[weibo-article] Failed to copy image to clipboard`);
-          continue;
-        }
-
-        await sleep(1000);
-
-        // Delete placeholder by replacing selection with empty text
-        console.log(`[weibo-article] Deleting placeholder...`);
-        await cdp.send('Runtime.evaluate', {
-          expression: `(() => {
-            const sel = window.getSelection();
-            if (!sel || sel.isCollapsed) return false;
-            const range = sel.getRangeAt(0);
-            range.deleteContents();
-            sel.collapseToStart();
-            return true;
-          })()`,
-          returnByValue: true,
-        }, { sessionId });
-
-        await sleep(300);
-
-        // Fallback: send Backspace key if placeholder still exists
-        const stillExists = await cdp!.send<{ result: { value: boolean } }>('Runtime.evaluate', {
-          expression: `(() => {
-            const editor = document.querySelector('div[contenteditable="true"]');
-            if (!editor) return false;
-            const placeholder = ${JSON.stringify(img.placeholder)};
-            const regex = new RegExp(placeholder + '(?!\\\\d)');
-            return regex.test(editor.innerText);
-          })()`,
-          returnByValue: true,
-        }, { sessionId });
-
-        if (stillExists.result.value) {
-          console.log('[weibo-article] Placeholder survived deleteContents, trying Input.insertText replacement...');
-          // Re-select and replace with empty via Input.insertText
-          await cdp!.send('Runtime.evaluate', {
-            expression: `(() => {
-              const editor = document.querySelector('div[contenteditable="true"]');
-              if (!editor) return false;
-              const placeholder = ${JSON.stringify(img.placeholder)};
-              const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT, null, false);
-              let node;
-              while ((node = walker.nextNode())) {
-                const text = node.textContent || '';
-                let searchStart = 0;
-                let idx;
-                while ((idx = text.indexOf(placeholder, searchStart)) !== -1) {
-                  const afterIdx = idx + placeholder.length;
-                  const charAfter = text[afterIdx];
-                  if (charAfter === undefined || !/\\d/.test(charAfter)) {
-                    const range = document.createRange();
-                    range.setStart(node, idx);
-                    range.setEnd(node, idx + placeholder.length);
-                    const sel = window.getSelection();
-                    sel.removeAllRanges();
-                    sel.addRange(range);
-                    return true;
-                  }
-                  searchStart = afterIdx;
-                }
-              }
-              return false;
-            })()`,
-          }, { sessionId });
-          await sleep(200);
-          await cdp!.send('Input.insertText', { text: '' }, { sessionId });
-          await sleep(300);
-        }
-
-        await sleep(200);
+        // Step C: Delete selected placeholder via Backspace (ProseMirror-compatible)
+        console.log(`[weibo-article] Deleting placeholder via Backspace...`);
+        await cdp.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Backspace', code: 'Backspace', windowsVirtualKeyCode: 8 }, { sessionId });
+        await cdp.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Backspace', code: 'Backspace', windowsVirtualKeyCode: 8 }, { sessionId });
+        await sleep(500);
 
         // Verify placeholder was deleted
-        const afterDelete = await cdp.send<{ result: { value: boolean } }>('Runtime.evaluate', {
+        const placeholderGone = await cdp.send<{ result: { value: boolean } }>('Runtime.evaluate', {
           expression: `(() => {
             const editor = document.querySelector('div[contenteditable="true"]');
             if (!editor) return true;
-            const text = editor.innerText;
             const placeholder = ${JSON.stringify(img.placeholder)};
             const regex = new RegExp(placeholder + '(?!\\\\d)');
-            return !regex.test(text);
+            return !regex.test(editor.innerText);
           })()`,
           returnByValue: true,
         }, { sessionId });
 
-        if (afterDelete.result.value) {
+        if (placeholderGone.result.value) {
           console.log(`[weibo-article] Placeholder deleted`);
         } else {
-          console.warn(`[weibo-article] Placeholder may still exist after delete`);
+          console.warn(`[weibo-article] Placeholder may still exist, trying execCommand delete...`);
+          // Re-select and delete via execCommand
+          await selectPlaceholder(1);
+          await cdp.send('Runtime.evaluate', {
+            expression: `document.execCommand('delete')`,
+          }, { sessionId });
+          await sleep(300);
         }
 
-        // Focus editor for paste
+        // Step D: Focus editor and paste image
         await cdp.send('Runtime.evaluate', {
           expression: `document.querySelector('div[contenteditable="true"]')?.focus()`,
         }, { sessionId });
-        await sleep(300);
+        await sleep(200);
 
         // Count images before paste
         const imgCountBefore = await cdp.send<{ result: { value: number } }>('Runtime.evaluate', {
@@ -613,7 +557,7 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
           returnByValue: true,
         }, { sessionId });
 
-        // Paste image
+        // Paste image at cursor position (where placeholder was)
         console.log(`[weibo-article] Pasting image...`);
         if (pasteFromClipboard('Google Chrome', 5, 1000)) {
           console.log(`[weibo-article] Paste keystroke sent for: ${path.basename(img.localPath)}`);
