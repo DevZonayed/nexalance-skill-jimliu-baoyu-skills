@@ -2,6 +2,16 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.55.0 - 2026-03-08
+
+### Features
+- `baoyu-article-illustrator`: add screen-print style and `--preset` flag for quick type + style selection
+- `baoyu-cover-image`: add screen-print rendering and duotone palette with 5 new style presets
+- `baoyu-xhs-images`: add screen-print style and `--preset` flag with 23 built-in presets
+
+### Documentation
+- Add credits section to both READMEs acknowledging open source inspirations
+
 ## 1.54.1 - 2026-03-07
 
 ### Fixes

@@ -2,6 +2,16 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.55.0 - 2026-03-08
+
+### 新功能
+- `baoyu-article-illustrator`：新增 screen-print 风格和 `--preset` 快捷预设（如 tech-explainer、opinion-piece）
+- `baoyu-cover-image`：新增 screen-print 渲染风格和 duotone 调色板，包含 5 个新预设（poster-art、mondo 等）
+- `baoyu-xhs-images`：新增 screen-print 风格和 `--preset` 快捷预设，内置 23 个场景预设
+
+### 文档
+- 为中英文 README 新增致谢章节，致敬相关开源项目
+
 ## 1.54.1 - 2026-03-07
 
 ### 修复
