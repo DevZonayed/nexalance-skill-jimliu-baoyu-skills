@@ -960,6 +960,15 @@ HTTP_PROXY=http://127.0.0.1:7890 HTTPS_PROXY=http://127.0.0.1:7890 /baoyu-danger
 - 首次使用需确认免责声明
 - 通过环境变量或 Chrome 登录进行身份验证
 
+## 致谢
+
+本项目受到以下开源项目的启发，感谢它们的作者：
+
+- [x-article-publisher-skill](https://github.com/wshuyi/x-article-publisher-skill) by [@wshuyi](https://github.com/wshuyi) — 发布 X 文章技能的灵感来源
+- [doocs/md](https://github.com/doocs/md) by [@doocs](https://github.com/doocs) — Markdown 转 HTML 的核心实现逻辑
+- [高密度信息图 Prompt](https://waytoagi.feishu.cn/wiki/YG0zwalijihRREkgmPzcWRInnUg) by AJ@WaytoAGI — 信息图技能的灵感来源
+- [qiaomu-mondo-poster-design](https://github.com/joeseesun/qiaomu-mondo-poster-design) by [@joeseesun](https://github.com/joeseesun)（乔木） — Mondo 风格的灵感来源
+
 ## 许可证
 
 MIT

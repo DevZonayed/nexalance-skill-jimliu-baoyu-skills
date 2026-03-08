@@ -960,6 +960,15 @@ This skill uses a reverse-engineered X (Twitter) API.
 - First use requires consent acknowledgment
 - Authentication via environment variables or Chrome login
 
+## Credits
+
+This project was inspired by and builds upon the following open source projects:
+
+- [x-article-publisher-skill](https://github.com/wshuyi/x-article-publisher-skill) by [@wshuyi](https://github.com/wshuyi) — Inspiration for the X article publishing skill
+- [doocs/md](https://github.com/doocs/md) by [@doocs](https://github.com/doocs) — Core implementation logic for Markdown to HTML conversion
+- [High-density Infographic Prompt](https://waytoagi.feishu.cn/wiki/YG0zwalijihRREkgmPzcWRInnUg) by AJ@WaytoAGI — Inspiration for the infographic skill
+- [qiaomu-mondo-poster-design](https://github.com/joeseesun/qiaomu-mondo-poster-design) by [@joeseesun](https://github.com/joeseesun)（乔木） — Inspiration for the Mondo style
+
 ## License
 
 MIT
