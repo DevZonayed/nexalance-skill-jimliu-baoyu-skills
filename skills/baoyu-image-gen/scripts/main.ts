@@ -40,6 +40,12 @@ type ProviderRateLimit = {
   startIntervalMs: number;
 };
 
+type LoadedBatchTasks = {
+  tasks: BatchTaskInput[];
+  jobs: number | null;
+  batchDir: string;
+};
+
 const MAX_ATTEMPTS = 3;
 const DEFAULT_MAX_WORKERS = 10;
 const POLL_WAIT_MS = 250;
@@ -74,16 +80,19 @@ Options:
   -h, --help                Show help
 
 Batch file format:
-  [
-    {
-      "id": "hero",
-      "promptFiles": ["prompts/hero.md"],
-      "image": "out/hero.png",
-      "provider": "replicate",
-      "model": "google/nano-banana-pro",
-      "ar": "16:9"
-    }
-  ]
+  {
+    "jobs": 4,
+    "tasks": [
+      {
+        "id": "hero",
+        "promptFiles": ["prompts/hero.md"],
+        "image": "out/hero.png",
+        "provider": "replicate",
+        "model": "google/nano-banana-pro",
+        "ar": "16:9"
+      }
+    ]
+  }
 
 Behavior:
   - Batch mode automatically runs in parallel when pending tasks >= 2
@@ -433,6 +442,17 @@ function parsePositiveInt(value: string | undefined): number | null {
   return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
 }
 
+function parsePositiveBatchInt(value: unknown): number | null {
+  if (value === null || value === undefined) return null;
+  if (typeof value === "number") {
+    return Number.isInteger(value) && value > 0 ? value : null;
+  }
+  if (typeof value === "string") {
+    return parsePositiveInt(value);
+  }
+  return null;
+}
+
 function getConfiguredMaxWorkers(extendConfig: Partial<ExtendConfig>): number {
   const envValue = parsePositiveInt(process.env.BAOYU_IMAGE_GEN_MAX_WORKERS);
   const configValue = extendConfig.batch?.max_workers ?? null;
@@ -626,27 +646,49 @@ async function prepareSingleTask(args: CliArgs, extendConfig: Partial<ExtendConf
   };
 }
 
-async function loadBatchTasks(batchFilePath: string): Promise<BatchTaskInput[]> {
-  const content = await readFile(path.resolve(batchFilePath), "utf8");
+async function loadBatchTasks(batchFilePath: string): Promise<LoadedBatchTasks> {
+  const resolvedBatchFilePath = path.resolve(batchFilePath);
+  const content = await readFile(resolvedBatchFilePath, "utf8");
   const parsed = JSON.parse(content.replace(/^\uFEFF/, "")) as BatchFile;
-  if (Array.isArray(parsed)) return parsed;
-  if (parsed && typeof parsed === "object" && Array.isArray(parsed.tasks)) return parsed.tasks;
+  const batchDir = path.dirname(resolvedBatchFilePath);
+  if (Array.isArray(parsed)) {
+    return {
+      tasks: parsed,
+      jobs: null,
+      batchDir,
+    };
+  }
+  if (parsed && typeof parsed === "object" && Array.isArray(parsed.tasks)) {
+    const jobs = parsePositiveBatchInt(parsed.jobs);
+    if (parsed.jobs !== undefined && parsed.jobs !== null && jobs === null) {
+      throw new Error("Invalid batch file. jobs must be a positive integer when provided.");
+    }
+    return {
+      tasks: parsed.tasks,
+      jobs,
+      batchDir,
+    };
+  }
   throw new Error("Invalid batch file. Expected an array of tasks or an object with a tasks array.");
 }
 
-function createTaskArgs(baseArgs: CliArgs, task: BatchTaskInput): CliArgs {
+function resolveBatchPath(batchDir: string, filePath: string): string {
+  return path.isAbsolute(filePath) ? filePath : path.resolve(batchDir, filePath);
+}
+
+function createTaskArgs(baseArgs: CliArgs, task: BatchTaskInput, batchDir: string): CliArgs {
   return {
     ...baseArgs,
     prompt: task.prompt ?? null,
-    promptFiles: task.promptFiles ? [...task.promptFiles] : [],
-    imagePath: task.image ?? null,
+    promptFiles: task.promptFiles ? task.promptFiles.map((filePath) => resolveBatchPath(batchDir, filePath)) : [],
+    imagePath: task.image ? resolveBatchPath(batchDir, task.image) : null,
     provider: task.provider ?? baseArgs.provider ?? null,
     model: task.model ?? baseArgs.model ?? null,
     aspectRatio: task.ar ?? baseArgs.aspectRatio ?? null,
     size: task.size ?? baseArgs.size ?? null,
     quality: task.quality ?? baseArgs.quality ?? null,
     imageSize: task.imageSize ?? baseArgs.imageSize ?? null,
-    referenceImages: task.ref ? [...task.ref] : [],
+    referenceImages: task.ref ? task.ref.map((filePath) => resolveBatchPath(batchDir, filePath)) : [],
     n: task.n ?? baseArgs.n,
     batchFile: null,
     jobs: baseArgs.jobs,
@@ -658,15 +700,15 @@ function createTaskArgs(baseArgs: CliArgs, task: BatchTaskInput): CliArgs {
 async function prepareBatchTasks(
   args: CliArgs,
   extendConfig: Partial<ExtendConfig>
-): Promise<PreparedTask[]> {
+): Promise<{ tasks: PreparedTask[]; jobs: number | null }> {
   if (!args.batchFile) throw new Error("--batchfile is required in batch mode");
-  const taskInputs = await loadBatchTasks(args.batchFile);
+  const { tasks: taskInputs, jobs: batchJobs, batchDir } = await loadBatchTasks(args.batchFile);
   if (taskInputs.length === 0) throw new Error("Batch file does not contain any tasks.");
 
   const prepared: PreparedTask[] = [];
   for (let i = 0; i < taskInputs.length; i++) {
     const task = taskInputs[i]!;
-    const taskArgs = createTaskArgs(args, task);
+    const taskArgs = createTaskArgs(args, task, batchDir);
     const prompt = await loadPromptForArgs(taskArgs);
     if (!prompt) throw new Error(`Task ${i + 1} is missing prompt or promptFiles.`);
     if (!taskArgs.imagePath) throw new Error(`Task ${i + 1} is missing image output path.`);
@@ -686,7 +728,10 @@ async function prepareBatchTasks(
     });
   }
 
-  return prepared;
+  return {
+    tasks: prepared,
+    jobs: args.jobs ?? batchJobs,
+  };
 }
 
 async function writeImage(outputPath: string, imageData: Uint8Array): Promise<void> {
@@ -861,8 +906,8 @@ async function runSingleMode(args: CliArgs, extendConfig: Partial<ExtendConfig>)
 }
 
 async function runBatchMode(args: CliArgs, extendConfig: Partial<ExtendConfig>): Promise<void> {
-  const tasks = await prepareBatchTasks(args, extendConfig);
-  const results = await runBatchTasks(tasks, args.jobs, extendConfig);
+  const { tasks, jobs } = await prepareBatchTasks(args, extendConfig);
+  const results = await runBatchTasks(tasks, jobs, extendConfig);
   printBatchSummary(results);
 
   if (args.json) {

@@ -1,6 +1,6 @@
 ---
 name: baoyu-image-gen
-description: AI image generation with OpenAI, Google, DashScope and Replicate APIs. Supports text-to-image, reference images, aspect ratios. Sequential by default; parallel generation available on request. Use when user asks to generate, create, or draw images.
+description: AI image generation with OpenAI, Google, DashScope and Replicate APIs. Supports text-to-image, reference images, aspect ratios, and batch generation from saved prompt files. Sequential by default; use batch parallel generation when the user already has multiple prompts or wants stable multi-image throughput. Use when user asks to generate, create, or draw images.
 version: 1.56.1
 metadata:
   openclaw:
@@ -99,6 +99,33 @@ ${BUN_X} {baseDir}/scripts/main.ts --batchfile batch.json
 ${BUN_X} {baseDir}/scripts/main.ts --batchfile batch.json --jobs 4 --json
 ```
 
+### Batch File Format
+
+```json
+{
+  "jobs": 4,
+  "tasks": [
+    {
+      "id": "hero",
+      "promptFiles": ["prompts/hero.md"],
+      "image": "out/hero.png",
+      "provider": "replicate",
+      "model": "google/nano-banana-pro",
+      "ar": "16:9",
+      "quality": "2k"
+    },
+    {
+      "id": "diagram",
+      "promptFiles": ["prompts/diagram.md"],
+      "image": "out/diagram.png",
+      "ref": ["references/original.png"]
+    }
+  ]
+}
+```
+
+Paths in `promptFiles`, `image`, and `ref` are resolved relative to the batch file's directory. `jobs` is optional (overridden by CLI `--jobs`). Top-level array format (without `jobs` wrapper) is also accepted.
+
 ## Options
 
 | Option | Description |
@@ -177,14 +204,14 @@ ${BUN_X} {baseDir}/scripts/main.ts --prompt "A cat" --image out.png --provider r
 1. `--ref` provided + no `--provider` → auto-select Google first, then OpenAI, then Replicate
 2. `--provider` specified → use it (if `--ref`, must be `google`, `openai`, or `replicate`)
 3. Only one API key available → use that provider
-4. Multiple available → default to Google
+4. Multiple available → default to Replicate (`google/nano-banana-pro`)
 
 ## Quality Presets
 
-| Preset | Google imageSize | OpenAI Size | Use Case |
-|--------|------------------|-------------|----------|
-| `normal` | 1K | 1024px | Quick previews |
-| `2k` (default) | 2K | 2048px | Covers, illustrations, infographics |
+| Preset | Google imageSize | OpenAI Size | Replicate resolution | Use Case |
+|--------|------------------|-------------|----------------------|----------|
+| `normal` | 1K | 1024px | 1K | Quick previews |
+| `2k` (default) | 2K | 2048px | 2K | Covers, illustrations, infographics |
 
 **Google imageSize**: Can be overridden with `--imageSize 1K|2K|4K`
 
@@ -193,8 +220,8 @@ ${BUN_X} {baseDir}/scripts/main.ts --prompt "A cat" --image out.png --provider r
 Supported: `1:1`, `16:9`, `9:16`, `4:3`, `3:4`, `2.35:1`
 
 - Google multimodal: uses `imageConfig.aspectRatio`
-- Google Imagen: uses `aspectRatio` parameter
 - OpenAI: maps to closest supported size
+- Replicate: passes `aspect_ratio` to model; when `--ref` is provided without `--ar`, defaults to `match_input_image`
 
 ## Generation Mode
 
@@ -206,6 +233,20 @@ Supported: `1:1`, `16:9`, `9:16`, `4:3`, `3:4`, `2.35:1`
 |------|-------------|
 | Sequential (default) | Normal usage, single images, small batches |
 | Parallel batch | Batch mode with 2+ tasks |
+
+Execution choice:
+
+| Situation | Preferred approach | Why |
+|-----------|--------------------|-----|
+| One image, or 1-2 simple images | Sequential | Lower coordination overhead and easier debugging |
+| Multiple images already have saved prompt files | Batch (`--batchfile`) | Reuses finalized prompts, applies shared throttling/retries, and gives predictable throughput |
+| Each image still needs separate reasoning, prompt writing, or style exploration | Subagents | The work is still exploratory, so each image may need independent analysis before generation |
+| Output comes from `baoyu-article-illustrator` with `outline.md` + `prompts/` | Batch (`build-batch.ts` -> `--batchfile`) | That workflow already produces prompt files, so direct batch execution is the intended path |
+
+Rule of thumb:
+
+- Prefer batch over subagents once prompt files are already saved and the task is "generate all of these"
+- Use subagents only when generation is coupled with per-image thinking, rewriting, or divergent creative exploration
 
 Parallel behavior:
 

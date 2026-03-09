@@ -258,11 +258,11 @@ After the final translation is written, do a lightweight image-language pass:
 3. If any image likely contains a main text language that does not match the translated article language, proactively remind the user
 4. The reminder must be a list only. Do not automatically localize those images unless the user asks
 
-Reminder format:
+Reminder format (use whatever image syntax the article already uses — standard markdown or wikilink):
 ```text
 Possible image localization needed:
-- ![[attachments/example-cover.png]]: likely still contains source-language text while the article is now in target language
-- ![[attachments/example-diagram.png]]: likely text-heavy framework graphic, check whether labels need translation
+- ![example cover](attachments/example-cover.png): likely still contains source-language text while the article is now in target language
+- ![example diagram](attachments/example-diagram.png): likely text-heavy framework graphic, check whether labels need translation
 ```
 
 Display summary:

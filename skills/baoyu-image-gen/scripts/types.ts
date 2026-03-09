@@ -34,7 +34,12 @@ export type BatchTaskInput = {
   n?: number;
 };
 
-export type BatchFile = BatchTaskInput[] | { tasks: BatchTaskInput[] };
+export type BatchFile =
+  | BatchTaskInput[]
+  | {
+      tasks: BatchTaskInput[];
+      jobs?: number | null;
+    };
 
 export type ExtendConfig = {
   version: number;
