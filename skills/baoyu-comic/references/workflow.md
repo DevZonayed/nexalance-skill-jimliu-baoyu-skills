@@ -435,12 +435,14 @@ With confirmed prompts from Step 5/6:
 
 ```bash
 # Each page generation MUST include --ref
-${BUN_X} ${SKILL_DIR}/../baoyu-image-gen/scripts/main.ts \
+${BUN_X} <image-skill-baseDir>/scripts/main.ts \
   --promptfiles prompts/01-page-xxx.md \
   --image 01-page-xxx.png \
   --ar 3:4 \
   --ref characters/characters.png
 ```
+
+Replace `<image-skill-baseDir>` with the installed image generation skill directory. Do not assume it is adjacent to `baoyu-comic`.
 
 **Strategy B: Embedding character descriptions in prompt**
 
@@ -478,7 +480,7 @@ If image generation skill supports `--sessionId`:
 After all images generated:
 
 ```bash
-${BUN_X} ${SKILL_DIR}/scripts/merge-to-pdf.ts <comic-dir>
+${BUN_X} {baseDir}/scripts/merge-to-pdf.ts <comic-dir>
 ```
 
 Creates `{topic-slug}.pdf` with all pages as full-page images.

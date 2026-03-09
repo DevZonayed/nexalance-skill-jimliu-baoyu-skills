@@ -1,6 +1,14 @@
 ---
 name: baoyu-comic
 description: Knowledge comic creator supporting multiple art styles and tones. Creates original educational comics with detailed panel layouts and sequential image generation. Use when user asks to create "知识漫画", "教育漫画", "biography comic", "tutorial comic", or "Logicomix-style comic".
+version: 1.56.1
+metadata:
+  openclaw:
+    homepage: https://github.com/JimLiu/baoyu-skills#baoyu-comic
+    requires:
+      anyBins:
+        - bun
+        - npx
 ---
 
 # Knowledge Comic Creator
@@ -104,9 +112,9 @@ Details: [references/auto-selection.md](references/auto-selection.md)
 **Important**: All scripts are located in the `scripts/` subdirectory of this skill.
 
 **Agent Execution Instructions**:
-1. Determine this SKILL.md file's directory path as `SKILL_DIR`
-2. Script path = `${SKILL_DIR}/scripts/<script-name>.ts`
-3. Replace all `${SKILL_DIR}` in this document with the actual path
+1. Determine this SKILL.md file's directory path as `{baseDir}`
+2. Script path = `{baseDir}/scripts/<script-name>.ts`
+3. Replace all `{baseDir}` in this document with the actual path
 4. Resolve `${BUN_X}` runtime: if `bun` installed → `bun`; if `npx` available → `npx -y bun`; else suggest installing bun
 
 **Script Reference**:
@@ -209,11 +217,13 @@ Analyze → [Check Existing?] → [Confirm: Style + Reviews] → Storyboard → 
 **7.1 Generate character sheet first**:
 - **Backup rule**: If `characters/characters.png` exists, rename to `characters/characters-backup-YYYYMMDD-HHMMSS.png`
 ```bash
-# Use Reference Sheet Prompt from characters/characters.md
-${BUN_X} ${SKILL_DIR}/../baoyu-image-gen/scripts/main.ts \
+# Example with an installed image generation skill such as baoyu-image-gen
+${BUN_X} <image-skill-baseDir>/scripts/main.ts \
   --promptfiles characters/characters.md \
   --image characters/characters.png --ar 4:3
 ```
+
+Replace `<image-skill-baseDir>` with the installed image generation skill directory. Do not assume it is a sibling of this skill.
 
 **Compress character sheet** (recommended):
 Compress to reduce token usage when used as reference image:
@@ -234,7 +244,7 @@ Compress to reduce token usage when used as reference image:
 
 ```bash
 # Example: ALWAYS include --ref for consistency
-${BUN_X} ${SKILL_DIR}/../baoyu-image-gen/scripts/main.ts \
+${BUN_X} <image-skill-baseDir>/scripts/main.ts \
   --promptfiles prompts/01-page-xxx.md \
   --image 01-page-xxx.png --ar 3:4 \
   --ref characters/characters.png
