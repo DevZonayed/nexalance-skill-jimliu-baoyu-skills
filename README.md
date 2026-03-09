@@ -17,6 +17,27 @@ Skills shared by Baoyu for improving daily work efficiency with Claude Code.
 npx skills add jimliu/baoyu-skills
 ```
 
+### Publish to ClawHub / OpenClaw
+
+This repository now supports publishing each `skills/baoyu-*` directory as an individual ClawHub skill.
+
+```bash
+# Preview what would be published
+./scripts/sync-clawhub.sh --dry-run
+
+# Publish all changed skills from ./skills
+./scripts/sync-clawhub.sh --all
+```
+
+ClawHub installs skills individually, not as one marketplace bundle. After publishing, users can install specific skills such as:
+
+```bash
+clawhub install baoyu-image-gen
+clawhub install baoyu-markdown-to-html
+```
+
+Publishing to ClawHub releases the published skill under `MIT-0`, per ClawHub's registry rules.
+
 ### Register as Plugin Marketplace
 
 Run the following command in Claude Code:

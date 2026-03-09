@@ -161,3 +161,6 @@ posts/
 *.ipr
 
 .claude/skills/baoyu-skill-evolution
+# ClawHub local state (current and legacy directory names from the official CLI)
+.clawhub/
+.clawdhub/

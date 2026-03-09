@@ -17,6 +17,27 @@
 npx skills add jimliu/baoyu-skills
 ```
 
+### 发布到 ClawHub / OpenClaw
+
+现在这个仓库支持把每个 `skills/baoyu-*` 目录作为独立 ClawHub skill 发布。
+
+```bash
+# 预览将要发布的变更
+./scripts/sync-clawhub.sh --dry-run
+
+# 发布 ./skills 下所有已变更的 skill
+./scripts/sync-clawhub.sh --all
+```
+
+ClawHub 按“单个 skill”安装，不是把整个 marketplace 一次性装进去。发布后，用户可以按需安装：
+
+```bash
+clawhub install baoyu-image-gen
+clawhub install baoyu-markdown-to-html
+```
+
+根据 ClawHub 的 registry 规则，发布到 ClawHub 的 skill 会以 `MIT-0` 许可分发。
+
 ### 注册插件市场
 
 在 Claude Code 中运行：
