@@ -89,7 +89,7 @@ ${BUN_X} skills/baoyu-danger-gemini-web/scripts/main.ts --promptfiles system.md 
 
 - **Bun**: TypeScript runtime (native `bun` preferred, fallback `npx -y bun`)
 - **Chrome**: Required for `baoyu-danger-gemini-web` auth and `baoyu-post-to-x` automation
-- **No npm packages**: Self-contained TypeScript, no external dependencies
+- **npm packages (per skill)**: Some skill subprojects include `package.json`/lockfiles and require dependency installation in their own `scripts/` directories
 
 ## Chrome Profile (Unified)
 
