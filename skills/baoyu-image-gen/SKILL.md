@@ -55,7 +55,7 @@ if (Test-Path "$HOME/.baoyu-skills/baoyu-image-gen/EXTEND.md") { "user" }
 | `.baoyu-skills/baoyu-image-gen/EXTEND.md` | Project directory |
 | `$HOME/.baoyu-skills/baoyu-image-gen/EXTEND.md` | User home |
 
-**EXTEND.md Supports**: Default provider | Default quality | Default aspect ratio | Default image size | Default models
+**EXTEND.md Supports**: Default provider | Default quality | Default aspect ratio | Default image size | Default models | Batch worker cap | Provider-specific batch limits
 
 Schema: `references/config/preferences-schema.md`
 
@@ -91,6 +91,12 @@ ${BUN_X} {baseDir}/scripts/main.ts --prompt "A cat" --image out.png --provider r
 
 # Replicate with specific model
 ${BUN_X} {baseDir}/scripts/main.ts --prompt "A cat" --image out.png --provider replicate --model google/nano-banana
+
+# Batch mode with saved prompt files
+${BUN_X} {baseDir}/scripts/main.ts --batchfile batch.json
+
+# Batch mode with explicit worker count
+${BUN_X} {baseDir}/scripts/main.ts --batchfile batch.json --jobs 4 --json
 ```
 
 ## Options
@@ -99,14 +105,16 @@ ${BUN_X} {baseDir}/scripts/main.ts --prompt "A cat" --image out.png --provider r
 |--------|-------------|
 | `--prompt <text>`, `-p` | Prompt text |
 | `--promptfiles <files...>` | Read prompt from files (concatenated) |
-| `--image <path>` | Output image path (required) |
-| `--provider google\|openai\|dashscope\|replicate` | Force provider (default: google) |
-| `--model <id>`, `-m` | Model ID (Google: `gemini-3-pro-image-preview`, `gemini-3.1-flash-image-preview`; OpenAI: `gpt-image-1.5`) |
+| `--image <path>` | Output image path (required in single-image mode) |
+| `--batchfile <path>` | JSON batch file for multi-image generation |
+| `--jobs <count>` | Worker count for batch mode (default: auto, max from config, built-in default 10) |
+| `--provider google\|openai\|dashscope\|replicate` | Force provider (default: auto-detect) |
+| `--model <id>`, `-m` | Model ID (Google: `gemini-3-pro-image-preview`, `gemini-3.1-flash-image-preview`; OpenAI: `gpt-image-1.5`, `gpt-image-1`) |
 | `--ar <ratio>` | Aspect ratio (e.g., `16:9`, `1:1`, `4:3`) |
 | `--size <WxH>` | Size (e.g., `1024x1024`) |
-| `--quality normal\|2k` | Quality preset (default: 2k) |
+| `--quality normal\|2k` | Quality preset (default: `2k`) |
 | `--imageSize 1K\|2K\|4K` | Image size for Google (default: from quality) |
-| `--ref <files...>` | Reference images. Supported by Google multimodal (`gemini-3-pro-image-preview`, `gemini-3-flash-preview`, `gemini-3.1-flash-image-preview`) and OpenAI edits (GPT Image models). If provider omitted: Google first, then OpenAI |
+| `--ref <files...>` | Reference images. Supported by Google multimodal, OpenAI GPT Image edits, and Replicate |
 | `--n <count>` | Number of images |
 | `--json` | JSON output |
 
@@ -126,6 +134,9 @@ ${BUN_X} {baseDir}/scripts/main.ts --prompt "A cat" --image out.png --provider r
 | `GOOGLE_BASE_URL` | Custom Google endpoint |
 | `DASHSCOPE_BASE_URL` | Custom DashScope endpoint |
 | `REPLICATE_BASE_URL` | Custom Replicate endpoint |
+| `BAOYU_IMAGE_GEN_MAX_WORKERS` | Override batch worker cap |
+| `BAOYU_IMAGE_GEN_<PROVIDER>_CONCURRENCY` | Override provider concurrency, e.g. `BAOYU_IMAGE_GEN_REPLICATE_CONCURRENCY` |
+| `BAOYU_IMAGE_GEN_<PROVIDER>_START_INTERVAL_MS` | Override provider start gap, e.g. `BAOYU_IMAGE_GEN_REPLICATE_START_INTERVAL_MS` |
 
 **Load Priority**: CLI args > EXTEND.md > env vars > `<cwd>/.baoyu-skills/.env` > `~/.baoyu-skills/.env`
 
@@ -187,36 +198,29 @@ Supported: `1:1`, `16:9`, `9:16`, `4:3`, `3:4`, `2.35:1`
 
 ## Generation Mode
 
-**Default**: Sequential generation (one image at a time). This ensures stable output and easier debugging.
+**Default**: Sequential generation.
 
-**Parallel Generation**: Only use when user explicitly requests parallel/concurrent generation.
+**Batch Parallel Generation**: When `--batchfile` contains 2 or more pending tasks, the script automatically enables parallel generation.
 
 | Mode | When to Use |
 |------|-------------|
 | Sequential (default) | Normal usage, single images, small batches |
-| Parallel | User explicitly requests, large batches (10+) |
+| Parallel batch | Batch mode with 2+ tasks |
 
-**Parallel Settings** (when requested):
+Parallel behavior:
 
-| Setting | Value |
-|---------|-------|
-| Recommended concurrency | 4 subagents |
-| Max concurrency | 8 subagents |
-| Use case | Large batch generation when user requests parallel |
-
-**Agent Implementation** (parallel mode only):
-```
-# Launch multiple generations in parallel using Task tool
-# Each Task runs as background subagent with run_in_background=true
-# Collect results via TaskOutput when all complete
-```
+- Default worker count is automatic, capped by config, built-in default 10
+- Provider-specific throttling is applied only in batch mode, and the built-in defaults are tuned for faster throughput while still avoiding obvious RPM bursts
+- You can override worker count with `--jobs <count>`
+- Each image retries automatically up to 3 attempts
+- Final output includes success count, failure count, and per-image failure reasons
 
 ## Error Handling
 
 - Missing API key → error with setup instructions
-- Generation failure → auto-retry once
+- Generation failure → auto-retry up to 3 attempts per image
 - Invalid aspect ratio → warning, proceed with default
-- Reference images with unsupported provider/model → error with fix hint (switch to Google multimodal: `gemini-3-pro-image-preview`, `gemini-3.1-flash-image-preview`; or OpenAI GPT Image edits)
+- Reference images with unsupported provider/model → error with fix hint
 
 ## Extension Support
 
