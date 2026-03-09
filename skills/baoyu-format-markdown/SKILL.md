@@ -1,6 +1,14 @@
 ---
 name: baoyu-format-markdown
 description: Formats plain text or markdown files with frontmatter, titles, summaries, headings, bold, lists, and code blocks. Use when user asks to "format markdown", "beautify article", "add formatting", or improve article layout. Outputs to {filename}-formatted.md.
+version: 1.56.1
+metadata:
+  openclaw:
+    homepage: https://github.com/JimLiu/baoyu-skills#baoyu-format-markdown
+    requires:
+      anyBins:
+        - bun
+        - npx
 ---
 
 # Markdown Formatter
@@ -11,7 +19,7 @@ Transforms plain text or markdown into well-structured, reader-friendly markdown
 
 ## Script Directory
 
-Scripts in `scripts/` subdirectory. `${SKILL_DIR}` = this SKILL.md's directory path. Resolve `${BUN_X}` runtime: if `bun` installed → `bun`; if `npx` available → `npx -y bun`; else suggest installing bun. Replace `${SKILL_DIR}` and `${BUN_X}` with actual values.
+Scripts in `scripts/` subdirectory. `{baseDir}` = this SKILL.md's directory path. Resolve `${BUN_X}` runtime: if `bun` installed → `bun`; if `npx` available → `npx -y bun`; else suggest installing bun. Replace `{baseDir}` and `${BUN_X}` with actual values.
 
 | Script | Purpose |
 |--------|---------|
@@ -296,7 +304,7 @@ fi
 Run the formatting script on the output file:
 
 ```bash
-${BUN_X} ${SKILL_DIR}/scripts/main.ts {output-file-path} [options]
+${BUN_X} {baseDir}/scripts/main.ts {output-file-path} [options]
 ```
 
 **Script Options:**
@@ -314,13 +322,13 @@ ${BUN_X} ${SKILL_DIR}/scripts/main.ts {output-file-path} [options]
 
 ```bash
 # Default: spacing + emphasis enabled, quotes disabled
-${BUN_X} ${SKILL_DIR}/scripts/main.ts article.md
+${BUN_X} {baseDir}/scripts/main.ts article.md
 
 # Enable all features including quote replacement
-${BUN_X} ${SKILL_DIR}/scripts/main.ts article.md --quotes
+${BUN_X} {baseDir}/scripts/main.ts article.md --quotes
 
 # Only fix emphasis issues, skip spacing
-${BUN_X} ${SKILL_DIR}/scripts/main.ts article.md --no-spacing
+${BUN_X} {baseDir}/scripts/main.ts article.md --no-spacing
 ```
 
 **Script performs (based on options):**

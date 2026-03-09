@@ -1,6 +1,14 @@
 ---
 name: baoyu-post-to-weibo
 description: Posts content to Weibo (微博). Supports regular posts with text, images, and videos, and headline articles (头条文章) with Markdown input via Chrome CDP. Use when user asks to "post to Weibo", "发微博", "发布微博", "publish to Weibo", "share on Weibo", "写微博", or "微博头条文章".
+version: 1.56.1
+metadata:
+  openclaw:
+    homepage: https://github.com/JimLiu/baoyu-skills#baoyu-post-to-weibo
+    requires:
+      anyBins:
+        - bun
+        - npx
 ---
 
 # Post to Weibo
@@ -12,9 +20,9 @@ Posts text, images, videos, and long-form articles to Weibo via real Chrome brow
 **Important**: All scripts are located in the `scripts/` subdirectory of this skill.
 
 **Agent Execution Instructions**:
-1. Determine this SKILL.md file's directory path as `SKILL_DIR`
-2. Script path = `${SKILL_DIR}/scripts/<script-name>.ts`
-3. Replace all `${SKILL_DIR}` in this document with the actual path
+1. Determine this SKILL.md file's directory path as `{baseDir}`
+2. Script path = `{baseDir}/scripts/<script-name>.ts`
+3. Replace all `{baseDir}` in this document with the actual path
 4. Resolve `${BUN_X}` runtime: if `bun` installed → `bun`; if `npx` available → `npx -y bun`; else suggest installing bun
 
 **Script Reference**:
@@ -72,8 +80,8 @@ if (Test-Path "$HOME/.baoyu-skills/baoyu-post-to-weibo/EXTEND.md") { "user" }
 Text + images/videos (max 18 files total). Posted on Weibo homepage.
 
 ```bash
-${BUN_X} ${SKILL_DIR}/scripts/weibo-post.ts "Hello Weibo!" --image ./photo.png
-${BUN_X} ${SKILL_DIR}/scripts/weibo-post.ts "Watch this" --video ./clip.mp4
+${BUN_X} {baseDir}/scripts/weibo-post.ts "Hello Weibo!" --image ./photo.png
+${BUN_X} {baseDir}/scripts/weibo-post.ts "Watch this" --video ./clip.mp4
 ```
 
 **Parameters**:
@@ -93,8 +101,8 @@ ${BUN_X} ${SKILL_DIR}/scripts/weibo-post.ts "Watch this" --video ./clip.mp4
 Long-form Markdown articles published at `https://card.weibo.com/article/v3/editor`.
 
 ```bash
-${BUN_X} ${SKILL_DIR}/scripts/weibo-article.ts article.md
-${BUN_X} ${SKILL_DIR}/scripts/weibo-article.ts article.md --cover ./cover.jpg
+${BUN_X} {baseDir}/scripts/weibo-article.ts article.md
+${BUN_X} {baseDir}/scripts/weibo-article.ts article.md --cover ./cover.jpg
 ```
 
 **Parameters**:

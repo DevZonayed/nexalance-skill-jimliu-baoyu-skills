@@ -1,6 +1,14 @@
 ---
 name: baoyu-markdown-to-html
 description: Converts Markdown to styled HTML with WeChat-compatible themes. Supports code highlighting, math, PlantUML, footnotes, alerts, infographics, and optional bottom citations for external links. Use when user asks for "markdown to html", "convert md to html", "md转html", "微信外链转底部引用", or needs styled HTML output from markdown.
+version: 1.56.1
+metadata:
+  openclaw:
+    homepage: https://github.com/JimLiu/baoyu-skills#baoyu-markdown-to-html
+    requires:
+      anyBins:
+        - bun
+        - npx
 ---
 
 # Markdown to HTML Converter
@@ -9,7 +17,7 @@ Converts Markdown files to beautifully styled HTML with inline CSS, optimized fo
 
 ## Script Directory
 
-**Agent Execution**: Determine this SKILL.md directory as `SKILL_DIR`. Resolve `${BUN_X}` runtime: if `bun` installed → `bun`; if `npx` available → `npx -y bun`; else suggest installing bun. Replace `${SKILL_DIR}` and `${BUN_X}` with actual values.
+**Agent Execution**: Determine this SKILL.md directory as `{baseDir}`. Resolve `${BUN_X}` runtime: if `bun` installed → `bun`; if `npx` available → `npx -y bun`; else suggest installing bun. Replace `{baseDir}` and `${BUN_X}` with actual values.
 
 | Script | Purpose |
 |--------|---------|
@@ -117,7 +125,7 @@ if (Test-Path "$HOME/.baoyu-skills/baoyu-post-to-wechat/EXTEND.md") { Select-Str
 ### Step 2: Convert
 
 ```bash
-${BUN_X} ${SKILL_DIR}/scripts/main.ts <markdown_file> --theme <theme> [--cite]
+${BUN_X} {baseDir}/scripts/main.ts <markdown_file> --theme <theme> [--cite]
 ```
 
 ### Step 3: Report Result
@@ -127,7 +135,7 @@ Display the output path from JSON result. If backup was created, mention it.
 ## Usage
 
 ```bash
-${BUN_X} ${SKILL_DIR}/scripts/main.ts <markdown_file> [options]
+${BUN_X} {baseDir}/scripts/main.ts <markdown_file> [options]
 ```
 
 **Options:**
@@ -165,22 +173,22 @@ ${BUN_X} ${SKILL_DIR}/scripts/main.ts <markdown_file> [options]
 
 ```bash
 # Basic conversion (uses default theme, removes first heading)
-${BUN_X} ${SKILL_DIR}/scripts/main.ts article.md
+${BUN_X} {baseDir}/scripts/main.ts article.md
 
 # With specific theme
-${BUN_X} ${SKILL_DIR}/scripts/main.ts article.md --theme grace
+${BUN_X} {baseDir}/scripts/main.ts article.md --theme grace
 
 # Theme with custom color
-${BUN_X} ${SKILL_DIR}/scripts/main.ts article.md --theme modern --color red
+${BUN_X} {baseDir}/scripts/main.ts article.md --theme modern --color red
 
 # Enable bottom citations for ordinary external links
-${BUN_X} ${SKILL_DIR}/scripts/main.ts article.md --cite
+${BUN_X} {baseDir}/scripts/main.ts article.md --cite
 
 # Keep the first heading in content
-${BUN_X} ${SKILL_DIR}/scripts/main.ts article.md --keep-title
+${BUN_X} {baseDir}/scripts/main.ts article.md --keep-title
 
 # Override title
-${BUN_X} ${SKILL_DIR}/scripts/main.ts article.md --title "My Article"
+${BUN_X} {baseDir}/scripts/main.ts article.md --title "My Article"
 ```
 
 ## Output

@@ -1,6 +1,14 @@
 ---
 name: baoyu-post-to-x
 description: Posts content and articles to X (Twitter). Supports regular posts with images/videos and X Articles (long-form Markdown). Uses real Chrome with CDP to bypass anti-automation. Use when user asks to "post to X", "tweet", "publish to Twitter", or "share on X".
+version: 1.56.1
+metadata:
+  openclaw:
+    homepage: https://github.com/JimLiu/baoyu-skills#baoyu-post-to-x
+    requires:
+      anyBins:
+        - bun
+        - npx
 ---
 
 # Post to X (Twitter)
@@ -12,9 +20,9 @@ Posts text, images, videos, and long-form articles to X via real Chrome browser 
 **Important**: All scripts are located in the `scripts/` subdirectory of this skill.
 
 **Agent Execution Instructions**:
-1. Determine this SKILL.md file's directory path as `SKILL_DIR`
-2. Script path = `${SKILL_DIR}/scripts/<script-name>.ts`
-3. Replace all `${SKILL_DIR}` in this document with the actual path
+1. Determine this SKILL.md file's directory path as `{baseDir}`
+2. Script path = `{baseDir}/scripts/<script-name>.ts`
+3. Replace all `{baseDir}` in this document with the actual path
 4. Resolve `${BUN_X}` runtime: if `bun` installed → `bun`; if `npx` available → `npx -y bun`; else suggest installing bun
 
 **Script Reference**:
@@ -74,7 +82,7 @@ if (Test-Path "$HOME/.baoyu-skills/baoyu-post-to-x/EXTEND.md") { "user" }
 Before first use, suggest running the environment check. User can skip if they prefer.
 
 ```bash
-${BUN_X} ${SKILL_DIR}/scripts/check-paste-permissions.ts
+${BUN_X} {baseDir}/scripts/check-paste-permissions.ts
 ```
 
 Checks: Chrome, profile isolation, Bun, Accessibility, clipboard, paste keystroke, Chrome conflicts.
@@ -107,7 +115,7 @@ Unless the user explicitly specifies the post type:
 ## Regular Posts
 
 ```bash
-${BUN_X} ${SKILL_DIR}/scripts/x-browser.ts "Hello!" --image ./photo.png
+${BUN_X} {baseDir}/scripts/x-browser.ts "Hello!" --image ./photo.png
 ```
 
 **Parameters**:
@@ -126,7 +134,7 @@ ${BUN_X} ${SKILL_DIR}/scripts/x-browser.ts "Hello!" --image ./photo.png
 Text + video file.
 
 ```bash
-${BUN_X} ${SKILL_DIR}/scripts/x-video.ts "Check this out!" --video ./clip.mp4
+${BUN_X} {baseDir}/scripts/x-video.ts "Check this out!" --video ./clip.mp4
 ```
 
 **Parameters**:
@@ -147,7 +155,7 @@ ${BUN_X} ${SKILL_DIR}/scripts/x-video.ts "Check this out!" --video ./clip.mp4
 Quote an existing tweet with comment.
 
 ```bash
-${BUN_X} ${SKILL_DIR}/scripts/x-quote.ts https://x.com/user/status/123 "Great insight!"
+${BUN_X} {baseDir}/scripts/x-quote.ts https://x.com/user/status/123 "Great insight!"
 ```
 
 **Parameters**:
@@ -166,8 +174,8 @@ ${BUN_X} ${SKILL_DIR}/scripts/x-quote.ts https://x.com/user/status/123 "Great in
 Long-form Markdown articles (requires X Premium).
 
 ```bash
-${BUN_X} ${SKILL_DIR}/scripts/x-article.ts article.md
-${BUN_X} ${SKILL_DIR}/scripts/x-article.ts article.md --cover ./cover.jpg
+${BUN_X} {baseDir}/scripts/x-article.ts article.md
+${BUN_X} {baseDir}/scripts/x-article.ts article.md --cover ./cover.jpg
 ```
 
 **Parameters**:

@@ -1,6 +1,14 @@
 ---
 name: baoyu-post-to-wechat
 description: Posts content to WeChat Official Account (微信公众号) via API or Chrome CDP. Supports article posting (文章) with HTML, markdown, or plain text input, and image-text posting (贴图, formerly 图文) with multiple images. Markdown article workflows default to converting ordinary external links into bottom citations for WeChat-friendly output. Use when user mentions "发布公众号", "post to wechat", "微信公众号", or "贴图/图文/文章".
+version: 1.56.1
+metadata:
+  openclaw:
+    homepage: https://github.com/JimLiu/baoyu-skills#baoyu-post-to-wechat
+    requires:
+      anyBins:
+        - bun
+        - npx
 ---
 
 # Post to WeChat Official Account
@@ -11,7 +19,7 @@ description: Posts content to WeChat Official Account (微信公众号) via API 
 
 ## Script Directory
 
-**Agent Execution**: Determine this SKILL.md directory as `SKILL_DIR`, then use `${SKILL_DIR}/scripts/<name>.ts`. Resolve `${BUN_X}` runtime: if `bun` installed → `bun`; if `npx` available → `npx -y bun`; else suggest installing bun.
+**Agent Execution**: Determine this SKILL.md directory as `{baseDir}`, then use `{baseDir}/scripts/<name>.ts`. Resolve `${BUN_X}` runtime: if `bun` installed → `bun`; if `npx` available → `npx -y bun`; else suggest installing bun.
 
 | Script | Purpose |
 |--------|---------|
@@ -92,7 +100,7 @@ chrome_profile_path: /path/to/chrome/profile
 Before first use, suggest running the environment check. User can skip if they prefer.
 
 ```bash
-${BUN_X} ${SKILL_DIR}/scripts/check-permissions.ts
+${BUN_X} {baseDir}/scripts/check-permissions.ts
 ```
 
 Checks: Chrome, profile isolation, Bun, Accessibility, clipboard, paste keystroke, API credentials, Chrome conflicts.
@@ -115,8 +123,8 @@ Checks: Chrome, profile isolation, Bun, Accessibility, clipboard, paste keystrok
 For short posts with multiple images (up to 9):
 
 ```bash
-${BUN_X} ${SKILL_DIR}/scripts/wechat-browser.ts --markdown article.md --images ./images/
-${BUN_X} ${SKILL_DIR}/scripts/wechat-browser.ts --title "标题" --content "内容" --image img.png --submit
+${BUN_X} {baseDir}/scripts/wechat-browser.ts --markdown article.md --images ./images/
+${BUN_X} {baseDir}/scripts/wechat-browser.ts --title "标题" --content "内容" --image img.png --submit
 ```
 
 See [references/image-text-posting.md](references/image-text-posting.md) for details.
@@ -260,7 +268,7 @@ WECHAT_APP_SECRET=<user_input>
 **API method** (accepts `.md` or `.html`):
 
 ```bash
-${BUN_X} ${SKILL_DIR}/scripts/wechat-api.ts <file> --theme <theme> [--color <color>] [--title <title>] [--summary <summary>] [--author <author>] [--cover <cover_path>] [--no-cite]
+${BUN_X} {baseDir}/scripts/wechat-api.ts <file> --theme <theme> [--color <color>] [--title <title>] [--summary <summary>] [--author <author>] [--cover <cover_path>] [--no-cite]
 ```
 
 **CRITICAL**: Always include `--theme` parameter. Never omit it, even if using `default`. Only include `--color` if explicitly set by user or EXTEND.md.
@@ -279,8 +287,8 @@ If script parameters do not expose the two comment fields, still ensure final AP
 **Browser method** (accepts `--markdown` or `--html`):
 
 ```bash
-${BUN_X} ${SKILL_DIR}/scripts/wechat-article.ts --markdown <markdown_file> --theme <theme> [--color <color>] [--no-cite]
-${BUN_X} ${SKILL_DIR}/scripts/wechat-article.ts --html <html_file>
+${BUN_X} {baseDir}/scripts/wechat-article.ts --markdown <markdown_file> --theme <theme> [--color <color>] [--no-cite]
+${BUN_X} {baseDir}/scripts/wechat-article.ts --html <html_file>
 ```
 
 ### Step 5: Completion Report

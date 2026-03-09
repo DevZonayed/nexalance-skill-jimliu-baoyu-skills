@@ -1,6 +1,14 @@
 ---
 name: baoyu-url-to-markdown
 description: Fetch any URL and convert to markdown using Chrome CDP. Saves the rendered HTML snapshot alongside the markdown, and automatically falls back to the pre-Defuddle HTML-to-Markdown pipeline when Defuddle fails. Supports two modes - auto-capture on page load, or wait for user signal (for pages requiring login). Use when user wants to save a webpage as markdown.
+version: 1.56.1
+metadata:
+  openclaw:
+    homepage: https://github.com/JimLiu/baoyu-skills#baoyu-url-to-markdown
+    requires:
+      anyBins:
+        - bun
+        - npx
 ---
 
 # URL to Markdown
@@ -12,10 +20,10 @@ Fetches any URL via Chrome CDP, saves the rendered HTML snapshot, and converts i
 **Important**: All scripts are located in the `scripts/` subdirectory of this skill.
 
 **Agent Execution Instructions**:
-1. Determine this SKILL.md file's directory path as `SKILL_DIR`
-2. Script path = `${SKILL_DIR}/scripts/<script-name>.ts`
+1. Determine this SKILL.md file's directory path as `{baseDir}`
+2. Script path = `{baseDir}/scripts/<script-name>.ts`
 3. Resolve `${BUN_X}` runtime: if `bun` installed → `bun`; if `npx` available → `npx -y bun`; else suggest installing bun
-4. Replace all `${SKILL_DIR}` and `${BUN_X}` in this document with actual values
+4. Replace all `{baseDir}` and `${BUN_X}` in this document with actual values
 
 **Script Reference**:
 | Script | Purpose |
@@ -112,19 +120,19 @@ Full reference: [references/config/first-time-setup.md](references/config/first-
 
 ```bash
 # Auto mode (default) - capture when page loads
-${BUN_X} ${SKILL_DIR}/scripts/main.ts <url>
+${BUN_X} {baseDir}/scripts/main.ts <url>
 
 # Wait mode - wait for user signal before capture
-${BUN_X} ${SKILL_DIR}/scripts/main.ts <url> --wait
+${BUN_X} {baseDir}/scripts/main.ts <url> --wait
 
 # Save to specific file
-${BUN_X} ${SKILL_DIR}/scripts/main.ts <url> -o output.md
+${BUN_X} {baseDir}/scripts/main.ts <url> -o output.md
 
 # Save to a custom output directory (auto-generates filename)
-${BUN_X} ${SKILL_DIR}/scripts/main.ts <url> --output-dir ./posts/
+${BUN_X} {baseDir}/scripts/main.ts <url> --output-dir ./posts/
 
 # Download images and videos to local directories
-${BUN_X} ${SKILL_DIR}/scripts/main.ts <url> --download-media
+${BUN_X} {baseDir}/scripts/main.ts <url> --download-media
 ```
 
 ## Options

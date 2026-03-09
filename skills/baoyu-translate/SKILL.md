@@ -1,6 +1,14 @@
 ---
 name: baoyu-translate
 description: Translates articles and documents between languages with three modes - quick (direct), normal (analyze then translate), and refined (analyze, translate, review, polish). Supports custom glossaries and terminology consistency via EXTEND.md. Use when user asks to "translate", "翻译", "精翻", "translate article", "translate to Chinese/English", "改成中文", "改成英文", "convert to Chinese", "localize", "本地化", or needs any document translation. Also triggers for "refined translation", "精细翻译", "proofread translation", "快速翻译", "快翻", "这篇文章翻译一下", or when a URL or file is provided with translation intent.
+version: 1.56.1
+metadata:
+  openclaw:
+    homepage: https://github.com/JimLiu/baoyu-skills#baoyu-translate
+    requires:
+      anyBins:
+        - bun
+        - npx
 ---
 
 # Translator
@@ -9,7 +17,7 @@ Three-mode translation skill: **quick** for direct translation, **normal** for a
 
 ## Script Directory
 
-Scripts in `scripts/` subdirectory. `${SKILL_DIR}` = this SKILL.md's directory path. Resolve `${BUN_X}` runtime: if `bun` installed → `bun`; if `npx` available → `npx -y bun`; else suggest installing bun. Replace `${SKILL_DIR}` and `${BUN_X}` with actual values.
+Scripts in `scripts/` subdirectory. `{baseDir}` = this SKILL.md's directory path. Resolve `${BUN_X}` runtime: if `bun` installed → `bun`; if `npx` available → `npx -y bun`; else suggest installing bun. Replace `{baseDir}` and `${BUN_X}` with actual values.
 
 | Script | Purpose |
 |--------|---------|
@@ -172,7 +180,7 @@ Before translating chunks:
 
 1. **Extract terminology**: Scan entire document for proper nouns, technical terms, recurring phrases
 2. **Build session glossary**: Merge extracted terms with loaded glossaries, establish consistent translations
-3. **Split into chunks**: Use `${BUN_X} ${SKILL_DIR}/scripts/chunk.ts <file> [--max-words <chunk_max_words>] [--output-dir <output-dir>]`
+3. **Split into chunks**: Use `${BUN_X} {baseDir}/scripts/chunk.ts <file> [--max-words <chunk_max_words>] [--output-dir <output-dir>]`
    - Parses markdown AST (headings, paragraphs, lists, code blocks, tables, etc.)
    - Splits at markdown block boundaries to preserve structure
    - If a single block exceeds the threshold, falls back to line splitting, then word splitting

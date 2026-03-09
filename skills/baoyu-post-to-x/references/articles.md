@@ -12,13 +12,13 @@ Publish Markdown articles to X Articles editor with rich text formatting and ima
 
 ```bash
 # Publish markdown article (preview mode)
-${BUN_X} ${SKILL_DIR}/scripts/x-article.ts article.md
+${BUN_X} {baseDir}/scripts/x-article.ts article.md
 
 # With custom cover image
-${BUN_X} ${SKILL_DIR}/scripts/x-article.ts article.md --cover ./cover.jpg
+${BUN_X} {baseDir}/scripts/x-article.ts article.md --cover ./cover.jpg
 
 # Actually publish
-${BUN_X} ${SKILL_DIR}/scripts/x-article.ts article.md --submit
+${BUN_X} {baseDir}/scripts/x-article.ts article.md --submit
 ```
 
 ## Markdown Format
@@ -76,13 +76,13 @@ Convert markdown and inspect structure:
 
 ```bash
 # Get JSON with all metadata
-${BUN_X} ${SKILL_DIR}/scripts/md-to-html.ts article.md
+${BUN_X} {baseDir}/scripts/md-to-html.ts article.md
 
 # Output HTML only
-${BUN_X} ${SKILL_DIR}/scripts/md-to-html.ts article.md --html-only
+${BUN_X} {baseDir}/scripts/md-to-html.ts article.md --html-only
 
 # Save HTML to file
-${BUN_X} ${SKILL_DIR}/scripts/md-to-html.ts article.md --save-html /tmp/article.html
+${BUN_X} {baseDir}/scripts/md-to-html.ts article.md --save-html /tmp/article.html
 ```
 
 JSON output:
@@ -161,7 +161,7 @@ Claude:
 - **No create button**: Ensure X Premium subscription is active
 - **Cover upload fails**: Check file path and format (PNG, JPEG)
 - **Images not inserting**: Verify placeholders exist in pasted content
-- **Content not pasting**: Check HTML clipboard: `${BUN_X} ${SKILL_DIR}/scripts/copy-to-clipboard.ts html --file /tmp/test.html`
+- **Content not pasting**: Check HTML clipboard: `${BUN_X} {baseDir}/scripts/copy-to-clipboard.ts html --file /tmp/test.html`
 
 ## How It Works
 
