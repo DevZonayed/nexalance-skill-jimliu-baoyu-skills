@@ -433,16 +433,12 @@ With confirmed prompts from Step 5/6:
 
 **Strategy A: Using `--ref` parameter** (e.g., baoyu-image-gen)
 
-```bash
-# Each page generation MUST include --ref
-${BUN_X} <image-skill-baseDir>/scripts/main.ts \
-  --promptfiles prompts/01-page-xxx.md \
-  --image 01-page-xxx.png \
-  --ar 3:4 \
-  --ref characters/characters.png
-```
-
-Replace `<image-skill-baseDir>` with the installed image generation skill directory. Do not assume it is adjacent to `baoyu-comic`.
+- Read the chosen image generation skill's `SKILL.md`
+- Invoke that installed skill via its documented interface, not by calling its scripts directly
+- For every page, use `prompts/01-page-xxx.md` as the prompt-file input
+- Save output to `01-page-xxx.png`
+- Use aspect ratio `3:4`
+- Pass `characters/characters.png` as `--ref` on every page generation
 
 **Strategy B: Embedding character descriptions in prompt**
 

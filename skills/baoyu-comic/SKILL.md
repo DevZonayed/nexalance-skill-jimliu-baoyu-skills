@@ -216,14 +216,11 @@ Analyze → [Check Existing?] → [Confirm: Style + Reviews] → Storyboard → 
 
 **7.1 Generate character sheet first**:
 - **Backup rule**: If `characters/characters.png` exists, rename to `characters/characters-backup-YYYYMMDD-HHMMSS.png`
-```bash
-# Example with an installed image generation skill such as baoyu-image-gen
-${BUN_X} <image-skill-baseDir>/scripts/main.ts \
-  --promptfiles characters/characters.md \
-  --image characters/characters.png --ar 4:3
-```
-
-Replace `<image-skill-baseDir>` with the installed image generation skill directory. Do not assume it is a sibling of this skill.
+- Invoke an installed image generation skill such as `baoyu-image-gen`
+- Read that skill's `SKILL.md` and follow its documented interface rather than calling its scripts directly
+- Use `characters/characters.md` as the prompt-file input
+- Save output to `characters/characters.png`
+- Use aspect ratio `4:3`
 
 **Compress character sheet** (recommended):
 Compress to reduce token usage when used as reference image:
@@ -241,14 +238,11 @@ Compress to reduce token usage when used as reference image:
 **Backup rules for page generation**:
 - If prompt file exists: rename to `prompts/NN-{cover|page}-[slug]-backup-YYYYMMDD-HHMMSS.md`
 - If image file exists: rename to `NN-{cover|page}-[slug]-backup-YYYYMMDD-HHMMSS.png`
-
-```bash
-# Example: ALWAYS include --ref for consistency
-${BUN_X} <image-skill-baseDir>/scripts/main.ts \
-  --promptfiles prompts/01-page-xxx.md \
-  --image 01-page-xxx.png --ar 3:4 \
-  --ref characters/characters.png
-```
+- Invoke the installed image generation skill for each page
+- Use `prompts/01-page-xxx.md` as the prompt-file input
+- Save output to `01-page-xxx.png`
+- Use aspect ratio `3:4`
+- If the chosen skill supports reference images, pass `characters/characters.png` as `--ref`
 
 **Full workflow details**: [references/workflow.md](references/workflow.md)
 
