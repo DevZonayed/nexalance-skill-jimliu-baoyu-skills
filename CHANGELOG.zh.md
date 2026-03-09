@@ -5,13 +5,13 @@
 ## 1.59.0 - 2026-03-09
 
 ### 新功能
-- `baoyu-image-gen`：新增批量并行图片生成和提供商级别限流
+- `baoyu-image-gen`：新增批量并行图片生成和提供商级别限流 (by @SeamoonAO)
 
 ### 修复
 - `baoyu-image-gen`：修复多个 API key 可用时恢复 Google 为默认提供商
 
 ### 文档
-- 改进技能文档清晰度
+- 改进技能文档清晰度 (by @SeamoonAO)
 
 ## 1.58.0 - 2026-03-08
 
