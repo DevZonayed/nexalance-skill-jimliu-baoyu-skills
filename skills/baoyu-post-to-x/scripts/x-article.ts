@@ -114,7 +114,6 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
       `--user-data-dir=${profileDir}`,
       '--no-first-run',
       '--no-default-browser-check',
-      '--disable-blink-features=AutomationControlled',
       '--start-maximized',
       X_ARTICLES_URL,
     ];

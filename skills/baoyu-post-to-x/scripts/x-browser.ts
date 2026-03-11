@@ -41,7 +41,6 @@ export async function postToX(options: XBrowserOptions): Promise<void> {
     `--user-data-dir=${profileDir}`,
     '--no-first-run',
     '--no-default-browser-check',
-    '--disable-blink-features=AutomationControlled',
     '--start-maximized',
     X_COMPOSE_URL,
   ], { stdio: 'ignore' });

@@ -45,7 +45,6 @@ export async function quotePost(options: QuoteOptions): Promise<void> {
     `--user-data-dir=${profileDir}`,
     '--no-first-run',
     '--no-default-browser-check',
-    '--disable-blink-features=AutomationControlled',
     '--start-maximized',
     tweetUrl,
   ], { stdio: 'ignore' });

@@ -45,7 +45,6 @@ export async function postVideoToX(options: XVideoOptions): Promise<void> {
     `--user-data-dir=${profileDir}`,
     '--no-first-run',
     '--no-default-browser-check',
-    '--disable-blink-features=AutomationControlled',
     '--start-maximized',
     X_COMPOSE_URL,
   ], { stdio: 'ignore' });
