@@ -3,7 +3,7 @@ import { writeFile, mkdir, access } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 
-import { CdpConnection, getFreePort, launchChrome, waitForChromeDebugPort, waitForNetworkIdle, waitForPageLoad, autoScroll, evaluateScript, killChrome } from "./cdp.js";
+import { CdpConnection, getFreePort, findExistingChromePort, launchChrome, waitForChromeDebugPort, waitForNetworkIdle, waitForPageLoad, autoScroll, evaluateScript, killChrome } from "./cdp.js";
 import { absolutizeUrlsScript, extractContent, createMarkdownDocument, type ConversionResult } from "./html-to-markdown.js";
 import { localizeMarkdownMedia, countRemoteMedia } from "./media-localizer.js";
 import { resolveUrlToMarkdownDataDir } from "./paths.js";
@@ -98,21 +98,37 @@ async function waitForUserSignal(): Promise<void> {
 }
 
 async function captureUrl(args: Args): Promise<ConversionResult> {
-  const port = await getFreePort();
-  const chrome = await launchChrome(args.url, port, false);
+  const existingPort = await findExistingChromePort();
+  const reusing = existingPort !== null;
+  const port = existingPort ?? await getFreePort();
+  const chrome = reusing ? null : await launchChrome(args.url, port, false);
+
+  if (reusing) console.log(`Reusing existing Chrome on port ${port}`);
 
   let cdp: CdpConnection | null = null;
+  let targetId: string | null = null;
   try {
     const wsUrl = await waitForChromeDebugPort(port, 30_000);
     cdp = await CdpConnection.connect(wsUrl, CDP_CONNECT_TIMEOUT_MS);
 
-    const targets = await cdp.send<{ targetInfos: Array<{ targetId: string; type: string; url: string }> }>("Target.getTargets");
-    const pageTarget = targets.targetInfos.find(t => t.type === "page" && t.url.startsWith("http"));
-    if (!pageTarget) throw new Error("No page target found");
-
-    const { sessionId } = await cdp.send<{ sessionId: string }>("Target.attachToTarget", { targetId: pageTarget.targetId, flatten: true });
-    await cdp.send("Network.enable", {}, { sessionId });
-    await cdp.send("Page.enable", {}, { sessionId });
+    let sessionId: string;
+    if (reusing) {
+      const created = await cdp.send<{ targetId: string }>("Target.createTarget", { url: args.url });
+      targetId = created.targetId;
+      const attached = await cdp.send<{ sessionId: string }>("Target.attachToTarget", { targetId, flatten: true });
+      sessionId = attached.sessionId;
+      await cdp.send("Network.enable", {}, { sessionId });
+      await cdp.send("Page.enable", {}, { sessionId });
+    } else {
+      const targets = await cdp.send<{ targetInfos: Array<{ targetId: string; type: string; url: string }> }>("Target.getTargets");
+      const pageTarget = targets.targetInfos.find(t => t.type === "page" && t.url.startsWith("http"));
+      if (!pageTarget) throw new Error("No page target found");
+      targetId = pageTarget.targetId;
+      const attached = await cdp.send<{ sessionId: string }>("Target.attachToTarget", { targetId, flatten: true });
+      sessionId = attached.sessionId;
+      await cdp.send("Network.enable", {}, { sessionId });
+      await cdp.send("Page.enable", {}, { sessionId });
+    }
 
     if (args.wait) {
       await waitForUserSignal();
@@ -136,11 +152,18 @@ async function captureUrl(args: Args): Promise<ConversionResult> {
 
     return await extractContent(html, args.url);
   } finally {
-    if (cdp) {
-      try { await cdp.send("Browser.close", {}, { timeoutMs: 5_000 }); } catch {}
-      cdp.close();
+    if (reusing) {
+      if (cdp && targetId) {
+        try { await cdp.send("Target.closeTarget", { targetId }, { timeoutMs: 5_000 }); } catch {}
+      }
+      if (cdp) cdp.close();
+    } else {
+      if (cdp) {
+        try { await cdp.send("Browser.close", {}, { timeoutMs: 5_000 }); } catch {}
+        cdp.close();
+      }
+      if (chrome) killChrome(chrome);
     }
-    killChrome(chrome);
   }
 }
 

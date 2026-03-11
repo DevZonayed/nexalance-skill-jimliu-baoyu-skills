@@ -1,7 +1,8 @@
 import { spawn, type ChildProcess } from "node:child_process";
 import fs from "node:fs";
-import { mkdir } from "node:fs/promises";
+import { mkdir, readFile } from "node:fs/promises";
 import net from "node:net";
+import path from "node:path";
 import process from "node:process";
 
 import { resolveUrlToMarkdownChromeProfileDir } from "./paths.js";
@@ -119,6 +120,41 @@ export async function getFreePort(): Promise<number> {
       srv.close((err) => (err ? reject(err) : resolve(port)));
     });
   });
+}
+
+export async function findExistingChromePort(): Promise<number | null> {
+  const profileDir = resolveUrlToMarkdownChromeProfileDir();
+
+  const activePortPath = path.join(profileDir, "DevToolsActivePort");
+  try {
+    const content = await readFile(activePortPath, "utf-8");
+    const port = parseInt(content.split("\n")[0].trim(), 10);
+    if (port && !isNaN(port)) {
+      const res = await fetchWithTimeout(`http://127.0.0.1:${port}/json/version`, { timeoutMs: 3_000 });
+      if (res.ok) return port;
+    }
+  } catch {}
+
+  if (process.platform !== "win32") {
+    try {
+      const { execSync } = await import("node:child_process");
+      const ps = execSync("ps aux", { encoding: "utf-8", timeout: 5_000 });
+      const escapedDir = profileDir.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const lines = ps.split("\n").filter(l => l.includes(profileDir) && l.includes("--remote-debugging-port="));
+      for (const line of lines) {
+        const portMatch = line.match(/--remote-debugging-port=(\d+)/);
+        if (portMatch) {
+          const port = parseInt(portMatch[1], 10);
+          if (port && !isNaN(port)) {
+            const res = await fetchWithTimeout(`http://127.0.0.1:${port}/json/version`, { timeoutMs: 3_000 });
+            if (res.ok) return port;
+          }
+        }
+      }
+    } catch {}
+  }
+
+  return null;
 }
 
 export function findChromeExecutable(): string | null {
