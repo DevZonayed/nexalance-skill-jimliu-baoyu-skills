@@ -2,6 +2,19 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.59.1 - 2026-03-11
+
+### 修复
+- `baoyu-translate`：改进短文本注释密度规则，补充风格预设到 02-prompt.md 的显式传递
+- `baoyu-post-to-x`：移除 `--disable-blink-features=AutomationControlled` Chrome 启动参数
+
+### 重构
+- `baoyu-post-to-weibo`：为 md-to-html.ts 添加入口守卫，支持模块导入
+- 使用本地 sync-clawhub.mjs 脚本替代 clawhub CLI
+
+### 文档
+- 更新 CLAUDE.md 以反映 v1.59.0 代码库状态 (by @jackL1020)
+
 ## 1.59.0 - 2026-03-09
 
 ### 新功能

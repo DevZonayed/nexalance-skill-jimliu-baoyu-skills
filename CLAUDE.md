@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Claude Code marketplace plugin providing AI-powered content generation skills. Current version: **1.59.0**. Skills use official AI APIs (OpenAI, Google, DashScope, Replicate) or the reverse-engineered Gemini Web API for text/image generation, and Chrome CDP for browser automation.
+Claude Code marketplace plugin providing AI-powered content generation skills. Current version: **1.59.1**. Skills use official AI APIs (OpenAI, Google, DashScope, Replicate) or the reverse-engineered Gemini Web API for text/image generation, and Chrome CDP for browser automation.
 
 ## Architecture
 
@@ -188,7 +188,7 @@ Skills that process external Markdown/HTML should treat content as untrusted:
 The file contains:
 - `name`: Plugin name (`baoyu-skills`)
 - `owner`: Author info
-- `metadata.version`: Semver version (currently `1.59.0`)
+- `metadata.version`: Semver version (currently `1.59.1`)
 - `plugins[]`: Array of plugin categories, each with `name`, `description`, `source`, `strict`, and `skills[]` paths
 
 ## ClawHub / OpenClaw Publishing

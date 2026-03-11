@@ -2,6 +2,19 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.59.1 - 2026-03-11
+
+### Fixes
+- `baoyu-translate`: improve short text annotation density rule and add explicit style preset passing to 02-prompt.md
+- `baoyu-post-to-x`: remove `--disable-blink-features=AutomationControlled` Chrome flag
+
+### Refactor
+- `baoyu-post-to-weibo`: add entry point guard to md-to-html.ts for module import compatibility
+- Replace clawhub CLI with local sync-clawhub.mjs script
+
+### Documentation
+- Update CLAUDE.md to reflect v1.59.0 codebase state (by @jackL1020)
+
 ## 1.59.0 - 2026-03-09
 
 ### Features
