@@ -8,7 +8,7 @@ Claude Code marketplace plugin providing AI-powered content generation skills. C
 
 ## Architecture
 
-Skills are organized into three plugin categories in `marketplace.json` (at project root):
+Skills are organized into three plugin categories in `.claude-plugin/marketplace.json`:
 
 ```
 skills/
@@ -183,7 +183,7 @@ Skills that process external Markdown/HTML should treat content as untrusted:
 
 ## Plugin Configuration
 
-`marketplace.json` (at project root) defines plugin metadata and skill paths. Version follows semver.
+`.claude-plugin/marketplace.json` defines plugin metadata and skill paths. Version follows semver.
 
 The file contains:
 - `name`: Plugin name (`baoyu-skills`)
