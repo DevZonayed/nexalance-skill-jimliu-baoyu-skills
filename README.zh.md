@@ -581,6 +581,47 @@ WECHAT_APP_SECRET=你的AppSecret
 
 **浏览器方式**（无需 API 配置）：需已安装 Google Chrome，首次运行需扫码登录（登录状态会保存）
 
+**多账号支持**：通过 `EXTEND.md` 管理多个微信公众号：
+
+```bash
+mkdir -p .baoyu-skills/baoyu-post-to-wechat
+```
+
+创建 `.baoyu-skills/baoyu-post-to-wechat/EXTEND.md`：
+
+```yaml
+# 全局设置（所有账号共享）
+default_theme: default
+default_color: blue
+
+# 账号列表
+accounts:
+  - name: 宝玉的技术分享
+    alias: baoyu
+    default: false
+    default_publish_method: api
+    default_author: 宝玉
+    need_open_comment: 1
+    only_fans_can_comment: 0
+    app_id: wx1234567890abcdef
+    app_secret: 你的 AppSecret
+  - name: AI 工具集
+    alias: ai-tools
+    default_publish_method: browser
+    default_author: AI 工具集
+    need_open_comment: 1
+    only_fans_can_comment: 0
+```
+
+| 账号配置情况 | 行为 |
+|-------------|------|
+| 无 `accounts` 块 | 单账号模式（向后兼容） |
+| 1 个账号 | 自动选择，无需提示 |
+| 2+ 个账号 | 提示选择，或使用 `--account <别名>` |
+| 某账号设置 `default: true` | 预选为默认账号 |
+
+每个账号拥有独立的 Chrome 配置目录，保证浏览器方式下的登录会话互不干扰。API 凭证可在 EXTEND.md 中直接配置，也可通过 `.env` 文件使用别名前缀的环境变量（如 `WECHAT_BAOYU_APP_ID`）。
+
 #### baoyu-post-to-weibo
 
 发布内容到微博。支持文字、图片、视频发布和头条文章（长篇 Markdown）。使用真实 Chrome + CDP 绕过反自动化检测。

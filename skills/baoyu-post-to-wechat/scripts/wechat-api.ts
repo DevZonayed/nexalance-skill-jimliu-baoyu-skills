@@ -1,13 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
-import os from "node:os";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
-
-interface WechatConfig {
-  appId: string;
-  appSecret: string;
-}
+import { loadWechatExtendConfig, resolveAccount, loadCredentials } from "./wechat-extend-config.ts";
 
 interface AccessTokenResponse {
   access_token?: string;
@@ -38,53 +33,14 @@ interface ArticleOptions {
   thumbMediaId: string;
   articleType: ArticleType;
   imageMediaIds?: string[];
+  needOpenComment?: number;
+  onlyFansCanComment?: number;
 }
 
 const TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/token";
 const UPLOAD_URL = "https://api.weixin.qq.com/cgi-bin/material/add_material";
 const DRAFT_URL = "https://api.weixin.qq.com/cgi-bin/draft/add";
 
-function loadEnvFile(envPath: string): Record<string, string> {
-  const env: Record<string, string> = {};
-  if (!fs.existsSync(envPath)) return env;
-
-  const content = fs.readFileSync(envPath, "utf-8");
-  for (const line of content.split("\n")) {
-    const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith("#")) continue;
-    const eqIdx = trimmed.indexOf("=");
-    if (eqIdx > 0) {
-      const key = trimmed.slice(0, eqIdx).trim();
-      let value = trimmed.slice(eqIdx + 1).trim();
-      if ((value.startsWith('"') && value.endsWith('"')) ||
-          (value.startsWith("'") && value.endsWith("'"))) {
-        value = value.slice(1, -1);
-      }
-      env[key] = value;
-    }
-  }
-  return env;
-}
-
-function loadConfig(): WechatConfig {
-  const cwdEnvPath = path.join(process.cwd(), ".baoyu-skills", ".env");
-  const homeEnvPath = path.join(os.homedir(), ".baoyu-skills", ".env");
-
-  const cwdEnv = loadEnvFile(cwdEnvPath);
-  const homeEnv = loadEnvFile(homeEnvPath);
-
-  const appId = process.env.WECHAT_APP_ID || cwdEnv.WECHAT_APP_ID || homeEnv.WECHAT_APP_ID;
-  const appSecret = process.env.WECHAT_APP_SECRET || cwdEnv.WECHAT_APP_SECRET || homeEnv.WECHAT_APP_SECRET;
-
-  if (!appId || !appSecret) {
-    throw new Error(
-      "Missing WECHAT_APP_ID or WECHAT_APP_SECRET.\n" +
-      "Set via environment variables or in .baoyu-skills/.env file."
-    );
-  }
-
-  return { appId, appSecret };
-}
 
 async function fetchAccessToken(appId: string, appSecret: string): Promise<string> {
   const url = `${TOKEN_URL}?grant_type=client_credential&appid=${appId}&secret=${appSecret}`;
@@ -241,6 +197,9 @@ async function publishToDraft(
 
   let article: Record<string, unknown>;
 
+  const noc = options.needOpenComment ?? 1;
+  const ofcc = options.onlyFansCanComment ?? 0;
+
   if (options.articleType === "newspic") {
     if (!options.imageMediaIds || options.imageMediaIds.length === 0) {
       throw new Error("newspic requires at least one image");
@@ -249,8 +208,8 @@ async function publishToDraft(
       article_type: "newspic",
       title: options.title,
       content: options.content,
-      need_open_comment: 1,
-      only_fans_can_comment: 0,
+      need_open_comment: noc,
+      only_fans_can_comment: ofcc,
       image_info: {
         image_list: options.imageMediaIds.map(id => ({ image_media_id: id })),
       },
@@ -262,8 +221,8 @@ async function publishToDraft(
       title: options.title,
       content: options.content,
       thumb_media_id: options.thumbMediaId,
-      need_open_comment: 1,
-      only_fans_can_comment: 0,
+      need_open_comment: noc,
+      only_fans_can_comment: ofcc,
     };
     if (options.author) article.author = options.author;
     if (options.digest) article.digest = options.digest;
@@ -368,6 +327,7 @@ Options:
   --theme <name>      Theme name for markdown (default, grace, simple, modern). Default: default
   --color <name|hex>  Primary color (blue, green, vermilion, etc. or hex)
   --cover <path>      Cover image path (local or URL)
+  --account <alias>   Select account by alias (for multi-account setups)
   --no-cite           Disable bottom citations for ordinary external links in markdown mode
   --dry-run           Parse and render only, don't publish
   --help              Show this help
@@ -412,6 +372,7 @@ interface CliArgs {
   theme: string;
   color?: string;
   cover?: string;
+  account?: string;
   citeStatus: boolean;
   dryRun: boolean;
 }
@@ -449,6 +410,8 @@ function parseArgs(argv: string[]): CliArgs {
       args.color = argv[++i];
     } else if (arg === "--cover" && argv[i + 1]) {
       args.cover = argv[++i];
+    } else if (arg === "--account" && argv[i + 1]) {
+      args.account = argv[++i];
     } else if (arg === "--cite") {
       args.citeStatus = true;
     } else if (arg === "--no-cite") {
@@ -550,6 +513,12 @@ async function main(): Promise<void> {
   if (digest) console.error(`[wechat-api] Digest: ${digest.slice(0, 50)}...`);
   console.error(`[wechat-api] Type: ${args.articleType}`);
 
+  const extConfig = loadWechatExtendConfig();
+  const resolved = resolveAccount(extConfig, args.account);
+  if (resolved.name) console.error(`[wechat-api] Account: ${resolved.name} (${resolved.alias})`);
+
+  if (!author && resolved.default_author) author = resolved.default_author;
+
   if (args.dryRun) {
     console.log(JSON.stringify({
       articleType: args.articleType,
@@ -558,13 +527,14 @@ async function main(): Promise<void> {
       digest: digest || undefined,
       htmlPath,
       contentLength: htmlContent.length,
+      account: resolved.alias || undefined,
     }, null, 2));
     return;
   }
 
-  const config = loadConfig();
+  const creds = loadCredentials(resolved);
   console.error("[wechat-api] Fetching access token...");
-  const accessToken = await fetchAccessToken(config.appId, config.appSecret);
+  const accessToken = await fetchAccessToken(creds.appId, creds.appSecret);
 
   console.error("[wechat-api] Uploading images...");
   const { html: processedHtml, firstMediaId, allMediaIds } = await uploadImagesInHtml(
@@ -617,6 +587,8 @@ async function main(): Promise<void> {
     thumbMediaId,
     articleType: args.articleType,
     imageMediaIds: args.articleType === "newspic" ? allMediaIds : undefined,
+    needOpenComment: resolved.need_open_comment,
+    onlyFansCanComment: resolved.only_fans_can_comment,
   }, accessToken);
 
   console.log(JSON.stringify({

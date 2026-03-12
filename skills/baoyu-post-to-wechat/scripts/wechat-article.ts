@@ -3,7 +3,8 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import process from 'node:process';
 import { fileURLToPath } from 'node:url';
-import { launchChrome, tryConnectExisting, findExistingChromeDebugPort, getPageSession, waitForNewTab, clickElement, typeText, evaluate, sleep, type ChromeSession, type CdpConnection } from './cdp.ts';
+import { launchChrome, tryConnectExisting, findExistingChromeDebugPort, getPageSession, waitForNewTab, clickElement, typeText, evaluate, sleep, getAccountProfileDir, type ChromeSession, type CdpConnection } from './cdp.ts';
+import { loadWechatExtendConfig, resolveAccount } from './wechat-extend-config.ts';
 
 const WECHAT_URL = 'https://mp.weixin.qq.com/';
 
@@ -690,6 +691,7 @@ Options:
   --image <path>     Content image, can repeat (only with --content)
   --submit           Save as draft
   --profile <dir>    Chrome profile directory
+  --account <alias>  Select account by alias (for multi-account setups)
   --cdp-port <port>  Connect to existing Chrome debug port instead of launching new instance
 
 Examples:
@@ -725,6 +727,7 @@ async function main(): Promise<void> {
   let submit = false;
   let profileDir: string | undefined;
   let cdpPort: number | undefined;
+  let accountAlias: string | undefined;
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i]!;
@@ -741,7 +744,18 @@ async function main(): Promise<void> {
     else if (arg === '--image' && args[i + 1]) images.push(args[++i]!);
     else if (arg === '--submit') submit = true;
     else if (arg === '--profile' && args[i + 1]) profileDir = args[++i];
+    else if (arg === '--account' && args[i + 1]) accountAlias = args[++i];
     else if (arg === '--cdp-port' && args[i + 1]) cdpPort = parseInt(args[++i]!, 10);
+  }
+
+  const extConfig = loadWechatExtendConfig();
+  const resolved = resolveAccount(extConfig, accountAlias);
+  if (resolved.name) console.log(`[wechat] Account: ${resolved.name} (${resolved.alias})`);
+
+  if (!author && resolved.default_author) author = resolved.default_author;
+
+  if (!profileDir && resolved.alias) {
+    profileDir = resolved.chrome_profile_path || getAccountProfileDir(resolved.alias);
   }
 
   if (!markdownFile && !htmlFile && !title) { console.error('Error: --title is required (or use --markdown/--html)'); process.exit(1); }

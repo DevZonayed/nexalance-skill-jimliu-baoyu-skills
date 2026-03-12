@@ -1,4 +1,5 @@
 import { execSync, type ChildProcess } from 'node:child_process';
+import path from 'node:path';
 import process from 'node:process';
 
 import {
@@ -78,6 +79,11 @@ export function getDefaultProfileDir(): string {
     envNames: ['BAOYU_CHROME_PROFILE_DIR', 'WECHAT_BROWSER_PROFILE_DIR'],
     wslWindowsHome: getWslWindowsHome(),
   });
+}
+
+export function getAccountProfileDir(alias: string): string {
+  const base = getDefaultProfileDir();
+  return path.join(path.dirname(base), `wechat-${alias}`);
 }
 
 export interface ChromeSession {

@@ -581,6 +581,47 @@ To obtain credentials:
 
 **Browser Method** (no API setup needed): Requires Google Chrome. First run opens browser for QR code login (session preserved).
 
+**Multi-Account Support**: Manage multiple WeChat Official Accounts via `EXTEND.md`:
+
+```bash
+mkdir -p .baoyu-skills/baoyu-post-to-wechat
+```
+
+Create `.baoyu-skills/baoyu-post-to-wechat/EXTEND.md`:
+
+```yaml
+# Global settings (shared across all accounts)
+default_theme: default
+default_color: blue
+
+# Account list
+accounts:
+  - name: My Tech Blog
+    alias: tech-blog
+    default: false
+    default_publish_method: api
+    default_author: Author Name
+    need_open_comment: 1
+    only_fans_can_comment: 0
+    app_id: wx1234567890abcdef
+    app_secret: your_app_secret_here
+  - name: AI Newsletter
+    alias: ai-news
+    default_publish_method: browser
+    default_author: AI Newsletter
+    need_open_comment: 1
+    only_fans_can_comment: 0
+```
+
+| Accounts configured | Behavior |
+|---------------------|----------|
+| No `accounts` block | Single-account mode (backward compatible) |
+| 1 account | Auto-select, no prompt |
+| 2+ accounts | Prompt to select, or use `--account <alias>` |
+| 1 account has `default: true` | Pre-selected as default |
+
+Each account gets an isolated Chrome profile for independent login sessions (browser method). API credentials can be set inline in EXTEND.md or via `.env` with alias-prefixed keys (e.g., `WECHAT_TECH_BLOG_APP_ID`).
+
 #### baoyu-post-to-weibo
 
 Post content to Weibo (微博). Supports regular posts with text, images, and videos, and headline articles (头条文章) with Markdown input. Uses real Chrome with CDP to bypass anti-automation.

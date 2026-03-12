@@ -7,9 +7,11 @@ import {
   CdpConnection,
   findChromeExecutable,
   getDefaultProfileDir,
+  getAccountProfileDir,
   launchChrome,
   sleep,
 } from './cdp.ts';
+import { loadWechatExtendConfig, resolveAccount } from './wechat-extend-config.ts';
 
 const WECHAT_URL = 'https://mp.weixin.qq.com/';
 
@@ -664,6 +666,7 @@ Options:
   --image <path>     Add image (can be repeated)
   --submit           Save as draft (default: preview only)
   --profile <dir>    Chrome profile directory
+  --account <alias>  Select account by alias (for multi-account setups)
   --help             Show this help
 
 Examples:
@@ -685,6 +688,7 @@ async function main(): Promise<void> {
   let content: string | undefined;
   let markdownFile: string | undefined;
   let imagesDir: string | undefined;
+  let accountAlias: string | undefined;
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i]!;
@@ -702,7 +706,17 @@ async function main(): Promise<void> {
       submit = true;
     } else if (arg === '--profile' && args[i + 1]) {
       profileDir = args[++i];
+    } else if (arg === '--account' && args[i + 1]) {
+      accountAlias = args[++i];
     }
+  }
+
+  const extConfig = loadWechatExtendConfig();
+  const resolved = resolveAccount(extConfig, accountAlias);
+  if (resolved.name) console.log(`[wechat-browser] Account: ${resolved.name} (${resolved.alias})`);
+
+  if (!profileDir && resolved.alias) {
+    profileDir = resolved.chrome_profile_path || getAccountProfileDir(resolved.alias);
   }
 
   if (!markdownFile && !title) {
