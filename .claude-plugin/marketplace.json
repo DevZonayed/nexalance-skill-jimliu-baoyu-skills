@@ -13,7 +13,7 @@
       "name": "content-skills",
       "description": "Content generation and publishing skills",
       "source": "./",
-      "strict": false,
+      "strict": true,
       "skills": [
         "./skills/baoyu-xhs-images",
         "./skills/baoyu-post-to-x",
@@ -30,7 +30,7 @@
       "name": "ai-generation-skills",
       "description": "AI-powered generation backends",
       "source": "./",
-      "strict": false,
+      "strict": true,
       "skills": [
         "./skills/baoyu-danger-gemini-web",
         "./skills/baoyu-image-gen"
@@ -40,7 +40,7 @@
       "name": "utility-skills",
       "description": "Utility tools for content processing",
       "source": "./",
-      "strict": false,
+      "strict": true,
       "skills": [
         "./skills/baoyu-danger-x-to-markdown",
         "./skills/baoyu-compress-image",
