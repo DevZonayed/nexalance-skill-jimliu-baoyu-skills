@@ -2,6 +2,17 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.62.0 - 2026-03-12
+
+### Features
+- `baoyu-infographic`: support flexible aspect ratios with custom W:H values (e.g., 3:4, 4:3, 2.35:1) in addition to named presets
+
+### Fixes
+- Set strict mode on plugins to prevent duplicated slash commands
+
+### Documentation
+- `baoyu-post-to-wechat`: replace credential-like placeholders
+
 ## 1.61.0 - 2026-03-11
 
 ### Features
