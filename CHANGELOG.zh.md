@@ -2,6 +2,19 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.60.0 - 2026-03-11
+
+### 新功能
+- `baoyu-url-to-markdown`：支持复用已有 Chrome CDP 实例，修复端口检测顺序问题
+
+### 修复
+- `baoyu-post-to-x`：补充 x-article 缺失的 `fs` 导入
+
+### 重构
+- 统一所有 CDP 技能使用共享 `baoyu-chrome-cdp` 包，各技能内置 vendor 副本
+- 精简 CLAUDE.md，将详细文档移至 `docs/` 目录
+- 从 synced vendor 直接发布技能，移除单独的 artifact 准备步骤
+
 ## 1.59.1 - 2026-03-11
 
 ### 修复

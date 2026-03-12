@@ -2,6 +2,19 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.60.0 - 2026-03-11
+
+### Features
+- `baoyu-url-to-markdown`: support reusing existing Chrome CDP instances and fix port detection order
+
+### Fixes
+- `baoyu-post-to-x`: add missing `fs` import in x-article
+
+### Refactor
+- Unify all CDP skills to use shared `baoyu-chrome-cdp` package with vendored copies
+- Simplify CLAUDE.md, move detailed documentation to `docs/` directory
+- Publish skills directly from synced vendor, removing separate artifact preparation step
+
 ## 1.59.1 - 2026-03-11
 
 ### Fixes
