@@ -2,6 +2,15 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.61.0 - 2026-03-11
+
+### Features
+- `baoyu-post-to-wechat`: add multi-account support with `--account` CLI arg, EXTEND.md accounts block, isolated Chrome profiles, and credential resolution chain
+
+### Fixes
+- Exclude `out/dist/build` dirs and `bun.lockb` from skill release files
+- Use proper MIME types in skill publish to fix ClawhHub rejection
+
 ## 1.60.0 - 2026-03-11
 
 ### Features

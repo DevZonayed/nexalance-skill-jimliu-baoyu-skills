@@ -2,6 +2,15 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.61.0 - 2026-03-11
+
+### 新功能
+- `baoyu-post-to-wechat`：新增多账号支持，通过 `--account` 参数选择账号，EXTEND.md 支持 accounts 配置块，每个账号独立 Chrome 配置目录和凭证解析链
+
+### 修复
+- 排除 `out/dist/build` 目录和 `bun.lockb` 文件，避免打包到技能发布文件中
+- 修复技能发布时 MIME 类型不正确导致 ClawhHub 拒绝的问题
+
 ## 1.60.0 - 2026-03-11
 
 ### 新功能
