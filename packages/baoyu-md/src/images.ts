@@ -7,6 +7,7 @@ import path from "node:path";
 export interface ImagePlaceholder {
   originalPath: string;
   placeholder: string;
+  alt?: string;
 }
 
 export interface ResolvedImageInfo extends ImagePlaceholder {
@@ -23,9 +24,10 @@ export function replaceMarkdownImagesWithPlaceholders(
   const images: ImagePlaceholder[] = [];
   let imageCounter = 0;
 
-  const rewritten = markdown.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_match, _alt, src) => {
+  const rewritten = markdown.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_match, alt, src) => {
     const placeholder = `${placeholderPrefix}${++imageCounter}`;
     images.push({
+      alt,
       originalPath: src,
       placeholder,
     });
@@ -101,11 +103,10 @@ export async function resolveImagePath(
     return localPath;
   }
 
-  if (path.isAbsolute(imagePath)) {
-    return imagePath;
-  }
-
-  return path.resolve(baseDir, imagePath);
+  const resolved = path.isAbsolute(imagePath)
+    ? imagePath
+    : path.resolve(baseDir, imagePath);
+  return resolveLocalWithFallback(resolved, logLabel);
 }
 
 export async function resolveContentImages(
@@ -121,6 +122,34 @@ export async function resolveContentImages(
       ...image,
       localPath: await resolveImagePath(image.originalPath, baseDir, tempDir, logLabel),
     });
+  }
+
+  return resolved;
+}
+
+function resolveLocalWithFallback(resolved: string, logLabel: string): string {
+  if (fs.existsSync(resolved)) {
+    return resolved;
+  }
+
+  const ext = path.extname(resolved);
+  const base = ext ? resolved.slice(0, -ext.length) : resolved;
+  const alternatives = [
+    `${base}.webp`,
+    `${base}.jpg`,
+    `${base}.jpeg`,
+    `${base}.png`,
+    `${base}.gif`,
+    `${base}_original.png`,
+    `${base}_original.jpg`,
+  ].filter((candidate) => candidate !== resolved);
+
+  for (const alternative of alternatives) {
+    if (!fs.existsSync(alternative)) continue;
+    console.error(
+      `[${logLabel}] Image fallback: ${path.basename(resolved)} -> ${path.basename(alternative)}`,
+    );
+    return alternative;
   }
 
   return resolved;
