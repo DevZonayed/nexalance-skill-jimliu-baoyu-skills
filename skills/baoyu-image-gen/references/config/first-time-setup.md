@@ -47,6 +47,8 @@ options:
     description: "Gemini multimodal - high quality, reference images, flexible sizes"
   - label: "OpenAI"
     description: "GPT Image - consistent quality, reliable output"
+  - label: "OpenRouter"
+    description: "Router for Gemini/FLUX/OpenAI-compatible image models"
   - label: "DashScope"
     description: "Alibaba Cloud - z-image-turbo, good for Chinese content"
   - label: "Replicate"
@@ -67,6 +69,22 @@ options:
     description: "Fast generation, good quality, lower cost"
   - label: "gemini-3-flash-preview"
     description: "Fast generation, balanced quality and speed"
+```
+
+### Question 2b: Default OpenRouter Model
+
+Only show if user selected OpenRouter.
+
+```yaml
+header: "OpenRouter Model"
+question: "Default OpenRouter image generation model?"
+options:
+  - label: "google/gemini-3.1-flash-image-preview (Recommended)"
+    description: "Best general-purpose OpenRouter image model with reference-image workflows"
+  - label: "google/gemini-2.5-flash-image-preview"
+    description: "Fast Gemini preview model on OpenRouter"
+  - label: "black-forest-labs/flux.2-pro"
+    description: "Strong text-to-image quality through OpenRouter"
 ```
 
 ### Question 3: Default Quality
@@ -112,6 +130,7 @@ default_image_size: null
 default_model:
   google: [selected google model or null]
   openai: null
+  openrouter: [selected openrouter model or null]
   dashscope: null
   replicate: null
 ---
@@ -145,6 +164,20 @@ options:
     description: "Latest GPT Image model, high quality"
   - label: "gpt-image-1"
     description: "Previous generation GPT Image model"
+```
+
+### OpenRouter Model Selection
+
+```yaml
+header: "OpenRouter Model"
+question: "Choose a default OpenRouter image generation model?"
+options:
+  - label: "google/gemini-3.1-flash-image-preview (Recommended)"
+    description: "Recommended for image output and reference-image edits"
+  - label: "google/gemini-2.5-flash-image-preview"
+    description: "Fast preview-oriented image generation"
+  - label: "black-forest-labs/flux.2-pro"
+    description: "High-quality text-to-image through OpenRouter"
 ```
 
 ### DashScope Model Selection
@@ -183,6 +216,7 @@ After user selects a model:
 default_model:
   google: [value or null]
   openai: [value or null]
+  openrouter: [value or null]
   dashscope: [value or null]
   replicate: [value or null]
 ```

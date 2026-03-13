@@ -53,6 +53,7 @@ const DEFAULT_PROVIDER_RATE_LIMITS: Record<Provider, ProviderRateLimit> = {
   replicate: { concurrency: 5, startIntervalMs: 700 },
   google: { concurrency: 3, startIntervalMs: 1100 },
   openai: { concurrency: 3, startIntervalMs: 1100 },
+  openrouter: { concurrency: 3, startIntervalMs: 1100 },
   dashscope: { concurrency: 3, startIntervalMs: 1100 },
 };
 
@@ -68,13 +69,13 @@ Options:
   --image <path>            Output image path (required in single-image mode)
   --batchfile <path>        JSON batch file for multi-image generation
   --jobs <count>            Worker count for batch mode (default: auto, max from config, built-in default 10)
-  --provider google|openai|dashscope|replicate  Force provider (auto-detect by default)
+  --provider google|openai|openrouter|dashscope|replicate  Force provider (auto-detect by default)
   -m, --model <id>          Model ID
   --ar <ratio>              Aspect ratio (e.g., 16:9, 1:1, 4:3)
   --size <WxH>              Size (e.g., 1024x1024)
   --quality normal|2k       Quality preset (default: 2k)
-  --imageSize 1K|2K|4K      Image size for Google (default: from quality)
-  --ref <files...>          Reference images (Google multimodal, OpenAI GPT Image edits, or Replicate)
+  --imageSize 1K|2K|4K      Image size for Google/OpenRouter (default: from quality)
+  --ref <files...>          Reference images (Google multimodal, OpenAI GPT Image edits, OpenRouter multimodal, or Replicate)
   --n <count>               Number of images for the current task (default: 1)
   --json                    JSON output
   -h, --help                Show help
@@ -101,16 +102,21 @@ Behavior:
 
 Environment variables:
   OPENAI_API_KEY            OpenAI API key
+  OPENROUTER_API_KEY        OpenRouter API key
   GOOGLE_API_KEY            Google API key
   GEMINI_API_KEY            Gemini API key (alias for GOOGLE_API_KEY)
   DASHSCOPE_API_KEY         DashScope API key
   REPLICATE_API_TOKEN       Replicate API token
   OPENAI_IMAGE_MODEL        Default OpenAI model (gpt-image-1.5)
+  OPENROUTER_IMAGE_MODEL    Default OpenRouter model (google/gemini-3.1-flash-image-preview)
   GOOGLE_IMAGE_MODEL        Default Google model (gemini-3-pro-image-preview)
   DASHSCOPE_IMAGE_MODEL     Default DashScope model (z-image-turbo)
   REPLICATE_IMAGE_MODEL     Default Replicate model (google/nano-banana-pro)
   OPENAI_BASE_URL           Custom OpenAI endpoint
   OPENAI_IMAGE_USE_CHAT     Use /chat/completions instead of /images/generations (true|false)
+  OPENROUTER_BASE_URL       Custom OpenRouter endpoint
+  OPENROUTER_HTTP_REFERER   Optional app URL for OpenRouter attribution
+  OPENROUTER_TITLE          Optional app name for OpenRouter attribution
   GOOGLE_BASE_URL           Custom Google endpoint
   DASHSCOPE_BASE_URL        Custom DashScope endpoint
   REPLICATE_BASE_URL        Custom Replicate endpoint
@@ -206,7 +212,13 @@ function parseArgs(argv: string[]): CliArgs {
 
     if (a === "--provider") {
       const v = argv[++i];
-      if (v !== "google" && v !== "openai" && v !== "dashscope" && v !== "replicate") {
+      if (
+        v !== "google" &&
+        v !== "openai" &&
+        v !== "openrouter" &&
+        v !== "dashscope" &&
+        v !== "replicate"
+      ) {
         throw new Error(`Invalid provider: ${v}`);
       }
       out.provider = v;
@@ -352,7 +364,13 @@ function parseSimpleYaml(yaml: string): Partial<ExtendConfig> {
       } else if (key === "default_image_size") {
         config.default_image_size = value === "null" ? null : value as "1K" | "2K" | "4K";
       } else if (key === "default_model") {
-        config.default_model = { google: null, openai: null, dashscope: null, replicate: null };
+        config.default_model = {
+          google: null,
+          openai: null,
+          openrouter: null,
+          dashscope: null,
+          replicate: null,
+        };
         currentKey = "default_model";
         currentProvider = null;
       } else if (key === "batch") {
@@ -370,7 +388,13 @@ function parseSimpleYaml(yaml: string): Partial<ExtendConfig> {
       } else if (
         currentKey === "provider_limits" &&
         indent >= 4 &&
-        (key === "google" || key === "openai" || key === "dashscope" || key === "replicate")
+        (
+          key === "google" ||
+          key === "openai" ||
+          key === "openrouter" ||
+          key === "dashscope" ||
+          key === "replicate"
+        )
       ) {
         config.batch ??= {};
         config.batch.provider_limits ??= {};
@@ -378,7 +402,13 @@ function parseSimpleYaml(yaml: string): Partial<ExtendConfig> {
         currentProvider = key;
       } else if (
         currentKey === "default_model" &&
-        (key === "google" || key === "openai" || key === "dashscope" || key === "replicate")
+        (
+          key === "google" ||
+          key === "openai" ||
+          key === "openrouter" ||
+          key === "dashscope" ||
+          key === "replicate"
+        )
       ) {
         const cleaned = value.replace(/['"]/g, "");
         config.default_model![key] = cleaned === "null" ? null : cleaned;
@@ -466,10 +496,11 @@ function getConfiguredProviderRateLimits(
     replicate: { ...DEFAULT_PROVIDER_RATE_LIMITS.replicate },
     google: { ...DEFAULT_PROVIDER_RATE_LIMITS.google },
     openai: { ...DEFAULT_PROVIDER_RATE_LIMITS.openai },
+    openrouter: { ...DEFAULT_PROVIDER_RATE_LIMITS.openrouter },
     dashscope: { ...DEFAULT_PROVIDER_RATE_LIMITS.dashscope },
   };
 
-  for (const provider of ["replicate", "google", "openai", "dashscope"] as Provider[]) {
+  for (const provider of ["replicate", "google", "openai", "openrouter", "dashscope"] as Provider[]) {
     const envPrefix = `BAOYU_IMAGE_GEN_${provider.toUpperCase()}`;
     const extendLimit = extendConfig.batch?.provider_limits?.[provider];
     configured[provider] = {
@@ -522,10 +553,11 @@ function detectProvider(args: CliArgs): Provider {
     args.provider &&
     args.provider !== "google" &&
     args.provider !== "openai" &&
+    args.provider !== "openrouter" &&
     args.provider !== "replicate"
   ) {
     throw new Error(
-      "Reference images require a ref-capable provider. Use --provider google (Gemini multimodal), --provider openai (GPT Image edits), or --provider replicate."
+      "Reference images require a ref-capable provider. Use --provider google (Gemini multimodal), --provider openai (GPT Image edits), --provider openrouter (OpenRouter multimodal), or --provider replicate."
     );
   }
 
@@ -533,21 +565,24 @@ function detectProvider(args: CliArgs): Provider {
 
   const hasGoogle = !!(process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY);
   const hasOpenai = !!process.env.OPENAI_API_KEY;
+  const hasOpenrouter = !!process.env.OPENROUTER_API_KEY;
   const hasDashscope = !!process.env.DASHSCOPE_API_KEY;
   const hasReplicate = !!process.env.REPLICATE_API_TOKEN;
 
   if (args.referenceImages.length > 0) {
     if (hasGoogle) return "google";
     if (hasOpenai) return "openai";
+    if (hasOpenrouter) return "openrouter";
     if (hasReplicate) return "replicate";
     throw new Error(
-      "Reference images require Google, OpenAI or Replicate. Set GOOGLE_API_KEY/GEMINI_API_KEY, OPENAI_API_KEY, or REPLICATE_API_TOKEN, or remove --ref."
+      "Reference images require Google, OpenAI, OpenRouter or Replicate. Set GOOGLE_API_KEY/GEMINI_API_KEY, OPENAI_API_KEY, OPENROUTER_API_KEY, or REPLICATE_API_TOKEN, or remove --ref."
     );
   }
 
   const available = [
     hasGoogle && "google",
     hasOpenai && "openai",
+    hasOpenrouter && "openrouter",
     hasDashscope && "dashscope",
     hasReplicate && "replicate",
   ].filter(Boolean) as Provider[];
@@ -556,7 +591,7 @@ function detectProvider(args: CliArgs): Provider {
   if (available.length > 1) return available[0]!;
 
   throw new Error(
-    "No API key found. Set GOOGLE_API_KEY, GEMINI_API_KEY, OPENAI_API_KEY, DASHSCOPE_API_KEY, or REPLICATE_API_TOKEN.\n" +
+    "No API key found. Set GOOGLE_API_KEY, GEMINI_API_KEY, OPENAI_API_KEY, OPENROUTER_API_KEY, DASHSCOPE_API_KEY, or REPLICATE_API_TOKEN.\n" +
       "Create ~/.baoyu-skills/.env or <cwd>/.baoyu-skills/.env with your keys."
   );
 }
@@ -596,6 +631,7 @@ async function loadProviderModule(provider: Provider): Promise<ProviderModule> {
   if (provider === "google") return (await import("./providers/google")) as ProviderModule;
   if (provider === "dashscope") return (await import("./providers/dashscope")) as ProviderModule;
   if (provider === "replicate") return (await import("./providers/replicate")) as ProviderModule;
+  if (provider === "openrouter") return (await import("./providers/openrouter")) as ProviderModule;
   return (await import("./providers/openai")) as ProviderModule;
 }
 
@@ -617,6 +653,9 @@ function getModelForProvider(
   if (extendConfig.default_model) {
     if (provider === "google" && extendConfig.default_model.google) return extendConfig.default_model.google;
     if (provider === "openai" && extendConfig.default_model.openai) return extendConfig.default_model.openai;
+    if (provider === "openrouter" && extendConfig.default_model.openrouter) {
+      return extendConfig.default_model.openrouter;
+    }
     if (provider === "dashscope" && extendConfig.default_model.dashscope) return extendConfig.default_model.dashscope;
     if (provider === "replicate" && extendConfig.default_model.replicate) return extendConfig.default_model.replicate;
   }

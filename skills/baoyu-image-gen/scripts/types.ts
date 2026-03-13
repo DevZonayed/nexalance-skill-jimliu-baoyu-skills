@@ -1,4 +1,4 @@
-export type Provider = "google" | "openai" | "dashscope" | "replicate";
+export type Provider = "google" | "openai" | "openrouter" | "dashscope" | "replicate";
 export type Quality = "normal" | "2k";
 
 export type CliArgs = {
@@ -50,6 +50,7 @@ export type ExtendConfig = {
   default_model: {
     google: string | null;
     openai: string | null;
+    openrouter: string | null;
     dashscope: string | null;
     replicate: string | null;
   };
