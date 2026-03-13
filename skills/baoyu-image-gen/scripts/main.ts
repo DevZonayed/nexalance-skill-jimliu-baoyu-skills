@@ -55,6 +55,8 @@ const DEFAULT_PROVIDER_RATE_LIMITS: Record<Provider, ProviderRateLimit> = {
   openai: { concurrency: 3, startIntervalMs: 1100 },
   openrouter: { concurrency: 3, startIntervalMs: 1100 },
   dashscope: { concurrency: 3, startIntervalMs: 1100 },
+  jimeng: { concurrency: 3, startIntervalMs: 1100 },
+  seedream: { concurrency: 3, startIntervalMs: 1100 },
 };
 
 function printUsage(): void {
@@ -69,7 +71,7 @@ Options:
   --image <path>            Output image path (required in single-image mode)
   --batchfile <path>        JSON batch file for multi-image generation
   --jobs <count>            Worker count for batch mode (default: auto, max from config, built-in default 10)
-  --provider google|openai|openrouter|dashscope|replicate  Force provider (auto-detect by default)
+  --provider google|openai|openrouter|dashscope|replicate|jimeng|seedream  Force provider (auto-detect by default)
   -m, --model <id>          Model ID
   --ar <ratio>              Aspect ratio (e.g., 16:9, 1:1, 4:3)
   --size <WxH>              Size (e.g., 1024x1024)
@@ -107,11 +109,16 @@ Environment variables:
   GEMINI_API_KEY            Gemini API key (alias for GOOGLE_API_KEY)
   DASHSCOPE_API_KEY         DashScope API key
   REPLICATE_API_TOKEN       Replicate API token
+  JIMENG_ACCESS_KEY_ID      Jimeng Access Key ID
+  JIMENG_SECRET_ACCESS_KEY  Jimeng Secret Access Key
+  ARK_API_KEY               Seedream/Ark API key
   OPENAI_IMAGE_MODEL        Default OpenAI model (gpt-image-1.5)
   OPENROUTER_IMAGE_MODEL    Default OpenRouter model (google/gemini-3.1-flash-image-preview)
   GOOGLE_IMAGE_MODEL        Default Google model (gemini-3-pro-image-preview)
   DASHSCOPE_IMAGE_MODEL     Default DashScope model (z-image-turbo)
   REPLICATE_IMAGE_MODEL     Default Replicate model (google/nano-banana-pro)
+  JIMENG_IMAGE_MODEL        Default Jimeng model (jimeng_t2i_v40)
+  SEEDREAM_IMAGE_MODEL      Default Seedream model (doubao-seedream-5-0-260128)
   OPENAI_BASE_URL           Custom OpenAI endpoint
   OPENAI_IMAGE_USE_CHAT     Use /chat/completions instead of /images/generations (true|false)
   OPENROUTER_BASE_URL       Custom OpenRouter endpoint
@@ -120,6 +127,8 @@ Environment variables:
   GOOGLE_BASE_URL           Custom Google endpoint
   DASHSCOPE_BASE_URL        Custom DashScope endpoint
   REPLICATE_BASE_URL        Custom Replicate endpoint
+  JIMENG_BASE_URL           Custom Jimeng endpoint
+  SEEDREAM_BASE_URL         Custom Seedream endpoint
   BAOYU_IMAGE_GEN_MAX_WORKERS  Override batch worker cap
   BAOYU_IMAGE_GEN_<PROVIDER>_CONCURRENCY  Override provider concurrency
   BAOYU_IMAGE_GEN_<PROVIDER>_START_INTERVAL_MS  Override provider start gap in ms
@@ -217,7 +226,9 @@ function parseArgs(argv: string[]): CliArgs {
         v !== "openai" &&
         v !== "openrouter" &&
         v !== "dashscope" &&
-        v !== "replicate"
+        v !== "replicate" &&
+        v !== "jimeng" &&
+        v !== "seedream"
       ) {
         throw new Error(`Invalid provider: ${v}`);
       }
@@ -370,6 +381,8 @@ function parseSimpleYaml(yaml: string): Partial<ExtendConfig> {
           openrouter: null,
           dashscope: null,
           replicate: null,
+          jimeng: null,
+          seedream: null,
         };
         currentKey = "default_model";
         currentProvider = null;
@@ -393,7 +406,9 @@ function parseSimpleYaml(yaml: string): Partial<ExtendConfig> {
           key === "openai" ||
           key === "openrouter" ||
           key === "dashscope" ||
-          key === "replicate"
+          key === "replicate" ||
+          key === "jimeng" ||
+          key === "seedream"
         )
       ) {
         config.batch ??= {};
@@ -407,7 +422,9 @@ function parseSimpleYaml(yaml: string): Partial<ExtendConfig> {
           key === "openai" ||
           key === "openrouter" ||
           key === "dashscope" ||
-          key === "replicate"
+          key === "replicate" ||
+          key === "jimeng" ||
+          key === "seedream"
         )
       ) {
         const cleaned = value.replace(/['"]/g, "");
@@ -498,9 +515,11 @@ function getConfiguredProviderRateLimits(
     openai: { ...DEFAULT_PROVIDER_RATE_LIMITS.openai },
     openrouter: { ...DEFAULT_PROVIDER_RATE_LIMITS.openrouter },
     dashscope: { ...DEFAULT_PROVIDER_RATE_LIMITS.dashscope },
+    jimeng: { ...DEFAULT_PROVIDER_RATE_LIMITS.jimeng },
+    seedream: { ...DEFAULT_PROVIDER_RATE_LIMITS.seedream },
   };
 
-  for (const provider of ["replicate", "google", "openai", "openrouter", "dashscope"] as Provider[]) {
+  for (const provider of ["replicate", "google", "openai", "openrouter", "dashscope", "jimeng", "seedream"] as Provider[]) {
     const envPrefix = `BAOYU_IMAGE_GEN_${provider.toUpperCase()}`;
     const extendLimit = extendConfig.batch?.provider_limits?.[provider];
     configured[provider] = {
@@ -554,10 +573,11 @@ function detectProvider(args: CliArgs): Provider {
     args.provider !== "google" &&
     args.provider !== "openai" &&
     args.provider !== "openrouter" &&
-    args.provider !== "replicate"
+    args.provider !== "replicate" &&
+    args.provider !== "jimeng"
   ) {
     throw new Error(
-      "Reference images require a ref-capable provider. Use --provider google (Gemini multimodal), --provider openai (GPT Image edits), --provider openrouter (OpenRouter multimodal), or --provider replicate."
+      "Reference images require a ref-capable provider. Use --provider google (Gemini multimodal), --provider openai (GPT Image edits), --provider openrouter (OpenRouter multimodal), --provider replicate, or --provider jimeng."
     );
   }
 
@@ -568,14 +588,17 @@ function detectProvider(args: CliArgs): Provider {
   const hasOpenrouter = !!process.env.OPENROUTER_API_KEY;
   const hasDashscope = !!process.env.DASHSCOPE_API_KEY;
   const hasReplicate = !!process.env.REPLICATE_API_TOKEN;
+  const hasJimeng = !!(process.env.JIMENG_ACCESS_KEY_ID && process.env.JIMENG_SECRET_ACCESS_KEY);
+  const hasSeedream = !!process.env.ARK_API_KEY;
 
   if (args.referenceImages.length > 0) {
     if (hasGoogle) return "google";
     if (hasOpenai) return "openai";
     if (hasOpenrouter) return "openrouter";
     if (hasReplicate) return "replicate";
+    if (hasJimeng) return "jimeng";
     throw new Error(
-      "Reference images require Google, OpenAI, OpenRouter or Replicate. Set GOOGLE_API_KEY/GEMINI_API_KEY, OPENAI_API_KEY, OPENROUTER_API_KEY, or REPLICATE_API_TOKEN, or remove --ref."
+      "Reference images require Google, OpenAI, OpenRouter, Replicate or Jimeng. Set GOOGLE_API_KEY/GEMINI_API_KEY, OPENAI_API_KEY, OPENROUTER_API_KEY, REPLICATE_API_TOKEN, or Jimeng keys, or remove --ref."
     );
   }
 
@@ -585,13 +608,15 @@ function detectProvider(args: CliArgs): Provider {
     hasOpenrouter && "openrouter",
     hasDashscope && "dashscope",
     hasReplicate && "replicate",
+    hasJimeng && "jimeng",
+    hasSeedream && "seedream",
   ].filter(Boolean) as Provider[];
 
   if (available.length === 1) return available[0]!;
   if (available.length > 1) return available[0]!;
 
   throw new Error(
-    "No API key found. Set GOOGLE_API_KEY, GEMINI_API_KEY, OPENAI_API_KEY, OPENROUTER_API_KEY, DASHSCOPE_API_KEY, or REPLICATE_API_TOKEN.\n" +
+    "No API key found. Set GOOGLE_API_KEY, GEMINI_API_KEY, OPENAI_API_KEY, OPENROUTER_API_KEY, DASHSCOPE_API_KEY, REPLICATE_API_TOKEN, JIMENG keys, or ARK_API_KEY.\n" +
       "Create ~/.baoyu-skills/.env or <cwd>/.baoyu-skills/.env with your keys."
   );
 }
@@ -632,6 +657,8 @@ async function loadProviderModule(provider: Provider): Promise<ProviderModule> {
   if (provider === "dashscope") return (await import("./providers/dashscope")) as ProviderModule;
   if (provider === "replicate") return (await import("./providers/replicate")) as ProviderModule;
   if (provider === "openrouter") return (await import("./providers/openrouter")) as ProviderModule;
+  if (provider === "jimeng") return (await import("./providers/jimeng")) as ProviderModule;
+  if (provider === "seedream") return (await import("./providers/seedream")) as ProviderModule;
   return (await import("./providers/openai")) as ProviderModule;
 }
 
@@ -658,6 +685,8 @@ function getModelForProvider(
     }
     if (provider === "dashscope" && extendConfig.default_model.dashscope) return extendConfig.default_model.dashscope;
     if (provider === "replicate" && extendConfig.default_model.replicate) return extendConfig.default_model.replicate;
+    if (provider === "jimeng" && extendConfig.default_model.jimeng) return extendConfig.default_model.jimeng;
+    if (provider === "seedream" && extendConfig.default_model.seedream) return extendConfig.default_model.seedream;
   }
   return providerModule.getDefaultModel();
 }
@@ -873,7 +902,7 @@ async function runBatchTasks(
   const acquireProvider = createProviderGate(providerRateLimits);
   const workerCount = getWorkerCount(tasks.length, jobs, maxWorkers);
   console.error(`Batch mode: ${tasks.length} tasks, ${workerCount} workers, parallel mode enabled.`);
-  for (const provider of ["replicate", "google", "openai", "dashscope"] as Provider[]) {
+  for (const provider of ["replicate", "google", "openai", "openrouter", "dashscope", "jimeng", "seedream"] as Provider[]) {
     const limit = providerRateLimits[provider];
     console.error(`- ${provider}: concurrency=${limit.concurrency}, startIntervalMs=${limit.startIntervalMs}`);
   }
