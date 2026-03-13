@@ -2,6 +2,23 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.66.0 - 2026-03-13
+
+### Features
+- `baoyu-image-gen`: add Jimeng (即梦) and Seedream (豆包) image generation providers (by @lindaifeng)
+
+### Fixes
+- `baoyu-image-gen`: tighten Jimeng provider behavior
+
+### Refactor
+- `baoyu-image-gen`: export functions for testability and add module entry guard
+
+### Documentation
+- `baoyu-image-gen`: add Jimeng and Seedream provider documentation to SKILL.md and READMEs
+
+### Tests
+- Add test infrastructure with CI workflow and image-gen unit tests
+
 ## 1.65.1 - 2026-03-13
 
 ### Refactor
