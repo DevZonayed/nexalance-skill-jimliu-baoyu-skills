@@ -2,6 +2,13 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.66.1 - 2026-03-13
+
+### Tests
+- Migrate test files from centralized `tests/` directory to colocate with source code
+- Convert tests from `.mjs` to TypeScript (`.test.ts`) with `tsx` runner
+- Add npm workspaces configuration and npm cache to CI workflow
+
 ## 1.66.0 - 2026-03-13
 
 ### Features

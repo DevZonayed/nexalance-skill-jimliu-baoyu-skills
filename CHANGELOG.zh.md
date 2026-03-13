@@ -2,6 +2,13 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.66.1 - 2026-03-13
+
+### 测试
+- 将测试文件从集中式 `tests/` 目录迁移至与源码同级
+- 将测试从 `.mjs` 转换为 TypeScript（`.test.ts`），使用 `tsx` 运行器
+- 新增 npm workspaces 配置，CI 工作流添加 npm 缓存
+
 ## 1.66.0 - 2026-03-13
 
 ### 新功能
