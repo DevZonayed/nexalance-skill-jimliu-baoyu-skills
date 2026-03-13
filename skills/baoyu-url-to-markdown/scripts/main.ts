@@ -75,6 +75,55 @@ function deriveHtmlSnapshotPath(markdownPath: string): string {
   return path.join(parsed.dir, `${basename}-captured.html`);
 }
 
+function extractTitleFromMarkdownDocument(document: string): string {
+  const normalized = document.replace(/\r\n/g, "\n");
+  const frontmatterMatch = normalized.match(/^---\n([\s\S]*?)\n---\n?/);
+  if (frontmatterMatch) {
+    const titleLine = frontmatterMatch[1]
+      .split("\n")
+      .find((line) => /^title:\s*/i.test(line));
+
+    if (titleLine) {
+      const rawValue = titleLine.replace(/^title:\s*/i, "").trim();
+      const unquoted = rawValue
+        .replace(/^"(.*)"$/, "$1")
+        .replace(/^'(.*)'$/, "$1")
+        .replace(/\\"/g, '"');
+      if (unquoted) return unquoted;
+    }
+  }
+
+  const headingMatch = normalized.match(/^#\s+(.+)$/m);
+  return headingMatch?.[1]?.trim() ?? "";
+}
+
+function buildDefuddleApiUrl(targetUrl: string): string {
+  return `https://defuddle.md/${encodeURIComponent(targetUrl)}`;
+}
+
+async function fetchDefuddleApiMarkdown(targetUrl: string): Promise<{ markdown: string; title: string }> {
+  const apiUrl = buildDefuddleApiUrl(targetUrl);
+  const response = await fetch(apiUrl, {
+    headers: {
+      accept: "text/markdown,text/plain;q=0.9,*/*;q=0.1",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`defuddle.md returned ${response.status} ${response.statusText}`);
+  }
+
+  const markdown = (await response.text()).replace(/\r\n/g, "\n").trim();
+  if (!markdown) {
+    throw new Error("defuddle.md returned empty markdown");
+  }
+
+  return {
+    markdown,
+    title: extractTitleFromMarkdownDocument(markdown),
+  };
+}
+
 async function generateOutputPath(url: string, title: string, outputDir?: string): Promise<string> {
   const domain = new URL(url).hostname.replace(/^www\./, "");
   const slug = generateSlug(title, url);
@@ -192,14 +241,41 @@ async function main(): Promise<void> {
   console.log(`Fetching: ${args.url}`);
   console.log(`Mode: ${args.wait ? "wait" : "auto"}`);
 
-  const result = await captureUrl(args);
-  const outputPath = args.output || await generateOutputPath(args.url, result.metadata.title, args.outputDir);
-  const outputDir = path.dirname(outputPath);
-  const htmlSnapshotPath = deriveHtmlSnapshotPath(outputPath);
-  await mkdir(outputDir, { recursive: true });
-  await writeFile(htmlSnapshotPath, result.rawHtml, "utf-8");
+  let outputPath: string;
+  let htmlSnapshotPath: string | null = null;
+  let document: string;
+  let conversionMethod: string;
+  let fallbackReason: string | undefined;
 
-  let document = createMarkdownDocument(result);
+  try {
+    const result = await captureUrl(args);
+    outputPath = args.output || await generateOutputPath(args.url, result.metadata.title, args.outputDir);
+    const outputDir = path.dirname(outputPath);
+    htmlSnapshotPath = deriveHtmlSnapshotPath(outputPath);
+    await mkdir(outputDir, { recursive: true });
+    await writeFile(htmlSnapshotPath, result.rawHtml, "utf-8");
+
+    document = createMarkdownDocument(result);
+    conversionMethod = result.conversionMethod;
+    fallbackReason = result.fallbackReason;
+  } catch (error) {
+    const primaryError = error instanceof Error ? error.message : String(error);
+    console.warn(`Primary capture failed: ${primaryError}`);
+    console.warn("Trying defuddle.md API fallback...");
+
+    try {
+      const remoteResult = await fetchDefuddleApiMarkdown(args.url);
+      outputPath = args.output || await generateOutputPath(args.url, remoteResult.title, args.outputDir);
+      await mkdir(path.dirname(outputPath), { recursive: true });
+
+      document = remoteResult.markdown;
+      conversionMethod = "defuddle-api";
+      fallbackReason = `Local browser capture failed: ${primaryError}`;
+    } catch (remoteError) {
+      const remoteMessage = remoteError instanceof Error ? remoteError.message : String(remoteError);
+      throw new Error(`Local browser capture failed (${primaryError}); defuddle.md fallback failed (${remoteMessage})`);
+    }
+  }
 
   if (args.downloadMedia) {
     const mediaResult = await localizeMarkdownMedia(document, {
@@ -220,11 +296,15 @@ async function main(): Promise<void> {
   await writeFile(outputPath, document, "utf-8");
 
   console.log(`Saved: ${outputPath}`);
-  console.log(`Saved HTML: ${htmlSnapshotPath}`);
-  console.log(`Title: ${result.metadata.title || "(no title)"}`);
-  console.log(`Converter: ${result.conversionMethod}`);
-  if (result.fallbackReason) {
-    console.warn(`Fallback used: ${result.fallbackReason}`);
+  if (htmlSnapshotPath) {
+    console.log(`Saved HTML: ${htmlSnapshotPath}`);
+  } else {
+    console.log("Saved HTML: unavailable (defuddle.md fallback)");
+  }
+  console.log(`Title: ${extractTitleFromMarkdownDocument(document) || "(no title)"}`);
+  console.log(`Converter: ${conversionMethod}`);
+  if (fallbackReason) {
+    console.warn(`Fallback used: ${fallbackReason}`);
   }
 }
 
