@@ -2,6 +2,17 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.65.0 - 2026-03-13
+
+### Features
+- `baoyu-post-to-wechat`: add placeholder image upload support with deduplication for markdown-embedded images
+
+### Fixes
+- `baoyu-post-to-wechat`: fix frontmatter parsing to allow leading whitespace and optional trailing newline
+
+### Refactor
+- `baoyu-post-to-wechat`: replace `renderMarkdownToHtml` with `renderMarkdownWithPlaceholders` for structured output
+
 ## 1.64.0 - 2026-03-13
 
 ### Features
