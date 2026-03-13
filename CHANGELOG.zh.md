@@ -2,6 +2,17 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.65.0 - 2026-03-13
+
+### 新功能
+- `baoyu-post-to-wechat`：新增占位符图片上传支持，自动去重 Markdown 内嵌图片
+
+### 修复
+- `baoyu-post-to-wechat`：修复 frontmatter 解析，允许前导空白和可选的尾随换行
+
+### 重构
+- `baoyu-post-to-wechat`：将 `renderMarkdownToHtml` 重构为 `renderMarkdownWithPlaceholders`，输出结构化结果
+
 ## 1.64.0 - 2026-03-13
 
 ### 新功能
