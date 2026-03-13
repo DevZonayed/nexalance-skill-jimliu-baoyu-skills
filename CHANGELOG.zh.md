@@ -2,6 +2,11 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.65.1 - 2026-03-13
+
+### 重构
+- `baoyu-translate`：将 chunk 解析从 remark/unified 替换为 markdown-it，新增 main.ts CLI 入口
+
 ## 1.65.0 - 2026-03-13
 
 ### 新功能

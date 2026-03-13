@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.65.1 - 2026-03-13
+
+### Refactor
+- `baoyu-translate`: replace remark/unified with markdown-it for chunk parsing, add main.ts CLI entry point
+
 ## 1.65.0 - 2026-03-13
 
 ### Features
