@@ -116,7 +116,7 @@ Environment variables:
   OPENAI_IMAGE_MODEL        Default OpenAI model (gpt-image-1.5)
   OPENROUTER_IMAGE_MODEL    Default OpenRouter model (google/gemini-3.1-flash-image-preview)
   GOOGLE_IMAGE_MODEL        Default Google model (gemini-3-pro-image-preview)
-  DASHSCOPE_IMAGE_MODEL     Default DashScope model (z-image-turbo)
+  DASHSCOPE_IMAGE_MODEL     Default DashScope model (qwen-image-2.0-pro)
   REPLICATE_IMAGE_MODEL     Default Replicate model (google/nano-banana-pro)
   JIMENG_IMAGE_MODEL        Default Jimeng model (jimeng_t2i_v40)
   SEEDREAM_IMAGE_MODEL      Default Seedream model (doubao-seedream-5-0-260128)

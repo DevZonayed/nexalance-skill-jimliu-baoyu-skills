@@ -726,7 +726,7 @@ AI SDK-based image generation using OpenAI, Google, OpenRouter, DashScope (Aliyu
 | `OPENAI_IMAGE_MODEL` | OpenAI model | `gpt-image-1.5` |
 | `OPENROUTER_IMAGE_MODEL` | OpenRouter model | `google/gemini-3.1-flash-image-preview` |
 | `GOOGLE_IMAGE_MODEL` | Google model | `gemini-3-pro-image-preview` |
-| `DASHSCOPE_IMAGE_MODEL` | DashScope model | `z-image-turbo` |
+| `DASHSCOPE_IMAGE_MODEL` | DashScope model | `qwen-image-2.0-pro` |
 | `REPLICATE_IMAGE_MODEL` | Replicate model | `google/nano-banana-pro` |
 | `JIMENG_IMAGE_MODEL` | Jimeng model | `jimeng_t2i_v40` |
 | `SEEDREAM_IMAGE_MODEL` | Seedream model | `doubao-seedream-5-0-260128` |
@@ -996,7 +996,7 @@ GOOGLE_IMAGE_MODEL=gemini-3-pro-image-preview
 
 # DashScope (Aliyun Tongyi Wanxiang)
 DASHSCOPE_API_KEY=sk-xxx
-DASHSCOPE_IMAGE_MODEL=z-image-turbo
+DASHSCOPE_IMAGE_MODEL=qwen-image-2.0-pro
 # DASHSCOPE_BASE_URL=https://dashscope.aliyuncs.com/api/v1
 
 # Replicate
