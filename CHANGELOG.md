@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.67.0 - 2026-03-13
+
+### Features
+- `baoyu-image-gen`: add qwen-image-2.0-pro model support for DashScope provider with free-form sizes and text rendering (by @JianJang2017)
+
 ## 1.66.1 - 2026-03-13
 
 ### Tests

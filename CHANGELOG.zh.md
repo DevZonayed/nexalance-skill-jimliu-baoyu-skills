@@ -2,6 +2,11 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.67.0 - 2026-03-13
+
+### 新功能
+- `baoyu-image-gen`：新增 DashScope qwen-image-2.0-pro 模型支持，支持自由尺寸和文字渲染 (by @JianJang2017)
+
 ## 1.66.1 - 2026-03-13
 
 ### 测试
