@@ -2,6 +2,12 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.68.0 - 2026-03-14
+
+### Features
+- `baoyu-article-illustrator`: add configurable output directory (`default_output_dir`) with 4 options — `imgs-subdir`, `same-dir`, `illustrations-subdir`, `independent`
+- `baoyu-cover-image`: add character preservation from reference images — use `usage: direct` to pass people references to model for stylized likeness
+
 ## 1.67.0 - 2026-03-13
 
 ### Features
