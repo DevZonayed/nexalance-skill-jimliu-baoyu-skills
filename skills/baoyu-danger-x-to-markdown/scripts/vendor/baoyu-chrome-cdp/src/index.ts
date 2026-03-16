@@ -52,6 +52,7 @@ export type DiscoveredChrome = {
 
 type DiscoverRunningChromeOptions = {
   channels?: ChromeChannel[];
+  userDataDirs?: string[];
   timeoutMs?: number;
 };
 
@@ -85,6 +86,7 @@ type OpenPageSessionOptions = {
 export type PageSession = {
   sessionId: string;
   targetId: string;
+  createdTarget: boolean;
 };
 
 export function sleep(ms: number): Promise<void> {
@@ -273,7 +275,8 @@ export async function discoverRunningChromeDebugPort(options: DiscoverRunningChr
   const channels = options.channels ?? ["stable", "beta", "canary", "dev"];
   const timeoutMs = options.timeoutMs ?? 3_000;
 
-  const userDataDirs = getDefaultChromeUserDataDirs(channels);
+  const userDataDirs = (options.userDataDirs ?? getDefaultChromeUserDataDirs(channels))
+    .map((dir) => path.resolve(dir));
   for (const dir of userDataDirs) {
     const parsed = parseDevToolsActivePort(path.join(dir, "DevToolsActivePort"));
     if (!parsed) continue;
@@ -288,7 +291,10 @@ export async function discoverRunningChromeDebugPort(options: DiscoverRunningChr
       if (result.status === 0 && result.stdout) {
         const lines = result.stdout
           .split("\n")
-          .filter((line) => line.includes("--remote-debugging-port=") && /chrome|chromium/i.test(line));
+          .filter((line) =>
+            line.includes("--remote-debugging-port=") &&
+            userDataDirs.some((dir) => line.includes(dir))
+          );
 
         for (const line of lines) {
           const portMatch = line.match(/--remote-debugging-port=(\d+)/);
@@ -479,10 +485,12 @@ export function killChrome(chrome: ChildProcess): void {
 
 export async function openPageSession(options: OpenPageSessionOptions): Promise<PageSession> {
   let targetId: string;
+  let createdTarget = false;
 
   if (options.reusing) {
     const created = await options.cdp.send<{ targetId: string }>("Target.createTarget", { url: options.url });
     targetId = created.targetId;
+    createdTarget = true;
   } else {
     const targets = await options.cdp.send<{ targetInfos: ChromeTargetInfo[] }>("Target.getTargets");
     const existing = targets.targetInfos.find(options.matchTarget);
@@ -491,6 +499,7 @@ export async function openPageSession(options: OpenPageSessionOptions): Promise<
     } else {
       const created = await options.cdp.send<{ targetId: string }>("Target.createTarget", { url: options.url });
       targetId = created.targetId;
+      createdTarget = true;
     }
   }
 
@@ -507,5 +516,5 @@ export async function openPageSession(options: OpenPageSessionOptions): Promise<
   if (options.enableDom) await options.cdp.send("DOM.enable", {}, { sessionId });
   if (options.enableNetwork) await options.cdp.send("Network.enable", {}, { sessionId });
 
-  return { sessionId, targetId };
+  return { sessionId, targetId, createdTarget };
 }
