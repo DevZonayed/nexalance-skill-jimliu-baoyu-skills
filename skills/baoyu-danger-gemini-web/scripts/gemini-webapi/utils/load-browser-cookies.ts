@@ -108,8 +108,8 @@ async function fetch_cookies_from_existing_chrome(
   if (verbose) logger.info(`Found existing Chrome on port ${discovered.port}. Connecting via WebSocket...`);
 
   let cdp: CdpConnection | null = null;
-  let createdTab = false;
   let targetId: string | null = null;
+  let createdTarget = false;
   try {
     const connectStart = Date.now();
     const connectTimeout = 30_000;
@@ -129,14 +129,6 @@ async function fetch_cookies_from_existing_chrome(
       return null;
     }
 
-    const targets = await cdp.send<{ targetInfos: Array<{ targetId: string; url: string; type: string }> }>('Target.getTargets');
-    const hasGeminiTab = targets.targetInfos.some(
-      (t) => t.type === 'page' && t.url.includes('gemini.google.com'),
-    );
-    createdTab = !hasGeminiTab;
-
-    if (verbose) logger.debug(hasGeminiTab ? 'Found existing Gemini tab, attaching...' : 'No Gemini tab found, creating new tab...');
-
     const page = await openPageSession({
       cdp,
       reusing: false,
@@ -147,6 +139,9 @@ async function fetch_cookies_from_existing_chrome(
     });
     const { sessionId } = page;
     targetId = page.targetId;
+    createdTarget = page.createdTarget;
+
+    if (verbose) logger.debug(createdTarget ? 'No Gemini tab found, creating new tab...' : 'Found existing Gemini tab, attaching...');
 
     const start = Date.now();
     let last: CookieMap = {};
@@ -176,7 +171,7 @@ async function fetch_cookies_from_existing_chrome(
     return null;
   } finally {
     if (cdp) {
-      if (createdTab && targetId) {
+      if (createdTarget && targetId) {
         try { await cdp.send('Target.closeTarget', { targetId }, { timeoutMs: 5_000 }); } catch {}
       }
       cdp.close();
