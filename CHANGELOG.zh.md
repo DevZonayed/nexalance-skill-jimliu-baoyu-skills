@@ -2,6 +2,22 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.69.0 - 2026-03-16
+
+### 新功能
+- `baoyu-chrome-cdp`：支持连接到已有的 Chrome 会话 (by @bviews)
+
+### 修复
+- `baoyu-chrome-cdp`：支持 Chrome 146 原生远程调试（审批模式）(by @bviews)
+- `baoyu-chrome-cdp`：保留 findExistingChromeDebugPort 中的 HTTP 验证 (by @bviews)
+- `baoyu-danger-gemini-web`：复用 openPageSession 并修复孤立标签页泄漏 (by @bviews)
+- `baoyu-danger-gemini-web`：显式配置优先于自动发现 (by @bviews)
+- `baoyu-danger-gemini-web`：自动发现跳过时也遵循 BAOYU_CHROME_PROFILE_DIR (by @bviews)
+- `baoyu-post-to-wechat`：提升浏览器发布可靠性 (by @cfh-7598)
+
+### 文档
+- `baoyu-cover-image`：完善人物参考图片工作流和交互式确认说明
+
 ## 1.68.0 - 2026-03-14
 
 ### 新功能

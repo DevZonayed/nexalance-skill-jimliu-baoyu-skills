@@ -2,6 +2,22 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.69.0 - 2026-03-16
+
+### Features
+- `baoyu-chrome-cdp`: support connecting to existing Chrome session (by @bviews)
+
+### Fixes
+- `baoyu-chrome-cdp`: support Chrome 146 native remote debugging in approval mode (by @bviews)
+- `baoyu-chrome-cdp`: keep HTTP validation in findExistingChromeDebugPort (by @bviews)
+- `baoyu-danger-gemini-web`: reuse openPageSession and fix orphaned tab leak (by @bviews)
+- `baoyu-danger-gemini-web`: respect explicit profile config over auto-discovery (by @bviews)
+- `baoyu-danger-gemini-web`: respect BAOYU_CHROME_PROFILE_DIR in auto-discovery skip (by @bviews)
+- `baoyu-post-to-wechat`: improve browser publishing reliability (by @cfh-7598)
+
+### Documentation
+- `baoyu-cover-image`: clarify people reference image workflow and interactive confirmation
+
 ## 1.68.0 - 2026-03-14
 
 ### Features
