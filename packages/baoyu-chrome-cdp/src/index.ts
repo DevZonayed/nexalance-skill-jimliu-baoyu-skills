@@ -43,6 +43,13 @@ type FindExistingChromeDebugPortOptions = {
   timeoutMs?: number;
 };
 
+export type ChromeChannel = "stable" | "beta" | "canary" | "dev";
+
+type DiscoverRunningChromeOptions = {
+  channels?: ChromeChannel[];
+  timeoutMs?: number;
+};
+
 type LaunchChromeOptions = {
   chromePath: string;
   profileDir: string;
@@ -200,6 +207,78 @@ export async function findExistingChromeDebugPort(options: FindExistingChromeDeb
       if (port > 0 && await isDebugPortReady(port, timeoutMs)) return port;
     }
   } catch {}
+
+  return null;
+}
+
+export function getDefaultChromeUserDataDirs(channels: ChromeChannel[] = ["stable"]): string[] {
+  const home = os.homedir();
+  const dirs: string[] = [];
+
+  const channelDirs: Record<string, { darwin: string; linux: string; win32: string }> = {
+    stable: {
+      darwin: path.join(home, "Library", "Application Support", "Google", "Chrome"),
+      linux: path.join(home, ".config", "google-chrome"),
+      win32: path.join(process.env.LOCALAPPDATA ?? path.join(home, "AppData", "Local"), "Google", "Chrome", "User Data"),
+    },
+    beta: {
+      darwin: path.join(home, "Library", "Application Support", "Google", "Chrome Beta"),
+      linux: path.join(home, ".config", "google-chrome-beta"),
+      win32: path.join(process.env.LOCALAPPDATA ?? path.join(home, "AppData", "Local"), "Google", "Chrome Beta", "User Data"),
+    },
+    canary: {
+      darwin: path.join(home, "Library", "Application Support", "Google", "Chrome Canary"),
+      linux: path.join(home, ".config", "google-chrome-canary"),
+      win32: path.join(process.env.LOCALAPPDATA ?? path.join(home, "AppData", "Local"), "Google", "Chrome SxS", "User Data"),
+    },
+    dev: {
+      darwin: path.join(home, "Library", "Application Support", "Google", "Chrome Dev"),
+      linux: path.join(home, ".config", "google-chrome-dev"),
+      win32: path.join(process.env.LOCALAPPDATA ?? path.join(home, "AppData", "Local"), "Google", "Chrome Dev", "User Data"),
+    },
+  };
+
+  const platform = process.platform === "darwin" ? "darwin" : process.platform === "win32" ? "win32" : "linux";
+
+  for (const ch of channels) {
+    const entry = channelDirs[ch];
+    if (entry) dirs.push(entry[platform]);
+  }
+
+  return dirs;
+}
+
+export async function discoverRunningChromeDebugPort(options: DiscoverRunningChromeOptions = {}): Promise<number | null> {
+  const channels = options.channels ?? ["stable", "beta", "canary", "dev"];
+  const timeoutMs = options.timeoutMs ?? 3_000;
+
+  const userDataDirs = getDefaultChromeUserDataDirs(channels);
+  for (const dir of userDataDirs) {
+    const portFile = path.join(dir, "DevToolsActivePort");
+    try {
+      const content = fs.readFileSync(portFile, "utf-8");
+      const [portLine] = content.split(/\r?\n/);
+      const port = Number.parseInt(portLine?.trim() ?? "", 10);
+      if (port > 0 && await isDebugPortReady(port, timeoutMs)) return port;
+    } catch {}
+  }
+
+  if (process.platform !== "win32") {
+    try {
+      const result = spawnSync("ps", ["aux"], { encoding: "utf-8", timeout: 5_000 });
+      if (result.status === 0 && result.stdout) {
+        const lines = result.stdout
+          .split("\n")
+          .filter((line) => line.includes("--remote-debugging-port=") && /chrome|chromium/i.test(line));
+
+        for (const line of lines) {
+          const portMatch = line.match(/--remote-debugging-port=(\d+)/);
+          const port = Number.parseInt(portMatch?.[1] ?? "", 10);
+          if (port > 0 && await isDebugPortReady(port, timeoutMs)) return port;
+        }
+      }
+    } catch {}
+  }
 
   return null;
 }
