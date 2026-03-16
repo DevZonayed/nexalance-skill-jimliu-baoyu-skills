@@ -265,7 +265,8 @@ export async function load_browser_cookies(domain_name: string = '', verbose: bo
     if (cached) return { chrome: cached };
   }
 
-  const existingCookies = await fetch_cookies_from_existing_chrome(30_000, verbose);
+  const hasExplicitProfile = !!process.env.GEMINI_WEB_CHROME_PROFILE_DIR?.trim();
+  const existingCookies = hasExplicitProfile ? null : await fetch_cookies_from_existing_chrome(30_000, verbose);
   if (existingCookies) {
     const filtered: CookieMap = {};
     for (const [key, value] of Object.entries(existingCookies)) {
