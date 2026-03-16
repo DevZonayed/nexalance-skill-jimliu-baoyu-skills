@@ -108,33 +108,30 @@ async function fetch_cookies_from_existing_chrome(
   if (verbose) logger.info(`Found existing Chrome on port ${port}. Extracting cookies...`);
 
   let cdp: CdpConnection | null = null;
+  let createdTab = false;
+  let targetId: string | null = null;
   try {
     const wsUrl = await waitForChromeDebugPort(port, 10_000, { includeLastError: true });
     cdp = await CdpConnection.connect(wsUrl, 15_000);
 
     const targets = await cdp.send<{ targetInfos: Array<{ targetId: string; url: string; type: string }> }>('Target.getTargets');
-    const geminiTarget = targets.targetInfos.find(
+    const hasGeminiTab = targets.targetInfos.some(
       (t) => t.type === 'page' && t.url.includes('gemini.google.com'),
     );
+    createdTab = !hasGeminiTab;
 
-    let targetId: string;
-    let createdTab = false;
+    if (verbose) logger.debug(hasGeminiTab ? 'Found existing Gemini tab, attaching...' : 'No Gemini tab found, creating new tab...');
 
-    if (geminiTarget) {
-      targetId = geminiTarget.targetId;
-      if (verbose) logger.debug('Found existing Gemini tab, attaching...');
-    } else {
-      const created = await cdp.send<{ targetId: string }>('Target.createTarget', { url: GEMINI_APP_URL });
-      targetId = created.targetId;
-      createdTab = true;
-      if (verbose) logger.debug('No Gemini tab found, created new tab...');
-    }
-
-    const { sessionId } = await cdp.send<{ sessionId: string }>(
-      'Target.attachToTarget',
-      { targetId, flatten: true },
-    );
-    await cdp.send('Network.enable', {}, { sessionId });
+    const page = await openPageSession({
+      cdp,
+      reusing: false,
+      url: GEMINI_APP_URL,
+      matchTarget: (target) => target.type === 'page' && target.url.includes('gemini.google.com'),
+      enableNetwork: true,
+      activateTarget: false,
+    });
+    const { sessionId } = page;
+    targetId = page.targetId;
 
     const start = Date.now();
     let last: CookieMap = {};
@@ -152,18 +149,9 @@ async function fetch_cookies_from_existing_chrome(
       }
 
       last = cookieMap;
-      if (await is_gemini_session_ready(cookieMap, verbose)) {
-        if (createdTab) {
-          try { await cdp.send('Target.closeTarget', { targetId }, { timeoutMs: 5_000 }); } catch {}
-        }
-        return cookieMap;
-      }
+      if (await is_gemini_session_ready(cookieMap, verbose)) return cookieMap;
 
       await sleep(1000);
-    }
-
-    if (createdTab) {
-      try { await cdp.send('Target.closeTarget', { targetId }, { timeoutMs: 5_000 }); } catch {}
     }
 
     if (verbose) logger.debug(`Existing Chrome did not yield valid cookies. Last keys: ${Object.keys(last).join(', ')}`);
@@ -172,7 +160,12 @@ async function fetch_cookies_from_existing_chrome(
     if (verbose) logger.debug(`Failed to connect to existing Chrome: ${e instanceof Error ? e.message : String(e)}`);
     return null;
   } finally {
-    if (cdp) cdp.close();
+    if (cdp) {
+      if (createdTab && targetId) {
+        try { await cdp.send('Target.closeTarget', { targetId }, { timeoutMs: 5_000 }); } catch {}
+      }
+      cdp.close();
+    }
   }
 }
 
