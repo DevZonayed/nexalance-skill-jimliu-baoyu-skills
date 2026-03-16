@@ -210,7 +210,6 @@ export async function findExistingChromeDebugPort(options: FindExistingChromeDeb
   const timeoutMs = options.timeoutMs ?? 3_000;
   const parsed = parseDevToolsActivePort(path.join(options.profileDir, "DevToolsActivePort"));
 
-  if (parsed && await isPortListening(parsed.port, timeoutMs)) return parsed.port;
   if (parsed && parsed.port > 0 && await isDebugPortReady(parsed.port, timeoutMs)) return parsed.port;
 
   if (process.platform === "win32") return null;
