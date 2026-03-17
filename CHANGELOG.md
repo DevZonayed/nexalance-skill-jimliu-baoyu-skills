@@ -2,6 +2,12 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.70.0 - 2026-03-17
+
+### Features
+- `baoyu-format-markdown`: optimize title generation with formula-based recommendations and straightforward alternatives
+- `baoyu-format-markdown`: auto-generate dual summaries (`summary` + `description`) in frontmatter
+
 ## 1.69.1 - 2026-03-16
 
 ### Fixes

@@ -2,6 +2,12 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.70.0 - 2026-03-17
+
+### 新功能
+- `baoyu-format-markdown`：优化标题生成，基于公式智能推荐并提供平实风格备选
+- `baoyu-format-markdown`：自动生成双版本摘要（`summary` + `description`），写入 frontmatter
+
 ## 1.69.1 - 2026-03-16
 
 ### 修复
