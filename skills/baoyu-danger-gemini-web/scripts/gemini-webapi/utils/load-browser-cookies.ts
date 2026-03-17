@@ -105,7 +105,7 @@ async function fetch_cookies_from_existing_chrome(
   const discovered = await discoverRunningChromeDebugPort();
   if (discovered === null) return null;
 
-  if (verbose) logger.info(`Found existing Chrome on port ${discovered.port}. Connecting via WebSocket...`);
+  if (verbose) logger.info(`Found reusable Chrome debugging session on port ${discovered.port}. Connecting via WebSocket...`);
 
   let cdp: CdpConnection | null = null;
   let targetId: string | null = null;
@@ -167,7 +167,7 @@ async function fetch_cookies_from_existing_chrome(
     if (verbose) logger.debug(`Existing Chrome did not yield valid cookies. Last keys: ${Object.keys(last).join(', ')}`);
     return null;
   } catch (e) {
-    if (verbose) logger.debug(`Failed to connect to existing Chrome: ${e instanceof Error ? e.message : String(e)}`);
+    if (verbose) logger.debug(`Failed to connect to existing Chrome debugging session: ${e instanceof Error ? e.message : String(e)}`);
     return null;
   } finally {
     if (cdp) {
