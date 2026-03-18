@@ -2,6 +2,11 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.72.0 - 2026-03-18
+
+### 新功能
+- `baoyu-danger-x-to-markdown`：支持渲染 X 文章中嵌入的 MARKDOWN 实体（代码块等）
+
 ## 1.71.0 - 2026-03-17
 
 ### 新功能

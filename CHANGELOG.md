@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.72.0 - 2026-03-18
+
+### Features
+- `baoyu-danger-x-to-markdown`: add MARKDOWN entity support for rendering embedded markdown/code blocks in X articles
+
 ## 1.71.0 - 2026-03-17
 
 ### Features
