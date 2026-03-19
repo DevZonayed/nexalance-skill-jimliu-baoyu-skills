@@ -45,7 +45,7 @@ export function getDefaultModel(): string {
 }
 
 function normalizeModelId(model: string): string {
-  return model.trim().toLowerCase();
+  return model.trim().toLowerCase().split(":")[0]!;
 }
 
 export function isGeminiImageModel(model: string): boolean {
@@ -54,7 +54,8 @@ export function isGeminiImageModel(model: string): boolean {
 }
 
 function getSupportedAspectRatios(model: string): Set<string> {
-  if (!isGeminiImageModel(model)) {
+  const normalized = normalizeModelId(model);
+  if (normalized !== "google/gemini-3.1-flash-image-preview") {
     return new Set(COMMON_ASPECT_RATIOS);
   }
 

@@ -12,6 +12,7 @@ import {
 } from "./openrouter.ts";
 
 const GEMINI_MODEL = "google/gemini-3.1-flash-image-preview";
+const GEMINI_25_MODEL = "google/gemini-2.5-flash-image-preview";
 const FLUX_MODEL = "black-forest-labs/flux.2-pro";
 
 function makeArgs(overrides: Partial<CliArgs> = {}): CliArgs {
@@ -78,12 +79,17 @@ test("OpenRouter size and aspect helpers infer expected defaults", () => {
   assert.equal(getAspectRatio(GEMINI_MODEL, makeArgs({ size: "2048x1024" })), null);
   assert.equal(getAspectRatio(GEMINI_MODEL, makeArgs({ size: "1600x900" })), "16:9");
   assert.equal(getAspectRatio(GEMINI_MODEL, makeArgs({ size: "1024x4096" })), "1:4");
+  assert.equal(getAspectRatio(GEMINI_25_MODEL, makeArgs({ size: "1024x4096" })), null);
   assert.equal(getAspectRatio(FLUX_MODEL, makeArgs({ size: "1024x4096" })), null);
 });
 
 test("OpenRouter validates explicit aspect ratios against model support", () => {
   assert.doesNotThrow(() =>
     validateArgs(GEMINI_MODEL, makeArgs({ aspectRatio: "1:4" })),
+  );
+  assert.throws(
+    () => validateArgs(GEMINI_25_MODEL, makeArgs({ aspectRatio: "1:4" })),
+    /does not support aspect ratio 1:4/,
   );
   assert.throws(
     () => validateArgs(FLUX_MODEL, makeArgs({ aspectRatio: "1:4" })),
