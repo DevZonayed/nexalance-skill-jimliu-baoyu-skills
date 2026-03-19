@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.73.1 - 2026-03-18
+
+### Refactor
+- `baoyu-danger-x-to-markdown`: migrate tests from bun:test to node:test
+
 ## 1.73.0 - 2026-03-18
 
 ### Features

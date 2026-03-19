@@ -2,6 +2,11 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.73.1 - 2026-03-18
+
+### 重构
+- `baoyu-danger-x-to-markdown`：测试从 bun:test 迁移至 node:test
+
 ## 1.73.0 - 2026-03-18
 
 ### 新功能
