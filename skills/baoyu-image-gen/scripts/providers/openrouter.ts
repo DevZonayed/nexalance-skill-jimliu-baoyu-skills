@@ -3,6 +3,19 @@ import { readFile } from "node:fs/promises";
 import type { CliArgs } from "../types";
 
 const DEFAULT_MODEL = "google/gemini-3.1-flash-image-preview";
+const COMMON_ASPECT_RATIOS = [
+  "1:1",
+  "2:3",
+  "3:2",
+  "3:4",
+  "4:3",
+  "4:5",
+  "5:4",
+  "9:16",
+  "16:9",
+  "21:9",
+];
+const GEMINI_EXTENDED_ASPECT_RATIOS = ["1:4", "4:1", "1:8", "8:1"];
 
 type OpenRouterImageEntry = {
   image_url?: string | { url?: string | null } | null;
@@ -29,6 +42,23 @@ type OpenRouterResponse = {
 
 export function getDefaultModel(): string {
   return process.env.OPENROUTER_IMAGE_MODEL || DEFAULT_MODEL;
+}
+
+function normalizeModelId(model: string): string {
+  return model.trim().toLowerCase();
+}
+
+export function isGeminiImageModel(model: string): boolean {
+  const normalized = normalizeModelId(model);
+  return normalized.startsWith("google/gemini-") && normalized.includes("image-preview");
+}
+
+function getSupportedAspectRatios(model: string): Set<string> {
+  if (!isGeminiImageModel(model)) {
+    return new Set(COMMON_ASPECT_RATIOS);
+  }
+
+  return new Set([...COMMON_ASPECT_RATIOS, ...GEMINI_EXTENDED_ASPECT_RATIOS]);
 }
 
 function getApiKey(): string | null {
@@ -105,17 +135,45 @@ function inferImageSize(size: string | null): "1K" | "2K" | "4K" | null {
   return "4K";
 }
 
-export function getImageSize(args: CliArgs): "1K" | "2K" | "4K" {
+export function getImageSize(args: CliArgs): "1K" | "2K" | "4K" | null {
   if (args.imageSize) return args.imageSize as "1K" | "2K" | "4K";
 
   const inferredFromSize = inferImageSize(args.size);
   if (inferredFromSize) return inferredFromSize;
 
-  return args.quality === "normal" ? "1K" : "2K";
+  if (args.quality === "normal") return "1K";
+  if (args.quality === "2k") return "2K";
+  return null;
 }
 
-export function getAspectRatio(args: CliArgs): string | null {
-  return args.aspectRatio || inferAspectRatio(args.size);
+export function getAspectRatio(model: string, args: CliArgs): string | null {
+  if (args.aspectRatio) return args.aspectRatio;
+
+  const inferred = inferAspectRatio(args.size);
+  if (!inferred || !getSupportedAspectRatios(model).has(inferred)) {
+    return null;
+  }
+
+  return inferred;
+}
+
+function getModalities(model: string): string[] {
+  return isGeminiImageModel(model) ? ["image", "text"] : ["image"];
+}
+
+export function validateArgs(model: string, args: CliArgs): void {
+  if (!args.aspectRatio) {
+    return;
+  }
+
+  const supported = getSupportedAspectRatios(model);
+  if (supported.has(args.aspectRatio)) {
+    return;
+  }
+
+  throw new Error(
+    `OpenRouter model ${model} does not support aspect ratio ${args.aspectRatio}. Supported values: ${Array.from(supported).join(", ")}`
+  );
 }
 
 function getMimeType(filename: string): string {
@@ -213,32 +271,41 @@ export async function extractImageFromResponse(result: OpenRouterResponse): Prom
 
 export function buildRequestBody(
   prompt: string,
+  model: string,
   args: CliArgs,
   referenceImages: string[],
 ): Record<string, unknown> {
-  const imageConfig: Record<string, string> = {
-    image_size: getImageSize(args),
-  };
+  const imageConfig: Record<string, string> = {};
 
-  const aspectRatio = getAspectRatio(args);
+  const imageSize = getImageSize(args);
+  if (imageSize) {
+    imageConfig.image_size = imageSize;
+  }
+
+  const aspectRatio = getAspectRatio(model, args);
   if (aspectRatio) {
     imageConfig.aspect_ratio = aspectRatio;
   }
 
-  return {
+  const body: Record<string, unknown> = {
     messages: [
       {
         role: "user",
         content: buildContent(prompt, referenceImages),
       },
     ],
-    modalities: ["image", "text"],
-    image_config: imageConfig,
-    provider: {
-      require_parameters: true,
-    },
+    modalities: getModalities(model),
     stream: false,
   };
+
+  if (Object.keys(imageConfig).length > 0) {
+    body.image_config = imageConfig;
+    body.provider = {
+      require_parameters: true,
+    };
+  }
+
+  return body;
 }
 
 export async function generateImage(
@@ -258,7 +325,7 @@ export async function generateImage(
 
   const body = {
     model,
-    ...buildRequestBody(prompt, args, referenceImages),
+    ...buildRequestBody(prompt, model, args, referenceImages),
   };
 
   console.log(

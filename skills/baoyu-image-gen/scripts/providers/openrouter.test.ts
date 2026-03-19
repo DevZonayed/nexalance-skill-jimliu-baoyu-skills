@@ -8,7 +8,11 @@ import {
   extractImageFromResponse,
   getAspectRatio,
   getImageSize,
+  validateArgs,
 } from "./openrouter.ts";
+
+const GEMINI_MODEL = "google/gemini-3.1-flash-image-preview";
+const FLUX_MODEL = "black-forest-labs/flux.2-pro";
 
 function makeArgs(overrides: Partial<CliArgs> = {}): CliArgs {
   return {
@@ -33,7 +37,7 @@ function makeArgs(overrides: Partial<CliArgs> = {}): CliArgs {
 
 test("OpenRouter request body uses image_config and string content for text-only prompts", () => {
   const args = makeArgs({ aspectRatio: "16:9", quality: "2k" });
-  const body = buildRequestBody("hello", args, []);
+  const body = buildRequestBody("hello", GEMINI_MODEL, args, []);
 
   assert.deepEqual(body.image_config, {
     image_size: "2K",
@@ -42,6 +46,17 @@ test("OpenRouter request body uses image_config and string content for text-only
   assert.deepEqual(body.provider, {
     require_parameters: true,
   });
+  assert.deepEqual(body.modalities, ["image", "text"]);
+  assert.equal(body.stream, false);
+  assert.equal(body.messages[0].content, "hello");
+});
+
+test("OpenRouter request body omits image_config and provider guard when no image options are requested", () => {
+  const body = buildRequestBody("hello", FLUX_MODEL, makeArgs(), []);
+
+  assert.equal(body.image_config, undefined);
+  assert.equal(body.provider, undefined);
+  assert.deepEqual(body.modalities, ["image"]);
   assert.equal(body.stream, false);
   assert.equal(body.messages[0].content, "hello");
 });
@@ -57,9 +72,23 @@ test("OpenRouter request body keeps multimodal array content when references are
 });
 
 test("OpenRouter size and aspect helpers infer expected defaults", () => {
+  assert.equal(getImageSize(makeArgs()), null);
   assert.equal(getImageSize(makeArgs({ quality: "normal" })), "1K");
   assert.equal(getImageSize(makeArgs({ size: "2048x1024" })), "2K");
-  assert.equal(getAspectRatio(makeArgs({ size: "2048x1024" })), "2:1");
+  assert.equal(getAspectRatio(GEMINI_MODEL, makeArgs({ size: "2048x1024" })), null);
+  assert.equal(getAspectRatio(GEMINI_MODEL, makeArgs({ size: "1600x900" })), "16:9");
+  assert.equal(getAspectRatio(GEMINI_MODEL, makeArgs({ size: "1024x4096" })), "1:4");
+  assert.equal(getAspectRatio(FLUX_MODEL, makeArgs({ size: "1024x4096" })), null);
+});
+
+test("OpenRouter validates explicit aspect ratios against model support", () => {
+  assert.doesNotThrow(() =>
+    validateArgs(GEMINI_MODEL, makeArgs({ aspectRatio: "1:4" })),
+  );
+  assert.throws(
+    () => validateArgs(FLUX_MODEL, makeArgs({ aspectRatio: "1:4" })),
+    /does not support aspect ratio 1:4/,
+  );
 });
 
 test("OpenRouter response extraction supports inline image data and finish_reason errors", async () => {
