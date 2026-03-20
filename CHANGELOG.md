@@ -2,6 +2,14 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.73.2 - 2026-03-20
+
+### Fixes
+- `baoyu-post-to-wechat`: fix body image upload to correctly use media/uploadimg API with format and size validation (by @AICreator-Wind)
+
+### Refactor
+- `baoyu-post-to-wechat`: extract image processor module for local format conversion (WebP/BMP/GIF → JPEG/PNG) instead of material API fallback
+
 ## 1.73.1 - 2026-03-18
 
 ### Refactor

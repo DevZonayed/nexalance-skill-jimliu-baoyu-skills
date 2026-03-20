@@ -2,6 +2,14 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.73.2 - 2026-03-20
+
+### 修复
+- `baoyu-post-to-wechat`：修复正文图片上传，正确使用 media/uploadimg 接口并处理格式和大小限制 (by @AICreator-Wind)
+
+### 重构
+- `baoyu-post-to-wechat`：提取图片处理模块，本地转换不支持的格式（WebP/BMP/GIF → JPEG/PNG）而非回退到 material 接口
+
 ## 1.73.1 - 2026-03-18
 
 ### 重构
