@@ -75,7 +75,7 @@ async function fetchAccessToken(appId: string, appSecret: string): Promise<strin
 
 // media/uploadimg 接口的限制：只支持 JPG/PNG 格式，文件大小需小于 1MB
 const BODY_IMG_MAX_SIZE = 1024 * 1024; // 1MB
-const BODY_IMG_SUPPORTED_FORMATS = [".jpg", ".jpeg", ".png"];
+const BODY_IMG_UNSUPPORTED_FORMATS = [".gif", ".webp", ".bmp", ".tiff", ".tif", ".svg", ".ico"];
 
 async function uploadImage(
   imagePath: string,
@@ -130,13 +130,63 @@ async function uploadImage(
     contentType = mimeTypes[fileExt] || "image/jpeg";
   }
 
-  // media/uploadimg 接口只支持 JPG/PNG 且小于 1MB，如果是其他格式或文件过大，需要使用 material 接口
-  const isGifOrLarge = fileExt === ".gif" || fileSize > BODY_IMG_MAX_SIZE;
-  if (uploadType === "body" && isGifOrLarge) {
-    console.error(`[wechat-api] Image ${filename} is GIF or larger than 1MB, using material API instead`);
-    uploadType = "material";
+  // 检查是否需要回退到 material 接口
+  const isUnsupportedFormat = BODY_IMG_UNSUPPORTED_FORMATS.includes(fileExt);
+  const isTooLarge = fileSize > BODY_IMG_MAX_SIZE;
+  const needFallback = uploadType === "body" && (isUnsupportedFormat || isTooLarge);
+
+  // 记录警告信息
+  if (needFallback) {
+    const reason = isUnsupportedFormat ? `unsupported format (${fileExt})` : `too large (${(fileSize / 1024 / 1024).toFixed(2)}MB)`;
+    console.error(`[wechat-api] Image ${filename} is ${reason}, using material API for both URL and media_id`);
   }
 
+  // 如果需要回退到 material 接口，为了获取正文图片 URL，需要同时调用两个接口
+  let bodyUrl = "";
+  if (needFallback) {
+    // 先调用 material 接口获取 media_id（也返回 url）
+    const materialResult = await uploadToWechat(fileBuffer, filename, contentType, accessToken, "material");
+    // 再调用 body 接口获取可以在正文中使用的 URL
+    const bodyResult = await uploadToWechat(fileBuffer, filename, contentType, accessToken, "body");
+    bodyUrl = bodyResult.url || materialResult.url;
+
+    if (materialResult.url?.startsWith("http://")) {
+      materialResult.url = materialResult.url.replace(/^http:\/\//i, "https://");
+    }
+    return {
+      url: bodyUrl,
+      media_id: materialResult.media_id,
+    } as UploadResponse;
+  }
+
+  // 正常情况：直接使用选定的接口上传
+  const result = await uploadToWechat(fileBuffer, filename, contentType, accessToken, uploadType);
+
+  // media/uploadimg 接口只返回 URL，material/add_material 返回 media_id
+  if (uploadType === "body") {
+    if (result.url?.startsWith("http://")) {
+      result.url = result.url.replace(/^http:\/\//i, "https://");
+    }
+    return {
+      url: result.url,
+      media_id: "",
+    } as UploadResponse;
+  } else {
+    if (result.url?.startsWith("http://")) {
+      result.url = result.url.replace(/^http:\/\//i, "https://");
+    }
+    return result;
+  }
+}
+
+// 实际的微信上传函数
+async function uploadToWechat(
+  fileBuffer: Buffer,
+  filename: string,
+  contentType: string,
+  accessToken: string,
+  uploadType: "body" | "material"
+): Promise<UploadResponse> {
   const boundary = `----WebKitFormBoundary${Date.now().toString(16)}`;
   const header = [
     `--${boundary}`,
@@ -151,7 +201,6 @@ async function uploadImage(
   const footerBuffer = Buffer.from(footer, "utf-8");
   const body = Buffer.concat([headerBuffer, fileBuffer, footerBuffer]);
 
-  // 根据上传类型选择不同的接口
   const uploadUrl = uploadType === "body" ? UPLOAD_BODY_IMG_URL : UPLOAD_MATERIAL_URL;
   const url = `${uploadUrl}?type=image&access_token=${accessToken}`;
   const res = await fetch(url, {
@@ -167,23 +216,7 @@ async function uploadImage(
     throw new Error(`Upload failed ${data.errcode}: ${data.errmsg}`);
   }
 
-  // media/uploadimg 接口只返回 URL，material/add_material 返回 media_id
-  if (uploadType === "body") {
-    // 正文图片上传，返回 URL
-    if (data.url?.startsWith("http://")) {
-      data.url = data.url.replace(/^http:\/\//i, "https://");
-    }
-    return {
-      url: data.url,
-      media_id: "",
-    } as UploadResponse;
-  } else {
-    // 封面图片上传，返回 media_id
-    if (data.url?.startsWith("http://")) {
-      data.url = data.url.replace(/^http:\/\//i, "https://");
-    }
-    return data;
-  }
+  return data;
 }
 
 async function uploadImagesInHtml(
