@@ -73,6 +73,10 @@ async function fetchAccessToken(appId: string, appSecret: string): Promise<strin
   return data.access_token;
 }
 
+// media/uploadimg 接口的限制：只支持 JPG/PNG 格式，文件大小需小于 1MB
+const BODY_IMG_MAX_SIZE = 1024 * 1024; // 1MB
+const BODY_IMG_SUPPORTED_FORMATS = [".jpg", ".jpeg", ".png"];
+
 async function uploadImage(
   imagePath: string,
   accessToken: string,
@@ -82,6 +86,8 @@ async function uploadImage(
   let fileBuffer: Buffer;
   let filename: string;
   let contentType: string;
+  let fileSize = 0;
+  let fileExt = "";
 
   if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
     const response = await fetch(imagePath);
@@ -93,8 +99,10 @@ async function uploadImage(
       throw new Error(`Remote image is empty: ${imagePath}`);
     }
     fileBuffer = Buffer.from(buffer);
+    fileSize = buffer.byteLength;
     const urlPath = imagePath.split("?")[0];
     filename = path.basename(urlPath) || "image.jpg";
+    fileExt = path.extname(filename).toLowerCase();
     contentType = response.headers.get("content-type") || "image/jpeg";
   } else {
     const resolvedPath = path.isAbsolute(imagePath)
@@ -108,9 +116,10 @@ async function uploadImage(
     if (stats.size === 0) {
       throw new Error(`Local image is empty: ${resolvedPath}`);
     }
+    fileSize = stats.size;
     fileBuffer = fs.readFileSync(resolvedPath);
     filename = path.basename(resolvedPath);
-    const ext = path.extname(filename).toLowerCase();
+    fileExt = path.extname(filename).toLowerCase();
     const mimeTypes: Record<string, string> = {
       ".jpg": "image/jpeg",
       ".jpeg": "image/jpeg",
@@ -118,7 +127,14 @@ async function uploadImage(
       ".gif": "image/gif",
       ".webp": "image/webp",
     };
-    contentType = mimeTypes[ext] || "image/jpeg";
+    contentType = mimeTypes[fileExt] || "image/jpeg";
+  }
+
+  // media/uploadimg 接口只支持 JPG/PNG 且小于 1MB，如果是其他格式或文件过大，需要使用 material 接口
+  const isGifOrLarge = fileExt === ".gif" || fileSize > BODY_IMG_MAX_SIZE;
+  if (uploadType === "body" && isGifOrLarge) {
+    console.error(`[wechat-api] Image ${filename} is GIF or larger than 1MB, using material API instead`);
+    uploadType = "material";
   }
 
   const boundary = `----WebKitFormBoundary${Date.now().toString(16)}`;
