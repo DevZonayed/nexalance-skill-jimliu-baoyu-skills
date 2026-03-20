@@ -175,17 +175,19 @@ async function uploadImagesInHtml(
   accessToken: string,
   baseDir: string,
   contentImages: ImageInfo[] = [],
-): Promise<{ html: string; firstImageUrl: string; allMediaIds: string[] }> {
+  articleType: ArticleType = "news",
+): Promise<{ html: string; firstImageUrl: string; firstImageSource: string; imageMediaIds: string[] }> {
   const imgRegex = /<img[^>]*\ssrc=["']([^"']+)["'][^>]*>/gi;
   const matches = [...html.matchAll(imgRegex)];
 
   if (matches.length === 0 && contentImages.length === 0) {
-    return { html, firstImageUrl: "", allMediaIds: [] };
+    return { html, firstImageUrl: "", firstImageSource: "", imageMediaIds: [] };
   }
 
   let firstImageUrl = "";
+  let firstImageSource = "";
   let updatedHtml = html;
-  const allMediaIds: string[] = [];
+  const imageMediaIds: string[] = [];
   const uploadedBySource = new Map<string, UploadResponse>();
 
   for (const match of matches) {
@@ -206,7 +208,7 @@ async function uploadImagesInHtml(
     try {
       let resp = uploadedBySource.get(imagePath);
       if (!resp) {
-        // 正文图片使用 media/uploadimg 接口
+        // 正文图片使用 media/uploadimg 接口获取 URL
         resp = await uploadImage(imagePath, accessToken, baseDir, "body");
         uploadedBySource.set(imagePath, resp);
       }
@@ -216,6 +218,21 @@ async function uploadImagesInHtml(
       updatedHtml = updatedHtml.replace(fullTag, newTag);
       if (!firstImageUrl) {
         firstImageUrl = resp.url;
+      }
+
+      // 如果是 newspic 类型，额外调用 material 接口收集 media_id
+      if (articleType === "newspic") {
+        let materialResp = uploadedBySource.get(`${imagePath}:material`);
+        if (!materialResp) {
+          materialResp = await uploadImage(imagePath, accessToken, baseDir, "material");
+          uploadedBySource.set(`${imagePath}:material`, materialResp);
+        }
+        if (materialResp.media_id) {
+          imageMediaIds.push(materialResp.media_id);
+          if (!firstImageSource) {
+            firstImageSource = materialResp.media_id;
+          }
+        }
       }
     } catch (err) {
       console.error(`[wechat-api] Failed to upload ${imagePath}:`, err);
@@ -231,7 +248,7 @@ async function uploadImagesInHtml(
     try {
       let resp = uploadedBySource.get(imagePath);
       if (!resp) {
-        // 正文图片使用 media/uploadimg 接口
+        // 正文图片使用 media/uploadimg 接口获取 URL
         resp = await uploadImage(imagePath, accessToken, baseDir, "body");
         uploadedBySource.set(imagePath, resp);
       }
@@ -241,12 +258,27 @@ async function uploadImagesInHtml(
       if (!firstImageUrl) {
         firstImageUrl = resp.url;
       }
+
+      // 如果是 newspic 类型，额外调用 material 接口收集 media_id
+      if (articleType === "newspic") {
+        let materialResp = uploadedBySource.get(`${imagePath}:material`);
+        if (!materialResp) {
+          materialResp = await uploadImage(imagePath, accessToken, baseDir, "material");
+          uploadedBySource.set(`${imagePath}:material`, materialResp);
+        }
+        if (materialResp.media_id) {
+          imageMediaIds.push(materialResp.media_id);
+          if (!firstImageSource) {
+            firstImageSource = materialResp.media_id;
+          }
+        }
+      }
     } catch (err) {
       console.error(`[wechat-api] Failed to upload placeholder ${image.placeholder}:`, err);
     }
   }
 
-  return { html: updatedHtml, firstImageUrl, allMediaIds };
+  return { html: updatedHtml, firstImageUrl, firstImageSource, imageMediaIds };
 }
 
 async function publishToDraft(
@@ -609,11 +641,12 @@ async function main(): Promise<void> {
   const accessToken = await fetchAccessToken(creds.appId, creds.appSecret);
 
   console.error("[wechat-api] Uploading body images...");
-  const { html: processedHtml, firstImageUrl, allMediaIds } = await uploadImagesInHtml(
+  const { html: processedHtml, firstImageUrl, firstImageSource, imageMediaIds } = await uploadImagesInHtml(
     htmlContent,
     accessToken,
     baseDir,
     contentImages,
+    args.articleType,
   );
   htmlContent = processedHtml;
 
@@ -633,13 +666,10 @@ async function main(): Promise<void> {
     const coverResp = await uploadImage(coverPath, accessToken, baseDir, "material");
     thumbMediaId = coverResp.media_id;
     console.error(`[wechat-api] Cover uploaded successfully, media_id: ${thumbMediaId}`);
-  } else if (firstImageUrl && args.articleType === "news") {
-    // news 类型需要 thumb_media_id,正文图片的 URL 无法使用
-    console.error(`[wechat-api] Warning: No cover image provided for news article.`);
-    console.error(`[wechat-api] The first body image URL is: ${firstImageUrl}`);
-    console.error(`[wechat-api] However, news articles require thumb_media_id (not URL).`);
-    console.error(`[wechat-api] Please provide --cover parameter or set coverImage in frontmatter.`);
-    process.exit(1);
+  } else if (firstImageSource && args.articleType === "news") {
+    // news 类型没有封面时，使用第一张正文图的 media_id 作为封面（兜底逻辑）
+    thumbMediaId = firstImageSource;
+    console.error(`[wechat-api] Using first body image as cover (fallback), media_id: ${thumbMediaId}`);
   }
 
   if (args.articleType === "news" && !thumbMediaId) {
@@ -647,7 +677,7 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
-  if (args.articleType === "newspic" && allMediaIds.length === 0) {
+  if (args.articleType === "newspic" && imageMediaIds.length === 0) {
     console.error("Error: newspic requires at least one image in content.");
     process.exit(1);
   }
@@ -660,7 +690,7 @@ async function main(): Promise<void> {
     content: htmlContent,
     thumbMediaId,
     articleType: args.articleType,
-    imageMediaIds: args.articleType === "newspic" ? allMediaIds : undefined,
+    imageMediaIds: args.articleType === "newspic" ? imageMediaIds : undefined,
     needOpenComment: resolved.need_open_comment,
     onlyFansCanComment: resolved.only_fans_can_comment,
   }, accessToken);
