@@ -2,6 +2,12 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.74.1 - 2026-03-21
+
+### 修复
+- `baoyu-image-gen`：对齐 OpenRouter 图像生成与当前 API，增强图像支持，收窄 Gemini 宽高比范围 (by @cwandev)
+- `baoyu-image-gen`：扩展 OpenRouter 模型检测和宽高比验证
+
 ## 1.74.0 - 2026-03-20
 
 ### 新功能

@@ -2,6 +2,12 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.74.1 - 2026-03-21
+
+### Fixes
+- `baoyu-image-gen`: align OpenRouter image generation with current API, harden image support, and narrow Gemini aspect ratios (by @cwandev)
+- `baoyu-image-gen`: broaden OpenRouter model detection and aspect ratio validation
+
 ## 1.74.0 - 2026-03-20
 
 ### Features
