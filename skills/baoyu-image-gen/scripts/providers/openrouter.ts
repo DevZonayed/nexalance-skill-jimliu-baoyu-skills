@@ -48,9 +48,21 @@ function normalizeModelId(model: string): string {
   return model.trim().toLowerCase().split(":")[0]!;
 }
 
-export function isGeminiImageModel(model: string): boolean {
+function isTextAndImageModel(model: string): boolean {
   const normalized = normalizeModelId(model);
-  return normalized.startsWith("google/gemini-") && normalized.includes("image-preview");
+  if (normalized === "openrouter/auto") {
+    return true;
+  }
+
+  if (normalized.startsWith("google/gemini-") && normalized.includes("image")) {
+    return true;
+  }
+
+  if (normalized.startsWith("openai/gpt-") && normalized.includes("image")) {
+    return true;
+  }
+
+  return false;
 }
 
 function getSupportedAspectRatios(model: string): Set<string> {
@@ -159,21 +171,26 @@ export function getAspectRatio(model: string, args: CliArgs): string | null {
 }
 
 function getModalities(model: string): string[] {
-  return isGeminiImageModel(model) ? ["image", "text"] : ["image"];
+  return isTextAndImageModel(model) ? ["image", "text"] : ["image"];
 }
 
 export function validateArgs(model: string, args: CliArgs): void {
-  if (!args.aspectRatio) {
+  const requestedAspectRatio = args.aspectRatio || inferAspectRatio(args.size);
+  if (!requestedAspectRatio) {
     return;
   }
 
   const supported = getSupportedAspectRatios(model);
-  if (supported.has(args.aspectRatio)) {
+  if (supported.has(requestedAspectRatio)) {
     return;
   }
 
+  const requestedValue = args.aspectRatio
+    ? `aspect ratio ${requestedAspectRatio}`
+    : `size ${args.size} (aspect ratio ${requestedAspectRatio})`;
+
   throw new Error(
-    `OpenRouter model ${model} does not support aspect ratio ${args.aspectRatio}. Supported values: ${Array.from(supported).join(", ")}`
+    `OpenRouter model ${model} does not support ${requestedValue}. Supported values: ${Array.from(supported).join(", ")}`
   );
 }
 
@@ -276,6 +293,8 @@ export function buildRequestBody(
   args: CliArgs,
   referenceImages: string[],
 ): Record<string, unknown> {
+  validateArgs(model, args);
+
   const imageConfig: Record<string, string> = {};
 
   const imageSize = getImageSize(args);
