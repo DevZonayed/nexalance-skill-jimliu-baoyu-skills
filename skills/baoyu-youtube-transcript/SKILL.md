@@ -128,7 +128,8 @@ SRT output (`--format srt`) is generated from `transcript-raw.json`. Text/markdo
 When user provides a YouTube URL and wants the transcript:
 
 1. Run with `--list` first if the user hasn't specified a language, to show available options
-2. Default: run with `--chapters --speakers` for the richest output (chapters + speaker identification)
+2. **Always single-quote the URL** when running the script — zsh treats `?` as a glob wildcard, so an unquoted YouTube URL causes "no matches found": use `'https://www.youtube.com/watch?v=ID'`
+3. Default: run with `--chapters --speakers` for the richest output (chapters + speaker identification)
 3. The script auto-saves cached data + output file and prints the file path
 4. For `--speakers` mode: after the script saves the raw file, follow the speaker identification workflow below to post-process with speaker labels
 
