@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.79.0 - 2026-03-22
+
+### Features
+- `baoyu-post-to-wechat`: improve credential loading with multi-source resolution, priority ordering, and diagnostics for skipped incomplete sources
+
 ## 1.78.0 - 2026-03-22
 
 ### Features
