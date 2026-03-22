@@ -2,6 +2,11 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.76.1 - 2026-03-21
+
+### 文档
+- `baoyu-youtube-transcript`：修复 zsh glob 问题 — 运行脚本时始终对 YouTube URL 使用单引号
+
 ## 1.76.0 - 2026-03-21
 
 ### 新功能

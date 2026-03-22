@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.76.1 - 2026-03-21
+
+### Documentation
+- `baoyu-youtube-transcript`: fix zsh glob issue — always single-quote YouTube URLs when running the script
+
 ## 1.76.0 - 2026-03-21
 
 ### Features
