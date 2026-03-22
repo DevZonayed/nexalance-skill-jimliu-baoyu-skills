@@ -88,7 +88,7 @@ Accepts any of these as video input:
 
 | Format | Extension | Description |
 |--------|-----------|-------------|
-| `text` | `.md` | Markdown with frontmatter, natural paragraphs, optional timestamps/chapters/speakers |
+| `text` | `.md` | Markdown with frontmatter (incl. `description`), title heading, summary, optional TOC/cover/timestamps/chapters/speakers |
 | `srt` | `.srt` | SubRip subtitle format for video players |
 
 ## Output Directory
@@ -147,7 +147,7 @@ If no chapter timestamps exist in the description, the transcript is output as g
 ### Speaker Identification (`--speakers`)
 
 Speaker identification requires AI processing. The script outputs a raw `.md` file containing:
-- YAML frontmatter with video metadata (title, channel, date, cover, language)
+- YAML frontmatter with video metadata (title, channel, date, cover, description, language)
 - Video description (for speaker name extraction)
 - Chapter list from description (if available)
 - Raw transcript in SRT format (pre-computed start/end timestamps, token-efficient)

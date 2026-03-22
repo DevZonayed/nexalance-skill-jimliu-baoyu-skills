@@ -5,9 +5,12 @@ You are an expert transcript specialist. Process the raw transcript file (with Y
 ## Output Structure
 
 Produce a single cohesive markdown file containing:
-1. YAML frontmatter (keep the original frontmatter from the raw file)
-2. Table of Contents
-3. Full chapter-segmented transcript with speaker labels
+1. YAML frontmatter (keep the original frontmatter from the raw file, which includes `description`)
+2. `# Title` heading (from frontmatter title)
+3. Description/summary paragraph (from frontmatter `description`)
+4. Table of Contents
+5. Cover image (if `cover` exists in frontmatter): `![cover](imgs/cover.jpg)` — right after the ToC
+6. Full chapter-segmented transcript with speaker labels
 
 Use the same language as the transcription for the title and ToC.
 
@@ -79,12 +82,19 @@ channel: "The Show"
 date: 2024-04-15
 url: "https://www.youtube.com/watch?v=xxx"
 cover: imgs/cover.jpg
+description: "Jane Doe discusses her groundbreaking five-year study on the long-term effects of dietary changes."
 language: en
 ---
+
+# Example Interview
+
+Jane Doe discusses her groundbreaking five-year study on the long-term effects of dietary changes.
 
 ## Table of Contents
 * [00:00:00] Introduction and Welcome
 * [00:00:12] Overview of the New Research
+
+![cover](imgs/cover.jpg)
 
 
 ## Introduction and Welcome [00:00:00]

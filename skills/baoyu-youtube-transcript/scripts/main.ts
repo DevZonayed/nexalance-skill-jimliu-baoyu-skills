@@ -505,17 +505,28 @@ function yamlEscape(s: string): string {
   return s;
 }
 
+function extractSummary(description: string): string {
+  if (!description) return "";
+  const firstPara = description.split(/\n\s*\n/)[0].trim();
+  const lines = firstPara.split("\n").filter(l => !/^\s*(https?:\/\/|#|@|\d+:\d+)/.test(l) && l.trim());
+  return lines.join(" ").slice(0, 300).trim();
+}
+
 function formatMarkdown(sentences: Sentence[], meta: VideoMeta, opts: { timestamps: boolean; chapters: boolean; speakers: boolean }, snippets?: Snippet[]): string {
+  const summary = extractSummary(meta.description);
   let md = "---\n";
   md += `title: ${yamlEscape(meta.title)}\n`;
   md += `channel: ${yamlEscape(meta.channel)}\n`;
   if (meta.publishDate) md += `date: ${meta.publishDate}\n`;
   md += `url: ${yamlEscape(meta.url)}\n`;
   if (meta.coverImage) md += `cover: ${meta.coverImage}\n`;
+  if (summary) md += `description: ${yamlEscape(summary)}\n`;
   if (meta.language) md += `language: ${meta.language.code}\n`;
   md += "---\n\n";
 
   if (opts.speakers) {
+    md += `# ${meta.title}\n\n`;
+    if (summary) md += `${summary}\n\n`;
     if (meta.description) md += "# Description\n\n" + meta.description.trim() + "\n\n";
     if (meta.chapters.length) {
       md += "# Chapters\n\n";
@@ -527,12 +538,17 @@ function formatMarkdown(sentences: Sentence[], meta: VideoMeta, opts: { timestam
     return md;
   }
 
+  md += `# ${meta.title}\n\n`;
+  if (summary) md += `${summary}\n\n`;
+
   const chapters = opts.chapters ? meta.chapters : [];
 
   if (chapters.length) {
     md += "## Table of Contents\n\n";
     for (const ch of chapters) md += opts.timestamps ? `* [${ts(ch.start)}] ${ch.title}\n` : `* ${ch.title}\n`;
-    md += "\n\n";
+    md += "\n";
+    if (meta.coverImage) md += `\n![cover](${meta.coverImage})\n`;
+    md += "\n";
     for (let i = 0; i < chapters.length; i++) {
       const nextStart = i < chapters.length - 1 ? chapters[i + 1].start : Infinity;
       const chSentences = sentences.filter(s => parseTs(s.start) >= chapters[i].start && parseTs(s.start) < nextStart);
