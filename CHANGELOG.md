@@ -2,6 +2,14 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.76.0 - 2026-03-21
+
+### Features
+- `baoyu-youtube-transcript`: add title heading, description summary, and cover image to markdown output
+
+### Fixes
+- `baoyu-markdown-to-html`: use process.execPath and tsx import in test runner
+
 ## 1.75.0 - 2026-03-21
 
 ### Features

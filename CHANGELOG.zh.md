@@ -2,6 +2,14 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.76.0 - 2026-03-21
+
+### 新功能
+- `baoyu-youtube-transcript`：Markdown 输出中新增标题、描述摘要和封面图片
+
+### 修复
+- `baoyu-markdown-to-html`：测试运行器改用 process.execPath 和 tsx import
+
 ## 1.75.0 - 2026-03-21
 
 ### 新功能
