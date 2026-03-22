@@ -47,7 +47,8 @@
         "./skills/baoyu-url-to-markdown",
         "./skills/baoyu-format-markdown",
         "./skills/baoyu-markdown-to-html",
-        "./skills/baoyu-translate"
+        "./skills/baoyu-translate",
+        "./skills/baoyu-youtube-transcript"
       ]
     }
   ]
