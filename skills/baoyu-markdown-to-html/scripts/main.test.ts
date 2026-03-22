@@ -3,6 +3,7 @@ import { execFile } from "node:child_process";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import process from "node:process";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
@@ -21,8 +22,10 @@ test("CLI forwards wrapper title and vendor render options", async () => {
   await fs.writeFile(markdownPath, "## Section\n\nParagraph with **bold** text.\n", "utf-8");
 
   const { stdout } = await execFileAsync(
-    "bun",
+    process.execPath,
     [
+      "--import",
+      "tsx",
       SCRIPT_PATH,
       markdownPath,
       "--theme", "grace",
