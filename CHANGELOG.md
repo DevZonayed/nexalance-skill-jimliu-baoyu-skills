@@ -2,6 +2,15 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.79.2 - 2026-03-23
+
+### Fixes
+- `baoyu-cover-image`: simplify reference image handling — use `--ref` when model supports it, only create description files for models without reference image support
+- `baoyu-post-to-weibo`: add no-theme rule for article markdown-to-HTML conversion
+
+### Tests
+- Fix Node-compatible parser tests and add parser test dependencies
+
 ## 1.79.1 - 2026-03-23
 
 ### Fixes
