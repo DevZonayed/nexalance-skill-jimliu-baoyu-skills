@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.83.0 - 2026-03-25
+
+### Features
+- `baoyu-image-gen`: add MiniMax provider (`image-01` / `image-01-live`) with subject_reference for character/portrait consistency, custom sizes, and aspect ratio support
+
 ## 1.82.0 - 2026-03-24
 
 ### Features

@@ -2,6 +2,11 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.83.0 - 2026-03-25
+
+### 新功能
+- `baoyu-image-gen`：新增 MiniMax 服务商（`image-01` / `image-01-live`），支持 subject_reference 角色/肖像一致性、自定义尺寸和宽高比
+
 ## 1.82.0 - 2026-03-24
 
 ### 新功能
