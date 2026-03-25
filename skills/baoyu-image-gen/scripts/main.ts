@@ -133,9 +133,10 @@ Environment variables:
   REPLICATE_BASE_URL        Custom Replicate endpoint
   JIMENG_BASE_URL           Custom Jimeng endpoint
   AZURE_OPENAI_API_KEY      Azure OpenAI API key
-  AZURE_OPENAI_BASE_URL     Azure OpenAI deployment endpoint
-  AZURE_API_VERSION         Azure API version (default: 2024-02-01)
-  AZURE_OPENAI_IMAGE_MODEL  Default Azure model (gpt-image-1.5)
+  AZURE_OPENAI_BASE_URL     Azure OpenAI resource or deployment endpoint
+  AZURE_OPENAI_DEPLOYMENT   Default Azure deployment name
+  AZURE_API_VERSION         Azure API version (default: 2025-04-01-preview)
+  AZURE_OPENAI_IMAGE_MODEL  Backward-compatible Azure deployment/model alias (defaults to gpt-image-1.5)
   SEEDREAM_BASE_URL         Custom Seedream endpoint
   BAOYU_IMAGE_GEN_MAX_WORKERS  Override batch worker cap
   BAOYU_IMAGE_GEN_<PROVIDER>_CONCURRENCY  Override provider concurrency

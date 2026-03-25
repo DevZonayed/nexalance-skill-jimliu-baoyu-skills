@@ -123,6 +123,7 @@ default_image_size: 2K
 default_model:
   google: gemini-3-pro-image-preview
   openai: gpt-image-1.5
+  azure: image-prod
 batch:
   max_workers: 8
   provider_limits:
@@ -131,6 +132,9 @@ batch:
       start_interval_ms: 900
     openai:
       concurrency: 4
+    azure:
+      concurrency: 1
+      start_interval_ms: 1500
 `;
 
   const config = parseSimpleYaml(yaml);
@@ -142,6 +146,7 @@ batch:
   assert.equal(config.default_image_size, "2K");
   assert.equal(config.default_model?.google, "gemini-3-pro-image-preview");
   assert.equal(config.default_model?.openai, "gpt-image-1.5");
+  assert.equal(config.default_model?.azure, "image-prod");
   assert.equal(config.batch?.max_workers, 8);
   assert.deepEqual(config.batch?.provider_limits?.google, {
     concurrency: 2,
@@ -149,6 +154,10 @@ batch:
   });
   assert.deepEqual(config.batch?.provider_limits?.openai, {
     concurrency: 4,
+  });
+  assert.deepEqual(config.batch?.provider_limits?.azure, {
+    concurrency: 1,
+    start_interval_ms: 1500,
   });
 });
 
@@ -203,6 +212,8 @@ test("detectProvider selects an available ref-capable provider for reference-ima
   useEnv(t, {
     GOOGLE_API_KEY: null,
     OPENAI_API_KEY: "openai-key",
+    AZURE_OPENAI_API_KEY: null,
+    AZURE_OPENAI_BASE_URL: null,
     OPENROUTER_API_KEY: null,
     DASHSCOPE_API_KEY: null,
     REPLICATE_API_TOKEN: null,
@@ -213,6 +224,27 @@ test("detectProvider selects an available ref-capable provider for reference-ima
   assert.equal(
     detectProvider(makeArgs({ referenceImages: ["ref.png"] })),
     "openai",
+  );
+});
+
+test("detectProvider selects Azure when only Azure credentials are configured", (t) => {
+  useEnv(t, {
+    GOOGLE_API_KEY: null,
+    OPENAI_API_KEY: null,
+    AZURE_OPENAI_API_KEY: "azure-key",
+    AZURE_OPENAI_BASE_URL: "https://example.openai.azure.com",
+    OPENROUTER_API_KEY: null,
+    DASHSCOPE_API_KEY: null,
+    REPLICATE_API_TOKEN: null,
+    JIMENG_ACCESS_KEY_ID: null,
+    JIMENG_SECRET_ACCESS_KEY: null,
+    ARK_API_KEY: null,
+  });
+
+  assert.equal(detectProvider(makeArgs()), "azure");
+  assert.equal(
+    detectProvider(makeArgs({ referenceImages: ["ref.png"] })),
+    "azure",
   );
 });
 

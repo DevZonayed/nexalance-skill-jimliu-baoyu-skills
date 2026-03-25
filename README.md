@@ -663,7 +663,7 @@ AI-powered generation backends.
 
 #### baoyu-image-gen
 
-AI SDK-based image generation using OpenAI, Google, OpenRouter, DashScope (Aliyun Tongyi Wanxiang), Jimeng (即梦), Seedream (豆包), and Replicate APIs. Supports text-to-image, reference images, aspect ratios, and quality presets.
+AI SDK-based image generation using OpenAI, Azure OpenAI, Google, OpenRouter, DashScope (Aliyun Tongyi Wanxiang), Jimeng (即梦), Seedream (豆包), and Replicate APIs. Supports text-to-image, reference images, aspect ratios, and quality presets.
 
 ```bash
 # Basic generation (auto-detect provider)
@@ -677,6 +677,9 @@ AI SDK-based image generation using OpenAI, Google, OpenRouter, DashScope (Aliyu
 
 # Specific provider
 /baoyu-image-gen --prompt "A cat" --image cat.png --provider openai
+
+# Azure OpenAI (model = deployment name)
+/baoyu-image-gen --prompt "A cat" --image cat.png --provider azure --model gpt-image-1.5
 
 # OpenRouter
 /baoyu-image-gen --prompt "A cat" --image cat.png --provider openrouter
@@ -693,7 +696,7 @@ AI SDK-based image generation using OpenAI, Google, OpenRouter, DashScope (Aliyu
 # Seedream (豆包)
 /baoyu-image-gen --prompt "一只可爱的猫" --image cat.png --provider seedream
 
-# With reference images (Google, OpenAI, OpenRouter, Replicate, or Seedream 5.0/4.5/4.0)
+# With reference images (Google, OpenAI, Azure OpenAI, OpenRouter, Replicate, or Seedream 5.0/4.5/4.0)
 /baoyu-image-gen --prompt "Make it blue" --image out.png --ref source.png
 ```
 

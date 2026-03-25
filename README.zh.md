@@ -663,7 +663,7 @@ AI 驱动的生成后端。
 
 #### baoyu-image-gen
 
-基于 AI SDK 的图像生成，支持 OpenAI、Google、OpenRouter、DashScope（阿里通义万相）、即梦（Jimeng）、豆包（Seedream）和 Replicate API。支持文生图、参考图、宽高比和质量预设。
+基于 AI SDK 的图像生成，支持 OpenAI、Azure OpenAI、Google、OpenRouter、DashScope（阿里通义万相）、即梦（Jimeng）、豆包（Seedream）和 Replicate API。支持文生图、参考图、宽高比和质量预设。
 
 ```bash
 # 基础生成（自动检测服务商）
@@ -677,6 +677,9 @@ AI 驱动的生成后端。
 
 # 指定服务商
 /baoyu-image-gen --prompt "一只猫" --image cat.png --provider openai
+
+# Azure OpenAI（model 为部署名称）
+/baoyu-image-gen --prompt "一只猫" --image cat.png --provider azure --model gpt-image-1.5
 
 # OpenRouter
 /baoyu-image-gen --prompt "一只猫" --image cat.png --provider openrouter
@@ -693,7 +696,7 @@ AI 驱动的生成后端。
 # 豆包（Seedream）
 /baoyu-image-gen --prompt "一只可爱的猫" --image cat.png --provider seedream
 
-# 带参考图（Google、OpenAI、OpenRouter、Replicate 或 Seedream 5.0/4.5/4.0）
+# 带参考图（Google、OpenAI、Azure OpenAI、OpenRouter、Replicate 或 Seedream 5.0/4.5/4.0）
 /baoyu-image-gen --prompt "把它变成蓝色" --image out.png --ref source.png
 ```
 

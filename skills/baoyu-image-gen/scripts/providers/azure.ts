@@ -1,22 +1,62 @@
 import path from "node:path";
 import { readFile } from "node:fs/promises";
 import type { CliArgs } from "../types";
-import { getOpenAISize, parseAspectRatio, getMimeType, extractImageFromResponse } from "./openai";
+import { getOpenAISize, extractImageFromResponse } from "./openai.ts";
 
 type OpenAIImageResponse = { data: Array<{ url?: string; b64_json?: string }> };
+type AzureEndpoint = {
+  resourceBaseURL: string;
+  deployment: string | null;
+};
+
+const DEFAULT_AZURE_API_VERSION = "2025-04-01-preview";
+const AZURE_EDIT_IMAGE_EXTENSIONS = new Set([".png", ".jpg", ".jpeg"]);
+
+export function parseAzureBaseURL(url: string): AzureEndpoint {
+  const parsed = new URL(url);
+  const trimmedPath = parsed.pathname.replace(/\/+$/, "");
+  const deploymentMatch = trimmedPath.match(/^(.*?)(?:\/openai)?\/deployments\/([^/]+)$/);
+
+  if (deploymentMatch) {
+    parsed.pathname = `${deploymentMatch[1] || ""}/openai`;
+    return {
+      resourceBaseURL: parsed.toString().replace(/\/+$/, ""),
+      deployment: decodeURIComponent(deploymentMatch[2]!),
+    };
+  }
+
+  parsed.pathname = trimmedPath.endsWith("/openai") ? trimmedPath : `${trimmedPath}/openai`;
+  return {
+    resourceBaseURL: parsed.toString().replace(/\/+$/, ""),
+    deployment: null,
+  };
+}
 
 export function getDefaultModel(): string {
+  const explicitDeployment = process.env.AZURE_OPENAI_DEPLOYMENT?.trim();
+  if (explicitDeployment) return explicitDeployment;
+
+  const baseURL = process.env.AZURE_OPENAI_BASE_URL;
+  if (baseURL) {
+    try {
+      const { deployment } = parseAzureBaseURL(baseURL);
+      if (deployment) return deployment;
+    } catch {
+      // Ignore invalid URLs here so the required-env check can raise the user-facing error later.
+    }
+  }
+
   return process.env.AZURE_OPENAI_IMAGE_MODEL || "gpt-image-1.5";
 }
 
-function getBaseURL(): string {
+function getEndpoint(): AzureEndpoint {
   const url = process.env.AZURE_OPENAI_BASE_URL;
   if (!url) {
     throw new Error(
-      "AZURE_OPENAI_BASE_URL is required. Set it to your Azure deployment endpoint, e.g.: https://your-resource.openai.azure.com/openai/deployments/your-deployment"
+      "AZURE_OPENAI_BASE_URL is required. Set it to your Azure resource or deployment endpoint, e.g.: https://your-resource.openai.azure.com or https://your-resource.openai.azure.com/openai/deployments/your-deployment"
     );
   }
-  return url.replace(/\/+$/, "");
+  return parseAzureBaseURL(url);
 }
 
 function getApiKey(): string {
@@ -30,15 +70,41 @@ function getApiKey(): string {
 }
 
 function getApiVersion(): string {
-  return process.env.AZURE_API_VERSION || "2024-02-01";
+  return process.env.AZURE_API_VERSION || DEFAULT_AZURE_API_VERSION;
 }
 
-function buildURL(pathSuffix: string): string {
-  return `${getBaseURL()}${pathSuffix}?api-version=${getApiVersion()}`;
+function getDeployment(model: string): string {
+  const deployment = model.trim();
+  if (!deployment) {
+    throw new Error(
+      "Azure deployment name is required. Use --model <deployment>, AZURE_OPENAI_DEPLOYMENT, AZURE_OPENAI_IMAGE_MODEL, or embed the deployment in AZURE_OPENAI_BASE_URL."
+    );
+  }
+  return deployment;
+}
+
+function buildURL(deployment: string, pathSuffix: string): string {
+  const { resourceBaseURL } = getEndpoint();
+  return `${resourceBaseURL}/deployments/${encodeURIComponent(deployment)}${pathSuffix}?api-version=${getApiVersion()}`;
 }
 
 function authHeaders(): Record<string, string> {
   return { "api-key": getApiKey() };
+}
+
+function getAzureQuality(quality: CliArgs["quality"]): "medium" | "high" {
+  return quality === "2k" ? "high" : "medium";
+}
+
+export function validateArgs(_model: string, args: CliArgs): void {
+  for (const refPath of args.referenceImages) {
+    const ext = path.extname(refPath).toLowerCase();
+    if (!AZURE_EDIT_IMAGE_EXTENSIONS.has(ext)) {
+      throw new Error(
+        `Azure OpenAI reference images must be PNG or JPG/JPEG. Unsupported file: ${refPath}`
+      );
+    }
+  }
 }
 
 export async function generateImage(
@@ -46,24 +112,30 @@ export async function generateImage(
   model: string,
   args: CliArgs
 ): Promise<Uint8Array> {
+  const deployment = getDeployment(model);
   const size = args.size || getOpenAISize(model, args.aspectRatio, args.quality);
 
   if (args.referenceImages.length > 0) {
-    return generateWithAzureEdits(prompt, model, size, args.referenceImages, args.quality);
+    return generateWithAzureEdits(prompt, deployment, size, args.referenceImages, args.quality);
   }
 
-  return generateWithAzureGenerations(prompt, model, size, args.quality);
+  return generateWithAzureGenerations(prompt, deployment, size, args.quality);
 }
 
 async function generateWithAzureGenerations(
   prompt: string,
-  model: string,
+  deployment: string,
   size: string,
   quality: CliArgs["quality"]
 ): Promise<Uint8Array> {
-  const body: Record<string, any> = { prompt, size, n: 1 };
+  const body: Record<string, any> = {
+    prompt,
+    size,
+    n: 1,
+    quality: getAzureQuality(quality),
+  };
 
-  const res = await fetch(buildURL("/images/generations"), {
+  const res = await fetch(buildURL(deployment, "/images/generations"), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -83,7 +155,7 @@ async function generateWithAzureGenerations(
 
 async function generateWithAzureEdits(
   prompt: string,
-  model: string,
+  deployment: string,
   size: string,
   referenceImages: string[],
   quality: CliArgs["quality"]
@@ -91,16 +163,18 @@ async function generateWithAzureEdits(
   const form = new FormData();
   form.append("prompt", prompt);
   form.append("size", size);
+  form.append("n", "1");
+  form.append("quality", getAzureQuality(quality));
 
   for (const refPath of referenceImages) {
     const bytes = await readFile(refPath);
     const filename = path.basename(refPath);
-    const mimeType = getMimeType(filename);
+    const mimeType = path.extname(filename).toLowerCase() === ".png" ? "image/png" : "image/jpeg";
     const blob = new Blob([bytes], { type: mimeType });
     form.append("image[]", blob, filename);
   }
 
-  const res = await fetch(buildURL("/images/edits"), {
+  const res = await fetch(buildURL(deployment, "/images/edits"), {
     method: "POST",
     headers: {
       ...authHeaders(),
