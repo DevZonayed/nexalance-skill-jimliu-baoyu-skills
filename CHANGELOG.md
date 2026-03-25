@@ -2,6 +2,12 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.85.0 - 2026-03-25
+
+### Features
+- `baoyu-imagine`: auto-migrate legacy `baoyu-image-gen` EXTEND.md config path at runtime
+- Add `baoyu-image-gen` deprecation redirect skill to guide users to install `baoyu-imagine` and remove the old skill
+
 ## 1.84.0 - 2026-03-25
 
 ### Features

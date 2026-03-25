@@ -2,6 +2,12 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.85.0 - 2026-03-25
+
+### 新功能
+- `baoyu-imagine`：运行时自动迁移旧版 `baoyu-image-gen` 的 EXTEND.md 配置路径
+- 新增 `baoyu-image-gen` 废弃重定向技能，引导用户安装 `baoyu-imagine` 并移除旧技能
+
 ## 1.84.0 - 2026-03-25
 
 ### 新功能
