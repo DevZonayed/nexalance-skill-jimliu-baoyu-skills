@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.80.1 - 2026-03-24
+
+### Fixes
+- `baoyu-image-gen`: use correct `prompt` field name for Jimeng API request
+
 ## 1.80.0 - 2026-03-24
 
 ### Features
