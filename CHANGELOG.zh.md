@@ -2,6 +2,14 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.81.0 - 2026-03-24
+
+### 新功能
+- `baoyu-youtube-transcript`：YouTube 封锁直连 InnerTube API 时自动回退到 yt-dlp，支持备用客户端身份重试及通过 `YOUTUBE_TRANSCRIPT_COOKIES_FROM_BROWSER` 环境变量传递浏览器 Cookie
+
+### 重构
+- `baoyu-youtube-transcript`：将单体脚本拆分为类型化模块（youtube、transcript、storage、shared、types）并添加单元测试
+
 ## 1.80.1 - 2026-03-24
 
 ### 修复

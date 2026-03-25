@@ -2,6 +2,14 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.81.0 - 2026-03-24
+
+### Features
+- `baoyu-youtube-transcript`: add yt-dlp fallback when YouTube blocks direct InnerTube API, with alternate client identity retry and cookie support via `YOUTUBE_TRANSCRIPT_COOKIES_FROM_BROWSER` env var
+
+### Refactor
+- `baoyu-youtube-transcript`: split monolithic script into typed modules (youtube, transcript, storage, shared, types) and add unit tests
+
 ## 1.80.1 - 2026-03-24
 
 ### Fixes

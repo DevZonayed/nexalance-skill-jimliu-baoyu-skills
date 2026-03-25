@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Claude Code marketplace plugin providing AI-powered content generation skills. Version: **1.80.1**.
+Claude Code marketplace plugin providing AI-powered content generation skills. Version: **1.81.0**.
 
 ## Architecture
 
