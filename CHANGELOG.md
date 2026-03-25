@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.84.0 - 2026-03-25
+
+### Features
+- Rename `baoyu-image-gen` skill to `baoyu-imagine` — shorter command name, all references updated across docs, configs, and dependent skills
+
 ## 1.83.0 - 2026-03-25
 
 ### Features
