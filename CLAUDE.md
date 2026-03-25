@@ -31,7 +31,7 @@ Execute: `${BUN_X} skills/<skill>/scripts/main.ts [options]`
 
 - **Bun**: TypeScript runtime (`bun` preferred, fallback `npx -y bun`)
 - **Chrome**: Required for CDP-based skills (gemini-web, post-to-x/wechat/weibo, url-to-markdown). All CDP skills share a single profile, override via `BAOYU_CHROME_PROFILE_DIR` env var. Platform paths: [docs/chrome-profile.md](docs/chrome-profile.md)
-- **Image generation APIs**: `baoyu-image-gen` requires API key (OpenAI, Azure OpenAI, Google, OpenRouter, DashScope, or Replicate) configured in EXTEND.md
+- **Image generation APIs**: `baoyu-imagine` requires API key (OpenAI, Azure OpenAI, Google, OpenRouter, DashScope, or Replicate) configured in EXTEND.md
 - **Gemini Web auth**: Browser cookies (first run opens Chrome for login, `--login` to refresh)
 
 ## Security
@@ -46,7 +46,7 @@ Execute: `${BUN_X} skills/<skill>/scripts/main.ts [options]`
 | Rule | Description |
 |------|-------------|
 | **Load project skills first** | Project skills override system/user-level skills with same name |
-| **Default image generation** | Use `skills/baoyu-image-gen/SKILL.md` unless user specifies otherwise |
+| **Default image generation** | Use `skills/baoyu-imagine/SKILL.md` unless user specifies otherwise |
 
 Priority: project `skills/` → `$HOME/.baoyu-skills/` → system-level.
 

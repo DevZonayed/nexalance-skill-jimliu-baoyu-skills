@@ -32,7 +32,7 @@ This repository now supports publishing each `skills/baoyu-*` directory as an in
 ClawHub installs skills individually, not as one marketplace bundle. After publishing, users can install specific skills such as:
 
 ```bash
-clawhub install baoyu-image-gen
+clawhub install baoyu-imagine
 clawhub install baoyu-markdown-to-html
 ```
 
@@ -661,58 +661,58 @@ Post content to Weibo (微博). Supports regular posts with text, images, and vi
 
 AI-powered generation backends.
 
-#### baoyu-image-gen
+#### baoyu-imagine
 
 AI SDK-based image generation using OpenAI, Azure OpenAI, Google, OpenRouter, DashScope (Aliyun Tongyi Wanxiang), MiniMax, Jimeng (即梦), Seedream (豆包), and Replicate APIs. Supports text-to-image, reference images, aspect ratios, custom sizes, batch generation, and quality presets.
 
 ```bash
 # Basic generation (auto-detect provider)
-/baoyu-image-gen --prompt "A cute cat" --image cat.png
+/baoyu-imagine --prompt "A cute cat" --image cat.png
 
 # With aspect ratio
-/baoyu-image-gen --prompt "A landscape" --image landscape.png --ar 16:9
+/baoyu-imagine --prompt "A landscape" --image landscape.png --ar 16:9
 
 # High quality (2k)
-/baoyu-image-gen --prompt "A banner" --image banner.png --quality 2k
+/baoyu-imagine --prompt "A banner" --image banner.png --quality 2k
 
 # Specific provider
-/baoyu-image-gen --prompt "A cat" --image cat.png --provider openai
+/baoyu-imagine --prompt "A cat" --image cat.png --provider openai
 
 # Azure OpenAI (model = deployment name)
-/baoyu-image-gen --prompt "A cat" --image cat.png --provider azure --model gpt-image-1.5
+/baoyu-imagine --prompt "A cat" --image cat.png --provider azure --model gpt-image-1.5
 
 # OpenRouter
-/baoyu-image-gen --prompt "A cat" --image cat.png --provider openrouter
+/baoyu-imagine --prompt "A cat" --image cat.png --provider openrouter
 
 # OpenRouter with reference images
-/baoyu-image-gen --prompt "Make it blue" --image out.png --provider openrouter --model google/gemini-3.1-flash-image-preview --ref source.png
+/baoyu-imagine --prompt "Make it blue" --image out.png --provider openrouter --model google/gemini-3.1-flash-image-preview --ref source.png
 
 # DashScope (Aliyun Tongyi Wanxiang)
-/baoyu-image-gen --prompt "一只可爱的猫" --image cat.png --provider dashscope
+/baoyu-imagine --prompt "一只可爱的猫" --image cat.png --provider dashscope
 
 # DashScope with custom size
-/baoyu-image-gen --prompt "为咖啡品牌设计一张 21:9 横幅海报，包含清晰中文标题" --image banner.png --provider dashscope --model qwen-image-2.0-pro --size 2048x872
+/baoyu-imagine --prompt "为咖啡品牌设计一张 21:9 横幅海报，包含清晰中文标题" --image banner.png --provider dashscope --model qwen-image-2.0-pro --size 2048x872
 
 # MiniMax
-/baoyu-image-gen --prompt "A fashion editorial portrait by a bright studio window" --image out.jpg --provider minimax
+/baoyu-imagine --prompt "A fashion editorial portrait by a bright studio window" --image out.jpg --provider minimax
 
 # MiniMax with subject reference
-/baoyu-image-gen --prompt "A girl stands by the library window, cinematic lighting" --image out.jpg --provider minimax --model image-01 --ref portrait.png --ar 16:9
+/baoyu-imagine --prompt "A girl stands by the library window, cinematic lighting" --image out.jpg --provider minimax --model image-01 --ref portrait.png --ar 16:9
 
 # Replicate
-/baoyu-image-gen --prompt "A cat" --image cat.png --provider replicate
+/baoyu-imagine --prompt "A cat" --image cat.png --provider replicate
 
 # Jimeng (即梦)
-/baoyu-image-gen --prompt "一只可爱的猫" --image cat.png --provider jimeng
+/baoyu-imagine --prompt "一只可爱的猫" --image cat.png --provider jimeng
 
 # Seedream (豆包)
-/baoyu-image-gen --prompt "一只可爱的猫" --image cat.png --provider seedream
+/baoyu-imagine --prompt "一只可爱的猫" --image cat.png --provider seedream
 
 # With reference images (Google, OpenAI, Azure OpenAI, OpenRouter, Replicate, MiniMax, or Seedream 5.0/4.5/4.0)
-/baoyu-image-gen --prompt "Make it blue" --image out.png --ref source.png
+/baoyu-imagine --prompt "Make it blue" --image out.png --ref source.png
 
 # Batch mode
-/baoyu-image-gen --batchfile batch.json --jobs 4 --json
+/baoyu-imagine --batchfile batch.json --jobs 4 --json
 ```
 
 **Options**:
@@ -1045,7 +1045,7 @@ Custom style descriptions are also accepted, e.g., `--style "poetic and lyrical"
 Some skills require API keys or custom configuration. Environment variables can be set in `.env` files:
 
 **Load Priority** (higher priority overrides lower):
-1. CLI environment variables (e.g., `OPENAI_API_KEY=xxx /baoyu-image-gen ...`)
+1. CLI environment variables (e.g., `OPENAI_API_KEY=xxx /baoyu-imagine ...`)
 2. `process.env` (system environment)
 3. `<cwd>/.baoyu-skills/.env` (project-level)
 4. `~/.baoyu-skills/.env` (user-level)

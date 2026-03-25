@@ -69,7 +69,7 @@ async function makeTempDir(prefix: string): Promise<string> {
   return fs.mkdtemp(path.join(os.tmpdir(), prefix));
 }
 
-test("parseArgs parses the main image-gen CLI flags", () => {
+test("parseArgs parses the main baoyu-imagine CLI flags", () => {
   const args = parseArgs([
     "--promptfiles",
     "prompts/system.md",
@@ -349,7 +349,7 @@ test("batch worker and provider-rate-limit configuration prefer env over EXTEND 
 });
 
 test("loadBatchTasks and createTaskArgs resolve batch-relative paths", async (t) => {
-  const root = await makeTempDir("baoyu-image-gen-batch-");
+  const root = await makeTempDir("baoyu-imagine-batch-");
   t.after(() => fs.rm(root, { recursive: true, force: true }));
 
   const batchFile = path.join(root, "jobs", "batch.json");

@@ -1,10 +1,10 @@
 ---
-name: baoyu-image-gen
+name: baoyu-imagine
 description: AI image generation with OpenAI, Azure OpenAI, Google, OpenRouter, DashScope, MiniMax, Jimeng, Seedream and Replicate APIs. Supports text-to-image, reference images, aspect ratios, and batch generation from saved prompt files. Sequential by default; use batch parallel generation when the user already has multiple prompts or wants stable multi-image throughput. Use when user asks to generate, create, or draw images.
 version: 1.56.4
 metadata:
   openclaw:
-    homepage: https://github.com/JimLiu/baoyu-skills#baoyu-image-gen
+    homepage: https://github.com/JimLiu/baoyu-skills#baoyu-imagine
     requires:
       anyBins:
         - bun
@@ -30,17 +30,17 @@ Check EXTEND.md existence (priority: project → user):
 
 ```bash
 # macOS, Linux, WSL, Git Bash
-test -f .baoyu-skills/baoyu-image-gen/EXTEND.md && echo "project"
-test -f "${XDG_CONFIG_HOME:-$HOME/.config}/baoyu-skills/baoyu-image-gen/EXTEND.md" && echo "xdg"
-test -f "$HOME/.baoyu-skills/baoyu-image-gen/EXTEND.md" && echo "user"
+test -f .baoyu-skills/baoyu-imagine/EXTEND.md && echo "project"
+test -f "${XDG_CONFIG_HOME:-$HOME/.config}/baoyu-skills/baoyu-imagine/EXTEND.md" && echo "xdg"
+test -f "$HOME/.baoyu-skills/baoyu-imagine/EXTEND.md" && echo "user"
 ```
 
 ```powershell
 # PowerShell (Windows)
-if (Test-Path .baoyu-skills/baoyu-image-gen/EXTEND.md) { "project" }
+if (Test-Path .baoyu-skills/baoyu-imagine/EXTEND.md) { "project" }
 $xdg = if ($env:XDG_CONFIG_HOME) { $env:XDG_CONFIG_HOME } else { "$HOME/.config" }
-if (Test-Path "$xdg/baoyu-skills/baoyu-image-gen/EXTEND.md") { "xdg" }
-if (Test-Path "$HOME/.baoyu-skills/baoyu-image-gen/EXTEND.md") { "user" }
+if (Test-Path "$xdg/baoyu-skills/baoyu-imagine/EXTEND.md") { "xdg" }
+if (Test-Path "$HOME/.baoyu-skills/baoyu-imagine/EXTEND.md") { "user" }
 ```
 
 | Result | Action |
@@ -52,8 +52,8 @@ if (Test-Path "$HOME/.baoyu-skills/baoyu-image-gen/EXTEND.md") { "user" }
 
 | Path | Location |
 |------|----------|
-| `.baoyu-skills/baoyu-image-gen/EXTEND.md` | Project directory |
-| `$HOME/.baoyu-skills/baoyu-image-gen/EXTEND.md` | User home |
+| `.baoyu-skills/baoyu-imagine/EXTEND.md` | Project directory |
+| `$HOME/.baoyu-skills/baoyu-imagine/EXTEND.md` | User home |
 
 **EXTEND.md Supports**: Default provider | Default quality | Default aspect ratio | Default image size | Default models | Batch worker cap | Provider-specific batch limits
 
@@ -252,7 +252,7 @@ When translating CLI args into DashScope behavior:
 - `--size` wins over `--ar`
 - For `qwen-image-2.0*`, prefer explicit `--size`; otherwise infer from `--ar` and use the official recommended resolutions below
 - For `qwen-image-max/plus/image`, only use the five official fixed sizes; if the requested ratio is not covered, switch to `qwen-image-2.0-pro`
-- `--quality` is a baoyu-image-gen compatibility preset, not a native DashScope API field. Mapping `normal` / `2k` onto the `qwen-image-2.0*` table below is an implementation inference, not an official API guarantee
+- `--quality` is a baoyu-imagine compatibility preset, not a native DashScope API field. Mapping `normal` / `2k` onto the `qwen-image-2.0*` table below is an implementation inference, not an official API guarantee
 
 Recommended `qwen-image-2.0*` sizes for common aspect ratios:
 
@@ -267,7 +267,7 @@ Recommended `qwen-image-2.0*` sizes for common aspect ratios:
 | `16:9` | `1280*720` | `1920*1080` |
 | `21:9` | `1344*576` | `2048*872` |
 
-DashScope official APIs also expose `negative_prompt`, `prompt_extend`, and `watermark`, but `baoyu-image-gen` does not expose them as dedicated CLI flags today.
+DashScope official APIs also expose `negative_prompt`, `prompt_extend`, and `watermark`, but `baoyu-imagine` does not expose them as dedicated CLI flags today.
 
 Official references:
 
@@ -294,7 +294,7 @@ MiniMax subject reference notes:
 
 - `--ref` files are sent as MiniMax `subject_reference`
 - MiniMax docs currently describe `subject_reference[].type` as `character`
-- Official docs say `image_file` supports public URLs or Base64 Data URLs; `baoyu-image-gen` sends local refs as Data URLs
+- Official docs say `image_file` supports public URLs or Base64 Data URLs; `baoyu-imagine` sends local refs as Data URLs
 - Official docs recommend front-facing portrait references in JPG/JPEG/PNG under 10MB
 
 Official references:

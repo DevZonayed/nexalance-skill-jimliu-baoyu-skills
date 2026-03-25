@@ -476,8 +476,8 @@ async function loadExtendConfig(): Promise<Partial<ExtendConfig>> {
   const cwd = process.cwd();
 
   const paths = [
-    path.join(cwd, ".baoyu-skills", "baoyu-image-gen", "EXTEND.md"),
-    path.join(home, ".baoyu-skills", "baoyu-image-gen", "EXTEND.md"),
+    path.join(cwd, ".baoyu-skills", "baoyu-imagine", "EXTEND.md"),
+    path.join(home, ".baoyu-skills", "baoyu-imagine", "EXTEND.md"),
   ];
 
   for (const p of paths) {

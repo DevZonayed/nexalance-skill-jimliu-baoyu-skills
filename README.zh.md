@@ -32,7 +32,7 @@ npx skills add jimliu/baoyu-skills
 ClawHub 按“单个 skill”安装，不是把整个 marketplace 一次性装进去。发布后，用户可以按需安装：
 
 ```bash
-clawhub install baoyu-image-gen
+clawhub install baoyu-imagine
 clawhub install baoyu-markdown-to-html
 ```
 
@@ -661,58 +661,58 @@ accounts:
 
 AI 驱动的生成后端。
 
-#### baoyu-image-gen
+#### baoyu-imagine
 
 基于 AI SDK 的图像生成，支持 OpenAI、Azure OpenAI、Google、OpenRouter、DashScope（阿里通义万相）、MiniMax、即梦（Jimeng）、豆包（Seedream）和 Replicate API。支持文生图、参考图、宽高比、自定义尺寸、批量生成和质量预设。
 
 ```bash
 # 基础生成（自动检测服务商）
-/baoyu-image-gen --prompt "一只可爱的猫" --image cat.png
+/baoyu-imagine --prompt "一只可爱的猫" --image cat.png
 
 # 指定宽高比
-/baoyu-image-gen --prompt "风景图" --image landscape.png --ar 16:9
+/baoyu-imagine --prompt "风景图" --image landscape.png --ar 16:9
 
 # 高质量（2k 分辨率）
-/baoyu-image-gen --prompt "横幅图" --image banner.png --quality 2k
+/baoyu-imagine --prompt "横幅图" --image banner.png --quality 2k
 
 # 指定服务商
-/baoyu-image-gen --prompt "一只猫" --image cat.png --provider openai
+/baoyu-imagine --prompt "一只猫" --image cat.png --provider openai
 
 # Azure OpenAI（model 为部署名称）
-/baoyu-image-gen --prompt "一只猫" --image cat.png --provider azure --model gpt-image-1.5
+/baoyu-imagine --prompt "一只猫" --image cat.png --provider azure --model gpt-image-1.5
 
 # OpenRouter
-/baoyu-image-gen --prompt "一只猫" --image cat.png --provider openrouter
+/baoyu-imagine --prompt "一只猫" --image cat.png --provider openrouter
 
 # OpenRouter + 参考图
-/baoyu-image-gen --prompt "把它变成蓝色" --image out.png --provider openrouter --model google/gemini-3.1-flash-image-preview --ref source.png
+/baoyu-imagine --prompt "把它变成蓝色" --image out.png --provider openrouter --model google/gemini-3.1-flash-image-preview --ref source.png
 
 # DashScope（阿里通义万相）
-/baoyu-image-gen --prompt "一只可爱的猫" --image cat.png --provider dashscope
+/baoyu-imagine --prompt "一只可爱的猫" --image cat.png --provider dashscope
 
 # DashScope 自定义尺寸
-/baoyu-image-gen --prompt "为咖啡品牌设计一张 21:9 横幅海报，包含清晰中文标题" --image banner.png --provider dashscope --model qwen-image-2.0-pro --size 2048x872
+/baoyu-imagine --prompt "为咖啡品牌设计一张 21:9 横幅海报，包含清晰中文标题" --image banner.png --provider dashscope --model qwen-image-2.0-pro --size 2048x872
 
 # MiniMax
-/baoyu-image-gen --prompt "A fashion editorial portrait by a bright studio window" --image out.jpg --provider minimax
+/baoyu-imagine --prompt "A fashion editorial portrait by a bright studio window" --image out.jpg --provider minimax
 
 # MiniMax + 角色参考图
-/baoyu-image-gen --prompt "A girl stands by the library window, cinematic lighting" --image out.jpg --provider minimax --model image-01 --ref portrait.png --ar 16:9
+/baoyu-imagine --prompt "A girl stands by the library window, cinematic lighting" --image out.jpg --provider minimax --model image-01 --ref portrait.png --ar 16:9
 
 # Replicate
-/baoyu-image-gen --prompt "一只猫" --image cat.png --provider replicate
+/baoyu-imagine --prompt "一只猫" --image cat.png --provider replicate
 
 # 即梦（Jimeng）
-/baoyu-image-gen --prompt "一只可爱的猫" --image cat.png --provider jimeng
+/baoyu-imagine --prompt "一只可爱的猫" --image cat.png --provider jimeng
 
 # 豆包（Seedream）
-/baoyu-image-gen --prompt "一只可爱的猫" --image cat.png --provider seedream
+/baoyu-imagine --prompt "一只可爱的猫" --image cat.png --provider seedream
 
 # 带参考图（Google、OpenAI、Azure OpenAI、OpenRouter、Replicate、MiniMax 或 Seedream 5.0/4.5/4.0）
-/baoyu-image-gen --prompt "把它变成蓝色" --image out.png --ref source.png
+/baoyu-imagine --prompt "把它变成蓝色" --image out.png --ref source.png
 
 # 批量模式
-/baoyu-image-gen --batchfile batch.json --jobs 4 --json
+/baoyu-imagine --batchfile batch.json --jobs 4 --json
 ```
 
 **选项**：
@@ -1045,7 +1045,7 @@ AI 驱动的生成后端。
 部分技能需要 API 密钥或自定义配置。环境变量可以在 `.env` 文件中设置：
 
 **加载优先级**（高优先级覆盖低优先级）：
-1. 命令行环境变量（如 `OPENAI_API_KEY=xxx /baoyu-image-gen ...`）
+1. 命令行环境变量（如 `OPENAI_API_KEY=xxx /baoyu-imagine ...`）
 2. `process.env`（系统环境变量）
 3. `<cwd>/.baoyu-skills/.env`（项目级）
 4. `~/.baoyu-skills/.env`（用户级）
