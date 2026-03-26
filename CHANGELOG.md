@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.87.0 - 2026-03-26
+
+### Maintenance
+- Remove deprecated `baoyu-image-gen` redirect skill and plugin manifest entry — migration to `baoyu-imagine` is complete
+
 ## 1.86.0 - 2026-03-25
 
 ### Features
