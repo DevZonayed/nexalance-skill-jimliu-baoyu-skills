@@ -50,6 +50,12 @@ Execute: `${BUN_X} skills/<skill>/scripts/main.ts [options]`
 
 Priority: project `skills/` → `$HOME/.baoyu-skills/` → system-level.
 
+## Deprecated Skills
+
+| Skill | Note |
+|-------|------|
+| `baoyu-image-gen` | Migrated to `baoyu-imagine`. Do NOT add to `.claude-plugin/marketplace.json`. Do NOT update README for this skill. |
+
 ## Release Process
 
 Use `/release-skills` workflow. Never skip:
