@@ -2,6 +2,12 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.87.1 - 2026-03-26
+
+### Maintenance
+- Add deprecation notice to `baoyu-image-gen` SKILL.md redirecting users to `baoyu-imagine`
+- Document deprecated skills policy in CLAUDE.md
+
 ## 1.87.0 - 2026-03-26
 
 ### Maintenance

@@ -2,6 +2,12 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.87.1 - 2026-03-26
+
+### 维护
+- 在 `baoyu-image-gen` SKILL.md 中添加废弃提示，引导用户使用 `baoyu-imagine`
+- 在 CLAUDE.md 中记录废弃技能策略
+
 ## 1.87.0 - 2026-03-26
 
 ### 维护
