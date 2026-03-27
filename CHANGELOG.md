@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.87.2 - 2026-03-26
+
+### Refactor
+- `baoyu-translate`: simplify translation prompts from 15+ verbose principles to 7 concise ones, consolidate analysis and review steps in workflow references
+
 ## 1.87.1 - 2026-03-26
 
 ### Maintenance
