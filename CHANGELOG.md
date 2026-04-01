@@ -2,6 +2,16 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.89.1 - 2026-04-01
+
+### Features
+- `baoyu-chrome-cdp`: add `gracefulKillChrome` that waits for Chrome to exit and release its port; fix `killChrome` to use `exitCode`/`signalCode` instead of `.killed` for reliable process state detection
+- `baoyu-fetch`: auto-detect login state before extraction in interaction wait mode
+
+### Maintenance
+- Sync vendor baoyu-chrome-cdp across CDP skills
+- `baoyu-url-to-markdown`: sync vendor baoyu-fetch with login auto-detect
+
 ## 1.89.0 - 2026-03-31
 
 ### Features

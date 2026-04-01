@@ -2,6 +2,16 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.89.1 - 2026-04-01
+
+### 新功能
+- `baoyu-chrome-cdp`：新增 `gracefulKillChrome`，等待 Chrome 进程退出并释放端口；修复 `killChrome` 使用 `exitCode`/`signalCode` 替代 `.killed` 以更可靠地检测进程状态
+- `baoyu-fetch`：在交互等待模式下自动检测登录状态，未登录时提示用户先登录再提取内容
+
+### 维护
+- 同步 vendor baoyu-chrome-cdp 至所有 CDP 技能
+- `baoyu-url-to-markdown`：同步 vendor baoyu-fetch 的登录自动检测功能
+
 ## 1.89.0 - 2026-03-31
 
 ### 新功能
