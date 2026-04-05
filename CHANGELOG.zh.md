@@ -2,6 +2,11 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.90.1 - 2026-04-05
+
+### 修复
+- `baoyu-post-to-wechat`：通过 magic bytes 检测实际图片格式，修复 CDN 返回与 URL 扩展名不一致的 content-type 问题（如 .png URL 实际返回 WebP）；WebP 格式按 PNG 策略处理以保留透明度
+
 ## 1.89.1 - 2026-04-01
 
 ### 新功能

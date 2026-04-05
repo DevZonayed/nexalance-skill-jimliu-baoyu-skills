@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.90.1 - 2026-04-05
+
+### Fixes
+- `baoyu-post-to-wechat`: detect actual image format from buffer magic bytes to fix CDN content-type mismatches (e.g. WebP served for .png URLs); treat WebP as PNG-preferred for transparency handling
+
 ## 1.89.1 - 2026-04-01
 
 ### Features
