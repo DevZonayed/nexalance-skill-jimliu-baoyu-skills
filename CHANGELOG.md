@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.92.0 - 2026-04-08
+
+### Features
+- `baoyu-article-illustrator`: add `macaron` style — soft macaron pastel color blocks (blue, mint, lavender, peach) on warm cream background with optional hand-drawn mode; add `edu-visual` preset
+
 ## 1.90.1 - 2026-04-05
 
 ### Fixes

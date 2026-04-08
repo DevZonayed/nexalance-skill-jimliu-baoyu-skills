@@ -2,6 +2,11 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.92.0 - 2026-04-08
+
+### 新功能
+- `baoyu-article-illustrator`：新增 `macaron` 风格 — 马卡龙柔和色块（浅蓝、浅绿、浅紫、浅橙）配暖白底色，可选手绘模式；新增 `edu-visual` 预设
+
 ## 1.90.1 - 2026-04-05
 
 ### 修复
