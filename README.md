@@ -473,20 +473,17 @@ Knowledge comic creator with flexible art style × tone combinations. Creates or
 
 #### baoyu-article-illustrator
 
-Smart article illustration skill with Type × Style two-dimension approach. Analyzes article structure, identifies positions requiring visual aids, and generates illustrations.
+Smart article illustration skill with Type × Style × Palette three-dimension approach. Analyzes article structure, identifies positions requiring visual aids, and generates illustrations.
 
 ```bash
 # Auto-select type and style based on content
 /baoyu-article-illustrator path/to/article.md
 
-# Specify type
-/baoyu-article-illustrator path/to/article.md --type infographic
-
-# Specify style
-/baoyu-article-illustrator path/to/article.md --style blueprint
-
-# Combine type and style
+# Specify type and style
 /baoyu-article-illustrator path/to/article.md --type flowchart --style notion
+
+# With palette override
+/baoyu-article-illustrator path/to/article.md --style vector-illustration --palette macaron
 ```
 
 **Types** (information structure):
@@ -500,7 +497,7 @@ Smart article illustration skill with Type × Style two-dimension approach. Anal
 | `framework` | Concept maps, relationship diagrams | Methodologies, architecture |
 | `timeline` | Chronological progression | History, project progress |
 
-**Styles** (visual aesthetics):
+**Styles** (rendering approach):
 
 | Style | Description | Best For |
 |-------|-------------|----------|
@@ -512,7 +509,14 @@ Smart article illustration skill with Type × Style two-dimension approach. Anal
 | `watercolor` | Soft artistic with natural warmth | Lifestyle, travel, creative |
 | `editorial` | Magazine-style infographic | Tech explainers, journalism |
 | `scientific` | Academic precise diagrams | Biology, chemistry, technical |
-| `macaron` | Soft macaron pastel blocks on warm cream | Educational, knowledge, tutorials |
+
+**Palettes** (optional color override):
+
+| Palette | Description | Best For |
+|---------|-------------|----------|
+| `macaron` | Soft pastel blocks (blue, mint, lavender, peach) on warm cream | Educational, knowledge, tutorials |
+| `warm` | Warm earth tones on soft peach, no cool colors | Brand, product, lifestyle |
+| `neon` | Vibrant neon on dark purple | Gaming, retro, pop culture |
 
 **Style Previews**:
 

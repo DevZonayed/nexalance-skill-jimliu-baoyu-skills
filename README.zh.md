@@ -473,20 +473,17 @@ clawhub install baoyu-markdown-to-html
 
 #### baoyu-article-illustrator
 
-智能文章插图技能，采用类型 × 风格二维系统。分析文章结构，识别需要视觉辅助的位置，生成插图。
+智能文章插图技能，采用类型 × 风格 × 色板三维系统。分析文章结构，识别需要视觉辅助的位置，生成插图。
 
 ```bash
 # 根据内容自动选择类型和风格
 /baoyu-article-illustrator path/to/article.md
 
-# 指定类型
-/baoyu-article-illustrator path/to/article.md --type infographic
-
-# 指定风格
-/baoyu-article-illustrator path/to/article.md --style blueprint
-
 # 组合类型和风格
 /baoyu-article-illustrator path/to/article.md --type flowchart --style notion
+
+# 使用色板覆盖
+/baoyu-article-illustrator path/to/article.md --style vector-illustration --palette macaron
 ```
 
 **类型**（信息结构）：
@@ -500,7 +497,7 @@ clawhub install baoyu-markdown-to-html
 | `framework` | 概念图、关系图 | 方法论、架构 |
 | `timeline` | 时间线进展 | 历史、项目进度 |
 
-**风格**（视觉美学）：
+**风格**（渲染手法）：
 
 | 风格 | 描述 | 适用场景 |
 |------|------|----------|
@@ -512,7 +509,14 @@ clawhub install baoyu-markdown-to-html
 | `watercolor` | 柔和艺术感、自然温暖 | 生活方式、旅行、创意 |
 | `editorial` | 杂志风格信息图 | 科技解说、新闻 |
 | `scientific` | 学术精确图表 | 生物、化学、技术 |
-| `macaron` | 马卡龙柔和色块、暖白底色 | 教育、知识分享、教程 |
+
+**色板**（可选配色覆盖）：
+
+| 色板 | 描述 | 适用场景 |
+|------|------|----------|
+| `macaron` | 马卡龙柔和色块（浅蓝、浅绿、浅紫、浅橙）暖白底 | 教育、知识分享、教程 |
+| `warm` | 暖色系（橙、赭石、金）无冷色 | 品牌、产品、生活方式 |
+| `neon` | 霓虹色（粉、青、黄）深色底 | 游戏、复古、潮流 |
 
 **风格预览**：
 
