@@ -2,6 +2,17 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.93.0 - 2026-04-08
+
+### Features
+- `baoyu-article-illustrator`: add `hand-drawn-edu` preset — flowchart + sketch-notes + macaron combination for hand-drawn educational diagrams
+
+### Refactor
+- `baoyu-article-illustrator`: extract palette as independent third dimension in Type × Style × Palette system
+
+### Fixes
+- `baoyu-article-illustrator`: add explicit style file loading step in workflow
+
 ## 1.92.0 - 2026-04-08
 
 ### Features

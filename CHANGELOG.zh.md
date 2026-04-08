@@ -2,6 +2,17 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.93.0 - 2026-04-08
+
+### 新功能
+- `baoyu-article-illustrator`：新增 `hand-drawn-edu` 预设 — flowchart + sketch-notes + macaron 组合，用于手绘教育图解
+
+### 重构
+- `baoyu-article-illustrator`：将色板（Palette）提取为独立的第三维度，形成 Type × Style × Palette 三维系统
+
+### 修复
+- `baoyu-article-illustrator`：在工作流中添加显式的风格文件加载步骤
+
 ## 1.92.0 - 2026-04-08
 
 ### 新功能
