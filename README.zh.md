@@ -97,29 +97,29 @@ clawhub install baoyu-markdown-to-html
 
 内容生成和发布技能。
 
-#### baoyu-xhs-images
+#### baoyu-image-cards
 
-小红书信息图系列生成器。将内容拆解为 1-10 张卡通风格信息图，支持 **风格 × 布局** 二维系统。
+图片卡片系列生成器。将内容拆解为 1-10 张卡通风格图片卡片，支持 **风格 × 布局** 二维系统。
 
 ```bash
 # 自动选择风格和布局
-/baoyu-xhs-images posts/ai-future/article.md
+/baoyu-image-cards posts/ai-future/article.md
 
 # 指定风格
-/baoyu-xhs-images posts/ai-future/article.md --style notion
+/baoyu-image-cards posts/ai-future/article.md --style notion
 
 # 指定布局
-/baoyu-xhs-images posts/ai-future/article.md --layout dense
+/baoyu-image-cards posts/ai-future/article.md --layout dense
 
 # 组合风格和布局
-/baoyu-xhs-images posts/ai-future/article.md --style tech --layout list
+/baoyu-image-cards posts/ai-future/article.md --style notion --layout list
 
 # 直接输入内容
-/baoyu-xhs-images 今日星座运势
+/baoyu-image-cards 今日星座运势
 
 # 非交互模式（跳过所有确认，适用于定时任务）
-/baoyu-xhs-images posts/ai-future/article.md --yes
-/baoyu-xhs-images posts/ai-future/article.md --yes --preset knowledge-card
+/baoyu-image-cards posts/ai-future/article.md --yes
+/baoyu-image-cards posts/ai-future/article.md --yes --preset knowledge-card
 ```
 
 **风格**（视觉美学）：`cute`（默认）、`fresh`、`warm`、`bold`、`minimal`、`retro`、`pop`、`notion`、`chalkboard`

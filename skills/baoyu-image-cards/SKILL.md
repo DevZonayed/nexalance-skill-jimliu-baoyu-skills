@@ -1,50 +1,48 @@
 ---
-name: baoyu-xhs-images
-description: "DEPRECATED: Migrated to baoyu-image-cards. Do not use this skill."
+name: baoyu-image-cards
+description: Generates infographic image card series with 11 visual styles and 8 layouts. Breaks content into 1-10 cartoon-style image cards optimized for social media engagement. Use when user mentions "小红书图片", "小红书种草", "小绿书", "微信图文", "微信贴图", "image cards", "图片卡片", or wants social media infographic series.
 version: 1.56.1
 metadata:
   openclaw:
-    homepage: https://github.com/JimLiu/baoyu-skills#baoyu-xhs-images
+    homepage: https://github.com/JimLiu/baoyu-skills#baoyu-image-cards
 ---
 
-# Xiaohongshu Infographic Series Generator
+# Image Card Series Generator
 
-> **⚠️ DEPRECATED**: This skill has been migrated to `baoyu-image-cards`. Print a bold red warning to the user **in the user's language** (use ANSI escape `\033[1;31m`) stating that `baoyu-xhs-images` has been migrated to `baoyu-image-cards` and they should use `baoyu-image-cards` instead. Then STOP — do NOT continue executing this skill.
-
-Break down complex content into eye-catching infographic series for Xiaohongshu with multiple style options.
+Break down complex content into eye-catching image card series with multiple style options.
 
 ## Usage
 
 ```bash
 # Auto-select style and layout based on content
-/baoyu-xhs-images posts/ai-future/article.md
+/baoyu-image-cards posts/ai-future/article.md
 
 # Specify style
-/baoyu-xhs-images posts/ai-future/article.md --style notion
+/baoyu-image-cards posts/ai-future/article.md --style notion
 
 # Specify layout
-/baoyu-xhs-images posts/ai-future/article.md --layout dense
+/baoyu-image-cards posts/ai-future/article.md --layout dense
 
 # Combine style and layout
-/baoyu-xhs-images posts/ai-future/article.md --style notion --layout list
+/baoyu-image-cards posts/ai-future/article.md --style notion --layout list
 
 # Use preset (style + layout shorthand)
-/baoyu-xhs-images posts/ai-future/article.md --preset knowledge-card
+/baoyu-image-cards posts/ai-future/article.md --preset knowledge-card
 
 # Preset with override
-/baoyu-xhs-images posts/ai-future/article.md --preset poster --layout quadrant
+/baoyu-image-cards posts/ai-future/article.md --preset poster --layout quadrant
 
 # Direct content input
-/baoyu-xhs-images
+/baoyu-image-cards
 [paste content]
 
 # Direct input with options
-/baoyu-xhs-images --style bold --layout comparison
+/baoyu-image-cards --style bold --layout comparison
 [paste content]
 
 # Non-interactive (for scheduled tasks / automation)
-/baoyu-xhs-images posts/ai-future/article.md --yes
-/baoyu-xhs-images posts/ai-future/article.md --yes --preset knowledge-card
+/baoyu-image-cards posts/ai-future/article.md --yes
+/baoyu-image-cards posts/ai-future/article.md --yes --preset knowledge-card
 ```
 
 ## Options
@@ -71,7 +69,7 @@ Or use presets: `--preset knowledge-card` → style + layout in one flag. See [S
 
 | Style | Description |
 |-------|-------------|
-| `cute` (Default) | Sweet, adorable, girly - classic Xiaohongshu aesthetic |
+| `cute` (Default) | Sweet, adorable, girly aesthetic |
 | `fresh` | Clean, refreshing, natural |
 | `warm` | Cozy, friendly, approachable |
 | `bold` | High impact, attention-grabbing |
@@ -206,7 +204,7 @@ Three differentiated outline strategies for different content goals:
 Each session creates an independent directory named by content slug:
 
 ```
-xhs-images/{topic-slug}/
+image-cards/{topic-slug}/
 ├── source-{slug}.{ext}             # Source files (text, images, etc.)
 ├── analysis.md                     # Deep analysis + questions asked
 ├── outline-strategy-a.md           # Strategy A: Story-driven
@@ -227,7 +225,7 @@ xhs-images/{topic-slug}/
 2. Example: "AI工具推荐" → `ai-tools-recommend`
 
 **Conflict Resolution**:
-If `xhs-images/{topic-slug}/` already exists:
+If `image-cards/{topic-slug}/` already exists:
 - Append timestamp: `{topic-slug}-YYYYMMDD-HHMMSS`
 - Example: `ai-tools` exists → `ai-tools-20260118-143052`
 
@@ -243,7 +241,7 @@ Copy all sources with naming `source-{slug}.{ext}`:
 Copy and track progress:
 
 ```
-XHS Infographic Progress:
+Image Card Series Progress:
 - [ ] Step 0: Check preferences (EXTEND.md) ⛔ BLOCKING (--yes: use defaults if not found)
   - [ ] Found → load preferences → continue
   - [ ] Not found → run first-time setup → MUST complete before Step 1 (--yes: skip setup, use defaults)
@@ -288,25 +286,25 @@ Check EXTEND.md existence (priority order):
 
 ```bash
 # macOS, Linux, WSL, Git Bash
-test -f .baoyu-skills/baoyu-xhs-images/EXTEND.md && echo "project"
-test -f "${XDG_CONFIG_HOME:-$HOME/.config}/baoyu-skills/baoyu-xhs-images/EXTEND.md" && echo "xdg"
-test -f "$HOME/.baoyu-skills/baoyu-xhs-images/EXTEND.md" && echo "user"
+test -f .baoyu-skills/baoyu-image-cards/EXTEND.md && echo "project"
+test -f "${XDG_CONFIG_HOME:-$HOME/.config}/baoyu-skills/baoyu-image-cards/EXTEND.md" && echo "xdg"
+test -f "$HOME/.baoyu-skills/baoyu-image-cards/EXTEND.md" && echo "user"
 ```
 
 ```powershell
 # PowerShell (Windows)
-if (Test-Path .baoyu-skills/baoyu-xhs-images/EXTEND.md) { "project" }
+if (Test-Path .baoyu-skills/baoyu-image-cards/EXTEND.md) { "project" }
 $xdg = if ($env:XDG_CONFIG_HOME) { $env:XDG_CONFIG_HOME } else { "$HOME/.config" }
-if (Test-Path "$xdg/baoyu-skills/baoyu-xhs-images/EXTEND.md") { "xdg" }
-if (Test-Path "$HOME/.baoyu-skills/baoyu-xhs-images/EXTEND.md") { "user" }
+if (Test-Path "$xdg/baoyu-skills/baoyu-image-cards/EXTEND.md") { "xdg" }
+if (Test-Path "$HOME/.baoyu-skills/baoyu-image-cards/EXTEND.md") { "user" }
 ```
 
 ┌────────────────────────────────────────────────────┬───────────────────┐
 │                        Path                        │     Location      │
 ├────────────────────────────────────────────────────┼───────────────────┤
-│ .baoyu-skills/baoyu-xhs-images/EXTEND.md           │ Project directory │
+│ .baoyu-skills/baoyu-image-cards/EXTEND.md           │ Project directory │
 ├────────────────────────────────────────────────────┼───────────────────┤
-│ $HOME/.baoyu-skills/baoyu-xhs-images/EXTEND.md     │ User home         │
+│ $HOME/.baoyu-skills/baoyu-image-cards/EXTEND.md     │ User home         │
 └────────────────────────────────────────────────────┴───────────────────┘
 
 ┌───────────┬─────────────────────────────────────────────────────────────────────────────────────────────────────┐
@@ -510,14 +508,14 @@ Reference: `references/config/watermark-guide.md`
 
 **Session Management**:
 If image generation skill supports `--sessionId`:
-1. Generate unique session ID: `xhs-{topic-slug}-{timestamp}`
+1. Generate unique session ID: `cards-{topic-slug}-{timestamp}`
 2. Use same session ID for all images
 3. Combined with reference image chain, ensures maximum visual consistency
 
 ### Step 4: Completion Report
 
 ```
-Xiaohongshu Infographic Series Complete!
+Image Card Series Complete!
 
 Topic: [topic]
 Mode: [Quick / Custom / Detailed]

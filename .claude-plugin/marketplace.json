@@ -31,7 +31,7 @@
         "./skills/baoyu-slide-deck",
         "./skills/baoyu-translate",
         "./skills/baoyu-url-to-markdown",
-        "./skills/baoyu-xhs-images",
+        "./skills/baoyu-image-cards",
         "./skills/baoyu-youtube-transcript"
       ]
     }

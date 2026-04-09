@@ -97,29 +97,29 @@ Skills are organized into three categories:
 
 Content generation and publishing skills.
 
-#### baoyu-xhs-images
+#### baoyu-image-cards
 
-Xiaohongshu (RedNote) infographic series generator. Breaks down content into 1-10 cartoon-style infographics with **Style × Layout** two-dimensional system.
+Image card series generator. Breaks down content into 1-10 cartoon-style image cards with **Style × Layout** two-dimensional system.
 
 ```bash
 # Auto-select style and layout
-/baoyu-xhs-images posts/ai-future/article.md
+/baoyu-image-cards posts/ai-future/article.md
 
 # Specify style
-/baoyu-xhs-images posts/ai-future/article.md --style notion
+/baoyu-image-cards posts/ai-future/article.md --style notion
 
 # Specify layout
-/baoyu-xhs-images posts/ai-future/article.md --layout dense
+/baoyu-image-cards posts/ai-future/article.md --layout dense
 
 # Combine style and layout
-/baoyu-xhs-images posts/ai-future/article.md --style tech --layout list
+/baoyu-image-cards posts/ai-future/article.md --style notion --layout list
 
 # Direct content input
-/baoyu-xhs-images 今日星座运势
+/baoyu-image-cards 今日星座运势
 
 # Non-interactive (skip all confirmations, for scheduled tasks)
-/baoyu-xhs-images posts/ai-future/article.md --yes
-/baoyu-xhs-images posts/ai-future/article.md --yes --preset knowledge-card
+/baoyu-image-cards posts/ai-future/article.md --yes
+/baoyu-image-cards posts/ai-future/article.md --yes --preset knowledge-card
 ```
 
 **Styles** (visual aesthetics): `cute` (default), `fresh`, `warm`, `bold`, `minimal`, `retro`, `pop`, `notion`, `chalkboard`
