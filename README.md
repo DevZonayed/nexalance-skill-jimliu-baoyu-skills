@@ -156,7 +156,7 @@ Xiaohongshu (RedNote) infographic series generator. Breaks down content into 1-1
 
 #### baoyu-infographic
 
-Generate professional infographics with 20 layout types and 17 visual styles. Analyzes content, recommends layout×style combinations, and generates publication-ready infographics.
+Generate professional infographics with 21 layout types and 21 visual styles. Analyzes content, recommends layout×style combinations, and generates publication-ready infographics.
 
 ```bash
 # Auto-recommend combinations based on content
