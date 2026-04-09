@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.95.1 - 2026-04-09
+
+### Fixes
+- `baoyu-slide-deck`: add `pptxgenjs` dependency and detect image format by magic bytes instead of file extension in PDF merge
+
 ## 1.95.0 - 2026-04-08
 
 ### Features
