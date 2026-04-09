@@ -2,6 +2,12 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.96.0 - 2026-04-09
+
+### 新功能
+- `baoyu-image-cards`：新增图片卡片系列技能，从 `baoyu-xhs-images` 迁移，解除小红书平台绑定
+- `baoyu-xhs-images`：已弃用，迁移至 `baoyu-image-cards`
+
 ## 1.95.1 - 2026-04-09
 
 ### 修复

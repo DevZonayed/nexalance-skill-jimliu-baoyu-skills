@@ -2,6 +2,12 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.96.0 - 2026-04-09
+
+### Features
+- `baoyu-image-cards`: add image card series skill migrated from `baoyu-xhs-images`, decoupled from Xiaohongshu platform
+- `baoyu-xhs-images`: deprecated, migrated to `baoyu-image-cards`
+
 ## 1.95.1 - 2026-04-09
 
 ### Fixes
