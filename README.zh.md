@@ -99,7 +99,7 @@ clawhub install baoyu-markdown-to-html
 
 #### baoyu-image-cards
 
-图片卡片系列生成器。将内容拆解为 1-10 张卡通风格图片卡片，支持 **风格 × 布局** 二维系统。
+图片卡片系列生成器。将内容拆解为 1-10 张卡通风格图片卡片，支持 **风格 × 布局** 系统和可选配色覆盖。
 
 ```bash
 # 自动选择风格和布局
@@ -114,6 +114,9 @@ clawhub install baoyu-markdown-to-html
 # 组合风格和布局
 /baoyu-image-cards posts/ai-future/article.md --style notion --layout list
 
+# 覆盖配色
+/baoyu-image-cards posts/ai-future/article.md --style notion --palette macaron
+
 # 直接输入内容
 /baoyu-image-cards 今日星座运势
 
@@ -122,7 +125,9 @@ clawhub install baoyu-markdown-to-html
 /baoyu-image-cards posts/ai-future/article.md --yes --preset knowledge-card
 ```
 
-**风格**（视觉美学）：`cute`（默认）、`fresh`、`warm`、`bold`、`minimal`、`retro`、`pop`、`notion`、`chalkboard`
+**风格**（视觉美学）：`cute`（默认）、`fresh`、`warm`、`bold`、`minimal`、`retro`、`pop`、`notion`、`chalkboard`、`study-notes`、`screen-print`、`sketch-notes`
+
+**配色**（可选颜色覆盖）：`macaron`、`warm`、`neon`
 
 **风格预览**：
 

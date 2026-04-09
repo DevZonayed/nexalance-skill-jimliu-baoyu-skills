@@ -99,7 +99,7 @@ Content generation and publishing skills.
 
 #### baoyu-image-cards
 
-Image card series generator. Breaks down content into 1-10 cartoon-style image cards with **Style × Layout** two-dimensional system.
+Image card series generator. Breaks down content into 1-10 cartoon-style image cards with **Style × Layout** system and optional palette override.
 
 ```bash
 # Auto-select style and layout
@@ -114,6 +114,9 @@ Image card series generator. Breaks down content into 1-10 cartoon-style image c
 # Combine style and layout
 /baoyu-image-cards posts/ai-future/article.md --style notion --layout list
 
+# Override palette
+/baoyu-image-cards posts/ai-future/article.md --style notion --palette macaron
+
 # Direct content input
 /baoyu-image-cards 今日星座运势
 
@@ -122,7 +125,9 @@ Image card series generator. Breaks down content into 1-10 cartoon-style image c
 /baoyu-image-cards posts/ai-future/article.md --yes --preset knowledge-card
 ```
 
-**Styles** (visual aesthetics): `cute` (default), `fresh`, `warm`, `bold`, `minimal`, `retro`, `pop`, `notion`, `chalkboard`
+**Styles** (visual aesthetics): `cute` (default), `fresh`, `warm`, `bold`, `minimal`, `retro`, `pop`, `notion`, `chalkboard`, `study-notes`, `screen-print`, `sketch-notes`
+
+**Palettes** (optional color override): `macaron`, `warm`, `neon`
 
 **Style Previews**:
 
