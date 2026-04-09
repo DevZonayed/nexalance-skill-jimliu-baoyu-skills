@@ -176,9 +176,9 @@ Optional color override. Replaces style's built-in colors while preserving rende
 
 | Palette | Background | Zone Colors | Accent | Feel |
 |---------|------------|-------------|--------|------|
-| `macaron` | Warm cream #F5F0E8 | Blue #A8D8EA, Lavender #D5C6E0, Mint #B5E5CF, Peach #F8D5C4 | Coral Red #E8655A | Soft, educational, approachable |
-| `warm` | Soft Peach #FFECD2 | Orange #ED8936, Terracotta #C05621, Golden #F6AD55, Rose #D4A09A | Burnt Sienna #A0522D | Cozy, earth tones, no cool colors |
-| `neon` | Dark Purple #1A1025 | Cyan #00F5FF, Magenta #FF00FF, Green #39FF14, Pink #FF6EC7 | Electric Yellow #FFFF00 | High-energy, futuristic |
+| `macaron` | Warm cream #F5F0E8 | Blue #A8D8EA, Lavender #D5C6E0, Mint #B5E5CF, Peach #F8D5C4 | Coral #E8655A | Soft, educational, approachable |
+| `warm` | Soft Peach #FFECD2 | Orange #ED8936, Terracotta #C05621, Golden #F6AD55, Rose #D4A09A | Sienna #A0522D | Cozy, earth tones, no cool colors |
+| `neon` | Dark Purple #1A1025 | Cyan #00F5FF, Magenta #FF00FF, Green #39FF14, Pink #FF6EC7 | Yellow #FFFF00 | High-energy, futuristic |
 
 Detailed palette definitions: `references/palettes/<palette>.md`
 

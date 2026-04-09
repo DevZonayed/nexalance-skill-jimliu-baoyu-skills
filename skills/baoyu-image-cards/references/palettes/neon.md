@@ -14,10 +14,10 @@ Vibrant neon colors on dark background. High-energy, futuristic, eye-catching.
 | Background | Dark Purple | #1A1025 | Primary background |
 | Text | Bright White | #F0F0F0 | Titles, main content |
 | Secondary Text | Light Lavender | #B8B8D4 | Annotations, labels |
-| Zone 1 | Neon Cyan | #00F5FF | Information blocks |
-| Zone 2 | Neon Magenta | #FF00FF | Information blocks |
-| Zone 3 | Neon Green | #39FF14 | Information blocks |
-| Zone 4 | Neon Pink | #FF6EC7 | Information blocks |
+| Block Color | Neon Cyan | #00F5FF | Content block fill |
+| Block Color | Neon Magenta | #FF00FF | Content block fill |
+| Block Color | Neon Green | #39FF14 | Content block fill |
+| Block Color | Neon Pink | #FF6EC7 | Content block fill |
 | Accent | Electric Yellow | #FFFF00 | Emphasis, highlights |
 
 ## Semantic Constraint

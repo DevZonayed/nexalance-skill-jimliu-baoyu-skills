@@ -42,7 +42,7 @@ When no `--palette` is specified, uses macaron colors: warm cream background (#F
 
 - Hand-drawn wobble on all lines and shapes
 - Simple stick-figure characters at desks, working, thinking
-- Rounded cards with pastel color blocks as information zones
+- Rounded cards with pastel color blocks as information sections
 - Color fills do NOT completely fill outlines (hand-painted feel)
 - Doodle decorations: small stars, underlines, checkmarks, lock icons, clipboard icons
 - Wavy hand-drawn arrows connecting zones with small text labels
@@ -62,7 +62,7 @@ When no `--palette` is specified, uses macaron colors: warm cream background (#F
 
 ### Do
 - Maintain slight wobble on every line, shape, and border
-- Use palette zone colors as distinct information block backgrounds
+- Use palette block colors as distinct section backgrounds
 - Leave color fills intentionally incomplete at edges
 - Include simple doodle icons relevant to content
 - Keep generous whitespace between zones

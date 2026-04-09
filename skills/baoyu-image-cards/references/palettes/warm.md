@@ -14,10 +14,10 @@ Warm earth tones on soft peach background. Cozy, inviting, no cool colors.
 | Background | Soft Peach | #FFECD2 | Primary background |
 | Text | Deep Brown | #744210 | Titles, main content |
 | Secondary Text | Warm Brown | #9C6644 | Annotations, labels |
-| Zone 1 | Warm Orange | #ED8936 | Information blocks |
-| Zone 2 | Terracotta | #C05621 | Information blocks |
-| Zone 3 | Golden Yellow | #F6AD55 | Information blocks |
-| Zone 4 | Dusty Rose | #D4A09A | Information blocks |
+| Block Color | Warm Orange | #ED8936 | Content block fill |
+| Block Color | Terracotta | #C05621 | Content block fill |
+| Block Color | Golden Yellow | #F6AD55 | Content block fill |
+| Block Color | Dusty Rose | #D4A09A | Content block fill |
 | Accent | Burnt Sienna | #A0522D | Emphasis, highlights |
 
 ## Semantic Constraint
