@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.99.1 - 2026-04-11
+
+### Fixes
+- `baoyu-article-illustrator`: omit `model` field from batch tasks when `--model` is not specified, letting `baoyu-imagine` resolve the default from env/config
+
 ## 1.99.0 - 2026-04-10
 
 ### Features

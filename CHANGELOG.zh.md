@@ -2,6 +2,11 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.99.1 - 2026-04-11
+
+### 修复
+- `baoyu-article-illustrator`：未指定 `--model` 时，批处理任务中不再写入 `model` 字段，改由 `baoyu-imagine` 从环境变量或配置中解析默认值
+
 ## 1.99.0 - 2026-04-10
 
 ### 新功能
