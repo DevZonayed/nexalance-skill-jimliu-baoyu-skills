@@ -2,6 +2,11 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.102.0 - 2026-04-12
+
+### 新功能
+- `baoyu-imagine`：新增 OpenAI 兼容图像 API 方言支持 —— 新增 `--imageApiDialect` 参数、`OPENAI_IMAGE_API_DIALECT` 环境变量及 `default_image_api_dialect` 配置项，用于对接期望宽高比格式 `size` 加 `metadata.resolution` 的兼容网关
+
 ## 1.101.0 - 2026-04-12
 
 ### 新功能

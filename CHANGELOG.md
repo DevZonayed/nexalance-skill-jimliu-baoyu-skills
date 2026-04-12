@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.102.0 - 2026-04-12
+
+### Features
+- `baoyu-imagine`: add OpenAI-compatible image API dialect — new `--imageApiDialect` flag, `OPENAI_IMAGE_API_DIALECT` env var, and `default_image_api_dialect` config for gateways that expect aspect-ratio `size` plus `metadata.resolution` instead of pixel `size`
+
 ## 1.101.0 - 2026-04-12
 
 ### Features
