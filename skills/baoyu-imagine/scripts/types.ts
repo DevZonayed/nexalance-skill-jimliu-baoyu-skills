@@ -3,6 +3,7 @@ export type Provider =
   | "openai"
   | "openrouter"
   | "dashscope"
+  | "zai"
   | "minimax"
   | "replicate"
   | "jimeng"
@@ -61,6 +62,7 @@ export type ExtendConfig = {
     openai: string | null;
     openrouter: string | null;
     dashscope: string | null;
+    zai: string | null;
     minimax: string | null;
     replicate: string | null;
     jimeng: string | null;
