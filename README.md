@@ -274,19 +274,18 @@ Generate professional infographics with 21 layout types and 21 visual styles. An
 
 #### baoyu-diagram
 
-Generate publication-ready SVG diagrams — flowcharts, structural/architecture diagrams, and illustrative intuition diagrams. Claude writes real SVG code directly following a cohesive design system. Output is a single self-contained `.svg` file with embedded styles and auto dark-mode, ready to embed in articles, WeChat posts, slides, Notion, and docs.
+Generate publication-ready SVG diagrams — flowcharts, sequence/protocol diagrams, structural/architecture diagrams, and illustrative intuition diagrams. Supports single-diagram mode (one topic) and multi-diagram mode (analyze article content and generate diagrams at identified positions). Claude writes real SVG code directly following a cohesive design system. Output is self-contained `.svg` files with embedded styles and auto dark-mode.
 
 ```bash
-# Auto-route on the verb in the prompt
+# Single-diagram mode: auto-route on the verb in the prompt
 /baoyu-diagram "how JWT authentication works"
-
-# Force a specific type
 /baoyu-diagram "Kubernetes architecture" --type structural
-/baoyu-diagram "how attention works"     --type illustrative
-/baoyu-diagram "CI/CD pipeline"          --type flowchart
+/baoyu-diagram "OAuth 2.0 flow"          --type sequence
 
-# From a markdown source file
-/baoyu-diagram path/to/content.md
+# Multi-diagram mode: analyze article and generate diagrams at identified positions
+/baoyu-diagram path/to/article.md
+/baoyu-diagram path/to/article.md --density balanced
+/baoyu-diagram path/to/article.md --density per-section --lang zh
 
 # Language and output path
 /baoyu-diagram "微服务架构" --lang zh
@@ -296,17 +295,21 @@ Generate publication-ready SVG diagrams — flowcharts, structural/architecture 
 **Options**:
 | Option | Description |
 |--------|-------------|
-| `--type <name>` | `flowchart`, `structural`, `illustrative`, `auto` (default) |
+| `--type <name>` | `flowchart`, `sequence`, `structural`, `illustrative`, `class`, `auto` (default). Forces single mode. |
 | `--lang <code>` | Output language (en, zh, ja, ...) |
-| `--out <path>` | Output file path (default: `diagram/{slug}/diagram.svg`) |
+| `--out <path>` | Output file path (default: `diagram/{slug}/diagram.svg`). Forces single mode. |
+| `--density <level>` | Multi mode only: `minimal` (1-2), `balanced` (3-5, default), `per-section`, `rich` (6+) |
+| `--mode <mode>` | `single`, `multi`, `auto` (default — detect from input) |
 
 **Diagram types**:
 
 | Type | Reader need | Verbs that trigger it |
 |------|-------------|------------------------|
 | `flowchart` | Walk me through the steps in order | walk through, steps, process, lifecycle, workflow, state machine |
+| `sequence` | Who talks to whom, in what order | protocol, handshake, auth flow, OAuth, TCP, request/response |
 | `structural` | Show me what's inside what, how it's organised | architecture, components, topology, layout, what's inside |
 | `illustrative` | Give me the intuition — draw the mechanism | how does X work, explain X, intuition for, why does X do Y |
+| `class` | What are the types and how are they related | class diagram, UML, inheritance, interface, schema |
 
 Not an image-generation skill — no LLM image model is called. Claude writes the SVG by hand with hand-computed layout math, so every diagram honors the design system. Embedded `<style>` block with `@media (prefers-color-scheme: dark)` means the same file renders correctly in both light and dark mode anywhere it's embedded.
 

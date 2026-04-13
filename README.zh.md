@@ -274,19 +274,18 @@ clawhub install baoyu-markdown-to-html
 
 #### baoyu-diagram
 
-生成可直接发布的 SVG 图表 —— 包括流程图、架构/结构图、示意图（直觉图解）。Claude 直接输出符合统一设计规范的真实 SVG 代码，产物是单个自包含的 `.svg` 文件，内嵌样式并自动支持深色模式，可直接嵌入文章、微信公众号、幻灯片、Notion 和各类文档中。
+生成可直接发布的 SVG 图表 —— 包括流程图、时序/协议图、架构/结构图、示意图（直觉图解）。支持单图模式（针对一个主题）和多图模式（分析文章内容，在识别出的位置批量生成图表）。Claude 直接输出符合统一设计规范的真实 SVG 代码，产物是自包含的 `.svg` 文件，内嵌样式并自动支持深色模式。
 
 ```bash
-# 自动根据提示词中的动词路由类型
+# 单图模式：自动根据提示词中的动词路由类型
 /baoyu-diagram "JWT 认证流程是怎么工作的"
-
-# 强制指定类型
 /baoyu-diagram "Kubernetes 架构" --type structural
-/baoyu-diagram "注意力机制原理"   --type illustrative
-/baoyu-diagram "CI/CD 流水线"     --type flowchart
+/baoyu-diagram "OAuth 2.0 流程"  --type sequence
 
-# 从 Markdown 源文件生成
-/baoyu-diagram path/to/content.md
+# 多图模式：分析文章并在识别出的位置生成图表
+/baoyu-diagram path/to/article.md
+/baoyu-diagram path/to/article.md --density balanced
+/baoyu-diagram path/to/article.md --density per-section --lang zh
 
 # 语言和输出路径
 /baoyu-diagram "微服务架构" --lang zh
@@ -296,17 +295,21 @@ clawhub install baoyu-markdown-to-html
 **参数**：
 | 参数 | 说明 |
 |------|------|
-| `--type <name>` | `flowchart`（流程图）、`structural`（结构/架构图）、`illustrative`（示意图）、`auto`（默认，按动词路由） |
+| `--type <name>` | `flowchart`、`sequence`、`structural`、`illustrative`、`class`、`auto`（默认）。强制单图模式。 |
 | `--lang <code>` | 输出语言（en、zh、ja 等） |
-| `--out <path>` | 输出文件路径（默认：`diagram/{slug}/diagram.svg`） |
+| `--out <path>` | 输出文件路径（默认：`diagram/{slug}/diagram.svg`）。强制单图模式。 |
+| `--density <level>` | 仅多图模式：`minimal`（1-2 张）、`balanced`（3-5 张，默认）、`per-section`、`rich`（6+ 张） |
+| `--mode <mode>` | `single`、`multi`、`auto`（默认，自动根据输入判断） |
 
-**三种图表类型**：
+**五种图表类型**：
 
 | 类型 | 适用场景 | 触发动词 |
 |------|----------|----------|
 | `flowchart` | 按顺序走一遍流程 | 流程、步骤、工作流、生命周期、状态机 |
+| `sequence` | 谁和谁通信、按什么顺序 | 协议、握手、认证流程、OAuth、TCP、请求/响应 |
 | `structural` | 展示什么包含什么、如何组织 | 架构、组件、拓扑、布局、什么在什么里面 |
 | `illustrative` | 建立直觉 —— 画出机制本身 | 怎么工作、原理、为什么、直观解释 |
+| `class` | 类型是什么、它们如何关联 | 类图、UML、继承、接口、数据模型 |
 
 本技能不调用任何图像生成模型 —— Claude 通过手算坐标直接写 SVG 代码，确保每个图表都遵守设计规范。内嵌的 `<style>` 块包含 `@media (prefers-color-scheme: dark)`，同一个文件在浅色和深色模式下均正确渲染，可嵌入到任意支持 SVG 的宿主环境中。
 
