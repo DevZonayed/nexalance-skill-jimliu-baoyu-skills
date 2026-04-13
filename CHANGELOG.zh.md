@@ -2,6 +2,12 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.103.1 - 2026-04-13
+
+### 修复
+- `baoyu-markdown-to-html`：修复文章摘要中 HTML 实体未解码及 HTML 标签未剥离的问题
+- `baoyu-post-to-weibo`：修复文章摘要中 HTML 实体未解码及 HTML 标签未剥离的问题
+
 ## 1.103.0 - 2026-04-12
 
 ### 新功能

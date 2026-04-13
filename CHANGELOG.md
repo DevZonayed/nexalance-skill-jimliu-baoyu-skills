@@ -2,6 +2,12 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.103.1 - 2026-04-13
+
+### Fixes
+- `baoyu-markdown-to-html`: decode HTML entities and strip tags from article summary
+- `baoyu-post-to-weibo`: decode HTML entities and strip tags from article summary
+
 ## 1.103.0 - 2026-04-12
 
 ### Features
