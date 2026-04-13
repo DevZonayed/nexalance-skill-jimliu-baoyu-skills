@@ -67,6 +67,17 @@ STYLE (from reference):
 
 ---
 
+## Color Specification Rules
+
+Colors in prompts use hex codes for **rendering guidance only** — they tell the model which colors to use, NOT what text to display.
+
+**⚠️ CRITICAL**: Image generation models sometimes render color names and hex values as visible text labels in the image (e.g., painting "Macaron Blue #A8D8EA" as a label). This must be prevented.
+
+**Add to ALL prompts that contain a COLORS section**:
+> Color values (#hex) and color names are rendering guidance only — do NOT display color names, hex codes, or palette labels as visible text in the image.
+
+---
+
 ## Character Rendering
 
 When depicting people:
