@@ -2,6 +2,14 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.104.0 - 2026-04-13
+
+### Features
+- `baoyu-diagram`: add Mermaid sketch step (6d-0) before SVG generation — write a Mermaid code block as structural intent; add Mermaid–SVG consistency check in step 6f
+
+### Fixes
+- `baoyu-post-to-wechat`: verify editor focus before paste and type operations to prevent silent paste failures
+
 ## 1.103.1 - 2026-04-13
 
 ### Fixes

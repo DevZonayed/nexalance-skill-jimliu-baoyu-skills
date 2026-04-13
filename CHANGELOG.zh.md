@@ -2,6 +2,14 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.104.0 - 2026-04-13
+
+### 新功能
+- `baoyu-diagram`：新增 Mermaid 草图步骤（6d-0），在生成 SVG 前先写 Mermaid 代码块作为结构意图；在步骤 6f 新增 Mermaid–SVG 一致性检查
+
+### 修复
+- `baoyu-post-to-wechat`：在粘贴和输入操作前校验编辑器焦点，避免粘贴静默失败
+
 ## 1.103.1 - 2026-04-13
 
 ### 修复
