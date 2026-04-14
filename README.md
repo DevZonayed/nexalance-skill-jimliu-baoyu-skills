@@ -274,18 +274,16 @@ Generate professional infographics with 21 layout types and 21 visual styles. An
 
 #### baoyu-diagram
 
-Generate publication-ready SVG diagrams — flowcharts, sequence/protocol diagrams, structural/architecture diagrams, and illustrative intuition diagrams. Supports single-diagram mode (one topic) and multi-diagram mode (analyze article content and generate diagrams at identified positions). Claude writes real SVG code directly following a cohesive design system. Output is self-contained `.svg` files with embedded styles and auto dark-mode.
+Generate publication-ready SVG diagrams from source material — flowcharts, sequence/protocol diagrams, structural/architecture diagrams, and illustrative intuition diagrams. Analyzes input material to recommend diagram type(s) and splitting strategy, confirms the plan once, then generates all diagrams. Claude writes real SVG code directly following a cohesive design system. Output is self-contained `.svg` files with embedded styles and auto dark-mode.
 
 ```bash
-# Single-diagram mode: auto-route on the verb in the prompt
+# Topic string — skill analyzes and proposes a plan
 /baoyu-diagram "how JWT authentication works"
 /baoyu-diagram "Kubernetes architecture" --type structural
 /baoyu-diagram "OAuth 2.0 flow"          --type sequence
 
-# Multi-diagram mode: analyze article and generate diagrams at identified positions
+# File path — skill reads, analyzes, and proposes a plan
 /baoyu-diagram path/to/article.md
-/baoyu-diagram path/to/article.md --density balanced
-/baoyu-diagram path/to/article.md --density per-section --lang zh
 
 # Language and output path
 /baoyu-diagram "微服务架构" --lang zh
@@ -295,11 +293,9 @@ Generate publication-ready SVG diagrams — flowcharts, sequence/protocol diagra
 **Options**:
 | Option | Description |
 |--------|-------------|
-| `--type <name>` | `flowchart`, `sequence`, `structural`, `illustrative`, `class`, `auto` (default). Forces single mode. |
+| `--type <name>` | `flowchart`, `sequence`, `structural`, `illustrative`, `class`, `auto` (default). Skips type recommendation. |
 | `--lang <code>` | Output language (en, zh, ja, ...) |
-| `--out <path>` | Output file path (default: `diagram/{slug}/diagram.svg`). Forces single mode. |
-| `--density <level>` | Multi mode only: `minimal` (1-2), `balanced` (3-5, default), `per-section`, `rich` (6+) |
-| `--mode <mode>` | `single`, `multi`, `auto` (default — detect from input) |
+| `--out <path>` | Output file path. Generates exactly one diagram focused on the most important aspect. |
 
 **Diagram types**:
 

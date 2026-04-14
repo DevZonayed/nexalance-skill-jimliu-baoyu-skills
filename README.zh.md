@@ -274,18 +274,16 @@ clawhub install baoyu-markdown-to-html
 
 #### baoyu-diagram
 
-生成可直接发布的 SVG 图表 —— 包括流程图、时序/协议图、架构/结构图、示意图（直觉图解）。支持单图模式（针对一个主题）和多图模式（分析文章内容，在识别出的位置批量生成图表）。Claude 直接输出符合统一设计规范的真实 SVG 代码，产物是自包含的 `.svg` 文件，内嵌样式并自动支持深色模式。
+从源素材生成可直接发布的 SVG 图表 —— 包括流程图、时序/协议图、架构/结构图、示意图（直觉图解）。分析输入素材，推荐图表类型和拆分策略，一次确认后批量生成。Claude 直接输出符合统一设计规范的真实 SVG 代码，产物是自包含的 `.svg` 文件，内嵌样式并自动支持深色模式。
 
 ```bash
-# 单图模式：自动根据提示词中的动词路由类型
+# 主题描述 —— 技能分析并提出方案
 /baoyu-diagram "JWT 认证流程是怎么工作的"
 /baoyu-diagram "Kubernetes 架构" --type structural
 /baoyu-diagram "OAuth 2.0 流程"  --type sequence
 
-# 多图模式：分析文章并在识别出的位置生成图表
+# 文件路径 —— 技能读取、分析并提出方案
 /baoyu-diagram path/to/article.md
-/baoyu-diagram path/to/article.md --density balanced
-/baoyu-diagram path/to/article.md --density per-section --lang zh
 
 # 语言和输出路径
 /baoyu-diagram "微服务架构" --lang zh
@@ -295,11 +293,9 @@ clawhub install baoyu-markdown-to-html
 **参数**：
 | 参数 | 说明 |
 |------|------|
-| `--type <name>` | `flowchart`、`sequence`、`structural`、`illustrative`、`class`、`auto`（默认）。强制单图模式。 |
+| `--type <name>` | `flowchart`、`sequence`、`structural`、`illustrative`、`class`、`auto`（默认）。跳过类型推荐直接生成。 |
 | `--lang <code>` | 输出语言（en、zh、ja 等） |
-| `--out <path>` | 输出文件路径（默认：`diagram/{slug}/diagram.svg`）。强制单图模式。 |
-| `--density <level>` | 仅多图模式：`minimal`（1-2 张）、`balanced`（3-5 张，默认）、`per-section`、`rich`（6+ 张） |
-| `--mode <mode>` | `single`、`multi`、`auto`（默认，自动根据输入判断） |
+| `--out <path>` | 输出文件路径。生成聚焦于最重要内容的单张图表。 |
 
 **五种图表类型**：
 
