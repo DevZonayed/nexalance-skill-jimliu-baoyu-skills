@@ -4,6 +4,21 @@ Load this file when the prompt asks about **network infrastructure**: "where do 
 
 Sub-pattern for diagrams whose subject is **where the wires go** — which devices sit where, which security zones contain them, which links are wired vs wireless. The structural diagram type is the right home for this (devices are containers, zones are outer containers, cables are arrows), but topology drawings have some conventions of their own.
 
+## Domain color conventions
+
+When a structural or network diagram has 3+ component categories, these conventional ramp assignments help the reader parse component types at a glance. These are **suggestions**, not hard rules — the ≤2 ramp constraint from `design-system.md` still applies for simple diagrams with only 1–2 categories.
+
+| Component domain   | Suggested ramp | Rationale                                    |
+|--------------------|---------------|----------------------------------------------|
+| Frontend / Client  | teal          | cool, user-facing                            |
+| Backend / API      | green         | processing, data transformation              |
+| Database / Storage | purple        | depth, persistence                           |
+| Cloud / Infra      | amber         | external boundary, warning-adjacent           |
+| Security / Auth    | coral         | attention, trust boundary                     |
+| External / Generic | gray          | neutral, not categorized                      |
+
+When a diagram uses ≥3 of these, include a one-line legend strip at the bottom mapping colors to categories. When the diagram is simple enough to stay within 2 ramps, prefer the semantic pairing from `design-system.md` over these domain conventions.
+
 ## When to use it
 
 - The reader's question is *"what is connected to what, and across which boundary"*, not *"what happens when a request arrives"* (that's a sequence diagram).
@@ -62,6 +77,23 @@ Two distinct link styles, both already in the template:
 ```
 
 Place the legend at the bottom of the canvas, 20px above the bottom edge, aligned with the subject matter above it.
+
+## Security zone containers
+
+When a network diagram includes explicit trust boundaries (security groups, VPNs, firewalls-as-perimeters), use a **coral-tinted dashed container** to distinguish security zones from structural zones. This gives the reader an immediate visual signal: gray dashed = organizational grouping, coral dashed = trust boundary.
+
+```svg
+<rect x="60" y="100" width="560" height="160" rx="12" fill="none"
+      stroke-dasharray="4 4" class="arr-coral"/>
+<rect class="c-coral" x="60" y="92" width="120" height="16" rx="8"/>
+<text class="ts" x="120" y="104" text-anchor="middle">Trust boundary</text>
+```
+
+The coral container uses `class="arr-coral"` instead of `class="arr-alt"` — both are dashed, but `arr-coral` carries the semantic color. The pill label uses `class="c-coral"` for matching fill/stroke.
+
+Typical security zone labels: *Security group*, *Trust boundary*, *VPN tunnel*, *Private subnet*, *Encrypted zone*, *DMZ* (when DMZ is drawn as a security boundary rather than an organizational tier).
+
+When mixing structural zones (gray) and security zones (coral) in the same diagram, add a legend entry for the coral dash: `[- -] Trust boundary` alongside the structural zone entries.
 
 ## Tiered top-down layout
 

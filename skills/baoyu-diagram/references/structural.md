@@ -137,6 +137,174 @@ Layout:
 
 viewBox: max_y = 40 + 280 = 320 → H = 340
 
+## Full architecture layout
+
+A richer variant for topics like "microservices architecture", "Kubernetes cluster", "cloud topology", or any system design where the reader expects to see **technology choices, data stores, messaging, and client types** — not just generic labeled boxes. This is the most information-dense structural layout in the skill, routinely containing 12–20 named elements and using up to 4 color ramps (see `design-system.md` rule 9).
+
+### When to use
+
+- "Microservices architecture" / "system architecture" / "platform design"
+- Any structural prompt where the user's seed is a broad system name and the reader expects specific technologies
+- The reader needs to learn **what** is in the system (tech stack, ports, protocols), not just **how it's organized**
+
+### When not to use
+
+- Simple containment (VPC with two subnets) — use the basic structural pattern above
+- Two subsystems cooperating — use the subsystem architecture pattern below
+- The user provided detailed source material that already lists every component — follow the source instead of enriching
+
+### Layout structure
+
+The canonical full architecture layout has **5 horizontal tiers** inside an outer container, plus external clients and an optional summary panel below:
+
+```
+Tier 0 (external):  Client boxes — outside the container, top-left
+Tier 1:             API Gateway / Ingress — wide box spanning the top
+Tier 2:             Microservices row — 3–4 service boxes
+Tier 2.5:           Message bus pills — small labeled connectors between services
+Tier 3:             Data stores row — database boxes aligned under their owning services
+Tier 4 (optional):  Shared infrastructure — service discovery, config, monitoring
+```
+
+An auth service sits outside or beside the gateway when it's a cross-cutting concern.
+
+### Color budget (4 ramps)
+
+| Category        | Ramp    | Used on                                              |
+|-----------------|---------|------------------------------------------------------|
+| Services        | teal    | Microservice boxes, auth service                     |
+| Databases       | purple  | PostgreSQL, MongoDB, Elasticsearch, Redis            |
+| Gateway/Ingress | coral   | API Gateway box                                      |
+| Message bus     | amber   | Kafka, RabbitMQ, Event Bus connector pills           |
+| Clients         | gray    | Web app, Mobile app (neutral — not part of the system)|
+| Infrastructure  | gray    | Service discovery, config & secrets (neutral)        |
+
+A **legend strip** is mandatory — place it inside the container at the bottom or just below it.
+
+### Geometry
+
+Starting-point coordinates for a typical 3-service architecture. **Recompute** per diagram using `layout-math.md` formulas — the values below assume 3 services, 3 databases, and standard 56px-tall boxes. Adding a 4th service column or extra tiers requires recalculating x/w/gap to fit within the 600px usable width.
+
+Standard layout at viewBox `680 × H`:
+
+```
+Element                    x      y      w      h    rx
+────────────────────────  ────   ────   ────   ───  ────
+Outer container            40     80     600    var  20     c-blue (or c-gray)
+Title                      60     50     —      —    —     .title
+Subtitle                   60     72     —      —    —     .ts
+
+Client boxes (external)
+  Web App                  40     20     140    56   6     c-gray
+  Mobile App               40     var    140    56   6     c-gray
+
+API Gateway                200    120    280    80   6     c-coral
+  (title + 2–3 subtitle lines: tech, responsibilities, port)
+
+Auth Service               40     var    140    56   6     c-teal
+  (sits left of gateway or below clients)
+
+Services row (inside container)
+  Service 1                100    250    140    56   6     c-teal
+  Service 2                270    250    140    56   6     c-teal
+  Service 3                440    250    140    56   6     c-teal
+  (or 4 services: w=120, gap=16)
+
+Message bus pills
+  (small 90×24 rx=12 amber pills between services, y≈320)
+
+Data stores row
+  DB 1                     100    370    140    56   6     c-purple
+  DB 2                     270    370    140    56   6     c-purple
+  DB 3                     440    370    140    56   6     c-purple
+
+Shared infrastructure (optional)
+  Service discovery        140    460    160    44   6     c-gray
+  Config & secrets         380    460    160    44   6     c-gray
+
+Legend strip               100    var    —      —    —     .ts + swatches
+```
+
+Adjust y coordinates to maintain ≥40px vertical gaps between tiers. viewBox H is typically 560–700 depending on tier count.
+
+### Label enrichment
+
+Every box in a full architecture diagram carries **technology-specific subtitles**:
+
+| Component       | Title (th)         | Subtitle (ts)           |
+|-----------------|--------------------|-------------------------|
+| Client          | Web App            | React SPA               |
+| Client          | Mobile App         | iOS/Android             |
+| Gateway         | API Gateway        | Kong / Nginx            |
+|                 |                    | Rate limiting           |
+|                 |                    | :443                    |
+| Auth            | Auth Service       | OAuth 2.0 / JWT         |
+| Service         | User Service       | Go :8081                |
+| Service         | Order Service      | Java :8082              |
+| Message bus     | Kafka / RabbitMQ   | (pill label only)       |
+| Database        | PostgreSQL         | Users DB                |
+| Database        | MongoDB            | Orders DB               |
+| Database        | Redis              | Cache / Queue           |
+| Infrastructure  | Service discovery  | (single-line)           |
+
+The gateway box is taller (h=80) to hold 3 subtitle lines. Service and database boxes use standard 2-line layout (h=56). Message bus elements are small pills (h=24).
+
+### Message bus connector pills
+
+Small rounded-rect pills sitting on the arrows between services, styled with `c-amber`:
+
+```svg
+<g class="c-amber">
+  <rect x="225" y="316" width="90" height="24" rx="12"/>
+  <text class="ts" x="270" y="328" text-anchor="middle" dominant-baseline="central">Event Bus</text>
+</g>
+```
+
+Place pills at the midpoint of the arrow between two services. The arrow is split into two segments with the pill in between.
+
+### Summary panel (optional)
+
+For diagrams with ≥10 elements, add a summary panel below the outer container. Three columns of bullet points summarizing key architecture principles:
+
+```
+┌─────────────────┬─────────────────┬──────────────────┐
+│ • Client Apps   │ • Microservices │ • Infrastructure │
+│   - React SPA   │   - Polyglot    │   - Kubernetes   │
+│   - iOS/Android │   - Independent │   - Kong Gateway │
+│   - Unified API │   - Event-driven│   - Kafka        │
+│   - JWT auth    │   - DB per svc  │   - Prometheus   │
+└─────────────────┴─────────────────┴──────────────────┘
+```
+
+Each column is a `c-gray` box with a colored bullet (matching its category ramp) as the header indicator. Place at y = container_bottom + 40, spanning the full 600px usable width as three equal boxes (w=186, gap=21, total=186×3+21×2=600).
+
+### Footer caption
+
+Add a `.caption` footer below the summary panel: the architecture name + design philosophy in one line (e.g., "Microservices Architecture · Domain-driven design"). Centered at x=340, y = panel_bottom + 30.
+
+### Worked example — Microservices + K8s + API Gateway
+
+Plan (expanded from a seed prompt "Microservices architecture"):
+
+```
+Clients:           Web App (React SPA), Mobile App (iOS/Android)
+Gateway:           API Gateway (Kong/Nginx, Rate Limiting, Auth/Routing, :443)
+Auth:              Auth Service (OAuth 2.0 / JWT)
+Services:          User Service (Go :8081), Order Service (Java :8082),
+                   Product Service (Python :8083), Notification Svc (Node.js :8084)
+Message bus:       Kafka/RabbitMQ, Event Bus (×2)
+Data stores:       PostgreSQL (Users DB), MongoDB (Orders DB),
+                   Elasticsearch (Products), Redis (Cache/Queue)
+Container:         Kubernetes Cluster (dashed border)
+Legend:            Service, Database, Gateway, Message Bus
+Summary:           3 columns (Client Applications, Microservices, Infrastructure)
+Footer:            "Microservices Architecture · Domain-driven design"
+Color budget:      teal (services), purple (databases), coral (gateway), amber (bus)
+Named elements:    18
+```
+
+viewBox: `680 × 780`. The diagram is tall — that's expected for a full architecture layout.
+
 ## Subsystem architecture pattern
 
 A variant for topics that have **two or three parallel subsystems cooperating** — the canonical shape is "two sibling dashed-border containers, each holding a short internal flow, with a labeled cross-system arrow linking them". Unlike the default structural diagram (outer container + inner regions), this pattern places the subsystems *side by side at the top level* and lets each one carry its own mini-flowchart.

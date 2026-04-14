@@ -59,6 +59,33 @@ For CJK content, replace the 8 with 15 and the 7 with 13.
 
 **Round up to the nearest 10px** for cleaner coordinates. A box that "needs" 167px becomes 170px.
 
+### Common spacing failures — Wrong / Right
+
+Three mistakes that produce valid SVG but visually broken diagrams. Use these as a quick sanity check.
+
+**Vertical gap too small (nodes overlap):**
+
+```
+Wrong: Node A ends at y=176, Node B starts at y=180 → 4px gap, labels nearly touching
+Right: Node A ends at y=176, Node B starts at y=236 → 60px gap (the minimum vertical gap)
+```
+
+**Legend inside container boundary:**
+
+```
+Wrong: Container bottom at y=380, legend at y=370 → legend reads as container content
+Right: Container bottom at y=380, legend at y=400 → 20px clear air, legend is diagram metadata
+       (extend viewBox H to 436 to fit)
+```
+
+**Horizontal tier overflow:**
+
+```
+Wrong: 4 boxes × 180 + 3 gaps × 20 = 780 → overflows the 600px usable width by 180px
+Right: 4 boxes × 130 + 3 gaps × 20 = 580 → fits within 600px, centered at x=50
+       (shorten labels or drop subtitles to fit the narrower boxes)
+```
+
 ### Worked examples
 
 - `"JWT authentication"` (18 chars, title) → `18 × 8 + 24 = 168` → round to **170**

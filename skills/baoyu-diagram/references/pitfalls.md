@@ -268,6 +268,40 @@ Pick `ymid` so the horizontal channel runs through empty space between rows.
 
 **Fix**: replace every hardcoded color on a glyph element with the corresponding class. If you need a color that isn't in the 9-ramp palette, you don't need a new color — you're asking the glyph to say something it shouldn't. See `glyphs.md` → "Hard rules" for the full policy.
 
+## 29. Arrow bleeds through semi-transparent fill
+
+**Symptom**: a connector line that passes behind a node is faintly visible *through* the node's fill — especially noticeable on illustrative diagrams with gradient overlays or on nodes where the fill color is very light.
+
+**Check**: does any node use a translucent or very light fill (stop 50 from a ramp) through which a 1.5px stroke behind it would show? The default `c-{ramp}` fills are opaque enough that this rarely matters, but when a plan calls for a translucent overlay (gradient, or a manually lightened fill), the bleed becomes visible.
+
+**Fix**: draw an opaque background rect at the same position *before* the styled rect. The background rect masks the arrow; the styled rect paints on top with the desired appearance:
+
+```svg
+<!-- Opaque mask to hide arrow behind this node -->
+<rect x="200" y="100" width="180" height="56" rx="6" class="box"/>
+<!-- Styled node on top -->
+<g class="c-purple">
+  <rect x="200" y="100" width="180" height="56" rx="6"/>
+  <text class="th" x="290" y="124" text-anchor="middle" dominant-baseline="central">Title</text>
+</g>
+```
+
+The `box` class works as the mask because it uses opaque fill in both light and dark mode. Only add the mask rect when bleed-through is visible — most diagrams don't need it because the z-order rule (connectors drawn before nodes) already handles opaque fills.
+
+## 30. Legend clips into a container boundary
+
+**Symptom**: a legend strip sits inside (or overlaps) a dashed container's bottom edge — the legend text reads as part of the container's content instead of as diagram-level metadata.
+
+**Check**: find the lowest container boundary: `container_y + container_h`. The legend's top edge must be ≥20px below that boundary. If the legend sits inside or touching any container, it's a bug.
+
+**Fix**: move the legend below all container boundaries. Calculate: `legend_y = max(all_container_bottoms) + 20`. Then extend viewBox H to accommodate: `H = legend_y + legend_h + 20`. Never squeeze a legend inside a container to save vertical space — expand the viewBox instead.
+
+```
+Container bottom at y=380
+Legend at y=400 → 20px clear ✓
+viewBox H = 400 + 16 + 20 = 436
+```
+
 ---
 
 ## Quick self-review template
@@ -283,5 +317,7 @@ Before writing the file, mentally run through:
 > 7. Colors: ≤ 2 ramps → ___ and ___ → assigned by category  ✓
 > 8. No hardcoded text fills  ✓
 > 9. No comments in final output  ✓
+> 10. No arrow bleed-through on translucent fills (mask rect if needed)  ✓
+> 11. Legend sits ≥20px below all container boundaries  ✓
 
 If any of these feel fuzzy, the diagram isn't ready.

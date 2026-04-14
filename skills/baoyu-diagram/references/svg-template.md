@@ -206,11 +206,50 @@ Or directly to the shape itself if there's no wrapping `<g>`:
 
 **Do not nest `c-*` groups.** The CSS uses direct-child selectors — `<g class="c-blue"><g>...</g></g>` won't apply the fill to the inner shapes. If you need a click handler (future), put it on the same group that carries the color class, not a wrapper.
 
+## Optional background grid
+
+For structural diagrams with a technical/blueprint feel, an optional background grid can reinforce the engineering aesthetic. **This is rare** — most diagrams should keep the transparent background for seamless embedding. Only consider the grid when the diagram shows infrastructure, network topology, or hardware architecture where the grid reads as "engineering paper" rather than decoration.
+
+Add the pattern to `<defs>` and a full-viewport rect as the first visual element:
+
+```svg
+<defs>
+  <!-- arrow marker (always present) -->
+  <marker id="arrow" .../>
+  <!-- grid pattern (optional, structural diagrams only) -->
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="var(--grid-stroke, rgba(0,0,0,0.06))" stroke-width="0.5"/>
+  </pattern>
+</defs>
+
+<!-- Grid background (first visual element, behind everything) -->
+<rect width="680" height="H" fill="url(#grid)"/>
+```
+
+Define the CSS variable in both modes so the value is explicit and discoverable (not buried in an inline fallback). Add these inside the existing `<style>` block:
+
+```css
+svg { --grid-stroke: rgba(0,0,0,0.06); }
+
+@media (prefers-color-scheme: dark) {
+  svg { --grid-stroke: rgba(255,255,255,0.05); }
+  /* ... existing dark-mode overrides ... */
+}
+```
+
+With the explicit light-mode declaration, the inline fallback in the `<pattern>` stroke is redundant but harmless — keep it as a safety net for renderers that strip `<style>` blocks.
+
+**Rules:**
+- Grid stroke opacity must stay ≤0.08 in both modes — the grid is a texture, not a visual element
+- The grid rect is always the first child after `</defs>`, so every other element paints on top
+- Never use the grid on illustrative, sequence, or class diagrams — it fights with their visual language
+- If the grid competes with the diagram's lines for visual attention, remove it
+
 ## What to emit after the template
 
 Visual elements in this order:
 
-1. Background decorations (dashed frame for a schematic container, for example)
+1. Background decorations (optional grid rect, dashed frame for a schematic container)
 2. Containers (outer group rectangles for structural diagrams)
 3. Connectors and arrows (so they sit behind the boxes they connect, preventing visible overlap) — both solid `.arr`/`.arr-{ramp}` primary flows and `.arr-alt` alternative/optional/weak flows belong in this layer
 4. Nodes (rects with text)
