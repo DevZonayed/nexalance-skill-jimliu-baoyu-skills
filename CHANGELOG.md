@@ -2,6 +2,14 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.107.0 - 2026-04-15
+
+### Features
+- `baoyu-diagram`: add SVG-to-PNG @2x conversion script — auto-converts generated SVG diagrams to @2x PNG using Sharp; consolidate reference files and add `{baseDir}` path resolution for portable skill loading
+
+### Fixes
+- `claude-plugin`: allow inline marketplace manifest (#130)
+
 ## 1.106.0 - 2026-04-14
 
 ### Features

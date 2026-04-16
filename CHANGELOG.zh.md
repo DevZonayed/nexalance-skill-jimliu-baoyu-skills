@@ -2,6 +2,14 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.107.0 - 2026-04-15
+
+### 新功能
+- `baoyu-diagram`：新增 SVG 转 @2x PNG 转换脚本 —— 使用 Sharp 自动将生成的 SVG 图表转为 @2x PNG；精简合并参考文件，新增 `{baseDir}` 路径解析以支持可移植的技能加载
+
+### 修复
+- `claude-plugin`：支持内联 marketplace manifest (#130)
+
 ## 1.106.0 - 2026-04-14
 
 ### 新功能
