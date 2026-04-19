@@ -2,6 +2,12 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.108.0 - 2026-04-19
+
+### Refactor
+- Refactor skills into focused reference files for better maintainability
+- Use npm packages for shared skill code across skills
+
 ## 1.107.0 - 2026-04-15
 
 ### Features
