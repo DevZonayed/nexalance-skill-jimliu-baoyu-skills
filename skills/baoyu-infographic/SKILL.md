@@ -1,7 +1,7 @@
 ---
 name: baoyu-infographic
 description: Generate professional infographics with 21 layout types and 21 visual styles. Analyzes content, recommends layout×style combinations, and generates publication-ready infographics. Use when user asks to create "infographic", "信息图", "visual summary", "可视化", or "高密度信息大图".
-version: 1.56.1
+version: 1.57.0
 metadata:
   openclaw:
     homepage: https://github.com/JimLiu/baoyu-skills#baoyu-infographic
@@ -23,11 +23,17 @@ Concrete `AskUserQuestion` references below are examples — substitute the loca
 
 ## Image Generation Tools
 
-When this skill needs to render an image:
+When this skill needs to render an image, resolve the backend in this order:
 
-- **Use whatever image-generation tool or skill is available** in the current runtime — e.g., Codex `imagegen`, Hermes `image_generate`, `baoyu-imagine`, or any equivalent the user has installed.
-- **If multiple are available**, ask the user **once** at the start which to use (batch with any other initial questions).
-- **If none are available**, tell the user and ask how to proceed.
+1. **Current-request override** — if the user names a specific backend in the current message, use it.
+2. **Saved preference** — if `EXTEND.md` sets `preferred_image_backend` to a backend available right now, use it.
+3. **Auto-select** (when the preference is `auto`, unset, or the pinned backend isn't available):
+   - If the current runtime exposes a native image tool (e.g., Codex `imagegen`, Hermes `image_generate`), use it. Runtime-native tools are preferred by default — agents that know their own tool inventory should surface the native one here.
+   - Otherwise, if exactly one non-native backend is installed (e.g., `baoyu-imagine`), use it.
+   - Otherwise (multiple non-native backends with no runtime-native tool), ask the user once — batch with any other initial questions.
+4. **If none are available**, tell the user and ask how to proceed.
+
+Setting `preferred_image_backend: ask` forces the step-3 prompt every run regardless of available backends. Users change the pinned backend via the `## Changing Preferences` section below.
 
 **Prompt file requirement (hard)**: write each image's full, final prompt to a standalone file under `prompts/` (naming: `NN-{type}-[slug].md`) BEFORE invoking any backend. The backend receives the prompt file (or its content); the file is the reproducibility record and lets you switch backends without regenerating prompts.
 
@@ -201,7 +207,7 @@ Check EXTEND.md in priority order — the first one found wins:
 | Found | Read, parse, display a one-line summary |
 | Not found | Ask the user with `AskUserQuestion` (see `references/config/first-time-setup.md`) |
 
-**EXTEND.md supports**: preferred layout/style, default aspect ratio, custom style definitions, language preference.
+**EXTEND.md supports**: preferred layout/style, default aspect ratio, language preference, preferred image backend, custom style definitions.
 
 Schema: `references/config/preferences-schema.md`
 
@@ -248,6 +254,7 @@ Ask the user to confirm the questions below following the [User Input Tools](#us
 | 1 | **Combination** | Always | 3+ layout×style combos with rationale |
 | 2 | **Aspect** | Always | Named presets (landscape/portrait/square) or custom W:H ratio (e.g., 3:4, 4:3, 2.35:1) |
 | 3 | **Language** | Only if source ≠ user language | Language for text content |
+| 4 | **Image Backend** | Only if step 3 of the `## Image Generation Tools` rule needs to ask (no runtime-native tool AND multiple non-native backends, OR `preferred_image_backend: ask`) | Available backends |
 
 ### Step 5: Generate Prompt → `prompts/infographic.md`
 
@@ -266,7 +273,7 @@ Combine:
 
 ### Step 6: Generate Image
 
-1. Select the backend via the `## Image Generation Tools` rule at the top: use whatever is available; if multiple, ask the user once. Do this once per session.
+1. Resolve the backend per the `## Image Generation Tools` rule at the top of this file.
 2. Ensure the full final prompt is persisted at `prompts/infographic.md` (already written in Step 5) BEFORE invoking the backend — the file is the reproducibility record.
 3. **Check for existing file**: Before generating, check if `infographic.png` exists
    - If exists: Rename to `infographic-backup-YYYYMMDD-HHMMSS.png`
@@ -275,7 +282,7 @@ Combine:
 
 ### Step 7: Output Summary
 
-Report: topic, layout, style, aspect, language, output path, files created.
+Report: topic, layout, style, aspect, language, image backend, output path, files created.
 
 ## References
 
@@ -285,6 +292,15 @@ Report: topic, layout, style, aspect, language, output path, files created.
 - `references/layouts/<layout>.md` - 21 layout definitions
 - `references/styles/<style>.md` - 21 style definitions
 
-## Extension Support
+## Changing Preferences
 
-Custom configurations via EXTEND.md. See **Step 1.1** for paths and supported options.
+EXTEND.md lives at the first matching path in Step 1.1. Three ways to change it:
+
+- **Edit directly** — open EXTEND.md and change fields. Full schema: `references/config/preferences-schema.md`.
+- **Reconfigure interactively** — delete EXTEND.md (or ask "reconfigure baoyu-infographic preferences" / "重新配置"). The next run re-triggers first-time setup.
+- **Common one-line edits**:
+  - `preferred_image_backend: auto` — default; runtime-native tool wins, falls back to the only installed backend, asks only if multiple non-native are present.
+  - `preferred_image_backend: codex-imagegen` — pin to Codex's built-in.
+  - `preferred_image_backend: baoyu-imagine` — pin to the baoyu-imagine skill.
+  - `preferred_image_backend: ask` — confirm backend every run.
+  - `preferred_layout: dense-modules`, `preferred_style: morandi-journal`, `preferred_aspect: portrait`, `language: zh` — shift the Step-3 recommendations and Step-4 defaults.
