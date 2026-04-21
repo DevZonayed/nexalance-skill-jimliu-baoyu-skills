@@ -1,7 +1,7 @@
 ---
 name: baoyu-infographic
 description: Generate professional infographics with 21 layout types and 21 visual styles. Analyzes content, recommends layout×style combinations, and generates publication-ready infographics. Use when user asks to create "infographic", "信息图", "visual summary", "可视化", or "高密度信息大图".
-version: 1.57.0
+version: 1.57.1
 metadata:
   openclaw:
     homepage: https://github.com/JimLiu/baoyu-skills#baoyu-infographic
@@ -70,6 +70,15 @@ references:
 - If `usage: direct` AND the chosen backend accepts reference images (e.g., `baoyu-imagine` via `--ref`) → pass the file via the backend's ref parameter
 - Otherwise → embed extracted `style`/`palette` traits in the prompt text
 
+## Confirmation Policy
+
+Default behavior: **confirm before generation**.
+
+- Treat explicit skill invocation, a file path, a matched keyword shortcut, `EXTEND.md` defaults, and the documented default combination as **recommendation inputs only**. None of them authorizes skipping confirmation.
+- Do **not** start Step 5 or Step 6 until the user confirms the combination/aspect/language/backend choices.
+- Skip confirmation only when the current request explicitly says to do so, for example: `--no-confirm`, "直接生成", "不用确认", "跳过确认", "按默认出图", or equivalent wording.
+- If confirmation is skipped explicitly, state the assumed combination/aspect/language/backend in the next user-facing update before generating.
+
 ## Options
 
 | Option | Values |
@@ -78,6 +87,7 @@ references:
 | `--style` | 21 options (see Style Gallery), default: craft-handmade |
 | `--aspect` | Named: landscape (16:9), portrait (9:16), square (1:1). Custom: any W:H ratio (e.g., 3:4, 4:3, 2.35:1) |
 | `--lang` | en, zh, ja, etc. |
+| `--no-confirm` | Skip Step 4 only when the user explicitly requests direct generation without confirmation |
 | `--ref <files...>` | Reference images (file paths) for style / palette / composition / subject guidance |
 
 ## Layout Gallery (21)
@@ -158,11 +168,11 @@ Full definitions live at `references/styles/<style>.md`.
 | Educational Diagram | `hub-spoke` + `hand-drawn-edu` |
 | Process Tutorial | `linear-progression` + `hand-drawn-edu` |
 
-Default combination: `bento-grid` + `craft-handmade`.
+Default combination: `bento-grid` + `craft-handmade` (fallback recommendation only — per the [Confirmation Policy](#confirmation-policy), defaults never bypass Step 4).
 
 ## Keyword Shortcuts
 
-When the user's input contains these keywords, auto-select the layout and promote the listed styles to the top of Step 3 recommendations. Skip content-based layout inference for matched keywords. Append any `Prompt Notes` to the Step 5 prompt.
+When the user's input contains these keywords, use the mapped layout as the leading Step 3 recommendation and promote the listed styles to the top of the Step 3 list. Skip content-based layout inference for matched keywords. Append any `Prompt Notes` to the Step 5 prompt.
 
 | User Keyword | Layout | Recommended Styles | Default Aspect | Prompt Notes |
 |--------------|--------|--------------------|----------------|--------------|
@@ -237,7 +247,7 @@ See `references/structured-content-template.md` for detailed format.
 
 ### Step 3: Recommend Combinations
 
-**3.1 Check Keyword Shortcuts first**: If user input matches a keyword from the **Keyword Shortcuts** table, auto-select the associated layout and prioritize associated styles as top recommendations. Skip content-based layout inference.
+**3.1 Check Keyword Shortcuts first**: If user input matches a keyword from the **Keyword Shortcuts** table, use the associated layout as the leading recommendation and prioritize associated styles as top recommendations. Skip content-based layout inference.
 
 **3.2 Otherwise**, recommend 3-5 layout×style combinations based on:
 - Data structure → matching layout
@@ -246,6 +256,8 @@ See `references/structured-content-template.md` for detailed format.
 - User design instructions
 
 ### Step 4: Confirm Options
+
+**Hard gate**: this step is mandatory per the [Confirmation Policy](#confirmation-policy) — Steps 5–6 cannot start until the user confirms here (or explicitly opts out with `--no-confirm` / equivalent in the current request).
 
 Ask the user to confirm the questions below following the [User Input Tools](#user-input-tools) rule at the top of this file (batch into one call if the runtime supports multiple questions; otherwise ask one at a time in priority order).
 
@@ -303,4 +315,4 @@ EXTEND.md lives at the first matching path in Step 1.1. Three ways to change it:
   - `preferred_image_backend: codex-imagegen` — pin to Codex's built-in.
   - `preferred_image_backend: baoyu-imagine` — pin to the baoyu-imagine skill.
   - `preferred_image_backend: ask` — confirm backend every run.
-  - `preferred_layout: dense-modules`, `preferred_style: morandi-journal`, `preferred_aspect: portrait`, `language: zh` — shift the Step-3 recommendations and Step-4 defaults.
+  - `preferred_layout: dense-modules`, `preferred_style: morandi-journal`, `preferred_aspect: portrait`, `language: zh` — shift the Step-3 recommendations and Step-4 defaults (per [Confirmation Policy](#confirmation-policy), these never bypass Step 4).

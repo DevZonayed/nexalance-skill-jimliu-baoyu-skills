@@ -40,6 +40,8 @@ custom_styles:            # extra style definitions merged with the 21 built-ins
 
 Backend resolution logic is documented in the `## Image Generation Tools` section of `SKILL.md`. This doc only defines the field.
 
+All fields in this schema are defaults only — they shape Step-3 recommendations and Step-4 defaults but never bypass Step 4 confirmation (see the `## Confirmation Policy` section in SKILL.md).
+
 Example backend ids:
 
 | Value | Meaning |

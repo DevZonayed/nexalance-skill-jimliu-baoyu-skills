@@ -7,7 +7,7 @@ description: First-time setup flow for baoyu-infographic preferences
 
 ## Overview
 
-When no EXTEND.md is found, guide the user through preference setup before generating any infographic.
+When no EXTEND.md is found, guide the user through preference setup before generating any infographic. Saved preferences shift Step-3 recommendations and Step-4 defaults only — they never bypass Step 4 confirmation (see the `## Confirmation Policy` section in SKILL.md).
 
 **⛔ BLOCKING OPERATION**: This setup MUST complete before ANY other workflow steps. Do NOT:
 - Ask about source content or topic
