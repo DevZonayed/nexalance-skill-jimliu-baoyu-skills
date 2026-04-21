@@ -1,7 +1,7 @@
 ---
 name: baoyu-slide-deck
 description: Generates professional slide deck images from content. Creates outlines with style instructions, then generates individual slide images. Use when user asks to "create slides", "make a presentation", "generate deck", "slide deck", or "PPT".
-version: 1.56.1
+version: 1.56.2
 metadata:
   openclaw:
     homepage: https://github.com/JimLiu/baoyu-skills#baoyu-slide-deck
@@ -42,6 +42,15 @@ Setting `preferred_image_backend: ask` forces the step-3 prompt every run regard
 **Prompt file requirement (hard)**: write each image's full, final prompt to a standalone file under `prompts/` (naming: `NN-slide-[slug].md`) BEFORE invoking any backend. The file is the reproducibility record and lets you switch backends without regenerating prompts.
 
 Concrete tool names (`imagegen`, `image_generate`, `baoyu-imagine`) above are examples — substitute the local equivalents under the same rule.
+
+## Confirmation Policy
+
+Default behavior: **confirm before generation**.
+
+- Treat explicit skill invocation, a file path, matched signals/presets, and `EXTEND.md` defaults as **recommendation inputs only**. None of them authorizes skipping confirmation.
+- Do **not** start Step 3 or later until the user completes Step 2.
+- Skip confirmation only when the current request explicitly says to do so, for example: "直接生成", "不用确认", "跳过确认", "按默认出幻灯片", or equivalent wording.
+- If confirmation is skipped explicitly, state the assumed style / audience / slide-count / language / backend in the next user-facing update before generating.
 
 ## Language
 
@@ -220,6 +229,8 @@ If found, read, parse, and print a summary (style / audience / language / review
 Save findings to `analysis.md`: topic, audience, signals, recommended style and slide count, language detection.
 
 ### Step 2: Confirmation ⚠️ REQUIRED
+
+**Hard gate**: this step is mandatory per the [Confirmation Policy](#confirmation-policy) — Steps 3+ cannot start until the user confirms here (or explicitly opts out with "直接生成" / equivalent wording in the current request).
 
 **Round 1 (always)** — batch five questions in one `AskUserQuestion` call: style, audience, slide count, review-outline?, review-prompts?. Verbatim options in `references/confirmation.md`.
 
