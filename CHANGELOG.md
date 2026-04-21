@@ -2,6 +2,18 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.109.0 - 2026-04-21
+
+### Features
+- `baoyu-url-to-markdown`: vendor the `baoyu-fetch` runtime into `scripts/lib` and run it through a local `scripts/baoyu-fetch` CLI so published skill installs are self-contained
+
+### Fixes
+- `baoyu-fetch`: extract playable X/Twitter video MP4 variants for single posts and X Articles, choosing the highest-bitrate MP4 and rendering article videos as `[video](...)`
+- `sync-clawhub`: publish from the shared release file list so extensionless CLI entrypoints, `bun.lock`, and vendored `scripts/lib` files are uploaded
+
+### Maintenance
+- Upgrade `defuddle` to 0.17.0 and `jsdom` to 29.0.2; override `@xmldom/xmldom` to 0.8.13 to keep the Defuddle dependency chain vulnerability-free
+
 ## 1.108.0 - 2026-04-19
 
 ### Refactor

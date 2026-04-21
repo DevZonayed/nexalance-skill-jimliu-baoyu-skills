@@ -2,6 +2,18 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.109.0 - 2026-04-21
+
+### 新功能
+- `baoyu-url-to-markdown`：将 `baoyu-fetch` 运行时代码 vendored 到 `scripts/lib`，并通过本地 `scripts/baoyu-fetch` CLI 调用，使发布后的技能安装不再依赖 `baoyu-fetch` npm 包
+
+### 修复
+- `baoyu-fetch`：修复 X/Twitter 单条内容与 X Article 的视频解析，提取可播放的最高码率 MP4，并将文章视频渲染为 `[video](...)`
+- `sync-clawhub`：改用共享 release 文件清单发布，确保无扩展名 CLI 入口、`bun.lock` 和 vendored `scripts/lib` 文件都会被上传
+
+### 维护
+- 将 `defuddle` 升级到 0.17.0、`jsdom` 升级到 29.0.2，并通过 override 将 `@xmldom/xmldom` 固定到 0.8.13，清除 Defuddle 依赖链上的漏洞提示
+
 ## 1.108.0 - 2026-04-19
 
 ### 重构
