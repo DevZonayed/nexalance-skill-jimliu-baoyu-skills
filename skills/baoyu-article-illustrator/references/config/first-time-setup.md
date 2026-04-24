@@ -61,8 +61,10 @@ Position defaults to bottom-right.
 header: "Style"
 question: "Default illustration style preference? Or type another style name or your custom style"
 options:
-  - label: "None (Recommended)"
-    description: "Auto-select based on content analysis"
+  - label: "sketch-notes (Recommended)"
+    description: "Warm cream paper, black hand-drawn lines, soft pastel blocks — educational infographic feel. Great default for most articles."
+  - label: "None"
+    description: "Auto-select based on content analysis (falls back to sketch-notes when no strong signal)"
   - label: "notion"
     description: "Minimalist hand-drawn line art"
   - label: "warm"

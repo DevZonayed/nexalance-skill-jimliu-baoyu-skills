@@ -176,6 +176,8 @@ Based on Step 2 content analysis, recommend a preset first (sets both type & sty
 - [Alternative preset] — [brief]
 - Or choose type manually: infographic / scene / flowchart / comparison / framework / timeline / mixed
 
+**Default**: if Step 2 found no strong content signal, the recommended preset MUST be `hand-drawn-edu` (infographic + sketch-notes + macaron — warm cream paper, black hand-drawn lines, soft pastel blocks). This is the universal fallback.
+
 **If user picks a preset → skip Q3** (type & style both resolved).
 **If user picks a type → Q3 is REQUIRED.**
 
@@ -203,12 +205,14 @@ If no `preferred_style` (present Core Styles first):
 
 | Core Style | Maps To | Best For |
 |------------|---------|----------|
+| `hand-drawn` | sketch-notes | **Default.** Warm cream paper, black hand-drawn lines, pastel blocks — educational infographics, concept explainers, onboarding, general knowledge articles |
 | `minimal-flat` | notion | General, knowledge sharing, SaaS |
 | `sci-fi` | blueprint | AI, frontier tech, system design |
-| `hand-drawn` | sketch/warm | Relaxed, reflective, casual |
 | `editorial` | editorial | Processes, data, journalism |
 | `scene` | warm/watercolor | Narratives, emotional, lifestyle |
 | `poster` | screen-print | Opinion, editorial, cultural, cinematic |
+
+**Default recommendation**: when Step 2 surfaces no strong content signal, recommend **`hand-drawn-edu`** preset (→ infographic + sketch-notes + macaron) as the primary option in Q1. When the user picks a type manually without a preferred_style, recommend `sketch-notes` first in Q3.
 
 Style selection based on Type × Style compatibility matrix (styles.md).
 **In Step 5.1**, read `styles/<style>.md` for visual elements and rendering rules.
