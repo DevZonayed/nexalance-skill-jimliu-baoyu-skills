@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.113.0 - 2026-04-25
+
+### Features
+- `baoyu-imagine`: add DashScope Wan 2.7 image model support (`wan2.7-image-pro` and `wan2.7-image`) directly through the official Aliyun (Bailian) API. Supports text-to-image, image editing, and multi-image fusion with up to 9 reference images, with documented `[1:8, 8:1]` aspect ratio validation and per-mode pixel-budget rules. Forces `parameters.n: 1` to match baoyu-imagine's single-image save semantics and explicitly rejects `--n > 1` to prevent silent multi-image billing (the API defaults to `n=4` in non-collage mode). Allows `--provider dashscope --ref ...` opt-in for Wan 2.7 reference workflows.
+
 ## 1.112.0 - 2026-04-24
 
 ### Features
