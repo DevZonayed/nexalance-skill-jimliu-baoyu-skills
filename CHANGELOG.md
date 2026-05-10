@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.115.2 - 2026-05-10
+
+### Fixes
+- `baoyu-post-to-x`: honor explicit Codex Chrome plugin requests as a distinct browser-control mode, keep Chrome Computer Use and CDP fallbacks from silently taking over, and improve X Articles draft creation detection.
+
 ## 1.115.1 - 2026-05-10
 
 ### Fixes

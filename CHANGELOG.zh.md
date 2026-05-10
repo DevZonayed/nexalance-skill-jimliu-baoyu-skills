@@ -2,6 +2,11 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.115.2 - 2026-05-10
+
+### 修复
+- `baoyu-post-to-x`：将显式请求 Codex Chrome 插件的场景作为独立浏览器控制模式处理，避免 Chrome Computer Use 或 CDP 回退流程静默接管；同时改进 X Articles 草稿创建按钮检测。
+
 ## 1.115.1 - 2026-05-10
 
 ### 修复
