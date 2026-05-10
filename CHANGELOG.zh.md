@@ -2,6 +2,11 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.115.0 - 2026-05-09
+
+### 新功能
+- `baoyu-post-to-x`：新增 Chrome Computer Use 作为 Codex 环境下的首选执行模式。当 Computer Use 工具可用时，所有 X 界面操作（发帖、文章、引用、视频）均通过用户真实 Chrome 窗口完成，不再使用 CDP 脚本。CDP 脚本降级为 Computer Use 不可用或用户明确要求时的回退方案。
+
 ## 1.114.1 - 2026-05-08
 
 ### 修复

@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.115.0 - 2026-05-09
+
+### Features
+- `baoyu-post-to-x`: add Chrome Computer Use as the preferred execution mode in Codex. When Computer Use tools are available, all X UI actions (compose, article, quote, video) go through the user's real Chrome window instead of CDP scripts. CDP scripts become a fallback when Computer Use is unavailable or explicitly not requested.
+
 ## 1.114.1 - 2026-05-08
 
 ### Fixes
