@@ -36,6 +36,9 @@ async function sendQrToTelegram(session: ChromeSession): Promise<void> {
   const chatId = process.env.TELEGRAM_CHAT_ID;
   if (!botToken || !chatId) return;
 
+  // Wait for QR to render before extracting
+  await sleep(2000);
+
   try {
     // Try to extract QR image from DOM first (avoids full-page screenshot noise)
     const domResult = await session.cdp.send<{ result: { value: string } }>('Runtime.evaluate', {
@@ -85,9 +88,9 @@ async function sendQrToTelegram(session: ChromeSession): Promise<void> {
       }, { sessionId: session.sessionId });
       imgBuffer = Buffer.from((inBrowserFetch.result.value as string) ?? '', 'base64');
     } else {
-      // Fallback: full-page screenshot
+      // Fallback: viewport screenshot (smaller than full-page; QR is usually in viewport)
       const screenshotResp = await session.cdp.send<{ data: string }>(
-        'Page.captureScreenshot', { format: 'png' }, { sessionId: session.sessionId }
+        'Page.captureScreenshot', { format: 'png', captureBeyondViewport: false }, { sessionId: session.sessionId }
       );
       imgBuffer = Buffer.from(screenshotResp.data ?? '', 'base64');
     }
@@ -104,6 +107,7 @@ async function sendQrToTelegram(session: ChromeSession): Promise<void> {
       method: 'POST',
       headers: { 'Content-Type': `multipart/form-data; boundary=${boundary}` },
       body: Buffer.concat(parts),
+      signal: AbortSignal.timeout(10_000),
     });
     const tgJson = await tgResp.json() as { ok: boolean; description?: string };
     if (tgJson.ok) {
@@ -117,8 +121,7 @@ async function sendQrToTelegram(session: ChromeSession): Promise<void> {
 }
 
 async function waitForLogin(session: ChromeSession, timeoutMs = 120_000): Promise<boolean> {
-  // Wait for QR to render, then notify via Telegram if configured
-  await sleep(2000);
+  // Notify via Telegram if configured (no-op when env vars absent)
   await sendQrToTelegram(session);
   const start = Date.now();
   while (Date.now() - start < timeoutMs) {
