@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.116.2 - 2026-05-13
+
+### Documentation
+- `baoyu-wechat-summary`: update example group name in SKILL.md
+
 ## 1.116.1 - 2026-05-13
 
 ### Features

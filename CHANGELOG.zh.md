@@ -2,6 +2,11 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.116.2 - 2026-05-13
+
+### 文档
+- `baoyu-wechat-summary`：更新 SKILL.md 中的示例群名
+
 ## 1.116.1 - 2026-05-13
 
 ### 新功能
