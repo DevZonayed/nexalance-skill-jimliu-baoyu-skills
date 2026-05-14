@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.116.4 - 2026-05-14
+
+### Refactor
+- `baoyu-wechat-summary`: streamline roast version prompts in output-formats.md (99 → 23 lines), add roast-specific profile usage bullets to SKILL.md Round 2
+
 ## 1.116.3 - 2026-05-13
 
 ### Documentation

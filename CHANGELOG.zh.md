@@ -2,6 +2,11 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.116.4 - 2026-05-14
+
+### 重构
+- `baoyu-wechat-summary`：精简毒舌版提示词（99 → 23 行），在 SKILL.md Round 2 中增加 roast 专用的画像使用指引
+
 ## 1.116.3 - 2026-05-13
 
 ### 文档
