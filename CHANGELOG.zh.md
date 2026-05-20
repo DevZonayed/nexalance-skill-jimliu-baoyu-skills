@@ -2,6 +2,18 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.117.3 - 2026-05-20
+
+### 新功能
+- CI：新增 skill 发布提交校验 —— 涉及 `skills/<name>/**` 的提交必须使用 Conventional Commit 格式；发布/同步时校验 SKILL.md 版本一致性
+
+### 修复
+- `baoyu-diagram`：为 SKILL.md 添加 version 字段
+- `baoyu-post-to-wechat`：同步 SKILL.md 版本
+
+### 文档
+- `baoyu-wechat-summary`：重构 profile 字段 —— 将 `aliases` 拆分为 `group_nicknames`（用户历史群名）和 `aliases`（其他成员对用户的称呼），新增 `tags` 字段存储横向属性
+
 ## 1.117.2 - 2026-05-17
 
 ### 文档

@@ -2,6 +2,18 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.117.3 - 2026-05-20
+
+### Features
+- CI: add skill release commit validation — commits touching `skills/<name>/**` must use Conventional Commit subjects; SKILL.md version validated during publish/sync
+
+### Fixes
+- `baoyu-diagram`: add version field to SKILL.md
+- `baoyu-post-to-wechat`: sync SKILL.md version
+
+### Documentation
+- `baoyu-wechat-summary`: restructure profile fields — split `aliases` into `group_nicknames` (user's own prior names) and `aliases` (nicknames from other members), add `tags` for cross-cutting attributes
+
 ## 1.117.2 - 2026-05-17
 
 ### Documentation
