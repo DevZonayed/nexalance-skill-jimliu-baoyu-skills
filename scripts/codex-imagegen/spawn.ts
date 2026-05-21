@@ -16,7 +16,16 @@ export async function runCodexExec(input: SpawnInput): Promise<CodexRunResult> {
   const logDir = await mkdtemp(path.join(tmpdir(), "codex-imggen-"));
   const rawLogPath = path.join(logDir, "stream.jsonl");
 
-  const args = ["exec", "--json", "--sandbox", "danger-full-access"];
+  // --skip-git-repo-check: lets the wrapper run from non-git cwds
+  //   (e.g. /tmp, or a skill installed under ~/.claude/plugins/...).
+  //   Without it, codex refuses with "Not inside a trusted directory".
+  const args = [
+    "exec",
+    "--json",
+    "--sandbox",
+    "danger-full-access",
+    "--skip-git-repo-check",
+  ];
   for (const img of input.refImages ?? []) {
     args.push("--image", img);
   }

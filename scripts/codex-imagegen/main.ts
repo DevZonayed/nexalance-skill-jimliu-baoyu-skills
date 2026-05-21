@@ -71,13 +71,22 @@ function parseArgs(argv: string[]): CliOptions {
   }
   if (!opts.outputPath) throw new GenError("invalid_args", "--image is required", false);
   if (!opts.prompt && !promptFile) throw new GenError("invalid_args", "--prompt or --prompt-file required", false);
+
+  // Resolve every filesystem path to absolute up front, so behavior is
+  // independent of the caller's cwd. This matters when the wrapper is
+  // invoked from a skill running in an arbitrary working directory.
+  const cwd = process.cwd();
+  const toAbs = (p: string) => (path.isAbsolute(p) ? p : path.resolve(cwd, p));
+
+  opts.outputPath = toAbs(opts.outputPath);
   if (promptFile) {
     opts.prompt = ""; // will be loaded later
-    (opts as any).__promptFile = promptFile;
+    (opts as any).__promptFile = toAbs(promptFile);
   }
-  if (!path.isAbsolute(opts.outputPath)) {
-    opts.outputPath = path.resolve(process.cwd(), opts.outputPath);
-  }
+  opts.refImages = opts.refImages.map(toAbs);
+  if (opts.cacheDir) opts.cacheDir = toAbs(opts.cacheDir);
+  if (opts.logFile) opts.logFile = toAbs(opts.logFile);
+
   return opts;
 }
 

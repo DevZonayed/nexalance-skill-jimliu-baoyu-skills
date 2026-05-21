@@ -29,17 +29,17 @@ When this skill needs to render an image, resolve the backend in this order:
 2. **Saved preference** — if `EXTEND.md` sets `preferred_image_backend` to a backend available right now, use it.
 3. **Auto-select** (when the preference is `auto`, unset, or the pinned backend isn't available):
    - **Codex (`imagegen`)** — first, inspect your available-skills / tool inventory. If a skill named `imagegen` is listed, you are running inside Codex and MUST use it: invoke via the `Skill` tool with `skill: "imagegen"`, passing the saved prompt file's content (plus output path and aspect ratio per Codex `imagegen`'s own args). Codex `imagegen` is the official raster backend in that runtime and outranks any non-native skill (e.g., `baoyu-imagine`) unless the user has explicitly pinned a different `preferred_image_backend`.
-   - **Codex via `codex exec` (`codex-imagegen`)** — if the current runtime does NOT expose a native `imagegen` skill but the `codex` CLI is on `PATH` and `codex login` is active (e.g., Claude Code with Codex CLI installed), invoke the `codex-imagegen` wrapper. Command shape:
+   - **Codex via `codex exec` (`codex-imagegen`)** — if the current runtime does NOT expose a native `imagegen` skill but the `codex` CLI is on `PATH` and `codex login` is active (e.g., Claude Code with Codex CLI installed), invoke the `codex-imagegen` wrapper. **Path resolution**: `scripts/codex-imagegen.sh` lives at the plugin/repo root, NOT relative to your shell cwd. From this `SKILL.md`'s base directory, the wrapper is at `../../scripts/codex-imagegen.sh` — resolve to an absolute path before invoking. Command shape:
      ```bash
-     ./scripts/codex-imagegen.sh \
+     <ABSOLUTE_PLUGIN_ROOT>/scripts/codex-imagegen.sh \
        --image <absolute_output_path> \
-       --prompt-file <prompts/NN-cover-[slug].md> \
+       --prompt-file <absolute_path_to_prompts/NN-cover-[slug].md> \
        --aspect <ratio> \
-       [--ref <file>]... \
+       [--ref <absolute_file>]... \
        [--cache-dir ~/.cache/baoyu-codex-imagegen] \
-       [--log-file <jsonl_log_path>]
+       [--log-file <absolute_jsonl_log_path>]
      ```
-     Parse the single-line JSON on stdout. On `{"status":"ok",...}` proceed to Step 5. On `{"status":"error","error_kind":...}` report the `error_kind` to the user and (if retryable) ask whether to retry or fall back to another backend. The wrapper uses the user's Codex subscription — no `OPENAI_API_KEY` needed.
+     All input paths to the wrapper are auto-resolved against the wrapper's `process.cwd()` if you pass relative ones, but agents should pass absolute paths to be robust against cwd drift. Parse the single-line JSON on stdout. On `{"status":"ok",...}` proceed to Step 5. On `{"status":"error","error_kind":...}` report the `error_kind` to the user and (if retryable) ask whether to retry or fall back to another backend. The wrapper uses the user's Codex subscription — no `OPENAI_API_KEY` needed.
    - **Other runtime-native tools** — if the runtime exposes a different native image tool (e.g., Hermes `image_generate`), use it the same way.
    - Otherwise, if exactly one non-native backend is installed (e.g., `baoyu-imagine`), use it.
    - Otherwise (multiple non-native backends with no runtime-native tool), ask the user once — batch with any other initial questions.
@@ -226,7 +226,7 @@ Save to `prompts/cover.md`. Template: [references/workflow/prompt-template.md](r
    - `direct` usage → pass via `--ref` (use ref-capable backend)
    - `style`/`palette` → extract traits, append to prompt
 5. **Generate**: Call the chosen backend with the prompt file, output path, aspect ratio.
-   - **`codex-imagegen`**: run `./scripts/codex-imagegen.sh --image <output> --prompt-file prompts/01-cover-[slug].md --aspect <ratio>` (add `--ref <file>` per reference, `--cache-dir ~/.cache/baoyu-codex-imagegen` to enable the idempotency cache). Read the stdout JSON; act on `status` and `error_kind`.
+   - **`codex-imagegen`**: invoke `<ABSOLUTE_PLUGIN_ROOT>/scripts/codex-imagegen.sh` (NOT a cwd-relative `./scripts/...` — resolve the absolute path from this skill's base directory: `../../scripts/codex-imagegen.sh`) with `--image <ABSOLUTE_output>` `--prompt-file <ABSOLUTE_prompts/01-cover-[slug].md>` `--aspect <ratio>` (add `--ref <ABSOLUTE_file>` per reference, `--cache-dir ~/.cache/baoyu-codex-imagegen` to enable the idempotency cache). All input paths to the wrapper are auto-resolved against its `process.cwd()` if relative, but passing absolutes is more robust. Read the stdout JSON; act on `status` and `error_kind`.
    - **Codex `imagegen` (native)** or other runtime-native tools / `baoyu-imagine` skill: per the rule in `## Image Generation Tools` above.
 6. On failure: auto-retry once
 
