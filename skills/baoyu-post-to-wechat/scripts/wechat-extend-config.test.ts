@@ -228,7 +228,7 @@ test("resolveAccount lets account-level remote_publish_* override globals", asyn
   assert.equal(secondary.remote_publish_proxy_jump, "jump.example.com");
 });
 
-test("resolveAccount drops invalid remote_publish_port and strict_host_key_checking values", async (t) => {
+test("loadWechatExtendConfig throws on invalid remote_publish_port", async (t) => {
   const cwdRoot = await makeTempDir("wechat-extend-cwd-");
   const homeRoot = await makeTempDir("wechat-extend-home-");
 
@@ -241,17 +241,51 @@ test("resolveAccount drops invalid remote_publish_port and strict_host_key_check
     [
       "remote_publish_host: example.com",
       "remote_publish_port: 99999",
+    ].join("\n"),
+  );
+
+  assert.throws(() => loadWechatExtendConfig(), /Invalid remote_publish_port: 99999/);
+});
+
+test("loadWechatExtendConfig throws on invalid remote_publish_connect_timeout", async (t) => {
+  const cwdRoot = await makeTempDir("wechat-extend-cwd-");
+  const homeRoot = await makeTempDir("wechat-extend-home-");
+
+  useCwd(t, cwdRoot);
+  useHome(t, homeRoot);
+  useXdgConfigHome(t, undefined);
+
+  await writeExtendFile(
+    cwdRoot,
+    [
+      "remote_publish_host: example.com",
       "remote_publish_connect_timeout: 0",
+    ].join("\n"),
+  );
+
+  assert.throws(() => loadWechatExtendConfig(), /Invalid remote_publish_connect_timeout: 0/);
+});
+
+test("loadWechatExtendConfig throws on invalid remote_publish_strict_host_key_checking", async (t) => {
+  const cwdRoot = await makeTempDir("wechat-extend-cwd-");
+  const homeRoot = await makeTempDir("wechat-extend-home-");
+
+  useCwd(t, cwdRoot);
+  useHome(t, homeRoot);
+  useXdgConfigHome(t, undefined);
+
+  await writeExtendFile(
+    cwdRoot,
+    [
+      "remote_publish_host: example.com",
       "remote_publish_strict_host_key_checking: maybe",
     ].join("\n"),
   );
 
-  const config = loadWechatExtendConfig();
-  const resolved = resolveAccount(config);
-  assert.equal(resolved.remote_publish_host, "example.com");
-  assert.equal(resolved.remote_publish_port, undefined);
-  assert.equal(resolved.remote_publish_connect_timeout, undefined);
-  assert.equal(resolved.remote_publish_strict_host_key_checking, undefined);
+  assert.throws(
+    () => loadWechatExtendConfig(),
+    /Invalid remote_publish_strict_host_key_checking: maybe/,
+  );
 });
 
 test("loadCredentials reports skipped incomplete sources when no complete pair exists", async (t) => {

@@ -72,24 +72,32 @@ function toBool01(v: string): number {
   return v === "1" || v === "true" ? 1 : 0;
 }
 
-function toOptionalPort(v: string): number | undefined {
+function homeDir(): string {
+  return process.env.HOME || process.env.USERPROFILE || os.homedir();
+}
+
+function parsePort(key: string, v: string): number {
   const n = Number.parseInt(v, 10);
-  if (!Number.isFinite(n) || n < 1 || n > 65535) return undefined;
+  if (!Number.isFinite(n) || String(n) !== v.trim() || n < 1 || n > 65535) {
+    throw new Error(`Invalid ${key}: ${v} (expected integer 1-65535)`);
+  }
   return n;
 }
 
-function toOptionalPositiveInt(v: string): number | undefined {
+function parsePositiveInt(key: string, v: string): number {
   const n = Number.parseInt(v, 10);
-  if (!Number.isFinite(n) || n <= 0) return undefined;
+  if (!Number.isFinite(n) || String(n) !== v.trim() || n <= 0) {
+    throw new Error(`Invalid ${key}: ${v} (expected positive integer)`);
+  }
   return n;
 }
 
-function toStrictHostKeyChecking(v: string): StrictHostKeyChecking | undefined {
+function parseStrictHostKeyChecking(key: string, v: string): StrictHostKeyChecking {
   const lower = v.toLowerCase();
   if (lower === "yes" || lower === "no" || lower === "accept-new") {
     return lower;
   }
-  return undefined;
+  throw new Error(`Invalid ${key}: ${v} (expected yes|no|accept-new)`);
 }
 
 function parseWechatExtend(content: string): WechatExtendConfig {
@@ -154,11 +162,11 @@ function parseWechatExtend(content: string): WechatExtendConfig {
       case "chrome_profile_path": config.chrome_profile_path = val; break;
       case "remote_publish_host": config.remote_publish_host = val; break;
       case "remote_publish_user": config.remote_publish_user = val; break;
-      case "remote_publish_port": config.remote_publish_port = toOptionalPort(val); break;
+      case "remote_publish_port": config.remote_publish_port = parsePort("remote_publish_port", val); break;
       case "remote_publish_identity_file": config.remote_publish_identity_file = val; break;
       case "remote_publish_known_hosts_file": config.remote_publish_known_hosts_file = val; break;
-      case "remote_publish_strict_host_key_checking": config.remote_publish_strict_host_key_checking = toStrictHostKeyChecking(val); break;
-      case "remote_publish_connect_timeout": config.remote_publish_connect_timeout = toOptionalPositiveInt(val); break;
+      case "remote_publish_strict_host_key_checking": config.remote_publish_strict_host_key_checking = parseStrictHostKeyChecking("remote_publish_strict_host_key_checking", val); break;
+      case "remote_publish_connect_timeout": config.remote_publish_connect_timeout = parsePositiveInt("remote_publish_connect_timeout", val); break;
       case "remote_publish_proxy_jump": config.remote_publish_proxy_jump = val; break;
     }
   }
@@ -179,14 +187,14 @@ function parseWechatExtend(content: string): WechatExtendConfig {
       chrome_profile_path: a.chrome_profile_path || undefined,
       remote_publish_host: a.remote_publish_host || undefined,
       remote_publish_user: a.remote_publish_user || undefined,
-      remote_publish_port: a.remote_publish_port ? toOptionalPort(a.remote_publish_port) : undefined,
+      remote_publish_port: a.remote_publish_port ? parsePort("remote_publish_port", a.remote_publish_port) : undefined,
       remote_publish_identity_file: a.remote_publish_identity_file || undefined,
       remote_publish_known_hosts_file: a.remote_publish_known_hosts_file || undefined,
       remote_publish_strict_host_key_checking: a.remote_publish_strict_host_key_checking
-        ? toStrictHostKeyChecking(a.remote_publish_strict_host_key_checking)
+        ? parseStrictHostKeyChecking("remote_publish_strict_host_key_checking", a.remote_publish_strict_host_key_checking)
         : undefined,
       remote_publish_connect_timeout: a.remote_publish_connect_timeout
-        ? toOptionalPositiveInt(a.remote_publish_connect_timeout)
+        ? parsePositiveInt("remote_publish_connect_timeout", a.remote_publish_connect_timeout)
         : undefined,
       remote_publish_proxy_jump: a.remote_publish_proxy_jump || undefined,
     }));
@@ -199,18 +207,19 @@ export function loadWechatExtendConfig(): WechatExtendConfig {
   const paths = [
     path.join(process.cwd(), ".baoyu-skills", "baoyu-post-to-wechat", "EXTEND.md"),
     path.join(
-      process.env.XDG_CONFIG_HOME || path.join(os.homedir(), ".config"),
+      process.env.XDG_CONFIG_HOME || path.join(homeDir(), ".config"),
       "baoyu-skills", "baoyu-post-to-wechat", "EXTEND.md"
     ),
-    path.join(os.homedir(), ".baoyu-skills", "baoyu-post-to-wechat", "EXTEND.md"),
+    path.join(homeDir(), ".baoyu-skills", "baoyu-post-to-wechat", "EXTEND.md"),
   ];
   for (const p of paths) {
+    let content: string;
     try {
-      const content = fs.readFileSync(p, "utf-8");
-      return parseWechatExtend(content);
+      content = fs.readFileSync(p, "utf-8");
     } catch {
       continue;
     }
+    return parseWechatExtend(content);
   }
   return {};
 }
@@ -348,7 +357,7 @@ function resolveCredentialSource(
 
 export function loadCredentials(account?: ResolvedAccount): LoadedCredentials {
   const cwdEnvPath = path.join(process.cwd(), ".baoyu-skills", ".env");
-  const homeEnvPath = path.join(os.homedir(), ".baoyu-skills", ".env");
+  const homeEnvPath = path.join(homeDir(), ".baoyu-skills", ".env");
   const cwdEnv = loadEnvFile(cwdEnvPath);
   const homeEnv = loadEnvFile(homeEnvPath);
 

@@ -136,17 +136,3 @@ test("wechatHttp accepts a multipart body produced by buildMultipart", async (t)
   assert.ok(received[0]!.body.includes(Buffer.from("HELLO")));
 });
 
-test("wechatHttp forwards the agent option to http.request", async (t) => {
-  const { baseUrl } = await startEchoServer(t);
-  const baseAgent = new http.Agent({ keepAlive: false });
-  let addRequestCalls = 0;
-  const originalAddRequest = baseAgent.addRequest.bind(baseAgent);
-  baseAgent.addRequest = function (...callArgs: Parameters<typeof originalAddRequest>) {
-    addRequestCalls++;
-    return originalAddRequest(...callArgs);
-  };
-
-  await wechatHttp(`${baseUrl}/`, { agent: baseAgent });
-  assert.ok(addRequestCalls > 0, "expected the supplied agent to handle the request");
-  baseAgent.destroy();
-});

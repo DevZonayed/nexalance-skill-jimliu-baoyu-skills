@@ -1,12 +1,7 @@
-import http from "node:http";
-import https from "node:https";
-import { URL } from "node:url";
-
 export interface WechatHttpInit {
   method?: string;
   headers?: Record<string, string>;
   body?: string | Buffer;
-  agent?: http.Agent | https.Agent | false;
 }
 
 export interface WechatHttpResponse {
@@ -17,6 +12,11 @@ export interface WechatHttpResponse {
   text(): Promise<string>;
   json<T = unknown>(): Promise<T>;
 }
+
+export type WechatClient = (
+  url: string,
+  init?: WechatHttpInit,
+) => Promise<WechatHttpResponse>;
 
 export interface MultipartFilePart {
   name: string;
@@ -51,56 +51,47 @@ export function buildMultipart(parts: MultipartFilePart[]): MultipartBody {
   };
 }
 
-export async function wechatHttp(url: string, init: WechatHttpInit = {}): Promise<WechatHttpResponse> {
-  const parsed = new URL(url);
-  const isHttps = parsed.protocol === "https:";
-  const transport = isHttps ? https : http;
-
-  const body = init.body == null
-    ? undefined
-    : Buffer.isBuffer(init.body) ? init.body : Buffer.from(init.body, "utf-8");
-
-  const headers: Record<string, string> = { ...(init.headers ?? {}) };
-  if (body && headers["Content-Length"] === undefined && headers["content-length"] === undefined) {
-    headers["Content-Length"] = String(body.length);
-  }
-
-  const requestOptions: https.RequestOptions = {
-    method: init.method ?? (body ? "POST" : "GET"),
-    hostname: parsed.hostname,
-    port: parsed.port ? Number(parsed.port) : undefined,
-    path: `${parsed.pathname}${parsed.search}`,
-    headers,
-  };
-  if (init.agent !== undefined) {
-    requestOptions.agent = init.agent;
-  }
-
-  return new Promise((resolve, reject) => {
-    const req = transport.request(requestOptions, (res) => {
-      const chunks: Buffer[] = [];
-      res.on("data", (chunk: Buffer) => chunks.push(chunk));
-      res.on("end", () => {
-        const bodyBuffer = Buffer.concat(chunks);
-        resolve({
-          status: res.statusCode ?? 0,
-          statusText: res.statusMessage ?? "",
-          headers: res.headers as Record<string, string | string[] | undefined>,
-          async buffer() {
-            return bodyBuffer;
-          },
-          async text() {
-            return bodyBuffer.toString("utf-8");
-          },
-          async json<T = unknown>() {
-            return JSON.parse(bodyBuffer.toString("utf-8")) as T;
-          },
-        });
-      });
-      res.on("error", reject);
-    });
-    req.on("error", reject);
-    if (body) req.write(body);
-    req.end();
+function headersToRecord(headers: Headers): Record<string, string | string[] | undefined> {
+  const out: Record<string, string | string[] | undefined> = {};
+  headers.forEach((value, key) => {
+    const existing = out[key];
+    if (existing === undefined) {
+      out[key] = value;
+    } else if (Array.isArray(existing)) {
+      existing.push(value);
+    } else {
+      out[key] = [existing, value];
+    }
   });
+  return out;
 }
+
+export const wechatHttp: WechatClient = async (url, init = {}) => {
+  const method = init.method ?? (init.body !== undefined ? "POST" : "GET");
+  const headers: Record<string, string> = { ...(init.headers ?? {}) };
+
+  let body: BodyInit | undefined;
+  if (init.body !== undefined) {
+    body = Buffer.isBuffer(init.body)
+      ? new Uint8Array(init.body.buffer, init.body.byteOffset, init.body.byteLength)
+      : init.body;
+  }
+
+  const res = await fetch(url, { method, headers, body });
+  const buf = Buffer.from(await res.arrayBuffer());
+
+  return {
+    status: res.status,
+    statusText: res.statusText,
+    headers: headersToRecord(res.headers),
+    async buffer() {
+      return buf;
+    },
+    async text() {
+      return buf.toString("utf-8");
+    },
+    async json<T = unknown>() {
+      return JSON.parse(buf.toString("utf-8")) as T;
+    },
+  };
+};

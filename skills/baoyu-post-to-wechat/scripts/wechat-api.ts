@@ -2,7 +2,6 @@ import fs from "node:fs";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import type http from "node:http";
 import {
   loadWechatExtendConfig,
   resolveAccount,
@@ -16,7 +15,7 @@ import {
   needsWechatBodyImageProcessing,
 } from "./wechat-image-processor.ts";
 import { loadUploadAsset } from "./wechat-image-loader.ts";
-import { wechatHttp, buildMultipart } from "./wechat-http.ts";
+import { wechatHttp, buildMultipart, type WechatClient } from "./wechat-http.ts";
 import {
   type RemotePublishConfig,
   normalizeRemoteConfig,
@@ -75,9 +74,13 @@ const UPLOAD_BODY_IMG_URL = "https://api.weixin.qq.com/cgi-bin/media/uploadimg";
 const UPLOAD_MATERIAL_URL = "https://api.weixin.qq.com/cgi-bin/material/add_material";
 const DRAFT_URL = "https://api.weixin.qq.com/cgi-bin/draft/add";
 
-async function fetchAccessToken(appId: string, appSecret: string, agent?: http.Agent): Promise<string> {
+async function fetchAccessToken(
+  appId: string,
+  appSecret: string,
+  client: WechatClient = wechatHttp,
+): Promise<string> {
   const url = `${TOKEN_URL}?grant_type=client_credential&appid=${appId}&secret=${appSecret}`;
-  const res = await wechatHttp(url, { agent });
+  const res = await client(url);
   if (res.status < 200 || res.status >= 300) {
     throw new Error(`Failed to fetch access token: ${res.status}`);
   }
@@ -101,7 +104,7 @@ async function uploadImage(
   accessToken: string,
   baseDir?: string,
   uploadType: "body" | "material" = "body",
-  agent?: http.Agent,
+  client: WechatClient = wechatHttp,
 ): Promise<UploadResponse> {
   const asset = await loadUploadAsset(imagePath, baseDir);
   let uploadAsset = asset;
@@ -126,7 +129,7 @@ async function uploadImage(
     uploadAsset.contentType,
     accessToken,
     uploadType,
-    agent,
+    client,
   );
 
   // media/uploadimg 接口只返回 URL，material/add_material 返回 media_id
@@ -147,7 +150,7 @@ async function uploadToWechat(
   contentType: string,
   accessToken: string,
   uploadType: "body" | "material",
-  agent?: http.Agent,
+  client: WechatClient = wechatHttp,
 ): Promise<UploadResponse> {
   const multipart = buildMultipart([
     { name: "media", filename, contentType, data: fileBuffer },
@@ -155,11 +158,10 @@ async function uploadToWechat(
 
   const uploadUrl = uploadType === "body" ? UPLOAD_BODY_IMG_URL : UPLOAD_MATERIAL_URL;
   const url = `${uploadUrl}?type=image&access_token=${accessToken}`;
-  const res = await wechatHttp(url, {
+  const res = await client(url, {
     method: "POST",
     headers: { "Content-Type": multipart.contentType },
     body: multipart.body,
-    agent,
   });
 
   const data = await res.json<UploadResponse>();
@@ -177,7 +179,7 @@ async function uploadImagesInHtml(
   contentImages: ImageInfo[] = [],
   articleType: ArticleType = "news",
   collectNewsCoverFallback: boolean = false,
-  agent?: http.Agent,
+  client: WechatClient = wechatHttp,
 ): Promise<{ html: string; firstCoverMediaId: string; imageMediaIds: string[] }> {
   const imgRegex = /<img[^>]*\ssrc=["']([^"']+)["'][^>]*>/gi;
   const matches = [...html.matchAll(imgRegex)];
@@ -198,7 +200,7 @@ async function uploadImagesInHtml(
     if (src.startsWith("https://mmbiz.qpic.cn")) {
       if (collectNewsCoverFallback && !firstCoverMediaId) {
         try {
-          const coverResp = await uploadImage(src, accessToken, baseDir, "material", agent);
+          const coverResp = await uploadImage(src, accessToken, baseDir, "material", client);
           firstCoverMediaId = coverResp.media_id;
         } catch (err) {
           console.error(`[wechat-api] Failed to reuse existing WeChat image as cover: ${src}`, err);
@@ -214,7 +216,7 @@ async function uploadImagesInHtml(
     try {
       let resp = uploadedBySource.get(imagePath);
       if (!resp) {
-        resp = await uploadImage(imagePath, accessToken, baseDir, "body", agent);
+        resp = await uploadImage(imagePath, accessToken, baseDir, "body", client);
         uploadedBySource.set(imagePath, resp);
       }
       const newTag = fullTag
@@ -225,7 +227,7 @@ async function uploadImagesInHtml(
       if (shouldUploadMaterial) {
         let materialResp = uploadedBySource.get(`${imagePath}:material`);
         if (!materialResp) {
-          materialResp = await uploadImage(imagePath, accessToken, baseDir, "material", agent);
+          materialResp = await uploadImage(imagePath, accessToken, baseDir, "material", client);
           uploadedBySource.set(`${imagePath}:material`, materialResp);
         }
         if (articleType === "newspic" && materialResp.media_id) {
@@ -249,7 +251,7 @@ async function uploadImagesInHtml(
     try {
       let resp = uploadedBySource.get(imagePath);
       if (!resp) {
-        resp = await uploadImage(imagePath, accessToken, baseDir, "body", agent);
+        resp = await uploadImage(imagePath, accessToken, baseDir, "body", client);
         uploadedBySource.set(imagePath, resp);
       }
 
@@ -259,7 +261,7 @@ async function uploadImagesInHtml(
       if (shouldUploadMaterial) {
         let materialResp = uploadedBySource.get(`${imagePath}:material`);
         if (!materialResp) {
-          materialResp = await uploadImage(imagePath, accessToken, baseDir, "material", agent);
+          materialResp = await uploadImage(imagePath, accessToken, baseDir, "material", client);
           uploadedBySource.set(`${imagePath}:material`, materialResp);
         }
         if (articleType === "newspic" && materialResp.media_id) {
@@ -280,7 +282,7 @@ async function uploadImagesInHtml(
 async function publishToDraft(
   options: ArticleOptions,
   accessToken: string,
-  agent?: http.Agent,
+  client: WechatClient = wechatHttp,
 ): Promise<PublishResponse> {
   const url = `${DRAFT_URL}?access_token=${accessToken}`;
 
@@ -317,11 +319,10 @@ async function publishToDraft(
     if (options.digest) article.digest = options.digest;
   }
 
-  const res = await wechatHttp(url, {
+  const res = await client(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ articles: [article] }),
-    agent,
   });
 
   const data = await res.json<PublishResponse>();
@@ -732,9 +733,9 @@ async function main(): Promise<void> {
   const useRemote = args.remote || resolved.default_publish_method === "remote-api";
   const method = useRemote ? "remote-api" : "api";
 
-  const publishWithAgent = async (agent?: http.Agent): Promise<void> => {
+  const publishWith = async (client: WechatClient): Promise<void> => {
     console.error("[wechat-api] Fetching access token...");
-    const accessToken = await fetchAccessToken(creds.appId, creds.appSecret, agent);
+    const accessToken = await fetchAccessToken(creds.appId, creds.appSecret, client);
 
     console.error("[wechat-api] Uploading body images...");
     const { html: processedHtml, firstCoverMediaId, imageMediaIds } = await uploadImagesInHtml(
@@ -744,7 +745,7 @@ async function main(): Promise<void> {
       contentImages,
       args.articleType,
       needNewsCoverFallback,
-      agent,
+      client,
     );
     htmlContent = processedHtml;
 
@@ -752,7 +753,7 @@ async function main(): Promise<void> {
 
     if (coverPath) {
       console.error(`[wechat-api] Uploading cover: ${coverPath}`);
-      const coverResp = await uploadImage(coverPath, accessToken, baseDir, "material", agent);
+      const coverResp = await uploadImage(coverPath, accessToken, baseDir, "material", client);
       thumbMediaId = coverResp.media_id;
       console.error(`[wechat-api] Cover uploaded successfully, media_id: ${thumbMediaId}`);
     } else if (firstCoverMediaId && args.articleType === "news") {
@@ -779,7 +780,7 @@ async function main(): Promise<void> {
       imageMediaIds: args.articleType === "newspic" ? imageMediaIds : undefined,
       needOpenComment: resolved.need_open_comment,
       onlyFansCanComment: resolved.only_fans_can_comment,
-    }, accessToken, agent);
+    }, accessToken, client);
 
     console.log(JSON.stringify({
       success: true,
@@ -797,11 +798,11 @@ async function main(): Promise<void> {
     console.error(
       `[wechat-api] Remote publishing via ${remoteConfig.user}@${remoteConfig.host}:${remoteConfig.port}`,
     );
-    await withSshTunnel(remoteConfig, async (agent) => {
-      await publishWithAgent(agent);
+    await withSshTunnel(remoteConfig, async (client) => {
+      await publishWith(client);
     });
   } else {
-    await publishWithAgent();
+    await publishWith(wechatHttp);
   }
 }
 

@@ -1,9 +1,10 @@
 import { spawn, type ChildProcessByStdio } from "node:child_process";
 import net from "node:net";
-import { SocksProxyAgent } from "socks-proxy-agent";
 import type { Readable } from "node:stream";
 
 import type { StrictHostKeyChecking } from "./wechat-extend-config.ts";
+import type { WechatClient } from "./wechat-http.ts";
+import { createSocksClient } from "./wechat-socks-http.ts";
 
 export interface RemotePublishConfig {
   host: string;
@@ -29,7 +30,7 @@ export interface NormalizedRemotePublishConfig {
 
 export interface SshTunnel {
   port: number;
-  agent: SocksProxyAgent;
+  client: WechatClient;
   close: () => Promise<void>;
 }
 
@@ -207,7 +208,7 @@ export async function startSshTunnel(
     throw new Error(`${(err as Error).message}${exitSuffix}${suffix}`);
   }
 
-  const agent = new SocksProxyAgent(`socks5h://${SSH_LOOPBACK_HOST}:${port}`);
+  const client = createSocksClient({ host: SSH_LOOPBACK_HOST, port });
 
   const signalHandlers: Array<{ signal: NodeJS.Signals; handler: () => void }> = [];
   let closed = false;
@@ -228,7 +229,7 @@ export async function startSshTunnel(
     signalHandlers.push({ signal, handler });
   }
 
-  return { port, agent, close };
+  return { port, client, close };
 }
 
 async function killChild(child: ChildProcessByStdio<null, Readable, Readable>, killTimeoutMs: number): Promise<void> {
@@ -261,12 +262,12 @@ async function killChild(child: ChildProcessByStdio<null, Readable, Readable>, k
 
 export async function withSshTunnel<T>(
   config: NormalizedRemotePublishConfig,
-  fn: (agent: SocksProxyAgent) => Promise<T>,
+  fn: (client: WechatClient) => Promise<T>,
   options?: StartSshTunnelOptions,
 ): Promise<T> {
   const tunnel = await startSshTunnel(config, options);
   try {
-    return await fn(tunnel.agent);
+    return await fn(tunnel.client);
   } finally {
     await tunnel.close();
   }
