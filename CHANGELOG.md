@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.117.5 - 2026-05-21
+
+### Credits
+- `baoyu-post-to-wechat`: remote API publishing update credited to Dame5211 <1079825614@qq.com>
+
 ## 1.117.4 - 2026-05-21
 
 ### Features
