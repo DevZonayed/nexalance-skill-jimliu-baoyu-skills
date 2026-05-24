@@ -11,6 +11,8 @@ Skills shared by Baoyu for improving daily work efficiency with AI Agents (Claud
 
 ## Installation
 
+> **Tip**: This repository contains 20+ skills. Install only the ones you actually need — bulk-installing every skill adds unnecessary context overhead for your AI agent on every run.
+
 ### Quick Install (Recommended)
 
 ```bash
