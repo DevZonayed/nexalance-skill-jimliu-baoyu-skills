@@ -125,17 +125,20 @@ function htmlToPlainText(html: string): string {
     "&mdash;": "—",
     "&ndash;": "–",
     "&hellip;": "…",
-    "&ldquo;": """,
-    "&rdquo;": """,
-    "&lsquo;": "'",
-    "&rsquo;": "'",
+    "&ldquo;": "“",
+    "&rdquo;": "”",
+    "&lsquo;": "‘",
+    "&rsquo;": "’",
   };
-  text = text.replace(/&(?:[a-zA-Z]+|#\d+);/g, (entity) => {
+  text = text.replace(/&(?:[a-zA-Z]+|#x[0-9a-fA-F]+|#\d+);/g, (entity) => {
     if (entityMap[entity]) return entityMap[entity];
-    // 处理数字实体，如 &#123;
-    const numMatch = entity.match(/&#(\d+);/);
+    const hexMatch = entity.match(/^&#x([0-9a-fA-F]+);$/);
+    if (hexMatch) {
+      return String.fromCodePoint(Number.parseInt(hexMatch[1]!, 16));
+    }
+    const numMatch = entity.match(/^&#(\d+);$/);
     if (numMatch) {
-      return String.fromCharCode(Number.parseInt(numMatch[1]!, 10));
+      return String.fromCodePoint(Number.parseInt(numMatch[1]!, 10));
     }
     return entity;
   });
