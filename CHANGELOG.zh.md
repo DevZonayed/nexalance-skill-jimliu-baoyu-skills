@@ -2,6 +2,14 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 2.0.1 - 2026-05-24
+
+### 修复
+- `baoyu-post-to-wechat`：发布 `newspic`（图文）时，将 `content` 字段从 HTML 转换为纯文本后再提交微信草稿接口。此前直接传 HTML，多图场景下内容长度超出限制会触发错误 45166（invalid content）。新增 `htmlToPlainText` 工具：把 `<br>` 和块级闭合标签转成换行、剥离其余标签、解码命名实体与十进制/十六进制数字实体、合并多余空白 (by @Go1dFinger, [#164](https://github.com/JimLiu/baoyu-skills/pull/164), 关联 [#163](https://github.com/JimLiu/baoyu-skills/issues/163))
+
+### 致谢
+- `baoyu-post-to-wechat` 的 newspic 纯文本修复由 @Go1dFinger 贡献（[#164](https://github.com/JimLiu/baoyu-skills/pull/164)）
+
 ## 2.0.0 - 2026-05-24
 
 ### 破坏性变更

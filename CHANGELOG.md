@@ -2,6 +2,14 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 2.0.1 - 2026-05-24
+
+### Fixes
+- `baoyu-post-to-wechat`: convert `newspic` (image-text) `content` from HTML to plain text before sending to the WeChat draft API. The previous behavior passed raw HTML, triggering error 45166 (invalid content) when multiple images pushed the body over WeChat's length limit. The new `htmlToPlainText` helper turns `<br>` and block-closing tags into line breaks, strips remaining tags, decodes named/numeric (decimal and hex) entities, and collapses whitespace (by @Go1dFinger, [#164](https://github.com/JimLiu/baoyu-skills/pull/164), closes [#163](https://github.com/JimLiu/baoyu-skills/issues/163))
+
+### Credits
+- `baoyu-post-to-wechat` newspic plain-text fix contributed by @Go1dFinger ([#164](https://github.com/JimLiu/baoyu-skills/pull/164))
+
 ## 2.0.0 - 2026-05-24
 
 ### Breaking
