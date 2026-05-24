@@ -2,6 +2,17 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 2.0.0 - 2026-05-24
+
+### 破坏性变更
+- 移除 `baoyu-imagine` skill。所有功能（providers、脚本、references）合并入 `baoyu-image-gen`，`marketplace.json` 改用新名称注册，`homepage` 链接更新为 `#baoyu-image-gen`
+- 移除 `baoyu-image-cards` skill。所有功能（样式、布局、配色、预设）合并入 `baoyu-xhs-images`，`marketplace.json` 改用新名称注册
+- 其它 skill（`baoyu-article-illustrator`、`baoyu-comic`、`baoyu-cover-image`、`baoyu-infographic`、`baoyu-slide-deck`）中 `## Image Generation Tools` 示例统一改用 `baoyu-image-gen`，不再引用 `baoyu-imagine`
+
+### 迁移说明
+- 旧的 `~/.baoyu-skills/baoyu-imagine/EXTEND.md` 与 `.baoyu-skills/baoyu-imagine/EXTEND.md` 配置文件会被 `scripts/main.ts` 中的 legacy-path 解析器自动重命名到 `…/baoyu-image-gen/EXTEND.md`，首次运行时迁移
+- 通过斜杠命令调用时，请将 `/baoyu-imagine ...` 改为 `/baoyu-image-gen ...`；将所有 `baoyu-image-cards` 改为 `baoyu-xhs-images`
+
 ## 1.119.0 - 2026-05-24
 
 ### 新功能

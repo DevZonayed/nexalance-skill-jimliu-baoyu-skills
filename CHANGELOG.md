@@ -2,6 +2,17 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 2.0.0 - 2026-05-24
+
+### Breaking
+- Removed `baoyu-imagine` skill. All functionality (providers, scripts, references) now lives under `baoyu-image-gen`. The skill is registered in `marketplace.json` under the new name and its `homepage` URL has changed to `#baoyu-image-gen`.
+- Removed `baoyu-image-cards` skill. All functionality (styles, layouts, palettes, presets) now lives under `baoyu-xhs-images`. The skill is registered in `marketplace.json` under the new name.
+- Cross-skill `## Image Generation Tools` examples in `baoyu-article-illustrator`, `baoyu-comic`, `baoyu-cover-image`, `baoyu-infographic`, and `baoyu-slide-deck` now reference `baoyu-image-gen` instead of `baoyu-imagine`.
+
+### Migration
+- Existing `~/.baoyu-skills/baoyu-imagine/EXTEND.md` and `.baoyu-skills/baoyu-imagine/EXTEND.md` configs are auto-renamed to `…/baoyu-image-gen/EXTEND.md` on first run via the legacy-path resolver in `scripts/main.ts`.
+- Users invoking the skill via slash command should switch from `/baoyu-imagine ...` to `/baoyu-image-gen ...` and from any `baoyu-image-cards` reference to `baoyu-xhs-images`.
+
 ## 1.119.0 - 2026-05-24
 
 ### Features

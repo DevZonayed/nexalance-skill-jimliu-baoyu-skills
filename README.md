@@ -34,7 +34,7 @@ This repository now supports publishing each `skills/baoyu-*` directory as an in
 ClawHub installs skills individually, not as one marketplace bundle. After publishing, users can install specific skills such as:
 
 ```bash
-clawhub install baoyu-imagine
+clawhub install baoyu-image-gen
 clawhub install baoyu-markdown-to-html
 ```
 
@@ -726,67 +726,67 @@ Post content to Weibo (微博). Supports regular posts with text, images, and vi
 
 AI-powered generation backends.
 
-#### baoyu-imagine
+#### baoyu-image-gen
 
 AI SDK-based image generation using OpenAI GPT Image 2, Azure OpenAI, Google, OpenRouter, DashScope (Aliyun Tongyi Wanxiang), MiniMax, Jimeng (即梦), Seedream (豆包), and Replicate APIs. Supports text-to-image, reference images, aspect ratios, custom sizes, batch generation, and quality presets.
 
 ```bash
 # Basic generation (auto-detect provider)
-/baoyu-imagine --prompt "A cute cat" --image cat.png
+/baoyu-image-gen --prompt "A cute cat" --image cat.png
 
 # With aspect ratio
-/baoyu-imagine --prompt "A landscape" --image landscape.png --ar 16:9
+/baoyu-image-gen --prompt "A landscape" --image landscape.png --ar 16:9
 
 # High quality (2k)
-/baoyu-imagine --prompt "A banner" --image banner.png --quality 2k
+/baoyu-image-gen --prompt "A banner" --image banner.png --quality 2k
 
 # Specific provider
-/baoyu-imagine --prompt "A cat" --image cat.png --provider openai --model gpt-image-2
+/baoyu-image-gen --prompt "A cat" --image cat.png --provider openai --model gpt-image-2
 
 # Azure OpenAI (model = deployment name)
-/baoyu-imagine --prompt "A cat" --image cat.png --provider azure --model gpt-image-2
+/baoyu-image-gen --prompt "A cat" --image cat.png --provider azure --model gpt-image-2
 
 # OpenRouter
-/baoyu-imagine --prompt "A cat" --image cat.png --provider openrouter
+/baoyu-image-gen --prompt "A cat" --image cat.png --provider openrouter
 
 # OpenRouter with reference images
-/baoyu-imagine --prompt "Make it blue" --image out.png --provider openrouter --model google/gemini-3.1-flash-image-preview --ref source.png
+/baoyu-image-gen --prompt "Make it blue" --image out.png --provider openrouter --model google/gemini-3.1-flash-image-preview --ref source.png
 
 # DashScope (Aliyun Tongyi Wanxiang)
-/baoyu-imagine --prompt "一只可爱的猫" --image cat.png --provider dashscope
+/baoyu-image-gen --prompt "一只可爱的猫" --image cat.png --provider dashscope
 
 # DashScope with custom size
-/baoyu-imagine --prompt "为咖啡品牌设计一张 21:9 横幅海报，包含清晰中文标题" --image banner.png --provider dashscope --model qwen-image-2.0-pro --size 2048x872
+/baoyu-image-gen --prompt "为咖啡品牌设计一张 21:9 横幅海报，包含清晰中文标题" --image banner.png --provider dashscope --model qwen-image-2.0-pro --size 2048x872
 
 # Z.AI GLM-Image
-/baoyu-imagine --prompt "一张带清晰中文标题的科技海报" --image out.png --provider zai
+/baoyu-image-gen --prompt "一张带清晰中文标题的科技海报" --image out.png --provider zai
 
 # MiniMax
-/baoyu-imagine --prompt "A fashion editorial portrait by a bright studio window" --image out.jpg --provider minimax
+/baoyu-image-gen --prompt "A fashion editorial portrait by a bright studio window" --image out.jpg --provider minimax
 
 # MiniMax with subject reference
-/baoyu-imagine --prompt "A girl stands by the library window, cinematic lighting" --image out.jpg --provider minimax --model image-01 --ref portrait.png --ar 16:9
+/baoyu-image-gen --prompt "A girl stands by the library window, cinematic lighting" --image out.jpg --provider minimax --model image-01 --ref portrait.png --ar 16:9
 
 # Replicate (default: google/nano-banana-2)
-/baoyu-imagine --prompt "A cat" --image cat.png --provider replicate
+/baoyu-image-gen --prompt "A cat" --image cat.png --provider replicate
 
 # Replicate Seedream 4.5
-/baoyu-imagine --prompt "A studio portrait" --image portrait.png --provider replicate --model bytedance/seedream-4.5 --ar 3:2
+/baoyu-image-gen --prompt "A studio portrait" --image portrait.png --provider replicate --model bytedance/seedream-4.5 --ar 3:2
 
 # Replicate Wan 2.7 Image Pro
-/baoyu-imagine --prompt "A concept frame" --image frame.png --provider replicate --model wan-video/wan-2.7-image-pro --size 2048x1152
+/baoyu-image-gen --prompt "A concept frame" --image frame.png --provider replicate --model wan-video/wan-2.7-image-pro --size 2048x1152
 
 # Jimeng (即梦)
-/baoyu-imagine --prompt "一只可爱的猫" --image cat.png --provider jimeng
+/baoyu-image-gen --prompt "一只可爱的猫" --image cat.png --provider jimeng
 
 # Seedream (豆包)
-/baoyu-imagine --prompt "一只可爱的猫" --image cat.png --provider seedream
+/baoyu-image-gen --prompt "一只可爱的猫" --image cat.png --provider seedream
 
 # With reference images (Google, OpenAI, Azure OpenAI, OpenRouter, Replicate, MiniMax, or Seedream 5.0/4.5/4.0)
-/baoyu-imagine --prompt "Make it blue" --image out.png --ref source.png
+/baoyu-image-gen --prompt "Make it blue" --image out.png --ref source.png
 
 # Batch mode
-/baoyu-imagine --batchfile batch.json --jobs 4 --json
+/baoyu-image-gen --batchfile batch.json --jobs 4 --json
 ```
 
 **Options**:
@@ -865,7 +865,7 @@ AI SDK-based image generation using OpenAI GPT Image 2, Azure OpenAI, Google, Op
 - MiniMax reference images are sent as `subject_reference`; the current API is specialized toward character / portrait consistency.
 - Jimeng does not support reference images.
 - Seedream reference images are supported by Seedream 5.0 / 4.5 / 4.0, not Seedream 3.0.
-- Replicate defaults to `google/nano-banana-2`. `baoyu-imagine` only enables Replicate advanced options for `google/nano-banana*`, `bytedance/seedream-4.5`, `bytedance/seedream-5-lite`, `wan-video/wan-2.7-image`, and `wan-video/wan-2.7-image-pro`.
+- Replicate defaults to `google/nano-banana-2`. `baoyu-image-gen` only enables Replicate advanced options for `google/nano-banana*`, `bytedance/seedream-4.5`, `bytedance/seedream-5-lite`, `wan-video/wan-2.7-image`, and `wan-video/wan-2.7-image-pro`.
 - Replicate currently saves exactly one output image per request. `--n > 1` is blocked locally instead of silently dropping extra results.
 - Replicate model behavior is family-specific: nano-banana uses `--quality` / `--ar`, Seedream uses validated `--size` / `--ar`, and Wan uses validated `--size` (with `--ar` converted locally to a concrete size).
 
@@ -1198,7 +1198,7 @@ Extract resources and JavaScript from any installed Electron app's `app.asar`. W
 Some skills require API keys or custom configuration. Environment variables can be set in `.env` files:
 
 **Load Priority** (higher priority overrides lower):
-1. CLI environment variables (e.g., `OPENAI_API_KEY=xxx /baoyu-imagine ...`)
+1. CLI environment variables (e.g., `OPENAI_API_KEY=xxx /baoyu-image-gen ...`)
 2. `process.env` (system environment)
 3. `<cwd>/.baoyu-skills/.env` (project-level)
 4. `~/.baoyu-skills/.env` (user-level)

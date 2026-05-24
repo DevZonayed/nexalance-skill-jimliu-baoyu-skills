@@ -8,7 +8,7 @@ import test from "node:test";
 
 const execFileAsync = promisify(execFile);
 const repoRoot = path.resolve(import.meta.dirname, "..", "..", "..");
-const scriptPath = path.join(repoRoot, "skills", "baoyu-imagine", "scripts", "build-batch.ts");
+const scriptPath = path.join(repoRoot, "skills", "baoyu-image-gen", "scripts", "build-batch.ts");
 
 async function makeFixture(): Promise<{
   root: string;
@@ -16,7 +16,7 @@ async function makeFixture(): Promise<{
   promptsDir: string;
   outputPath: string;
 }> {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "baoyu-imagine-build-batch-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "baoyu-image-gen-build-batch-"));
   const outlinePath = path.join(root, "outline.md");
   const promptsDir = path.join(root, "prompts");
   const outputPath = path.join(root, "batch.json");
@@ -42,7 +42,7 @@ async function runBuildBatch(args: string[]): Promise<void> {
   });
 }
 
-test("build-batch omits default model so baoyu-imagine can resolve env or EXTEND defaults", async () => {
+test("build-batch omits default model so baoyu-image-gen can resolve env or EXTEND defaults", async () => {
   const fixture = await makeFixture();
 
   await runBuildBatch([
