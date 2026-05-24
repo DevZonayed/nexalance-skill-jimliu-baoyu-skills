@@ -2,6 +2,11 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 1.119.0 - 2026-05-24
+
+### 新功能
+- `baoyu-electron-extract`：新增 skill，可从任意已安装的 Electron 应用的 `app.asar` 中提取资源和 JavaScript。`.js.map` 文件内嵌 `sourcesContent` 时还原原始源码（含 TypeScript/JSX），否则用 Prettier 原地美化压缩后的 JS/CSS。source-map 路径先相对各 `.js.map` 文件解析，因此 `../../src/main.ts` 这类打包器相对路径会还原为 `restored/` 下的可读路径，而不是哈希占位符。始终跳过 `node_modules` 和 `webpack/runtime/*` 条目。macOS 下自动从 `/Applications` 和 `~/Applications` 发现应用，Windows 下从 `%LOCALAPPDATA%\Programs`、`%PROGRAMFILES%`、`%PROGRAMFILES(X86)%`、`%APPDATA%` 发现；其他平台请用 `--asar <path>` 显式指定。安全：拒绝写入 `/`、用户主目录或当前工作目录，未加 `--force` 时拒绝写入非空的已有输出目录
+
 ## 1.118.0 - 2026-05-21
 
 ### 新功能

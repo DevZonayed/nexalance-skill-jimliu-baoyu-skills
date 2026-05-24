@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.119.0 - 2026-05-24
+
+### Features
+- `baoyu-electron-extract`: new skill that extracts resources and JavaScript from any installed Electron app's `app.asar`. Restores original sources from embedded `sourcesContent` in `.js.map` files when present (TypeScript/JSX included) or formats minified JS/CSS with Prettier in place when not. Source-map paths are resolved relative to each `.js.map` file first, so bundler-relative entries like `../../src/main.ts` restore to readable paths under `restored/` instead of hashed placeholders. Always skips `node_modules` and `webpack/runtime/*` entries. Auto-discovers apps on macOS (`/Applications`, `~/Applications`) and Windows (`%LOCALAPPDATA%\Programs`, `%PROGRAMFILES%`, `%PROGRAMFILES(X86)%`, `%APPDATA%`); other platforms can pass `--asar <path>` explicitly. Safety: refuses to write to `/`, the user home, or the current working directory, and refuses non-empty existing output dirs without `--force`
+
 ## 1.118.0 - 2026-05-21
 
 ### Features
