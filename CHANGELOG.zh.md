@@ -2,6 +2,14 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 2.1.0 - 2026-05-24
+
+### 新功能
+- `baoyu-markdown-to-html`：在标准图片占位符流水线之前,通过共享 Chrome（CDP）把 ` ```mermaid ` 围栏代码块渲染为本地 PNG。新增 CLI 参数 `--mermaid-theme <default|forest|dark|neutral|base>`、`--mermaid-scale <N>`（默认 `2`,即 @2x 分辨率）、`--mermaid-bg <white|transparent|#hex>`,以及用于关闭渲染的 `--no-mermaid`。生成的图片落在 `imgs/.mermaid-cache/mermaid-<hash>.png`,跨次运行通过对 `(code, theme, scale, background, mermaid 版本)` 取 SHA-256 前 12 位进行去重/复用。Chrome 不可用或单块渲染失败时,保留浏览器侧 `<pre class="mermaid">` 兜底
+- `baoyu-post-to-wechat`、`baoyu-post-to-weibo`、`baoyu-post-to-x`:在微信 / 微博 / X 发布流水线中同步接入上述 Mermaid → PNG 预处理,Mermaid 图能以真图形式出现在已发布的稿件中(此前会落到未渲染的 `<pre>` 块)。现有的 `WECHATIMGPH_*` / `WBIMGPH_*` / `XIMGPH_*` 占位符流水线无需改动,会直接拾取生成的 PNG
+- `baoyu-md` 包:新增导出 `preprocessMermaidInMarkdown`、`extractMermaidBlocks`、`replaceMermaidBlocks`、`hashMermaidCode`、`MERMAID_VERSION`(渲染函数由 skill 注入,本包不再反向依赖 Chrome)
+- `baoyu-chrome-cdp` 包:新增 `./mermaid` 子导出,提供 `renderMermaidToPng(code, outputPath, options)`,底层为进程级单例 CDP 连接,复用共享 Chrome profile,并把 Mermaid 10.9.1 UMD 资产打入包内
+
 ## 2.0.1 - 2026-05-24
 
 ### 修复

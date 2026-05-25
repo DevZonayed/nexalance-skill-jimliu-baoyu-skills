@@ -2,6 +2,14 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 2.1.0 - 2026-05-24
+
+### Features
+- `baoyu-markdown-to-html`: render fenced ` ```mermaid ` code blocks to local PNG via shared Chrome (CDP) before the standard image-placeholder pipeline runs. New CLI flags: `--mermaid-theme <default|forest|dark|neutral|base>`, `--mermaid-scale <N>` (default `2` for @2x resolution), `--mermaid-bg <white|transparent|#hex>`, and `--no-mermaid` to disable rendering. Generated images land in `imgs/.mermaid-cache/mermaid-<hash>.png` and are deduplicated/reused across runs by a 12-char SHA-256 over `(code, theme, scale, background, mermaid version)`. The browser-side `<pre class="mermaid">` path is retained as a graceful fallback when Chrome is unavailable or a single block fails to render
+- `baoyu-post-to-wechat`, `baoyu-post-to-weibo`, `baoyu-post-to-x`: cascade the same Mermaid → PNG preprocessing into the WeChat / Weibo / X publishing pipelines so diagrams appear as real images in the published posts (previously they fell through as unrendered `<pre>` blocks). Existing `WECHATIMGPH_*` / `WBIMGPH_*` / `XIMGPH_*` placeholder pipelines pick up the generated PNGs unchanged
+- `baoyu-md` package: new exports `preprocessMermaidInMarkdown`, `extractMermaidBlocks`, `replaceMermaidBlocks`, `hashMermaidCode`, and `MERMAID_VERSION` (skills inject the render function so the package stays Chrome-free)
+- `baoyu-chrome-cdp` package: new `./mermaid` subexport providing `renderMermaidToPng(code, outputPath, options)` backed by a process-singleton CDP connection that reuses the shared Chrome profile and ships the vendored Mermaid 10.9.1 UMD bundle as an asset
+
 ## 2.0.1 - 2026-05-24
 
 ### Fixes
