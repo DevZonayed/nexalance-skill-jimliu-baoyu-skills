@@ -3,13 +3,11 @@ name: codex-imagegen tests
 on:
   push:
     paths:
-      - 'scripts/codex-imagegen/**'
-      - 'scripts/codex-imagegen.sh'
+      - 'packages/baoyu-codex-imagegen/**'
       - '.github/workflows/codex-imagegen-tests.yml'
   pull_request:
     paths:
-      - 'scripts/codex-imagegen/**'
-      - 'scripts/codex-imagegen.sh'
+      - 'packages/baoyu-codex-imagegen/**'
       - '.github/workflows/codex-imagegen-tests.yml'
   workflow_dispatch:
 
@@ -30,11 +28,11 @@ jobs:
         run: bun --version
 
       - name: Run unit tests
-        working-directory: scripts/codex-imagegen
+        working-directory: packages/baoyu-codex-imagegen
         run: bun test
 
       - name: Bundle smoke test (catches import/syntax errors)
-        run: bun build --target=node scripts/codex-imagegen/main.ts --outfile /tmp/main-build.js
+        run: bun build --target=node packages/baoyu-codex-imagegen/src/main.ts --outfile /tmp/main-build.js
 
       - name: Help output smoke test
-        run: bun scripts/codex-imagegen/main.ts --help
+        run: bun packages/baoyu-codex-imagegen/src/main.ts --help
