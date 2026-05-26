@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 2.2.1 - 2026-05-26
+
+### Documentation
+- `baoyu-image-gen`: surface `scripts/build-batch.ts` in SKILL.md's Usage section so the `outline.md` + `prompts/` → `batch.json` workflow (e.g., `baoyu-article-illustrator` output) is discoverable next to `--batchfile`. Clarify that all `scripts/...` paths in SKILL.md are relative to `{baseDir}` and point the Generation Mode table at `{baseDir}/scripts/build-batch.ts`. Update `build-batch.ts --help` to print `bun` / `npx -y bun` invocations with the `{baseDir}/scripts/...` layout used by the rest of the skill
+
 ## 2.2.0 - 2026-05-25
 
 ### Features
