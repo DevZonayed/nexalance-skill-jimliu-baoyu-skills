@@ -2,6 +2,15 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 2.3.0 - 2026-05-28
+
+### 新功能
+- `baoyu-md`、`baoyu-markdown-to-html`、`baoyu-post-to-wechat`、`baoyu-post-to-x`：支持 Obsidian 图片 wikilink（`![[...]]`），可与标准 Markdown 图片混用并保持图片顺序，同时解析 Obsidian 默认的 `Attachments/` 路径 (by @zcqqq)
+
+### 修复
+- `baoyu-md`、`baoyu-post-to-x`：解析本地图片路径前先解码 URL 编码，正确处理包含空格或中文等字符的文件名 (by @zcqqq)
+- `baoyu-md`、`baoyu-post-to-x`：加固图片路径解码逻辑，遇到异常百分号转义时安全回退，避免中断占位符提取 (by @zcqqq)
+
 ## 2.2.1 - 2026-05-26
 
 ### 文档

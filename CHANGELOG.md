@@ -2,6 +2,15 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 2.3.0 - 2026-05-28
+
+### Features
+- `baoyu-md`, `baoyu-markdown-to-html`, `baoyu-post-to-wechat`, `baoyu-post-to-x`: support Obsidian image wikilinks (`![[...]]`) alongside standard Markdown images, preserve mixed image order, and resolve Obsidian's default `Attachments/` paths (by @zcqqq)
+
+### Fixes
+- `baoyu-md`, `baoyu-post-to-x`: decode URL-encoded local image paths before resolution so filenames with spaces or CJK characters are handled correctly (by @zcqqq)
+- `baoyu-md`, `baoyu-post-to-x`: harden decoded image path handling so malformed percent escapes fall back safely instead of breaking placeholder extraction (by @zcqqq)
+
 ## 2.2.1 - 2026-05-26
 
 ### Documentation
