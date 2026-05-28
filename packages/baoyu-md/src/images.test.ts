@@ -59,6 +59,24 @@ test("resolveImagePath decodes URL-encoded filenames with spaces", async (t) => 
   assert.equal(resolved, path.join(baseDir, "Pasted image 20260524.png"));
 });
 
+test("resolveImagePath keeps literal percent filenames usable", async (t) => {
+  const root = await makeTempDir("baoyu-md-percent-");
+  t.after(() => fs.rm(root, { recursive: true, force: true }));
+
+  const baseDir = path.join(root, "article");
+  const tempDir = path.join(root, "tmp");
+  await fs.mkdir(baseDir, { recursive: true });
+  await fs.mkdir(tempDir, { recursive: true });
+  await fs.writeFile(path.join(baseDir, "100% complete.png"), "png");
+  await fs.writeFile(path.join(baseDir, "diagram%23hash.png"), "png");
+
+  const malformedPercent = await resolveImagePath("100% complete.png", baseDir, tempDir, "test");
+  assert.equal(malformedPercent, path.join(baseDir, "100% complete.png"));
+
+  const literalEncodedPercent = await resolveImagePath("diagram%23hash.png", baseDir, tempDir, "test");
+  assert.equal(literalEncodedPercent, path.join(baseDir, "diagram%23hash.png"));
+});
+
 test("resolveContentImages resolves image placeholders against the content directory", async (t) => {
   const root = await makeTempDir("baoyu-md-content-images-");
   t.after(() => fs.rm(root, { recursive: true, force: true }));

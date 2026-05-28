@@ -181,12 +181,29 @@ async function resolveImagePath(imagePath: string, baseDir: string, tempDir: str
     return localPath;
   }
 
-  const decoded = decodeURIComponent(imagePath);
-  if (path.isAbsolute(decoded)) {
-    return decoded;
+  return resolveLocalImagePath(imagePath, baseDir);
+}
+
+function resolveLocalImagePath(imagePath: string, baseDir: string): string {
+  const decoded = safeDecodeImagePath(imagePath);
+  const resolved = resolveAgainstBaseDir(decoded, baseDir);
+  if (decoded === imagePath || fs.existsSync(resolved)) {
+    return resolved;
   }
 
-  return path.resolve(baseDir, decoded);
+  return resolveAgainstBaseDir(imagePath, baseDir);
+}
+
+function safeDecodeImagePath(imagePath: string): string {
+  try {
+    return decodeURIComponent(imagePath);
+  } catch {
+    return imagePath;
+  }
+}
+
+function resolveAgainstBaseDir(imagePath: string, baseDir: string): string {
+  return path.isAbsolute(imagePath) ? imagePath : path.resolve(baseDir, imagePath);
 }
 
 function escapeHtml(text: string): string {

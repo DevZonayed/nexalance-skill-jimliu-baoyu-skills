@@ -72683,8 +72683,13 @@ async function resolveImagePath(imagePath, baseDir, tempDir, logLabel = "baoyu-m
     }
     return localPath;
   }
-  const resolved = path5.isAbsolute(imagePath) ? imagePath : path5.resolve(baseDir, imagePath);
-  return resolveLocalWithFallback(resolved, logLabel);
+  const decoded = safeDecodeImagePath(imagePath);
+  const resolved = resolveAgainstBaseDir(decoded, baseDir);
+  const resolvedWithFallback = resolveLocalWithFallback(resolved, logLabel);
+  if (decoded === imagePath || fs5.existsSync(resolvedWithFallback)) {
+    return resolvedWithFallback;
+  }
+  return resolveLocalWithFallback(resolveAgainstBaseDir(imagePath, baseDir), logLabel);
 }
 async function resolveContentImages(images, baseDir, tempDir, logLabel = "baoyu-md") {
   const resolved = [];
@@ -72718,6 +72723,16 @@ function resolveLocalWithFallback(resolved, logLabel) {
     return alternative;
   }
   return resolved;
+}
+function safeDecodeImagePath(imagePath) {
+  try {
+    return decodeURIComponent(imagePath);
+  } catch {
+    return imagePath;
+  }
+}
+function resolveAgainstBaseDir(imagePath, baseDir) {
+  return path5.isAbsolute(imagePath) ? imagePath : path5.resolve(baseDir, imagePath);
 }
 // src/mermaid-preprocess.ts
 import fs6 from "node:fs";

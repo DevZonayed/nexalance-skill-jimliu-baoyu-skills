@@ -72757,8 +72757,13 @@ async function resolveImagePath(imagePath, baseDir, tempDir, logLabel = "baoyu-m
     }
     return localPath;
   }
-  const resolved = import_node_path6.default.isAbsolute(imagePath) ? imagePath : import_node_path6.default.resolve(baseDir, imagePath);
-  return resolveLocalWithFallback(resolved, logLabel);
+  const decoded = safeDecodeImagePath(imagePath);
+  const resolved = resolveAgainstBaseDir(decoded, baseDir);
+  const resolvedWithFallback = resolveLocalWithFallback(resolved, logLabel);
+  if (decoded === imagePath || import_node_fs5.default.existsSync(resolvedWithFallback)) {
+    return resolvedWithFallback;
+  }
+  return resolveLocalWithFallback(resolveAgainstBaseDir(imagePath, baseDir), logLabel);
 }
 async function resolveContentImages(images, baseDir, tempDir, logLabel = "baoyu-md") {
   const resolved = [];
@@ -72792,6 +72797,16 @@ function resolveLocalWithFallback(resolved, logLabel) {
     return alternative;
   }
   return resolved;
+}
+function safeDecodeImagePath(imagePath) {
+  try {
+    return decodeURIComponent(imagePath);
+  } catch {
+    return imagePath;
+  }
+}
+function resolveAgainstBaseDir(imagePath, baseDir) {
+  return import_node_path6.default.isAbsolute(imagePath) ? imagePath : import_node_path6.default.resolve(baseDir, imagePath);
 }
 // src/mermaid-preprocess.ts
 var import_node_fs6 = __toESM(require("node:fs"));

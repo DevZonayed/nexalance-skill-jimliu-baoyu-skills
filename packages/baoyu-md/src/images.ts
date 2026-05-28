@@ -103,11 +103,14 @@ export async function resolveImagePath(
     return localPath;
   }
 
-  const decoded = decodeURIComponent(imagePath);
-  const resolved = path.isAbsolute(decoded)
-    ? decoded
-    : path.resolve(baseDir, decoded);
-  return resolveLocalWithFallback(resolved, logLabel);
+  const decoded = safeDecodeImagePath(imagePath);
+  const resolved = resolveAgainstBaseDir(decoded, baseDir);
+  const resolvedWithFallback = resolveLocalWithFallback(resolved, logLabel);
+  if (decoded === imagePath || fs.existsSync(resolvedWithFallback)) {
+    return resolvedWithFallback;
+  }
+
+  return resolveLocalWithFallback(resolveAgainstBaseDir(imagePath, baseDir), logLabel);
 }
 
 export async function resolveContentImages(
@@ -154,4 +157,16 @@ function resolveLocalWithFallback(resolved: string, logLabel: string): string {
   }
 
   return resolved;
+}
+
+function safeDecodeImagePath(imagePath: string): string {
+  try {
+    return decodeURIComponent(imagePath);
+  } catch {
+    return imagePath;
+  }
+}
+
+function resolveAgainstBaseDir(imagePath: string, baseDir: string): string {
+  return path.isAbsolute(imagePath) ? imagePath : path.resolve(baseDir, imagePath);
 }
