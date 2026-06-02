@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 2.4.1 - 2026-06-01
+
+### Fixes
+- `baoyu-md` and `baoyu-chrome-cdp`: bump npm package versions to `0.1.1` and refresh consuming skill dependencies/lockfiles so fresh installs pick up the Mermaid exports, bundled `assets/mermaid.min.js`, and Markdown Mermaid preprocessing exports required by `baoyu-markdown-to-html`, `baoyu-post-to-wechat`, `baoyu-post-to-weibo`, `baoyu-post-to-x`, `baoyu-danger-gemini-web`, and `baoyu-danger-x-to-markdown` ([#172](https://github.com/JimLiu/baoyu-skills/issues/172))
+
 ## 2.4.0 - 2026-05-29
 
 ### Features

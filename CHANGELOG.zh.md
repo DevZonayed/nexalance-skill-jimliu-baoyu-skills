@@ -2,6 +2,11 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 2.4.1 - 2026-06-01
+
+### 修复
+- `baoyu-md` 与 `baoyu-chrome-cdp`：将 npm 包版本提升到 `0.1.1`，并刷新依赖它们的 skill 依赖约束与 lockfile，确保全新安装会拿到 Mermaid 子导出、打包的 `assets/mermaid.min.js`，以及 Markdown Mermaid 预处理导出。影响范围包括 `baoyu-markdown-to-html`、`baoyu-post-to-wechat`、`baoyu-post-to-weibo`、`baoyu-post-to-x`、`baoyu-danger-gemini-web`、`baoyu-danger-x-to-markdown`（[#172](https://github.com/JimLiu/baoyu-skills/issues/172)）
+
 ## 2.4.0 - 2026-05-29
 
 ### 新功能
