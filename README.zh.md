@@ -12,6 +12,7 @@
 
 - 官方配套仓库：[JimLiu/Illustrated-Agent-Skills](https://github.com/JimLiu/Illustrated-Agent-Skills)
 - 购买链接：[京东购买](https://u.jd.com/RDY9YwC)
+- 电子书购买链接：https://www.ituring.com.cn/book/3616
 
 ## 前置要求
 
@@ -667,8 +668,8 @@ accounts:
     default_author: 宝玉
     need_open_comment: 1
     only_fans_can_comment: 0
-    app_id: 你的微信AppID
-    app_secret: 你的微信AppSecret
+    app_id: 你的微信 AppID
+    app_secret: 你的微信 AppSecret
   - name: AI 工具集
     alias: ai-tools
     default_publish_method: browser
