@@ -499,7 +499,8 @@ export function parseSimpleYaml(yaml: string): Partial<ExtendConfig> {
           key === "jimeng" ||
           key === "seedream" ||
           key === "azure" ||
-          key === "codex-cli"
+          key === "codex-cli" ||
+          key === "agnes"
         )
       ) {
         const cleaned = value.replace(/['"]/g, "");
@@ -822,7 +823,7 @@ function isRemoteReferenceImage(refPath: string): boolean {
 }
 
 function shouldAllowRemoteReferenceImages(provider: Provider | null): boolean {
-  return provider === "dashscope";
+  return provider === "dashscope" || provider === "agnes";
 }
 
 export async function validateReferenceImages(
