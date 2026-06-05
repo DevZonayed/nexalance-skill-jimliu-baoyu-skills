@@ -479,7 +479,8 @@ export function parseSimpleYaml(yaml: string): Partial<ExtendConfig> {
           key === "jimeng" ||
           key === "seedream" ||
           key === "azure" ||
-          key === "codex-cli"
+          key === "codex-cli" ||
+          key === "agnes"
         )
       ) {
         config.batch ??= {};
