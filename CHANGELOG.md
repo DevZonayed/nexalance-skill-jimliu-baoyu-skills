@@ -2,6 +2,11 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 2.5.1 - 2026-06-13
+
+### Documentation
+- Image generation skills: document Cursor's native `GenerateImage` backend in the shared backend-selection rule, including prompt-based aspect-ratio guidance, tool-managed output handling, and `reference_image_paths` support.
+
 ## 2.5.0 - 2026-06-12
 
 ### Features

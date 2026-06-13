@@ -2,6 +2,11 @@
 
 [English](./CHANGELOG.md) | 中文
 
+## 2.5.1 - 2026-06-13
+
+### 文档
+- 图片生成类 skills：在共享后端选择规则中补充 Cursor 原生 `GenerateImage` 后端说明，包括通过提示词声明宽高比、处理工具托管输出文件，以及使用 `reference_image_paths` 传入参考图。
+
 ## 2.5.0 - 2026-06-12
 
 ### 新功能
